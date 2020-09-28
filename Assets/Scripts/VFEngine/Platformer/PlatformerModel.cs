@@ -14,6 +14,7 @@ namespace VFEngine.Platformer
     using static PhysicsExtensions;
     using static PlatformerExtensions;
     using static TimeExtensions;
+    using static Mathf;
 
     [CreateAssetMenu(fileName = "PlatformerModel", menuName = "VFEngine/Platformer/Platformer Model", order = 0)]
     public class PlatformerModel : ScriptableObject, IModel
@@ -21,6 +22,7 @@ namespace VFEngine.Platformer
         /* fields */
         [LabelText("Platformer Data")] [SerializeField]
         private PlatformerData p;
+
         private PhysicsModel physics;
         private RaycastModel raycast;
         private RaycastHitColliderModel raycastHitCollider;
@@ -44,7 +46,7 @@ namespace VFEngine.Platformer
             await ApplyGravityAsync();
             await InitializeFrameAsync();
             await TestMovingPlatformAsync();
-            // Determine Movement Dir.
+            await SetMovementDirectionAsync();
             // Cast Rays
             // OnHit Raycast
             // MoveTransform
@@ -58,18 +60,6 @@ namespace VFEngine.Platformer
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private UniTask<UniTaskVoid> ApplyGravityAsync()
-        {
-            try
-            {
-                return new UniTask<UniTaskVoid>(ApplyGravityAsyncInternal());
-            }
-            finally
-            {
-                ApplyGravityAsyncInternal().Forget();
-            }
-        }
-
         private async UniTaskVoid ApplyGravityAsyncInternal()
         {
             await physics.SetGravityAsync();
@@ -78,18 +68,6 @@ namespace VFEngine.Platformer
             if (p.GravityActive) await physics.ApplyGravityToSpeedAsync();
             if (p.FallSlowFactor != 0) await physics.ApplyFallSlowFactorToSpeedAsync();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private UniTask<UniTaskVoid> InitializeFrameAsync()
-        {
-            try
-            {
-                return new UniTask<UniTaskVoid>(InitializeFrameAsyncInternal());
-            }
-            finally
-            {
-                InitializeFrameAsyncInternal().Forget();
-            }
         }
 
         private async UniTaskVoid InitializeFrameAsyncInternal()
@@ -108,6 +86,65 @@ namespace VFEngine.Platformer
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        private async UniTaskVoid TestMovingPlatformAsyncInternal()
+        {
+            if (p.IsCollidingWithMovingPlatform)
+            {
+                if (!SpeedNan(p.MovingPlatformCurrentSpeed)) await physics.TranslatePlatformSpeedToTransformAsync();
+                var platformTest = MovingPlatformTest(TimeLteZero(), AxisSpeedNan(p.MovingPlatformCurrentSpeed),
+                    p.WasTouchingCeilingLastFrame);
+                if (platformTest)
+                {
+                    await physics.ApplyPlatformSpeedToNewPositionAsync();
+                    await physics.StopSpeedAsync();
+                    var pTask1 = physics.DisableGravityAsync();
+                    var pTask2 = physics.SetAppliedForcesAsync();
+                    var rchTask = raycastHitCollider.SetMovingPlatformGravityAsync();
+                    var rTask = raycast.SetRaysParametersAsync();
+                    var task = await (pTask1, pTask2, rchTask, rTask);
+                }
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetMovementDirectionAsyncInternal()
+        {
+            await physics.SetMovementDirectionAsync();
+            if (p.Speed.x < -p.MovementDirectionThreshold || p.ExternalForce.x < -p.MovementDirectionThreshold)
+                await physics.SetMovementDirectionNegativeAsync();
+            else if (p.Speed.x > p.MovementDirectionThreshold || p.ExternalForce.x > p.MovementDirectionThreshold)
+                await physics.SetMovementDirectionPositiveAsync();
+            if (p.IsCollidingWithMovingPlatform && Abs(p.MovingPlatformCurrentSpeed.x) > Abs(p.Speed.x))
+                await physics.ApplyPlatformSpeedToMovementDirectionAsync();
+            await physics.SetStoredMovementDirectionAsync();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private UniTask<UniTaskVoid> ApplyGravityAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyGravityAsyncInternal());
+            }
+            finally
+            {
+                ApplyGravityAsyncInternal().Forget();
+            }
+        }
+
+        private UniTask<UniTaskVoid> InitializeFrameAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(InitializeFrameAsyncInternal());
+            }
+            finally
+            {
+                InitializeFrameAsyncInternal().Forget();
+            }
+        }
+
         private UniTask<UniTaskVoid> TestMovingPlatformAsync()
         {
             try
@@ -120,25 +157,16 @@ namespace VFEngine.Platformer
             }
         }
 
-        private async UniTaskVoid TestMovingPlatformAsyncInternal()
+        private UniTask<UniTaskVoid> SetMovementDirectionAsync()
         {
-            if (p.IsCollidingWithMovingPlatform)
+            try
             {
-                if (!SpeedNan(p.MovingPlatformCurrentSpeed)) await physics.TranslatePlatformSpeedToTransformAsync();
-                var platformTest = MovingPlatformTest(TimeLteZero(), AxisSpeedNan(p.MovingPlatformCurrentSpeed),
-                    p.WasTouchingCeilingLastFrame);
-                if (platformTest)
-                {
-                    await physics.ApplyPlatformSpeedToNewPositionAsync();
-                    await physics.StopSpeedAsync();
-                    var pTask = physics.DisableGravityAsync();
-                    var rchTask = raycastHitCollider.SetMovingPlatformGravityAsync();
-                    var rTask = raycast.SetRaysParametersAsync();
-                    var task = await (pTask, rchTask, rTask);
-                }
+                return new UniTask<UniTaskVoid>(SetMovementDirectionAsyncInternal());
             }
-
-            await SetYieldOrSwitchToThreadPoolAsync();
+            finally
+            {
+                SetMovementDirectionAsyncInternal().Forget();
+            }
         }
 
         /* properties */

@@ -8,9 +8,6 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
-    using static PlatformerExtensions;
-    using static PhysicsExtensions;
-    using static TimeExtensions;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -27,10 +24,12 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.Initialize();
         }
+
         private void InitializeModel()
         {
             SetRaysParameters();
         }
+
         private void SetRaysParameters()
         {
             var top = SetPositiveAxis(r.BoxColliderOffset.y, r.BoxColliderSize.y);
@@ -59,13 +58,13 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return offset - size / 2f;
         }
-        
+
         private async UniTaskVoid SetRaysParametersAsyncInternal()
         {
             SetRaysParameters();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
 
@@ -89,29 +88,3 @@ namespace VFEngine.Platformer.Event.Raycast
         }
     }
 }
-
-/*
-private async UniTaskVoid OnPlatformerSetRaysParametersAsyncInternal()
-{
-SetRaysParameters();
-await SetYieldOrSwitchToThreadPoolAsync();
-}
-
-private async UniTaskVoid OnPlatformerTestMovingPlatformAsyncInternal()
-{
-var test = MovingPlatformTest(r.IsCollidingWithMovingPlatform, TimeLteZero(),
-        AxisSpeedNan(r.MovingPlatformCurrentSpeed), r.WasTouchingCeilingLastFrame);
-    if (test) SetRaysParameters();
-await SetYieldOrSwitchToThreadPoolAsync();
-}
-public UniTask<UniTaskVoid> OnPlatformerTestMovingPlatformAsync()
-{
-try
-{
-    return new UniTask<UniTaskVoid>(OnPlatformerTestMovingPlatformAsyncInternal());
-}
-finally
-{
-    OnPlatformerTestMovingPlatformAsyncInternal().Forget();
-}
-}*/

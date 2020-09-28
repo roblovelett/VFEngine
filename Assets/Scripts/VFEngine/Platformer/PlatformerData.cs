@@ -30,6 +30,8 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference isCollidingWithMovingPlatform;
         [SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
+        [SerializeField] private FloatReference movementDirectionThreshold;
+        [SerializeField] private Vector2Reference externalForce;
 
         /* fields */
         private bool DisplayWarnings => settings.displayWarningsControl;
@@ -76,6 +78,8 @@ namespace VFEngine.Platformer
         public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
         public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
+        public float MovementDirectionThreshold => movementDirectionThreshold.Value;
+        public Vector2 ExternalForce => externalForce.Value;
 
         /* properties */
 

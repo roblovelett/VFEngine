@@ -2,7 +2,6 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
-using static UnityEngine.Time;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics
@@ -10,6 +9,8 @@ namespace VFEngine.Platformer.Physics
     using static ScriptableObjectExtensions;
     using static Quaternion;
     using static UniTaskExtensions;
+    using static Time;
+    using static Mathf;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = "VFEngine/Platformer/Physics/Physics Model", order = 0)]
     public class PhysicsModel : ScriptableObject, IModel
@@ -106,6 +107,42 @@ namespace VFEngine.Platformer.Physics
         {
             p.Speed = p.NewPosition / deltaTime;
             p.Speed = new Vector2(-p.Speed.x, p.Speed.y);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetAppliedForcesAsyncInternal()
+        {
+            p.ForcesApplied = p.Speed;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetMovementDirectionAsyncInternal()
+        {
+            p.MovementDirection = p.StoredMovementDirection;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetMovementDirectionNegativeAsyncInternal()
+        {
+            p.MovementDirection = -1;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetMovementDirectionPositiveAsyncInternal()
+        {
+            p.MovementDirection = 1;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyPlatformSpeedToMovementDirectionAsyncInternal()
+        {
+            p.MovementDirection = Sign(p.MovingPlatformCurrentSpeed.x);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetStoredMovementDirectionAsyncInternal()
+        {
+            p.StoredMovementDirection = p.MovementDirection;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -250,26 +287,82 @@ namespace VFEngine.Platformer.Physics
                 StopSpeedAsyncInternal().Forget();
             }
         }
+
+        public UniTask<UniTaskVoid> SetAppliedForcesAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetAppliedForcesAsyncInternal());
+            }
+            finally
+            {
+                SetAppliedForcesAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> SetMovementDirectionAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetMovementDirectionAsyncInternal());
+            }
+            finally
+            {
+                SetMovementDirectionAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> SetMovementDirectionNegativeAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetMovementDirectionNegativeAsyncInternal());
+            }
+            finally
+            {
+                SetMovementDirectionNegativeAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> SetMovementDirectionPositiveAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetMovementDirectionPositiveAsyncInternal());
+            }
+            finally
+            {
+                SetMovementDirectionPositiveAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyPlatformSpeedToMovementDirectionAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyPlatformSpeedToMovementDirectionAsyncInternal());
+            }
+            finally
+            {
+                ApplyPlatformSpeedToMovementDirectionAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> SetStoredMovementDirectionAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetStoredMovementDirectionAsyncInternal());
+            }
+            finally
+            {
+                SetStoredMovementDirectionAsyncInternal().Forget();
+            }
+        }
     }
 }
 
 /*
-
-//private async UniTaskVoid OnSetMovementDirectionAsyncInternal(bool onMovingPlatform, Vector3 platformSpeed)
-//  {
-/*
-const float movementDirectionThreshold = 0.0001f;
-movementDirection = storedMovementDirection;
-if (speed.x < -movementDirectionThreshold || externalForce.x < -movementDirectionThreshold)
-    movementDirection = -1;
-else if (speed.x > movementDirectionThreshold || externalForce.x > movementDirectionThreshold)
-    movementDirection = 1;
-if (onMovingPlatform && Abs(platformSpeed.x) > Abs(speed.x)) movementDirection = Sign(platformSpeed.x);
-storedMovementDirection = movementDirection;
-await Yield();
-*/
-//  }
-
 //    private async UniTaskVoid OnRaycastHorizontalAsyncInternal(float raycastDirection, float distanceToWall,
 //        float boundsWidth, float raycastOffset, bool isGrounded)
 //   {

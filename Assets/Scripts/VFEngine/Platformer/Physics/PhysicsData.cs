@@ -27,7 +27,10 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
+        [SerializeField] private FloatReference movementDirectionThreshold;
+        [SerializeField] private Vector2Reference externalForce;
         private bool DisplayWarnings => settings.displayWarningsControl;
+        private float MovementDirectionThreshold { get; } = 0.0001f;
 
         /* fields: methods */
         private void GetWarningMessage()
@@ -67,8 +70,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         /* properties */
-        public const float Tolerance = 0;
-        public const float MovementDirectionThreshold = 0.0001f;
+        public float Tolerance { get; } = 0;
         public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
         public bool StickToSlopesControl => stickToSlopesControl.Value;
         public float Gravity => settings.gravity;
@@ -112,6 +114,9 @@ namespace VFEngine.Platformer.Physics
             safetyBoxcastControl.Value = settings.safetyBoxcastControl;
             transform.Value = characterTransform;
             gravityActive.Value = State.GravityActive;
+            FallSlowFactor = FallMultiplier;
+            movementDirectionThreshold.Value = MovementDirectionThreshold;
+            externalForce.Value = ExternalForce;
             GetWarningMessage();
         }
 
