@@ -2,7 +2,7 @@
 
 namespace VFEngine.Tools
 {
-    public static class Maths
+    public static class MathsExtensions
     {
         public static bool IsTime(float timeScale, float deltaTime)
         {

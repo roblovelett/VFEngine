@@ -19,35 +19,28 @@ namespace VFEngine.Platformer.Layer.Mask
         private const string AssetPath = "Layer/Mask/DefaultLayerMaskModel.asset";
 
         /* fields: methods */
-        private async UniTaskVoid InitializeModelAsyncInternal()
+        private void InitializeData()
+        {
+            lm.Initialize();
+        }
+        private void InitializeModel()
         {
             lm.SavedPlatformMask = lm.PlatformMask;
             lm.PlatformMask |= lm.OneWayPlatformMask;
             lm.PlatformMask |= lm.MovingPlatformMask;
             lm.PlatformMask |= lm.MovingOneWayPlatformMask;
             lm.PlatformMask |= lm.MidHeightOneWayPlatformMask;
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
 
         /* properties: methods */
-        public void InitializeData()
+        public void Initialize()
         {
-            lm.Initialize();
+            InitializeData();
+            InitializeModel();
         }
-
-        public UniTask<UniTaskVoid> InitializeModelAsync()
-        {
-            try
-            {
-                return new UniTask<UniTaskVoid>(InitializeModelAsyncInternal());
-            }
-            finally
-            {
-                InitializeModelAsyncInternal().Forget();
-            }
-        }
+        
     }
 }

@@ -2,13 +2,14 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using static UnityEngine.Time;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics
 {
-    using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
     using static Quaternion;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = "VFEngine/Platformer/Physics/Physics Model", order = 0)]
     public class PhysicsModel : ScriptableObject, IModel
@@ -16,92 +17,243 @@ namespace VFEngine.Platformer.Physics
         /* fields */
         [LabelText("Physics Data")] [SerializeField]
         private PhysicsData p;
+
         private const string AssetPath = "Physics/DefaultPhysicsModel.asset";
 
         /* fields: methods */
-        private async UniTaskVoid InitializeModelAsyncInternal()
+        private void InitializeData()
+        {
+            p.Initialize();
+        }
+
+        private void InitializeModel()
         {
             p.State.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
+        }
+
+        private async UniTaskVoid SetGravityAsyncInternal()
+        {
+            p.CurrentGravity = p.Gravity;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyAscentMultiplierToGravityAsyncInternal()
+        {
+            p.CurrentGravity /= p.AscentMultiplier;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyFallMultiplierToGravityAsyncInternal()
+        {
+            p.CurrentGravity *= p.FallMultiplier;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyGravityToSpeedAsyncInternal()
+        {
+            p.Speed = new Vector2(p.Speed.x, ApplyGravityTime());
+            await SetYieldOrSwitchToThreadPoolAsync();
+
+            float ApplyGravityTime()
+            {
+                return p.Speed.y + (p.CurrentGravity + p.MovingPlatformCurrentGravity) * deltaTime;
+            }
+        }
+
+        private async UniTaskVoid ApplyFallSlowFactorToSpeedAsyncInternal()
+        {
+            p.Speed = new Vector2(p.Speed.x, ApplyFallSlowFactor());
+            await SetYieldOrSwitchToThreadPoolAsync();
+
+            float ApplyFallSlowFactor()
+            {
+                return p.Speed.y * p.FallSlowFactor;
+            }
+        }
+
+        private async UniTaskVoid SetNewPositionAsyncInternal()
+        {
+            p.NewPosition = p.Speed * deltaTime;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ResetStateAsyncInternal()
+        {
+            p.State.Reset();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid TranslatePlatformSpeedToTransformAsyncInternal()
+        {
+            p.Transform.Translate(p.MovingPlatformCurrentSpeed * deltaTime);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid DisableGravityAsyncInternal()
+        {
+            p.State.SetGravity(false);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyPlatformSpeedToNewPositionAsyncInternal()
+        {
+            p.NewPosition = new Vector2(p.NewPosition.x, p.MovingPlatformCurrentSpeed.y * deltaTime);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid StopSpeedAsyncInternal()
+        {
+            p.Speed = p.NewPosition / deltaTime;
+            p.Speed = new Vector2(-p.Speed.x, p.Speed.y);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
-        
+
         /* properties: methods */
-        public void InitializeData()
+        public void Initialize()
         {
-            p.Initialize();
+            InitializeData();
+            InitializeModel();
         }
 
-        public UniTask<UniTaskVoid> InitializeModelAsync()
+        public UniTask<UniTaskVoid> SetGravityAsync()
         {
             try
             {
-                return new UniTask<UniTaskVoid>(InitializeModelAsyncInternal());
+                return new UniTask<UniTaskVoid>(SetGravityAsyncInternal());
             }
             finally
             {
-                InitializeModelAsyncInternal().Forget();
+                SetGravityAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyAscentMultiplierToGravityAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyAscentMultiplierToGravityAsyncInternal());
+            }
+            finally
+            {
+                ApplyAscentMultiplierToGravityAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyFallMultiplierToGravityAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyFallMultiplierToGravityAsyncInternal());
+            }
+            finally
+            {
+                ApplyFallMultiplierToGravityAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyGravityToSpeedAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyGravityToSpeedAsyncInternal());
+            }
+            finally
+            {
+                ApplyGravityToSpeedAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyFallSlowFactorToSpeedAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyFallSlowFactorToSpeedAsyncInternal());
+            }
+            finally
+            {
+                ApplyFallSlowFactorToSpeedAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> SetNewPositionAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(SetNewPositionAsyncInternal());
+            }
+            finally
+            {
+                SetNewPositionAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ResetStateAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ResetStateAsyncInternal());
+            }
+            finally
+            {
+                ResetStateAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> TranslatePlatformSpeedToTransformAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(TranslatePlatformSpeedToTransformAsyncInternal());
+            }
+            finally
+            {
+                TranslatePlatformSpeedToTransformAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> DisableGravityAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(DisableGravityAsyncInternal());
+            }
+            finally
+            {
+                DisableGravityAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> ApplyPlatformSpeedToNewPositionAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(ApplyPlatformSpeedToNewPositionAsyncInternal());
+            }
+            finally
+            {
+                ApplyPlatformSpeedToNewPositionAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> StopSpeedAsync()
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(StopSpeedAsyncInternal());
+            }
+            finally
+            {
+                StopSpeedAsyncInternal().Forget();
             }
         }
     }
 }
-/*public UniTask<UniTaskVoid> OnApplyGravityAsync(float movingPlatformCurrentGravity)
-{
-    try
-    {
-        return new UniTask<UniTaskVoid>(OnApplyGravityAsyncInternal(movingPlatformCurrentGravity));
-    }
-    finally
-    {
-        OnApplyGravityAsyncInternal(movingPlatformCurrentGravity).Forget();
-    }
-}*/
 
 /*
-private async UniTaskVoid OnApplyGravityAsyncInternal(float movingPlatformCurrentGravity)
-{
-    /*
-    p.CurrentGravity = p.Gravity;
-    if (p.Speed.y > 0) p.CurrentGravity /= p.AscentMultiplier;
-    if (p.Speed.y < 0) currentGravity *= fallMultiplier;
-    if (state.GravityActive) speed.y += (currentGravity + movingPlatformCurrentGravity) * deltaTime;
-    if (fallSlowFactor != 0) speed.y *= fallSlowFactor;
-    await Yield();
-    */
-/*}*/
-
-//private async UniTaskVoid OnFrameInitializeModelAsyncInternal()
-//{
-/*
-newPosition = speed * deltaTime;
-state.Reset();
-await Yield();
-*/
-//}
-
-//private async UniTaskVoid OnMovingPlatformAsyncInternal(PathMovementController movingPlatform,
-//bool wasTouchingCeilingLastFrame)
-// {
-/*
-if (movingPlatform && !IsNan(movingPlatform.CurrentSpeed))
-{
-    p.transform.Translate(movingPlatform.CurrentSpeed * deltaTime);
-    if (!wasTouchingCeilingLastFrame && IsTime(timeScale, deltaTime))
-    {
-        state.SetGravity(false);
-        newPosition.y = movingPlatform.CurrentSpeed.y * deltaTime;
-        speed = -newPosition / deltaTime;
-        speed.x = -speed.x;
-        forcesApplied = speed; // store current speed for use in moving platforms
-    }
-}
-
-await Yield();
-*/
-// }
 
 //private async UniTaskVoid OnSetMovementDirectionAsyncInternal(bool onMovingPlatform, Vector3 platformSpeed)
 //  {

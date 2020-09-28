@@ -1,6 +1,7 @@
 ﻿using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
@@ -13,12 +14,19 @@ namespace VFEngine.Platformer.Physics
         /* fields: dependencies */
         [SerializeField] private PhysicsSettings settings;
         [SerializeField] private GravityController gravityController;
-        [SerializeField] private new Transform transform;
-        [SerializeField] private TransformReference transformReference;
+        [SerializeField] private Transform characterTransform;
+        [SerializeField] private new TransformReference transform;
+        [SerializeField] private BoolReference isCollidingWithMovingPlatform;
+        [SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
+        [SerializeField] private FloatReference movingPlatformCurrentGravity;
+        [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
 
         /* fields */
         [SerializeField] private BoolReference stickToSlopesControl;
         [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private Vector2Reference speed;
+        [SerializeField] private BoolReference gravityActive;
+        [SerializeField] private FloatReference fallSlowFactor;
         private bool DisplayWarnings => settings.displayWarningsControl;
 
         /* fields: methods */
@@ -29,7 +37,7 @@ namespace VFEngine.Platformer.Physics
             var warningMessageCount = 0;
             if (!settings) warningMessage += SettingsMessage("Physics Settings");
             if (!HasGravityController) warningMessage += FieldParentMessage("Gravity Controller");
-            if (!transform) warningMessage += FieldParentMessage("Transform");
+            if (!characterTransform) warningMessage += FieldParentMessage("Transform");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string SettingsMessage(string scriptableObject)
@@ -45,12 +53,12 @@ namespace VFEngine.Platformer.Physics
             }
         }
 
-        /* properties */
-        public const float Tolerance = 0;
-        public const float MovementDirectionThreshold = 0.0001f;
+        /* properties: dependencies */
         public bool HasGravityController => gravityController;
-        public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
-        public bool StickToSlopesControl => stickToSlopesControl.Value;
+        public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
+        public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
+        public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
+        public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
 
         public Transform Transform
         {
@@ -58,6 +66,11 @@ namespace VFEngine.Platformer.Physics
             set => value = transform;
         }
 
+        /* properties */
+        public const float Tolerance = 0;
+        public const float MovementDirectionThreshold = 0.0001f;
+        public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
+        public bool StickToSlopesControl => stickToSlopesControl.Value;
         public float Gravity => settings.gravity;
         public float FallMultiplier => settings.fallMultiplier;
         public float AscentMultiplier => settings.ascentMultiplier;
@@ -72,21 +85,33 @@ namespace VFEngine.Platformer.Physics
         public bool SafeSetTransformControl => settings.safeSetTransformControl;
         public bool AutomaticGravityControl => settings.automaticGravityControl;
         public Vector2 WorldSpeed { get; set; }
-        public Vector2 Speed { get; set; }
         public Vector2 ExternalForce { get; set; }
         public Vector2 ForcesApplied { get; set; }
         public float CurrentGravity { get; set; }
         public float MovementDirection { get; set; }
         public float StoredMovementDirection { get; set; }
         public Vector2 NewPosition { get; set; }
-        public float FallSlowFactor { get; set; }
+
+        public Vector2 Speed
+        {
+            get => speed.Value;
+            set => value = speed.Value;
+        }
+
+        public float FallSlowFactor
+        {
+            get => fallSlowFactor.Value;
+            set => value = fallSlowFactor.Value;
+        }
+
         public ModelState State { get; } = new ModelState();
 
         public void Initialize()
         {
             stickToSlopesControl.Value = settings.stickToSlopeControl;
             safetyBoxcastControl.Value = settings.safetyBoxcastControl;
-            transformReference.Value = transform;
+            transform.Value = characterTransform;
+            gravityActive.Value = State.GravityActive;
             GetWarningMessage();
         }
 

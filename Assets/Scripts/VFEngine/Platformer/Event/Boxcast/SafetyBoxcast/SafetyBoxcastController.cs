@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             if (!model) model = LoadData(ModelPath) as SafetyBoxcastModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityAtoms.BaseAtoms;
+using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
@@ -23,9 +24,20 @@ namespace VFEngine.Platformer
         [SerializeField] private StickyRaycastController stickyRaycastController;
         [SerializeField] private SafetyBoxcastController safetyBoxcastController;
         [SerializeField] private LayerMaskController layerMaskController;
+        [SerializeField] private Vector2Reference speed;
+        [SerializeField] private BoolReference gravityActive;
+        [SerializeField] private FloatReference fallSlowFactor;
+        [SerializeField] private BoolReference isCollidingWithMovingPlatform;
+        [SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
+        [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
 
         /* fields */
         private bool DisplayWarnings => settings.displayWarningsControl;
+        [SerializeField] private BoolReference setGravity;
+        [SerializeField] private BoolReference applyAscentMultiplierToGravity;
+        [SerializeField] private BoolReference applyFallMultiplierToGravity;
+        [SerializeField] private BoolReference applyGravityToSpeed;
+        [SerializeField] private BoolReference applyFallSlowFactorToSpeed;
 
         /* fields: methods */
         private void GetWarningMessage()
@@ -50,13 +62,22 @@ namespace VFEngine.Platformer
             }
         }
 
-        /* properties */
+        /* properties: dependencies */
         public PhysicsModel PhysicsModel { get; private set; }
         public GravityModel GravityModel { get; private set; }
         public RaycastModel RaycastModel { get; private set; }
+        public RaycastHitColliderModel RaycastHitColliderModel { get; private set; }
         public StickyRaycastModel StickyRaycastModel { get; private set; }
         public SafetyBoxcastModel SafetyBoxcastModel { get; private set; }
         public LayerMaskModel LayerMaskModel { get; private set; }
+        public Vector2 Speed => speed.Value;
+        public bool GravityActive => gravityActive.Value;
+        public float FallSlowFactor => fallSlowFactor.Value;
+        public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
+        public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
+        public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
+
+        /* properties */
 
         /* properties: methods */
         public void Initialize()
@@ -64,6 +85,7 @@ namespace VFEngine.Platformer
             PhysicsModel = physicsController.Model as PhysicsModel;
             GravityModel = gravityController.Model as GravityModel;
             RaycastModel = raycastController.Model as RaycastModel;
+            RaycastHitColliderModel = raycastHitColliderController.Model as RaycastHitColliderModel;
             StickyRaycastModel = stickyRaycastController.Model as StickyRaycastModel;
             SafetyBoxcastModel = safetyBoxcastController.Model as SafetyBoxcastModel;
             LayerMaskModel = layerMaskController.Model as LayerMaskModel;

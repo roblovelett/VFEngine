@@ -18,11 +18,12 @@ namespace VFEngine.Platformer.Physics
         {
             if (!model) model = LoadData(ModelPath) as PhysicsModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */
         public ScriptableObject Model => model;
+        
         /* properties: methods */
     }
 }

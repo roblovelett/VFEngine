@@ -22,7 +22,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             if (!model) model = LoadData(ModelPath) as RaycastModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */

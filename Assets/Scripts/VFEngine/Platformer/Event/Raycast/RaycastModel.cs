@@ -8,6 +8,9 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
+    using static PlatformerExtensions;
+    using static PhysicsExtensions;
+    using static TimeExtensions;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -20,12 +23,14 @@ namespace VFEngine.Platformer.Event.Raycast
         private const string AssetPath = "Event/Raycast/DefaultRaycastModel.asset";
 
         /* fields: methods */
-        private async UniTaskVoid InitializeModelAsyncInternal()
+        private void InitializeData()
+        {
+            r.Initialize();
+        }
+        private void InitializeModel()
         {
             SetRaysParameters();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
-
         private void SetRaysParameters()
         {
             var top = SetPositiveAxis(r.BoxColliderOffset.y, r.BoxColliderSize.y);
@@ -54,26 +59,59 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return offset - size / 2f;
         }
-
+        
+        private async UniTaskVoid SetRaysParametersAsyncInternal()
+        {
+            SetRaysParameters();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
 
         /* properties: methods */
-        public void InitializeData()
+        public void Initialize()
         {
-            r.Initialize();
+            InitializeData();
+            InitializeModel();
         }
 
-        public UniTask<UniTaskVoid> InitializeModelAsync()
+        public UniTask<UniTaskVoid> SetRaysParametersAsync()
         {
             try
             {
-                return new UniTask<UniTaskVoid>(InitializeModelAsyncInternal());
+                return new UniTask<UniTaskVoid>(SetRaysParametersAsyncInternal());
             }
             finally
             {
-                InitializeModelAsyncInternal().Forget();
+                SetRaysParametersAsyncInternal().Forget();
             }
         }
     }
 }
+
+/*
+private async UniTaskVoid OnPlatformerSetRaysParametersAsyncInternal()
+{
+SetRaysParameters();
+await SetYieldOrSwitchToThreadPoolAsync();
+}
+
+private async UniTaskVoid OnPlatformerTestMovingPlatformAsyncInternal()
+{
+var test = MovingPlatformTest(r.IsCollidingWithMovingPlatform, TimeLteZero(),
+        AxisSpeedNan(r.MovingPlatformCurrentSpeed), r.WasTouchingCeilingLastFrame);
+    if (test) SetRaysParameters();
+await SetYieldOrSwitchToThreadPoolAsync();
+}
+public UniTask<UniTaskVoid> OnPlatformerTestMovingPlatformAsync()
+{
+try
+{
+    return new UniTask<UniTaskVoid>(OnPlatformerTestMovingPlatformAsyncInternal());
+}
+finally
+{
+    OnPlatformerTestMovingPlatformAsyncInternal().Forget();
+}
+}*/

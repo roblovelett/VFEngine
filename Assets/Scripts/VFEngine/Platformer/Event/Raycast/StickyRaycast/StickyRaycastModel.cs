@@ -20,30 +20,23 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private const string AssetPath = "Event/Raycast/Sticky Raycast/DefaultStickyRaycastModel.asset";
 
         /* fields: methods */
-        private async UniTaskVoid InitializeModelAsyncInternal()
+        private void InitializeData()
         {
-            await SetYieldOrSwitchToThreadPoolAsync();
+            sr.Initialize();
+        }
+
+        private static void InitializeModel()
+        {
         }
 
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
 
         /* properties: methods */
-        public void InitializeData()
+        public void Initialize()
         {
-            sr.Initialize();
-        }
-
-        public UniTask<UniTaskVoid> InitializeModelAsync()
-        {
-            try
-            {
-                return new UniTask<UniTaskVoid>(InitializeModelAsyncInternal());
-            }
-            finally
-            {
-                InitializeModelAsyncInternal().Forget();
-            }
+            InitializeData();
+            InitializeModel();
         }
     }
 }

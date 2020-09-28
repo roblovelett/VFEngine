@@ -16,7 +16,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             if (!model) model = LoadData(ModelPath) as LayerMaskModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */

@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             if (!model) model = LoadData(ModelPath) as RaycastHitColliderModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Tools;
 
@@ -20,6 +21,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector3Reference boxColliderBoundsCenter;
+        [SerializeField] private FloatReference movingPlatformCurrentGravity;
+        [SerializeField] private BoolReference isCollidingWithMovingPlatform;
+        [SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
+        [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         private bool DisplayWarnings => settings.displayWarningsControl;
 
         /* fields: methods */
@@ -57,7 +62,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         /* properties */
         public const float Tolerance = 0;
         public const float SmallValue = 0.0001f;
-        public const float MovingPlatformGravity = -500;
+        public float movingPlatformGravity = -500;
         public const float ObstacleHeightTolerance = 0.05f;
         public bool HasBoxCollider => boxCollider;
         public bool DrawColliderGizmos => settings.drawColliderGizmosControl;
@@ -81,7 +86,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public float DistanceToWall { get; set; }
         public float Friction { get; set; }
         public PathMovementController MovingPlatform { get; set; }
-        public float MovingPlatformCurrentGravity { get; set; }
+
+        public float MovingPlatformCurrentGravity
+        {
+            get => movingPlatformCurrentGravity.Value;
+            set => value = movingPlatformCurrentGravity.Value;
+        }
+
+        public Vector3 MovingPlatformCurrentSpeed
+        {
+            get => movingPlatformCurrentSpeed.Value;
+            set => value = movingPlatformCurrentSpeed.Value;
+        }
+
         public RaycastHit2D[] SideHitsStorage { get; set; }
         public RaycastHit2D[] BelowHitsStorage { get; set; }
         public RaycastHit2D[] AboveHitsStorage { get; set; }
@@ -147,6 +164,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             boxColliderOffset.Value = boxCollider.offset;
             boxColliderSize.Value = boxCollider.size;
             boxColliderBoundsCenter.Value = boxCollider.bounds.center;
+            isCollidingWithMovingPlatform.Value = State.IsCollidingWithMovingPlatform;
+            wasTouchingCeilingLastFrame.Value = State.WasTouchingCeilingLastFrame;
             GetWarningMessage();
         }
 
@@ -160,7 +179,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             public bool IsCollidingAbove { get; private set; }
             public bool IsCollidingBelow { get; private set; }
             public bool IsCollidingWithLevelBounds { get; private set; }
-            public bool IsOnMovingPlatform { get; private set; }
+            public bool OnMovingPlatform { get; private set; }
             public bool IsPassingSlopeAngle { get; private set; }
             public bool WasGroundedLastFrame { get; private set; }
             public bool WasTouchingCeilingLastFrame { get; private set; }
@@ -213,9 +232,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 IsCollidingWithLevelBounds = isCollidingWithLevelBounds;
             }
 
-            public void SetIsOnMovingPlatform(bool isOnMovingPlatform)
+            public void SetOnMovingPlatform(bool onMovingPlatform)
             {
-                IsOnMovingPlatform = isOnMovingPlatform;
+                OnMovingPlatform = onMovingPlatform;
             }
 
             public void SetWasGroundedLastFrame(bool wasGroundedLastFrame)

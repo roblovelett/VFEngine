@@ -15,6 +15,9 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector3Reference boxColliderBoundsCenter;
         [SerializeField] private new TransformReference transform;
+        [SerializeField] private BoolReference isCollidingWithMovingPlatform;
+        [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
+        [SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
 
         /* fields */
         [SerializeField] private IntReference numberOfHorizontalRays;
@@ -22,11 +25,6 @@ namespace VFEngine.Platformer.Event.Raycast
         private bool DisplayWarnings => settings.displayWarningsControl;
 
         /* fields: methods */
-        private static Vector3 SetBoundsSide(Vector3 corner1, Vector3 corner2)
-        {
-            return (corner1 + corner2) / 2;
-        }
-
         private void GetWarningMessage()
         {
             if (!DisplayWarnings) return;
@@ -61,11 +59,19 @@ namespace VFEngine.Platformer.Event.Raycast
             }
         }
 
+        private static Vector3 SetBoundsSide(Vector3 corner1, Vector3 corner2)
+        {
+            return (corner1 + corner2) / 2;
+        }
+
         /* properties: dependencies */
         public Transform Transform => transform.Value;
         public Vector2 BoxColliderOffset => boxColliderOffset.Value;
         public Vector2 BoxColliderSize => boxColliderSize.Value;
         public Vector3 BoxColliderBoundsCenter => boxColliderBoundsCenter.Value;
+        public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
+        public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
+        public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
 
         /* properties */
         public bool DrawRaycastGizmos => settings.drawRaycastGizmosControl;

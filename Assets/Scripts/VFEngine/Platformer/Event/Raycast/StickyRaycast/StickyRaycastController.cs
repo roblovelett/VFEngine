@@ -16,7 +16,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         {
             if (!model) model = LoadData(ModelPath) as StickyRaycastModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
         }
 
         /* properties */

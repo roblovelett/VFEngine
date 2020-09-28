@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -22,7 +23,12 @@ namespace VFEngine.Platformer
         {
             if (!model) model = LoadData(ModelPath) as PlatformerModel;
             Debug.Assert(model != null, nameof(model) + " != null");
-            model.InitializeData();
+            model.Initialize();
+        }
+
+        private async void FixedUpdate()
+        {
+            await model.PlatformerAsync();
         }
 
         /* properties */
