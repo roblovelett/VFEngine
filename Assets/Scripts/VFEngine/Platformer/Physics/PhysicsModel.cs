@@ -146,6 +146,12 @@ namespace VFEngine.Platformer.Physics
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        private async UniTaskVoid CastHorizontalRayAsyncInternal(float rayDirection)
+        {
+            
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         /* properties */
         public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
 
@@ -357,6 +363,18 @@ namespace VFEngine.Platformer.Physics
             finally
             {
                 SetStoredMovementDirectionAsyncInternal().Forget();
+            }
+        }
+
+        public UniTask<UniTaskVoid> CastHorizontalRayAsync(float rayDirection)
+        {
+            try
+            {
+                return new UniTask<UniTaskVoid>(CastHorizontalRayAsyncInternal(rayDirection));
+            }
+            finally
+            {
+                CastHorizontalRayAsyncInternal(rayDirection).Forget();
             }
         }
     }

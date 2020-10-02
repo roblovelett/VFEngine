@@ -1,7 +1,6 @@
 ﻿using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
@@ -29,6 +28,8 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference fallSlowFactor;
         [SerializeField] private FloatReference movementDirectionThreshold;
         [SerializeField] private Vector2Reference externalForce;
+        [SerializeField] private FloatReference tolerance;
+        [SerializeField] private FloatReference movementDirection;
         private bool DisplayWarnings => settings.displayWarningsControl;
         private float MovementDirectionThreshold { get; } = 0.0001f;
 
@@ -70,7 +71,6 @@ namespace VFEngine.Platformer.Physics
         }
 
         /* properties */
-        public float Tolerance { get; } = 0;
         public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
         public bool StickToSlopesControl => stickToSlopesControl.Value;
         public float Gravity => settings.gravity;
@@ -87,10 +87,8 @@ namespace VFEngine.Platformer.Physics
         public bool SafeSetTransformControl => settings.safeSetTransformControl;
         public bool AutomaticGravityControl => settings.automaticGravityControl;
         public Vector2 WorldSpeed { get; set; }
-        public Vector2 ExternalForce { get; set; }
         public Vector2 ForcesApplied { get; set; }
         public float CurrentGravity { get; set; }
-        public float MovementDirection { get; set; }
         public float StoredMovementDirection { get; set; }
         public Vector2 NewPosition { get; set; }
 
@@ -105,6 +103,21 @@ namespace VFEngine.Platformer.Physics
             get => fallSlowFactor.Value;
             set => value = fallSlowFactor.Value;
         }
+        public Vector2 ExternalForce
+        {
+            get => externalForce.Value;
+            set => value = externalForce.Value;
+        }
+        public float Tolerance
+        {
+            get => tolerance.Value;
+            set => value = tolerance.Value;
+        }
+        public float MovementDirection
+        {
+            get => movementDirection.Value;
+            set => value = movementDirection.Value;
+        }
 
         public ModelState State { get; } = new ModelState();
 
@@ -116,7 +129,9 @@ namespace VFEngine.Platformer.Physics
             gravityActive.Value = State.GravityActive;
             FallSlowFactor = FallMultiplier;
             movementDirectionThreshold.Value = MovementDirectionThreshold;
-            externalForce.Value = ExternalForce;
+            ExternalForce = new Vector2();
+            Tolerance = 0;
+            MovementDirection = 0;
             GetWarningMessage();
         }
 

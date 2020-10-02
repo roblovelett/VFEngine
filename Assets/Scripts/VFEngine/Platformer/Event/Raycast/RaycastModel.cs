@@ -1,90 +1,54 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+﻿using UnityEngine;
 
 namespace VFEngine.Platformer.Event.Raycast
 {
-    using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
-        order = 0)]
-    public class RaycastModel : ScriptableObject, IModel
+    public class RaycastModel
     {
-        /* fields */
-        [LabelText("Raycast Data")] [SerializeField]
-        private RaycastData r;
+        public Vector2 Direction { get; set; }
+        public RaycastDirection RayDirection { get; set; }
 
-        private const string AssetPath = "Event/Raycast/DefaultRaycastModel.asset";
-
-        /* fields: methods */
-        private void InitializeData()
+        public enum RaycastDirection
         {
-            r.Initialize();
+            None,
+            Up,
+            Right,
+            Down,
+            Left
         }
 
-        private void InitializeModel()
+        public RaycastModel(RaycastDirection rayDirection)
         {
-            SetRaysParameters();
+            RayDirection = rayDirection;
+            Direction = SetDirection(rayDirection);
         }
 
-        private void SetRaysParameters()
+        private static Vector2 SetDirection(RaycastDirection rayDirection)
         {
-            var top = SetPositiveAxis(r.BoxColliderOffset.y, r.BoxColliderSize.y);
-            var right = SetPositiveAxis(r.BoxColliderOffset.x, r.BoxColliderSize.x);
-            var bottom = SetNegativeAxis(r.BoxColliderOffset.y, r.BoxColliderSize.y);
-            var left = SetNegativeAxis(r.BoxColliderOffset.x, r.BoxColliderSize.x);
-            r.BoundsTopLeftCorner = new Vector3 {x = left, y = top};
-            r.BoundsTopRightCorner = new Vector3 {x = right, y = top};
-            r.BoundsBottomLeftCorner = new Vector3 {x = left, y = bottom};
-            r.BoundsBottomRightCorner = new Vector3 {x = right, y = bottom};
-            r.BoundsTopLeftCorner = r.Transform.TransformPoint(r.BoundsTopLeftCorner);
-            r.BoundsTopRightCorner = r.Transform.TransformPoint(r.BoundsTopRightCorner);
-            r.BoundsBottomLeftCorner = r.Transform.TransformPoint(r.BoundsBottomLeftCorner);
-            r.BoundsBottomRightCorner = r.Transform.TransformPoint(r.BoundsBottomRightCorner);
-            r.BoundsCenter = r.BoxColliderBoundsCenter;
-            r.BoundsWidth = Vector2.Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
-            r.BoundsHeight = Vector2.Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
-        }
-
-        private static float SetPositiveAxis(float offset, float size)
-        {
-            return offset + size / 2f;
-        }
-
-        private static float SetNegativeAxis(float offset, float size)
-        {
-            return offset - size / 2f;
-        }
-
-        private async UniTaskVoid SetRaysParametersAsyncInternal()
-        {
-            SetRaysParameters();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        /* properties */
-        public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
-
-        /* properties: methods */
-        public void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
-        public UniTask<UniTaskVoid> SetRaysParametersAsync()
-        {
-            try
+            Vector2 d;
+            // ReSharper disable once ConvertSwitchStatementToSwitchExpression
+            switch (rayDirection)
             {
-                return new UniTask<UniTaskVoid>(SetRaysParametersAsyncInternal());
+                case RaycastDirection.None:
+                    d = new Vector2(0, 0);
+                    break;
+                case RaycastDirection.Up:
+                    d = new Vector2(0, 1);
+                    break;
+                case RaycastDirection.Right:
+                    d = new Vector2(1, 0);
+                    break;
+                case RaycastDirection.Down:
+                    d = new Vector2(0, -1);
+                    break;
+                case RaycastDirection.Left:
+                    d = new Vector2(-1, 0);
+                    break;
+                default:
+                    d = new Vector2();
+                    break;
             }
-            finally
-            {
-                SetRaysParametersAsyncInternal().Forget();
-            }
+
+            return d;
         }
     }
 }

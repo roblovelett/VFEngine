@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -11,7 +10,7 @@ namespace VFEngine.Platformer
     using static ScriptableObjectExtensions;
 
     [RequireComponent(typeof(LayerMaskController))]
-    [RequireComponent(typeof(RaycastController))]
+    [RequireComponent(typeof(RaycastsController))]
     [RequireComponent(typeof(PhysicsController))]
     public class PlatformerController : MonoBehaviour, IController
     {

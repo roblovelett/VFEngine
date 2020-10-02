@@ -4,6 +4,26 @@ namespace VFEngine.Tools
 {
     public static class DebugExtensions
     {
+        private const string Ze = "zero";
+        private const string SObj = "ScriptableObject";
+        private const string Fld = "field";
+        private const string OrEq = "or equal to";
+        private const string SetValLt = "cannot be set to value less than";
+        private static readonly string FldIn = $"{Fld} in";
+        private static readonly string FldNtSe = $"{Fld} not set to";
+
+        public static string LtEqZeroMessage(string field, string scriptableObject)
+        {
+            return $"{field} {FldIn} {scriptableObject} {SObj} {SetValLt} {OrEq} {Ze}.@";
+        }
+        public static string LtZeroMessage(string field, string scriptableObject)
+        {
+            return $"{field} {FldIn} {scriptableObject} {SObj} {SetValLt} {Ze}.@";
+        }
+        public static string FieldMessage(string field, string scriptableObject)
+        {
+            return $"{field} {FldNtSe} {scriptableObject} {SObj}.@";
+        }
         public static void DebugLogWarning(int warningMessageCount, string warningMessage)
         {
             if (warningMessageCount <= 0) return;

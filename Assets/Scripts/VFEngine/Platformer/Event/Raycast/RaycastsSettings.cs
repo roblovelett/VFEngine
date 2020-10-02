@@ -1,12 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
-
 namespace VFEngine.Platformer.Event.Raycast
 {
-    [CreateAssetMenu(fileName = "RaycastSettings", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Settings",
+    [CreateAssetMenu(fileName = "RaycastsSettings", menuName = "VFEngine/Platformer/Event/Raycast/Raycasts Settings",
         order = 0)]
     [InlineEditor]
-    public class RaycastSettings : ScriptableObject
+    public class RaycastsSettings : ScriptableObject
     {
         [SerializeField] public int numberOfHorizontalRays = 8;
         [SerializeField] public int numberOfVerticalRays = 8;

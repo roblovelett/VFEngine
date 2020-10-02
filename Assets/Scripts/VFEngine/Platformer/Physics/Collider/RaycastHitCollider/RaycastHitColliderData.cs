@@ -1,24 +1,33 @@
-﻿using System.Collections.Generic;
+﻿namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
+{
+    public class RaycastHitColliderData
+    {
+        
+    }
+}
+
+/*
+using System.Collections.Generic;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Tools;
 
-namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
+namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.Manager
 {
     using static DebugExtensions;
 
-    public class RaycastHitColliderData : MonoBehaviour
+    public class RaycastHitCollidersManagerData : MonoBehaviour
     {
         /* fields: dependencies */
-        [SerializeField] private RaycastHitColliderSettings settings;
+/*  
+[SerializeField] private RaycastHitCollidersManagerSettings settings;
         [SerializeField] private BoxCollider2D boxCollider;
         [SerializeField] private IntReference numberOfHorizontalRays;
         [SerializeField] private IntReference numberOfVerticalRays;
 
         /* fields */
-        [SerializeField] private Vector2Reference boxColliderOffset;
+  /*      [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector3Reference boxColliderBoundsCenter;
         [SerializeField] private FloatReference movingPlatformCurrentGravity;
@@ -28,7 +37,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private bool DisplayWarnings => settings.displayWarningsControl;
 
         /* fields: methods */
-        private void GetWarningMessage()
+    /*    private void GetWarningMessage()
         {
             if (!DisplayWarnings) return;
             var warningMessage = "";
@@ -55,12 +64,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         }
 
         /* properties: dependencies */
-        public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
+      /*  public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
         public int NumberOfVerticalRays => numberOfVerticalRays.Value;
         public BoxCollider2D BoxCollider => boxCollider;
 
         /* properties */
-        public const float Tolerance = 0;
+       /* public const float Tolerance = 0;
         public const float SmallValue = 0.0001f;
         public float movingPlatformGravity = -500;
         public const float ObstacleHeightTolerance = 0.05f;
@@ -99,7 +108,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = movingPlatformCurrentSpeed.Value;
         }
 
-        public RaycastHit2D[] SideHitsStorage { get; set; }
+        public RaycastHit2D[] RightHitsStorage { get; set; }
+        public RaycastHit2D[] LeftHitsStorage { get; set; }
         public RaycastHit2D[] BelowHitsStorage { get; set; }
         public RaycastHit2D[] AboveHitsStorage { get; set; }
         public RaycastHit2D RaycastHitAbove { get; set; }
@@ -159,7 +169,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         }
 
         /* properties: methods */
-        public void Initialize()
+       /* public void Initialize()
         {
             boxColliderOffset.Value = boxCollider.offset;
             boxColliderSize.Value = boxCollider.size;
@@ -271,7 +281,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             {
                 DistanceToRightRaycastHit = distanceToRightRaycastHit;
             }
-
+/*
             public void Reset()
             {
                 IsCollidingLeft = false;
@@ -285,4 +295,4 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             }
         }
     }
-}
+}*/

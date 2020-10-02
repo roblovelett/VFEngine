@@ -9,13 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9e586d18954431ca3dcac6ec04d7902, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ed7c2ad1c0c4d1e8d2102edd1048c4e, type: 3}
   m_Name: DefaultRaycastSettings
   m_EditorClassIdentifier: 
-  numberOfHorizontalRays: 8
-  numberOfVerticalRays: 8
-  distanceToGroundRayMaximumLength: 100
-  castRaysOnBothSides: 1
-  rayOffset: 0.05
-  drawRaycastGizmosControl: 1
-  displayWarningsControl: 1

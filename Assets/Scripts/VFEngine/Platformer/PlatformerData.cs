@@ -19,8 +19,8 @@ namespace VFEngine.Platformer
         [SerializeField] private PlatformerSettings settings;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private GravityController gravityController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        [SerializeField] private RaycastsController raycastsManager;
+        [SerializeField] private RaycastHitColliderController raycastHitCollidersManager;
         [SerializeField] private StickyRaycastController stickyRaycastController;
         [SerializeField] private SafetyBoxcastController safetyBoxcastController;
         [SerializeField] private LayerMaskController layerMaskController;
@@ -32,6 +32,9 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         [SerializeField] private FloatReference movementDirectionThreshold;
         [SerializeField] private Vector2Reference externalForce;
+        [SerializeField] private BoolReference castRaysOnBothSides;
+        [SerializeField] private FloatReference tolerance;
+        [SerializeField] private FloatReference movementDirection;
 
         /* fields */
         private bool DisplayWarnings => settings.displayWarningsControl;
@@ -40,6 +43,18 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference applyFallMultiplierToGravity;
         [SerializeField] private BoolReference applyGravityToSpeed;
         [SerializeField] private BoolReference applyFallSlowFactorToSpeed;
+        [SerializeField] private BoolReference castRaysRight;
+        [SerializeField] private BoolReference castRaysLeft;
+
+        private bool CastRaysRight
+        {
+            set => value = castRaysRight.Value;
+        }
+
+        private bool CastRaysLeft
+        {
+            set => value = castRaysLeft.Value;
+        }
 
         /* fields: methods */
         private void GetWarningMessage()
@@ -49,8 +64,8 @@ namespace VFEngine.Platformer
             var warningMessageCount = 0;
             if (!physicsController) warningMessage += ControllerMessage("Physics");
             if (!gravityController) warningMessage += ControllerMessage("Gravity");
-            if (!raycastController) warningMessage += ControllerMessage("Raycast");
-            if (!raycastHitColliderController) warningMessage += ControllerMessage("Raycast Hit Collider");
+            if (!raycastsManager) warningMessage += ControllerMessage("Raycast");
+            if (!raycastHitCollidersManager) warningMessage += ControllerMessage("Raycast Hit Collider");
             if (!stickyRaycastController) warningMessage += ControllerMessage("Sticky Raycast");
             if (!safetyBoxcastController) warningMessage += ControllerMessage("Safety Boxcast");
             if (!layerMaskController) warningMessage += ControllerMessage("Layer Mask");
@@ -67,8 +82,8 @@ namespace VFEngine.Platformer
         /* properties: dependencies */
         public PhysicsModel PhysicsModel { get; private set; }
         public GravityModel GravityModel { get; private set; }
-        public RaycastModel RaycastModel { get; private set; }
-        public RaycastHitColliderModel RaycastHitColliderModel { get; private set; }
+        public RaycastsModel RaycastsManagerModel { get; private set; }
+        public RaycastHitColliderModel RaycastHitCollidersManagerModel { get; private set; }
         public StickyRaycastModel StickyRaycastModel { get; private set; }
         public SafetyBoxcastModel SafetyBoxcastModel { get; private set; }
         public LayerMaskModel LayerMaskModel { get; private set; }
@@ -80,20 +95,49 @@ namespace VFEngine.Platformer
         public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
         public float MovementDirectionThreshold => movementDirectionThreshold.Value;
         public Vector2 ExternalForce => externalForce.Value;
+        public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
+        public float Tolerance => tolerance.Value;
+        public float MovementDirection => movementDirection.Value;
 
         /* properties */
+        public ModelState state = new ModelState();
 
         /* properties: methods */
         public void Initialize()
         {
             PhysicsModel = physicsController.Model as PhysicsModel;
             GravityModel = gravityController.Model as GravityModel;
-            RaycastModel = raycastController.Model as RaycastModel;
-            RaycastHitColliderModel = raycastHitColliderController.Model as RaycastHitColliderModel;
+            //RaycastsManagerModel = raycastsManager.Model as RaycastsManagerModel;
+            //RaycastHitCollidersManagerModel = raycastHitCollidersManager.Model as RaycastHitCollidersManagerModel;
             StickyRaycastModel = stickyRaycastController.Model as StickyRaycastModel;
             SafetyBoxcastModel = safetyBoxcastController.Model as SafetyBoxcastModel;
             LayerMaskModel = layerMaskController.Model as LayerMaskModel;
+            CastRaysRight = state.CastRaysRight;
+            CastRaysLeft = state.CastRaysLeft;
+            state.Reset();
             GetWarningMessage();
+        }
+
+        public class ModelState
+        {
+            public bool CastRaysRight { get; private set; }
+            public bool CastRaysLeft { get; private set; }
+
+            public void SetCastRaysRight(bool cast)
+            {
+                CastRaysRight = cast;
+            }
+
+            public void SetCastRaysLeft(bool cast)
+            {
+                CastRaysLeft = cast;
+            }
+
+            public void Reset()
+            {
+                CastRaysRight = false;
+                CastRaysLeft = false;
+            }
         }
     }
 }
