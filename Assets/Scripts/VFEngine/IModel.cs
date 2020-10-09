@@ -9,6 +9,5 @@
         /* properties */
         
         /* properties: methods */
-        void Initialize();
     }
 }

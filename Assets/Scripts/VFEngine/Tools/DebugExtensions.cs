@@ -9,8 +9,24 @@ namespace VFEngine.Tools
         private const string Fld = "field";
         private const string OrEq = "or equal to";
         private const string SetValLt = "cannot be set to value less than";
+        private const string NtSe = "not set to";
         private static readonly string FldIn = $"{Fld} in";
-        private static readonly string FldNtSe = $"{Fld} not set to";
+        private static readonly string FldNtSe = $"{Fld} {NtSe}";
+
+        public static string Message(string message)
+        {
+            return $"{message}@";
+        }
+        
+        public static string PropertyNtZeroParentMessage(string field, string property, string scriptableObject, string message)
+        {
+            return $"{field}'s {property} {NtSe} {Ze} in {scriptableObject} {SObj}. {message}.@";
+        }
+        
+        public static string PropertyNtZeroParentMessage(string field, string property, string scriptableObject)
+        {
+            return $"{field}'s {property} {NtSe} {Ze} in {scriptableObject} {SObj}.@";
+        }
 
         public static string LtEqZeroMessage(string field, string scriptableObject)
         {
@@ -20,9 +36,19 @@ namespace VFEngine.Tools
         {
             return $"{field} {FldIn} {scriptableObject} {SObj} {SetValLt} {Ze}.@";
         }
+
+        public static string FieldParentMessage(string field, string scriptableObject)
+        {
+            return $"{field} {FldNtSe} {field} of parent GameObject in {scriptableObject} {SObj}.@";
+        }
         public static string FieldMessage(string field, string scriptableObject)
         {
             return $"{field} {FldNtSe} {scriptableObject} {SObj}.@";
+        }
+
+        public static string IsOddMessage(string field, string scriptableObject)
+        {
+            return $"{field} {FldNtSe} even value divisible by 2 in {scriptableObject} {SObj}.@";
         }
         public static void DebugLogWarning(int warningMessageCount, string warningMessage)
         {

@@ -4,6 +4,10 @@ namespace VFEngine.Tools
 {
     public static class MathsExtensions
     {
+        public static bool IsEven(int number)
+        {
+            return number % 2 == 0;
+        }
         public static bool IsTime(float timeScale, float deltaTime)
         {
             return timeScale != 0 || deltaTime > 0;

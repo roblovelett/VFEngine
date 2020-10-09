@@ -4,6 +4,7 @@ namespace VFEngine.Platformer.Physics.PhysicsMaterial
 {
     public class PhysicsMaterialController : MonoBehaviour
     {
-        public float friction;
     }
 }
+
+//public float friction;

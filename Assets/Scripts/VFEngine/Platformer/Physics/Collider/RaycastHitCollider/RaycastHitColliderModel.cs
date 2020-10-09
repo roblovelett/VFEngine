@@ -1,338 +1,156 @@
-﻿namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
-{
-    public class RaycastHitColliderModel
-    {
-        
-    }
-}
-
-/*
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.Manager
+namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
+    using static Debug;
+    using static DebugExtensions;
+    using static ColliderDirection;
+
+    //using static RaycastData.RaycastDirection;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
-        menuName = "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Manager/Raycast Hit Colliders Manager Model", order = 0)]
-    public class RaycastHitCollidersManagerModel : ScriptableObject, IModel
+        menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
+    public class RaycastHitColliderModel : ScriptableObject, IModel
     {
-        /* fields */
-  /*      [LabelText("Raycast Hit Colliders Manager Data")] [SerializeField]
-        private RaycastHitCollidersManagerData rhcM;
+        /* fields: dependencies */
+        [LabelText("Raycast Hit Collider Data")] [SerializeField]
+        private RaycastHitColliderData r;
 
-        private const string AssetPath = "Physics/Collider/RaycastHitCollider/Manager/DefaultRaycastHitCollidersManagerModel.asset";
+        [SerializeField] private GameObject parentCharacterGameObject;
+
+        /* fields */
+        private bool hasData;
+        private const string Rh = "Raycast Hit Collider";
+        private readonly string data = $"{Rh} Data";
 
         /* fields: methods */
-/*      private void InitializeData()
-      {
-          rhcM.Initialize();
-      }
-      private void InitializeModel()
-      {
-          rhcM.OriginalColliderSize = rhcM.BoxColliderSize;
-          rhcM.OriginalColliderOffset = rhcM.BoxColliderOffset;
-          rhcM.RightHitsStorage = new RaycastHit2D[rhcM.NumberOfHorizontalRays];
-          rhcM.LeftHitsStorage = new RaycastHit2D[rhcM.NumberOfHorizontalRays];
-          rhcM.BelowHitsStorage = new RaycastHit2D[rhcM.NumberOfVerticalRays];
-          rhcM.AboveHitsStorage = new RaycastHit2D[rhcM.NumberOfVerticalRays];
-          rhcM.CurrentWallColliderGameObject = null;
-          rhcM.State.Reset();
-      }
-
-      private async UniTaskVoid ClearContactListAsyncInternal()
-      {
-          rhcM.ContactList.Clear();
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-      
-      private async UniTaskVoid SetWasGroundedLastFrameAsyncInternal()
-      {
-          rhcM.State.SetWasGroundedLastFrame(rhcM.State.IsCollidingBelow);
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-      
-      private async UniTaskVoid SetStandingOnLastFrameAsyncInternal()
-      {
-          rhcM.StandingOnLastFrame = rhcM.StandingOn;
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-      
-      private async UniTaskVoid SetWasTouchingCeilingLastFrameAsyncInternal()
-      {
-          rhcM.State.SetWasTouchingCeilingLastFrame(rhcM.State.IsCollidingAbove);
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-      
-      private async UniTaskVoid SetCurrentWallColliderAsyncInternal()
-      {
-          rhcM.CurrentWallColliderGameObject = null;
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-      
-      private async UniTaskVoid ResetStateAsyncInternal()
-      {
-          rhcM.State.Reset();
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-
-      private async UniTaskVoid SetMovingPlatformGravityAsyncInternal()
-      {
-          rhcM.MovingPlatformCurrentGravity = rhcM.movingPlatformGravity;
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-
-      /* properties */
-/*      public static string ModelPath => $"{DefaultPath}{PlatformerPath}{AssetPath}";
-
-      /* properties: methods */
-/*      public void Initialize()
-      {
-          InitializeData();
-          InitializeModel();
-      }
-      public UniTask<UniTaskVoid> ClearContactListAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(ClearContactListAsyncInternal());
-          }
-          finally
-          {
-              ClearContactListAsyncInternal().Forget();
-          }
-      }
-      public UniTask<UniTaskVoid> SetWasGroundedLastFrameAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(SetWasGroundedLastFrameAsyncInternal());
-          }
-          finally
-          {
-              SetWasGroundedLastFrameAsyncInternal().Forget();
-          }
-      }
-      public UniTask<UniTaskVoid> SetStandingOnLastFrameAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(SetStandingOnLastFrameAsyncInternal());
-          }
-          finally
-          {
-              SetStandingOnLastFrameAsyncInternal().Forget();
-          }
-      }
-      public UniTask<UniTaskVoid> SetWasTouchingCeilingLastFrameAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(SetWasTouchingCeilingLastFrameAsyncInternal());
-          }
-          finally
-          {
-              SetWasTouchingCeilingLastFrameAsyncInternal().Forget();
-          }
-      }
-      public UniTask<UniTaskVoid> SetCurrentWallColliderAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(SetCurrentWallColliderAsyncInternal());
-          }
-          finally
-          {
-              SetCurrentWallColliderAsyncInternal().Forget();
-          }
-      }
-      public UniTask<UniTaskVoid> ResetStateAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(ResetStateAsyncInternal());
-          }
-          finally
-          {
-              ResetStateAsyncInternal().Forget();
-          }
-      }
-
-      public UniTask<UniTaskVoid> SetMovingPlatformGravityAsync()
-      {
-          try
-          {
-              return new UniTask<UniTaskVoid>(SetMovingPlatformGravityAsyncInternal());
-          }
-          finally
-          {
-              SetMovingPlatformGravityAsyncInternal().Forget();
-          }
-      }
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-=======================================================================================================================
-
-
-
-
-
-
-
-
-
-
-
-/*private async UniTaskVoid OnPlatformerInitializeFrameAsyncInternal()
-      {
-          rhc.ContactList.Clear();
-          rhc.State.SetWasGroundedLastFrame(rhc.State.IsCollidingBelow);
-          rhc.StandingOnLastFrame = rhc.StandingOn;
-          rhc.State.SetWasTouchingCeilingLastFrame(rhc.State.IsCollidingAbove);
-          rhc.CurrentWallColliderGameObject = null;
-          rhc.State.Reset();
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }
-
-      private async UniTaskVoid OnPlatformerTestMovingPlatformAsyncInternal()
-      {
-          var test = MovingPlatformTest(rhc.State.IsCollidingWithMovingPlatform, TimeLteZero(),
-              AxisSpeedNan(rhc.MovingPlatformCurrentSpeed), rhc.State.WasTouchingCeilingLastFrame);
-          if (test)
-          {
-              rhc.State.SetOnMovingPlatform(true);
-              rhc.MovingPlatformCurrentGravity = MovingPlatformGravity;
-          }
-
-          await SetYieldOrSwitchToThreadPoolAsync();
-      }*/
-//private async UniTaskVoid OnInitializeModelAsyncInternal(int numberOfHorizontalRays, int numberOfVerticalRays)
-//{
-/* get data */
-/*
- 
- public UniTask<UniTaskVoid> OnPlatformerInitializeFrameAsync()
+        private async UniTaskVoid InitializeInternal(ColliderDirection direction)
         {
-            try
-            {
-                return new UniTask<UniTaskVoid>(OnPlatformerInitializeFrameAsyncInternal());
-            }
-            finally
-            {
-                OnPlatformerInitializeFrameAsyncInternal().Forget();
-            }
+            await Async(GetData());
+            var rTask1 = Async(InitializeData(direction));
+            var rTask2 = Async(GetWarningMessages());
+            var rTask3 = Async(InitializeModel());
+            var rTask = await (rTask1, rTask2, rTask3);
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public UniTask<UniTaskVoid> OnPlatformerTestMovingPlatformAsync()
+        private async UniTaskVoid GetData()
         {
-            try
+            if (!r)
             {
-                return new UniTask<UniTaskVoid>(OnPlatformerTestMovingPlatformAsyncInternal());
+                r = parentCharacterGameObject.AddComponent<RaycastHitColliderData>();
+                if (r.DisplayWarnings)
+                {
+                    DebugLogWarning(1,
+                        $"{data} field was not set to an instance of the {data} Component. " +
+                        $"An instance of the {data} Component was added to the GameObject referenced in the " +
+                        $"Parent Character GameObject field in the {data} script.@");
+                    Assert(r != null, nameof(r) + " != null");
+                }
             }
-            finally
-            {
-                OnPlatformerTestMovingPlatformAsyncInternal().Forget();
-            }
-        }
-data = new Data(1, 1);
-originalColliderOffset = boxCollider.offset;
-originalColliderSize = boxCollider.size;
-if (displayWarnings)
-*/
-/*{*/ /*
-                if (!boxCollider)
-                    Debug.LogWarning(
-                        $"{boxCollider} is not set to parent {character.name}'s object's box collider 2D.");
-                if (boxCollider.offset.x != 0)
-                    Debug.LogWarning(
-                        $"{character.name}'s collider x offset not set to zero. Direction change near walls will error.");
-            */ //}
-/*
-contactList = new List<RaycastHit2D>();
-sideHitsStorage = new RaycastHit2D[data.NumberOfHorizontalRays];
-belowHitsStorage = new RaycastHit2D[data.NumberOfVerticalRays];
-aboveHitsStorage = new RaycastHit2D[data.NumberOfVerticalRays];
-currentWallColliderGameObject = null;
-State = new ModelState();
-State.Reset();
-await Yield();
-*/
-//}
-/*
-private async UniTaskVoid OnFrameInitializeModelAsyncInternal()
-{
-    contactList.Clear();
-    State.WasGroundedLastFrame = State.IsCollidingBelow;
-    State.WasTouchingCeilingLastFrame = State.IsCollidingAbove;
-    standingOnLastFrame = standingOn;
-    if (currentWallColliderGameObject) currentWallColliderGameObject = null;
-    State.Reset();
-    await Yield();
-}
 
-private async UniTaskVoid OnMovingPlatformAsyncInternal()
-{
-    if (movingPlatform && IsTime(timeScale, deltaTime) && !State.WasTouchingCeilingLastFrame &&
-        !IsNan(movingPlatform.CurrentSpeed))
-    {
-        State.OnMovingPlatform = true;
-        movingPlatformCurrentGravity = movingPlatformGravity;
+            hasData = true;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeData(ColliderDirection direction)
+        {
+            var xRaysNumber = r.NumberOfHorizontalRays;
+            var yRaysNumber = r.NumberOfVerticalRays;
+            switch (direction)
+            {
+                case Up:
+                    r.UpHitStorage = new RaycastHit2D[SetHalf(yRaysNumber)];
+                    break;
+                case Right:
+                    r.RightHitStorage = r.CastRaysBothSides
+                        ? new RaycastHit2D[SetHalf(xRaysNumber)]
+                        : new RaycastHit2D[xRaysNumber];
+                    break;
+                case Down:
+                    r.DownHitStorage = new RaycastHit2D[SetHalf(yRaysNumber)];
+                    break;
+                case Left:
+                    r.LeftHitStorage = r.CastRaysBothSides
+                        ? new RaycastHit2D[SetHalf(xRaysNumber)]
+                        : new RaycastHit2D[xRaysNumber];
+                    break;
+                case None: break;
+                default:
+                    if (r.DisplayWarnings)
+                        DebugLogWarning(1,
+                            $"{Rh} initialized with incorrect value. Please use ColliderDirection of " +
+                            "value Up, Right, Down, Left, or None.");
+                    break;
+            }
+
+            r.BoxColliderSizeRef = r.OriginalColliderSize;
+            r.BoxColliderSizeRef = r.OriginalColliderOffset;
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private static int SetHalf(int number)
+        {
+            return number / 2;
+        }
+
+        private async UniTaskVoid GetWarningMessages()
+        {
+            if (r.DisplayWarnings)
+            {
+                const string bc = "Box Collider 2D";
+                const string colliderWarning = "This may cause issues upon direction change near walls";
+                var settings = $"{Rh} Settings";
+                var warningMessage = "";
+                var warningMessageCount = 0;
+                if (!hasData) warningMessage += FieldString($"{data}", $"{data}");
+                if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+                if (!r.HasBoxCollider) warningMessage += FieldParentString($"{bc}", $"{settings}");
+                if (r.OriginalColliderOffset.x != 0)
+                    warningMessage +=
+                        PropertyNtZeroParentMessage($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
+                DebugLogWarning(warningMessageCount, warningMessage);
+
+                string FieldString(string field, string scriptableObject)
+                {
+                    AddWarningMessageCount();
+                    return FieldMessage(field, scriptableObject);
+                }
+
+                string FieldParentString(string field, string scriptableObject)
+                {
+                    AddWarningMessageCount();
+                    return FieldParentMessage(field, scriptableObject);
+                }
+
+                void AddWarningMessageCount()
+                {
+                    warningMessageCount++;
+                }
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModel()
+        {
+            r.contactList.Clear();
+            r.state.SetCurrentWallCollider(null);
+            r.state.Reset();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        /* properties: dependencies */
+
+        /* properties: methods */
+        public UniTask<UniTaskVoid> Initialize(ColliderDirection direction)
+        {
+            return Async(InitializeInternal(direction));
+        }
     }
-
-    await Yield();
 }
-
-private async UniTaskVoid OnRaycastHorizontalAsyncInternal(IReadOnlyList<RaycastHit2D> sideHitsStorage,
-    int numberOfHorizontalRays, int movementDirection, float rayDirection, float maximumSlopeAngle,
-    Vector2 horizontalRayCastFromBottom, Vector2 horizontalRayCastToTop)
-{
-    for (var i = 0; i < numberOfHorizontalRays; i++)
-    {
-        if (!(sideHitsStorage[i].distance > 0) || sideHitsStorage[i].collider == ignoredCollider) continue;
-        var hitLateralSlopeAngle = Mathf.Abs(Vector2.Angle(sideHitsStorage[i].normal, transform.up));
-        if (Math.Abs(movementDirection - rayDirection) < Tolerance)
-            State.LateralSlopeAngle = hitLateralSlopeAngle;
-        if (!(hitLateralSlopeAngle > maximumSlopeAngle)) continue;
-        if (rayDirection < 0)
-        {
-            State.IsCollidingLeft = true;
-            State.DistanceToLeftRaycastHit = sideHitsStorage[i].distance;
-        }
-        else
-        {
-            State.IsCollidingRight = true;
-            State.DistanceToRightRaycastHit = sideHitsStorage[i].distance;
-        }
-
-        if (Math.Abs(movementDirection - rayDirection) < Tolerance)
-        {
-            currentWallColliderGameObject = sideHitsStorage[i].collider.gameObject;
-            State.SlopeAnglePassed = false;
-            distanceToWall = DistanceBetweenPointAndLine(sideHitsStorage[i].point, horizontalRayCastFromBottom,
-                horizontalRayCastToTop);
-            contactList.Add(sideHitsStorage[i]);
-        }
-
-        break;
-    }
-
-    await Yield();
-}
-*/

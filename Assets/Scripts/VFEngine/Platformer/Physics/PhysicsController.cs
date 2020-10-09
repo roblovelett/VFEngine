@@ -4,26 +4,27 @@ using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics
 {
-    using static PhysicsModel;
+    using static Debug;
+    using static PhysicsData;
     using static ScriptableObjectExtensions;
 
     [RequireComponent(typeof(GravityController))]
     public class PhysicsController : MonoBehaviour, IController
     {
-        /* fields */
+        /* fields: dependencies */
         [SerializeField] private PhysicsModel model;
 
         /* fields: methods */
         private void Awake()
         {
-            if (!model) model = LoadData(ModelPath) as PhysicsModel;
-            Debug.Assert(model != null, nameof(model) + " != null");
+            GetModel();
             model.Initialize();
         }
 
-        /* properties */
-        public ScriptableObject Model => model;
-        
-        /* properties: methods */
+        private void GetModel()
+        {
+            if (!model) model = LoadData(ModelPath) as PhysicsModel;
+            Assert(model != null, nameof(model) + " != null");
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
-namespace VFEngine.Platformer.Event.Raycast
+
+namespace VFEngine.Platformer.Event.Raycasts
 {
-    [CreateAssetMenu(fileName = "RaycastsSettings", menuName = "VFEngine/Platformer/Event/Raycast/Raycasts Settings",
+    [CreateAssetMenu(fileName = "RaycastsSettings", menuName = "VFEngine/Platformer/Event/Raycasts/Raycasts Settings",
         order = 0)]
     [InlineEditor]
     public class RaycastsSettings : ScriptableObject

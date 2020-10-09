@@ -7,7 +7,6 @@ namespace VFEngine
         /* fields */
         /* fields: methods */
         /* properties */
-        ScriptableObject Model { get; }
         /* properties: methods */
     }
 }

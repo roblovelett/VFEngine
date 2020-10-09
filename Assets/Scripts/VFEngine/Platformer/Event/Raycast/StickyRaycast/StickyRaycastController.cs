@@ -8,19 +8,24 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
     public class StickyRaycastController : MonoBehaviour, IController
     {
-        /* fields */
-        [SerializeField] private StickyRaycastModel model;
-
-        /* fields: methods */
-        private void Awake()
-        {
-            if (!model) model = LoadData(ModelPath) as StickyRaycastModel;
-            Debug.Assert(model != null, nameof(model) + " != null");
-            model.Initialize();
-        }
-
-        /* properties */
-        public ScriptableObject Model => model;
-        /* properties: methods */
+        
     }
 }
+
+/* fields */
+/*
+[SerializeField] private StickyRaycastModel model;
+
+/* fields: methods */
+/*
+private void Awake()
+{
+    if (!model) model = LoadData(ModelPath) as StickyRaycastModel;
+    Debug.Assert(model != null, nameof(model) + " != null");
+    model.Initialize();
+}
+
+/* properties */
+/*
+public ScriptableObject Model => model;
+/* properties: methods */

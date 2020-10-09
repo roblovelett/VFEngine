@@ -7,26 +7,32 @@ namespace VFEngine.Platformer.Physics.Gravity
 
     public class GravityController : MonoBehaviour, IController
     {
-        /* fields */
-        [SerializeField] private GravityModel model;
-
-        /* fields: methods */
-        private void Awake()
-        {
-            GetModel();
-
-            void GetModel()
-            {
-                if (!model)
-                    model = LoadData(
-                            "Assets/Scripts/VFEngine/Platformer/ScriptableObjects/Physics/Gravity/DefaultGravityModel.asset")
-                        as GravityModel;
-            }
-        }
-        
-        /* properties */
-        public ScriptableObject Model => model;
-        
-        /* properties: methods */
+       
     }
 }
+
+/*
+/* fields */
+/*
+[SerializeField] private GravityModel model;
+
+/* fields: methods */
+/*
+private void Awake()
+{
+GetModel();
+
+void GetModel()
+{
+    if (!model)
+        model = LoadData(
+                "Assets/Scripts/VFEngine/Platformer/ScriptableObjects/Physics/Gravity/DefaultGravityModel.asset")
+            as GravityModel;
+}
+}
+        
+/* properties */
+/*
+public ScriptableObject Model => model;
+        
+/* properties: methods */
