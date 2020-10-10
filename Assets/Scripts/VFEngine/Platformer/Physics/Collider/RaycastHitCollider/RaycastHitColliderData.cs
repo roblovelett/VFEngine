@@ -34,8 +34,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool CastRaysBothSides => castRaysBothSides.Value;
 
         /* properties */
-        public static readonly string DataPath = $"{DefaultPath}{PlatformerPath}{DataAssetPath}";
-        public static readonly string ModelPath = $"{DefaultPath}{PlatformerPath}{ModelAssetPath}";
+        public static readonly string DataPath = $"{PlatformerScriptsPath}{DataAssetPath}";
+        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public List<RaycastHit2D> contactList = new List<RaycastHit2D>();
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
 

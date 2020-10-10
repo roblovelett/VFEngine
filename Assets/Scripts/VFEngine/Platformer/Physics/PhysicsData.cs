@@ -7,9 +7,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
-    using static DebugExtensions;
-    using static PhysicsState;
-
+    
     public class PhysicsData : MonoBehaviour
     {
         /* fields: dependencies */
@@ -19,7 +17,9 @@ namespace VFEngine.Platformer.Physics
 
         /* fields */
         [SerializeField] private new TransformReference transform;
-        private const string AssetPath = "Physics/DefaultPhysicsModel.asset";
+        
+        private const string PhPath = "Physics/";
+        private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
         /* properties dependencies */
         public Transform Transform
@@ -40,7 +40,7 @@ namespace VFEngine.Platformer.Physics
         public bool HasTransform => characterTransform;
 
         /* properties */
-        public static readonly string ModelPath = $"{DefaultPath}{PlatformerPath}{AssetPath}";
+        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
     }
 }

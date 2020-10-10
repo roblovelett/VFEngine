@@ -7,11 +7,8 @@ using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static UniTaskExtensions;
-    using static Debug;
     using static DebugExtensions;
     using static ColliderDirection;
-
-    //using static RaycastData.RaycastDirection;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
         menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
@@ -21,40 +18,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [LabelText("Raycast Hit Collider Data")] [SerializeField]
         private RaycastHitColliderData r;
 
-        [SerializeField] private GameObject parentCharacterGameObject;
-
         /* fields */
-        private bool hasData;
         private const string Rh = "Raycast Hit Collider";
         private readonly string data = $"{Rh} Data";
 
         /* fields: methods */
         private async UniTaskVoid InitializeInternal(ColliderDirection direction)
         {
-            await Async(GetData());
             var rTask1 = Async(InitializeData(direction));
             var rTask2 = Async(GetWarningMessages());
             var rTask3 = Async(InitializeModel());
             var rTask = await (rTask1, rTask2, rTask3);
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid GetData()
-        {
-            if (!r)
-            {
-                r = parentCharacterGameObject.AddComponent<RaycastHitColliderData>();
-                if (r.DisplayWarnings)
-                {
-                    DebugLogWarning(1,
-                        $"{data} field was not set to an instance of the {data} Component. " +
-                        $"An instance of the {data} Component was added to the GameObject referenced in the " +
-                        $"Parent Character GameObject field in the {data} script.@");
-                    Assert(r != null, nameof(r) + " != null");
-                }
-            }
-
-            hasData = true;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -108,7 +82,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 var settings = $"{Rh} Settings";
                 var warningMessage = "";
                 var warningMessageCount = 0;
-                if (!hasData) warningMessage += FieldString($"{data}", $"{data}");
                 if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
                 if (!r.HasBoxCollider) warningMessage += FieldParentString($"{bc}", $"{settings}");
                 if (r.OriginalColliderOffset.x != 0)

@@ -17,14 +17,9 @@ namespace VFEngine.Platformer.Physics
         /* fields: methods */
         private void Awake()
         {
-            GetModel();
-            model.Initialize();
-        }
-
-        private void GetModel()
-        {
             if (!model) model = LoadData(ModelPath) as PhysicsModel;
             Assert(model != null, nameof(model) + " != null");
+            model.Initialize();
         }
     }
 }

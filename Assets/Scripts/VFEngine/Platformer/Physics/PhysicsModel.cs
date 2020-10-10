@@ -6,23 +6,18 @@ using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics
 {
-    using static PhysicsData;
-    using static Debug;
     using static DebugExtensions;
-    using static ScriptableObjectExtensions;
     using static Quaternion;
     using static UniTaskExtensions;
-    using static Time;
-    using static Mathf;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = "VFEngine/Platformer/Physics/Physics Model", order = 0)]
     public class PhysicsModel : ScriptableObject, IModel
     {
         /* fields: dependencies */
-        [LabelText("Physics Data")] [SerializeField] private PhysicsData p;
+        [LabelText("Physics Data")] [SerializeField]
+        private PhysicsData p;
 
         /* fields */
-        private bool HasData => p;
 
         /* fields: methods */
         private async UniTaskVoid InitializeInternal()
@@ -46,11 +41,9 @@ namespace VFEngine.Platformer.Physics
             if (DisplayWarnings)
             {
                 const string ph = "Physics";
-                var data = $"{ph} Data";
                 var settings = $"{ph} Settings";
                 var warningMessage = "";
                 var warningMessageCount = 0;
-                if (!HasData) warningMessage += FieldString($"{data}", $"{data}");
                 if (!p.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
                 if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
                 if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");

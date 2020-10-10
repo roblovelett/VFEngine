@@ -10,7 +10,10 @@ namespace VFEngine.Tools
             return AssetDatabase.LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
         }
 
-        public static string DefaultPath { get; } = "Assets/ScriptableObjects/";
-        public static string PlatformerPath { get; } = $"{DefaultPath}VFEngine/Platformer/";
+        private static string ScriptableObjectsPath { get; } = "Assets/ScriptableObjects/";
+        private static string ScriptsPath { get; } = "Assets/Scripts/";
+        private static string PlatformerPath { get; } = "VFEngine/Platformer/";
+        public static string PlatformerScriptsPath { get; } = $"{ScriptsPath}{PlatformerPath}";
+        public static string PlatformerScriptableObjectsPath { get; } = $"{ScriptableObjectsPath}{PlatformerPath}";
     }
 }
