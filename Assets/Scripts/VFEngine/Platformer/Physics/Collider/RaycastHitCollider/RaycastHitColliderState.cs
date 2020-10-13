@@ -23,6 +23,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public float DistanceToLeftRaycastHit { get; private set; }
         public float DistanceToRightRaycastHit { get; private set; }
         public GameObject CurrentWallCollider { get; private set; }
+        public GameObject StandingOn { get; private set; }
+        public GameObject StandingOnLastFrame { get; private set; }
         public bool IsGrounded => IsCollidingBelow;
         public bool HasCollisions => IsCollidingRight || IsCollidingLeft || IsCollidingAbove || IsCollidingBelow;
 
@@ -86,6 +88,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             ColliderResized = colliderResized;
         }
 
+        public void SetIsPassingSlopeAngle(bool passedSlopeAngle)
+        {
+            IsPassingSlopeAngle = passedSlopeAngle;
+        }
+
+        public void SetGroundedEvent(bool groundedEvent)
+        {
+            GroundedEvent = groundedEvent;
+        }
+
         public void SetLateralSlopeAngle(float lateralSlopeAngle)
         {
             LateralSlopeAngle = lateralSlopeAngle;
@@ -111,16 +123,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             CurrentWallCollider = currentWallCollider;
         }
 
+        public void SetStandingOnLastFrame(GameObject standingOnLastFrame)
+        {
+            StandingOnLastFrame = standingOnLastFrame;
+        }
+
+        public void SetStandingOn(GameObject standingOn)
+        {
+            StandingOn = standingOn;
+        }
+
         public void Reset()
         {
-            IsCollidingLeft = false;
-            IsCollidingRight = false;
-            IsCollidingAbove = false;
-            IsPassingSlopeAngle = false;
-            GroundedEvent = false;
-            DistanceToLeftRaycastHit = -1;
-            DistanceToRightRaycastHit = -1;
-            LateralSlopeAngle = 0;
+            SetIsCollidingLeft(false);
+            SetIsCollidingRight(false);
+            SetIsCollidingAbove(false);
+            SetIsPassingSlopeAngle(false);
+            SetGroundedEvent(false);
+            SetDistanceToLeftRaycastHit(-1);
+            SetDistanceToRightRaycastHit(-1);
+            SetLateralSlopeAngle(0);
         }
     }
 }

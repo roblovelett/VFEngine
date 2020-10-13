@@ -1,96 +1,151 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer
 {
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
+    using static DebugExtensions;
     using static PhysicsExtensions;
-    using static PlatformerExtensions;
     using static TimeExtensions;
     using static Mathf;
 
     [CreateAssetMenu(fileName = "PlatformerModel", menuName = "VFEngine/Platformer/Platformer Model", order = 0)]
     public class PlatformerModel : ScriptableObject, IModel
     {
-        
+        /* fields: dependencies */
+        [LabelText("Platformer Data")] [SerializeField]
+        private PlatformerData p;
+
+        /* fields: methods */
+        private async UniTaskVoid GetWarningMessages()
+        {
+            if (!p.DisplayWarnings) return;
+            const string rc = "Raycast";
+            const string ctr = "Controller";
+            const string ch = "Character";
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!p.Physics) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
+            if (!p.Raycast) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
+            if (!p.RaycastHitCollider)
+                warningMessage += FieldParentGameObjectString($"{rc} Hit Collider {ctr}", $"{ch}");
+            if (!p.LayerMask) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldParentGameObjectString(string field, string gameObject)
+            {
+                warningMessageCount++;
+                return FieldParentGameObjectMessage(field, gameObject);
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid RunPlatformer()
+        {
+            var pTask1 = Async(ApplyGravity());
+            var pTask2 = Async(InitializeFrame());
+            
+            var task1 = await (pTask1, pTask2);
+            
+            await Async(TestMovingPlatform());
+            await Async(SetMovementDirection());
+            // CastRaysAsync();
+            // OnHit Raycast
+            // MoveTransform
+            // Set Rays Params
+            // Set New Speed
+            // Set States
+            // Set Distance To Ground
+            // Reset External Force
+            // On FrameExit
+            // Update World Speed
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid ApplyGravity()
+        {
+            p.Physics.SetCurrentGravity();
+            if (p.Speed.y > 0) p.Physics.ApplyAscentMultiplierToCurrentGravity();
+            if (p.Speed.y < 0) p.Physics.ApplyFallMultiplierToCurrentGravity();
+            if (p.GravityActive) p.Physics.ApplyGravityToVerticalSpeed();
+            if (p.FallSlowFactor != 0) p.Physics.ApplyFallSlowFactorToVerticalSpeed();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeFrame()
+        {
+            var phTask1 = Async(p.Physics.SetNewPosition());
+            var phTask2 = Async(p.Physics.ResetState());
+            var rhcTask1 = Async(p.RaycastHitCollider.ClearContactList());
+            var rhcTask2 = Async(p.RaycastHitCollider.SetWasGroundedLastFrame());
+            var rhcTask3 = Async(p.RaycastHitCollider.SetStandingOnLastFrame());
+            var rhcTask4 = Async(p.RaycastHitCollider.SetWasTouchingCeilingLastFrame());
+            var rhcTask5 = Async(p.RaycastHitCollider.SetCurrentWallCollider());
+            var rhcTask6 = Async(p.RaycastHitCollider.ResetState());
+            var rTask1 = Async(p.Raycast.SetRaysParameters());
+            var pTask = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid TestMovingPlatform()
+        {
+            if (p.IsCollidingWithMovingPlatform)
+            {
+                if (!SpeedNan(p.MovingPlatformCurrentSpeed)) p.Physics.TranslatePlatformSpeedToTransform();
+                var platformTest = MovingPlatformTest(TimeLteZero(), AxisSpeedNan(p.MovingPlatformCurrentSpeed),
+                    p.WasTouchingCeilingLastFrame);
+                if (platformTest)
+                {
+                    var rchTask1 = Async(p.RaycastHitCollider.SetOnMovingPlatform());
+                    var rchTask2 = Async(p.RaycastHitCollider.SetMovingPlatformCurrentGravity());
+                    var phTask1 = Async(p.Physics.DisableGravity());
+                    var phTask2 = Async(p.Physics.ApplyMovingPlatformSpeedToNewPosition());
+                    var rTask1 = Async(p.Raycast.SetRaysParameters());
+                    var pTask = await (rchTask1, rchTask2, phTask1, phTask2, rTask1);
+                    p.Physics.StopHorizontalSpeed();
+                    p.Physics.SetForcesApplied();
+                }
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private static bool MovingPlatformTest(bool timeLteZero, bool axisSpeedNan, bool wasTouchingCeilingLastFrame)
+        {
+            return !timeLteZero && !axisSpeedNan && !wasTouchingCeilingLastFrame;
+        }
+
+        private async UniTaskVoid SetMovementDirection()
+        {
+            p.Physics.SetMovementDirectionToStored();
+            if (p.Speed.x < -p.MovementDirectionThreshold || p.ExternalForce.x < -p.MovementDirectionThreshold)
+                p.Physics.SetNegativeMovementDirection();
+            else if (p.Speed.x > p.MovementDirectionThreshold || p.ExternalForce.x > p.MovementDirectionThreshold)
+                p.Physics.SetPositiveMovementDirection();
+            if (p.IsCollidingWithMovingPlatform && Abs(p.MovingPlatformCurrentSpeed.x) > Abs(p.Speed.x))
+                p.Physics.ApplyPlatformSpeedToMovementDirection();
+            p.Physics.SetStoredMovementDirection();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        /* properties: methods */
+        public void OnInitialize()
+        {
+            Async(GetWarningMessages());
+        }
+
+        public void OnRunPlatformer()
+        {
+            Async(RunPlatformer());
+        }
     }
 }
 
 /* fields */
-/*
-[LabelText("Platformer Data")] [SerializeField]
-private PlatformerData p;
-private PhysicsModel physics;
-//private RaycastManagerModel raycast;
-//private RaycastHitColliderManagerModel raycastHitCollider;
-private const string AssetPath = "DefaultPlatformerModel.asset";
-
-/* fields: methods */
-/*
-private void InitializeData()
-{
-    p.Initialize();
-}
-
-private void InitializeModel()
-{
-    physics = p.PhysicsModel;
-    /*raycast = p.RaycastsManagerModel;
-    raycastHitCollider = p.RaycastHitColliderModel;*/
-//}
-/*
-private async UniTaskVoid PlatformerAsyncInternal()
-{
-    await ApplyGravityAsync();
-    await InitializeFrameAsync();
-    await TestMovingPlatformAsync();
-    await SetMovementDirectionAsync();
-    await CastRaysAsync();
-    // OnHit Raycast
-    // MoveTransform
-    // Set Rays Params
-    // Set New Speed
-    // Set States
-    // Set Distance To Ground
-    // Reset External Force
-    // On FrameExit
-    // Update World Speed
-    await SetYieldOrSwitchToThreadPoolAsync();
-}
-
-private async UniTaskVoid ApplyGravityAsyncInternal()
-{
-    await physics.SetGravityAsync();
-    if (p.Speed.y > 0) await physics.ApplyAscentMultiplierToGravityAsync();
-    if (p.Speed.y < 0) await physics.ApplyFallMultiplierToGravityAsync();
-    if (p.GravityActive) await physics.ApplyGravityToSpeedAsync();
-    if (p.FallSlowFactor != 0) await physics.ApplyFallSlowFactorToSpeedAsync();
-    await SetYieldOrSwitchToThreadPoolAsync();
-}
-
-private async UniTaskVoid InitializeFrameAsyncInternal()
-{
-    var pTask1 = physics.SetNewPositionAsync();
-    var pTask2 = physics.ResetStateAsync();
-    /*
-    var rTask1 = raycast.SetRaysParametersAsync();
-    var rchTask1 = raycastHitCollider.ClearContactListAsync();
-    var rchTask2 = raycastHitCollider.SetWasGroundedLastFrameAsync();
-    var rchTask3 = raycastHitCollider.SetStandingOnLastFrameAsync();
-    var rchTask4 = raycastHitCollider.SetWasTouchingCeilingLastFrameAsync();
-    var rchTask5 = raycastHitCollider.SetCurrentWallColliderAsync();
-    var rchTask6 = raycastHitCollider.ResetStateAsync();
-    var task1 = await (pTask1, rTask1, rchTask1, rchTask2, rchTask3, rchTask4, rchTask5);
-    var task2 = await (pTask2, rchTask6);
-    */
-//    await SetYieldOrSwitchToThreadPoolAsync();
-//}
-
 /*
 private async UniTaskVoid TestMovingPlatformAsyncInternal()
 {
@@ -196,7 +251,6 @@ private async UniTaskVoid CastRaysHorizontallyAsyncInternal(UniTask<UniTaskVoid>
         if (p.wasGroundedLastFrame && i == 0) await setSideHitsStorageElementToIgnoreOnewayPlatform;
         else await setSideHitsStorageElement;
     }*/
-
 /*    await SetYieldOrSwitchToThreadPoolAsync();
 }
 

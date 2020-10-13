@@ -16,9 +16,11 @@ namespace VFEngine.Tools
         private const string OrEq = "or equal to";
         private const string SetValLt = "cannot be set to value less than";
         private const string NtSe = "not set";
+        private const string OfPa = "of parent";
         private static readonly string NtSeTo = $"{NtSe} to";
         private static readonly string FldIn = $"{Fld} in";
-        private static readonly string FldNtSe = $"{Fld} {NtSeTo}";
+        private static readonly string FldNtSeTo = $"{Fld} {NtSeTo}";
+        private static readonly string OfPaGObj = $"{OfPa}{GObj}";
 
         public static string PropertyNtZeroParentMessage(string field, string property, string scriptableObject,
             string message)
@@ -43,22 +45,32 @@ namespace VFEngine.Tools
 
         public static string FieldParentMessage(string field, string scriptableObject)
         {
-            return $"{field} {FldNtSe} {field} of parent GameObject in {scriptableObject} {SObj}.@";
+            return $"{field} {FldNtSeTo} {field} {OfPaGObj} in {scriptableObject} {SObj}.@";
+        }
+
+        public static string FieldParentGameObjectMessage(string field, string gameObject)
+        {
+            return $"{field} {FldNtSeTo} {field} component {OfPa} {gameObject} {GObj}.@";
         }
 
         public static string FieldMessage(string field, string scriptableObject)
         {
-            return $"{field} {FldNtSe} {scriptableObject} {SObj}.@";
+            return $"{field} {FldNtSeTo} {scriptableObject} {SObj}.@";
+        }
+
+        public static string FieldPropertyMessage(string field, string property, string scriptableObject)
+        {
+            return $"{field} {FldNtSeTo} {property} of {scriptableObject} {SObj}.@";
         }
 
         public static string FieldGameObjectMessage(string field, string gameObject)
         {
-            return $"{field} {FldNtSe} {gameObject} {GObj}.@";
+            return $"{field} {FldNtSeTo} {gameObject} {GObj}.@";
         }
 
         public static string IsOddMessage(string field, string scriptableObject)
         {
-            return $"{field} {FldNtSe} even value divisible by 2 in {scriptableObject} {SObj}.@";
+            return $"{field} {FldNtSeTo} even value divisible by 2 in {scriptableObject} {SObj}.@";
         }
 
         public static void DebugLogWarning(int warningMessageCount, string warningMessage)

@@ -7,17 +7,21 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
-    
+
     public class PhysicsData : MonoBehaviour
     {
         /* fields: dependencies */
         [SerializeField] private PhysicsSettings settings;
         [SerializeField] private Transform characterTransform;
         [SerializeField] private GravityController gravityController;
+        [SerializeField] private FloatReference movingPlatformCurrentGravity;
+        [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
 
         /* fields */
         [SerializeField] private new TransformReference transform;
-        
+        [SerializeField] private Vector2Reference speed;
+        [SerializeField] private BoolReference gravityActive;
+        [SerializeField] private FloatReference fallSlowFactor;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -38,10 +42,56 @@ namespace VFEngine.Platformer.Physics
         public bool AutomaticGravityControl => settings.automaticGravityControl;
         public bool HasGravityController => gravityController;
         public bool HasTransform => characterTransform;
+        public float Gravity => settings.gravity;
+        public float AscentMultiplier => settings.ascentMultiplier;
+        public float FallMultiplier => settings.fallMultiplier;
+        public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
+        public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
+        public float CurrentGravity { get; set; }
+        public Vector2 Speed { get; set; } = new Vector2(0, 0);
+        public Vector2 ForcesApplied { get; set; }
+        public float MovementDirection { get; set; }
+        public float StoredMovementDirection { get; set; }
+        public float SpeedX
+        {
+            get => Speed.x;
+            set => value = Speed.x;
+        }
+
+        public float SpeedY
+        {
+            get => Speed.y;
+            set => value = Speed.y;
+        }
+
+        public Vector2 SpeedRef
+        {
+            set => value = speed.Value;
+        }
+
+        public bool GravityActiveRef
+        {
+            set => value = gravityActive.Value;
+        }
+        
+        public float FallSlowFactor { get; set; }
+
+        public float FallSlowFactorRef
+        {
+            set => value = fallSlowFactor.Value;
+        }
+        
+        public Vector2 NewPosition { get; set; }
+
+        public float NewPositionY
+        {
+            get => NewPosition.y;
+            set => value = NewPosition.y;
+        }
     }
 }
 /*

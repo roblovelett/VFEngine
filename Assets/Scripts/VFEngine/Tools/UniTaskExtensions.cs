@@ -6,7 +6,6 @@ namespace VFEngine.Tools
 
     public static class UniTaskExtensions
     {
-      
         public static UniTask<UniTaskVoid> Async(UniTaskVoid method)
         {
             try

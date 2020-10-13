@@ -19,8 +19,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         /* fields */
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
+        [SerializeField] private Vector2Reference boxColliderBoundsCenter;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
-        private static readonly string DataAssetPath = $"{RhcPath}RaycastHitColliderData.cs";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
 
         /* properties: dependencies */
@@ -29,15 +29,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool HasBoxCollider => boxCollider;
         public Vector2 OriginalColliderSize => boxCollider.size;
         public Vector2 OriginalColliderOffset => boxCollider.offset;
+        public Vector2 OriginalColliderBoundsCenter => boxCollider.bounds.center;
         public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
         public int NumberOfVerticalRays => numberOfVerticalRays.Value;
         public bool CastRaysBothSides => castRaysBothSides.Value;
 
         /* properties */
-        public static readonly string DataPath = $"{PlatformerScriptsPath}{DataAssetPath}";
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public List<RaycastHit2D> contactList = new List<RaycastHit2D>();
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
+        public float MovingPlatformCurrentGravity { get; set; }
+        public float MovingPlatformGravity { get; } = -500f;
 
         public Vector2 BoxColliderSizeRef
         {
@@ -47,6 +49,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public Vector2 BoxColliderOffsetRef
         {
             set => value = boxColliderOffset.Value;
+        }
+
+        public Vector2 BoxColliderBoundsCenterRef
+        {
+            set => value = boxColliderBoundsCenter.Value;
         }
 
         public RaycastHit2D[] UpHitStorage { get; set; } = new RaycastHit2D[0];

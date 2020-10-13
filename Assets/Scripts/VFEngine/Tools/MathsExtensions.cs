@@ -4,6 +4,10 @@ namespace VFEngine.Tools
 {
     public static class MathsExtensions
     {
+        public static float Half(float number)
+        {
+            return number / 2f;
+        }
         public static bool IsEven(int number)
         {
             return number % 2 == 0;
@@ -21,7 +25,8 @@ namespace VFEngine.Tools
         {
             return Vector3.Magnitude(ProjectPointOnLine(point, lineStart, lineEnd) - point);
         }
-        public static Vector3 ProjectPointOnLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+
+        private static Vector3 ProjectPointOnLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
         {
             var rhs = point - lineStart;
             var vector2 = lineEnd - lineStart;
