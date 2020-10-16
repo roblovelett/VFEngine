@@ -40,6 +40,10 @@ namespace VFEngine.Platformer.Event.Raycast
             r.NumberOfHorizontalRaysRef = r.NumberOfHorizontalRays;
             r.NumberOfVerticalRaysRef = r.NumberOfVerticalRays;
             r.CastRaysOnBothSidesRef = r.CastRaysOnBothSides;
+            r.RaycastFromBottomRef = r.RaycastFromBottom;
+            r.RaycastToTopRef = r.RaycastToTop;
+            r.HorizontalRayLengthRef = r.HorizontalRayLength;
+            r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
             switch (rayDirection)
             {
                 case None:

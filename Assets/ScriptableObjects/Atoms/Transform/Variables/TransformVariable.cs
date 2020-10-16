@@ -13,8 +13,8 @@ namespace ScriptableObjects.Atoms.Transform.Variables
     /// </summary>
     [EditorIcon("atom-icon-lush")]
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/Transform", fileName = "TransformVariable")]
-    public sealed class TransformVariable : AtomVariable<UnityEngine.Transform, TransformPair, TransformEvent, TransformPairEvent,
-        TransformTransformFunction>
+    public sealed class TransformVariable : AtomVariable<UnityEngine.Transform, TransformPair, TransformEvent,
+        TransformPairEvent, TransformTransformFunction>
     {
         protected override bool ValueEquals(UnityEngine.Transform other)
         {

@@ -1,5 +1,6 @@
 ﻿using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -26,8 +27,20 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         [SerializeField] private FloatReference movementDirectionThreshold;
         [SerializeField] private Vector2Reference externalForce;
+        [SerializeField] private BoolReference castRaysOnBothSides;
+        [SerializeField] private IntReference horizontalMovementDirection;
+        [SerializeField] private Vector2Reference raycastFromBottom;
+        [SerializeField] private Vector2Reference raycastToTop;
+        [SerializeField] private IntReference numberOfHorizontalRays;
+        [SerializeField] private IntReference horizontalHitsStorageIndexesAmount;
+        [SerializeField] private BoolReference wasGroundedLastFrame;
 
         /* fields */
+        [SerializeField] private Vector2Reference rightRaycastOriginPoint;
+        [SerializeField] private Vector2Reference leftRaycastOriginPoint;
+        [SerializeField] private IntReference rightHitsStorageIndex;
+        [SerializeField] private IntReference leftHitsStorageIndex;
+        [SerializeField] private FloatReference raycastHitAngle;
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
         /* properties: dependencies */
@@ -44,9 +57,49 @@ namespace VFEngine.Platformer
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
         public float MovementDirectionThreshold => movementDirectionThreshold.Value;
-
+        public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
         public Vector2 ExternalForce => externalForce.Value;
+        public int HorizontalMovementDirection => horizontalMovementDirection.Value;
+        public Vector2 RaycastFromBottom => raycastFromBottom.Value;
+        public Vector2 RaycastToTop => raycastToTop.Value;
+        public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
+        public int HorizontalHitsStorageIndexesAmount => horizontalHitsStorageIndexesAmount.Value;
+        public bool WasGroundedLastFrame => wasGroundedLastFrame.Value;
+
         /* properties */
+        public float RaycastHitAngleRef
+        {
+            set => value = raycastHitAngle.Value;
+        }
+
+        public float RaycastHitAngle { get; set; }
+
+        public Vector2 RightRaycastOriginPointRef
+        {
+            set => value = rightRaycastOriginPoint.Value;
+        }
+
+        public Vector2 RightRaycastOriginPoint { get; set; }
+
+        public Vector2 LeftRaycastOriginPointRef
+        {
+            set => value = leftRaycastOriginPoint.Value;
+        }
+
+        public Vector2 LeftRaycastOriginPoint { get; set; }
+
+        public int RightHitsStorageIndexRef
+        {
+            set => value = rightHitsStorageIndex.Value;
+        }
+
+        public int LeftHitsStorageIndexRef
+        {
+            set => value = leftHitsStorageIndex.Value;
+        }
+        
+        public int RightHitsStorageIndex { get; set; }
+        public int LeftHitsStorageIndex { get; set; }
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }
 }

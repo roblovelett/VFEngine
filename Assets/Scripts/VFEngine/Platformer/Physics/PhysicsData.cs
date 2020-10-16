@@ -22,6 +22,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
+        [SerializeField] private IntReference horizontalMovementDirection;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -54,8 +55,13 @@ namespace VFEngine.Platformer.Physics
         public float CurrentGravity { get; set; }
         public Vector2 Speed { get; set; } = new Vector2(0, 0);
         public Vector2 ForcesApplied { get; set; }
-        public float MovementDirection { get; set; }
-        public float StoredMovementDirection { get; set; }
+        public int HorizontalMovementDirection { get; set; }
+
+        public int HorizontalMovementDirectionRef
+        {
+            set => value = horizontalMovementDirection.Value;
+        }
+        public int StoredHorizontalMovementDirection { get; set; }
         public float SpeedX
         {
             get => Speed.x;
@@ -162,7 +168,7 @@ public bool AutomaticGravityControl => settings.automaticGravityControl;
 public Vector2 WorldSpeed { get; set; }
 public Vector2 ForcesApplied { get; set; }
 public float CurrentGravity { get; set; }
-public float StoredMovementDirection { get; set; }
+public float StoredHorizontalMovementDirection { get; set; }
 public Vector2 NewPosition { get; set; }
 
 public Vector2 Speed

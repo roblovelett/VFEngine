@@ -89,28 +89,28 @@ namespace VFEngine.Platformer.Physics
             model.OnSetForcesApplied();
         }
 
-        public void SetMovementDirectionToStored()
+        public void SetHorizontalMovementDirectionToStored()
         {
-            model.OnSetMovementDirectionToStored();
+            model.OnSetHorizontalMovementDirectionToStored();
         }
-        public void SetNegativeMovementDirection()
+        public void SetNegativeHorizontalMovementDirection()
         {
-            model.OnSetNegativeMovementDirection();
-        }
-
-        public void SetPositiveMovementDirection()
-        {
-            model.OnSetPositiveMovementDirection();
+            model.OnSetNegativeHorizontalMovementDirection();
         }
 
-        public void ApplyPlatformSpeedToMovementDirection()
+        public void SetPositiveHorizontalMovementDirection()
         {
-            model.OnApplyPlatformSpeedToMovementDirection();
+            model.OnSetPositiveHorizontalMovementDirection();
         }
 
-        public void SetStoredMovementDirection()
+        public void ApplyPlatformSpeedToHorizontalMovementDirection()
         {
-            model.OnSetStoredMovementDirection();
+            model.OnApplyPlatformSpeedToHorizontalMovementDirection();
+        }
+
+        public void SetStoredHorizontalMovementDirection()
+        {
+            model.OnSetStoredHorizontalMovementDirection();
         }
     }
 }

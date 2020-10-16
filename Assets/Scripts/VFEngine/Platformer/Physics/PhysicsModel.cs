@@ -36,6 +36,7 @@ namespace VFEngine.Platformer.Physics
             p.SpeedRef = p.Speed;
             p.GravityActiveRef = p.state.GravityActive;
             p.FallSlowFactorRef = p.FallSlowFactor;
+            p.HorizontalMovementDirectionRef = p.HorizontalMovementDirection;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -137,29 +138,29 @@ namespace VFEngine.Platformer.Physics
             p.ForcesApplied = p.Speed;
         }
 
-        private void SetMovementDirectionToStored()
+        private void SetHorizontalMovementDirectionToStored()
         {
-            p.MovementDirection = p.StoredMovementDirection;
+            p.HorizontalMovementDirection = p.StoredHorizontalMovementDirection;
         }
         
-        private void SetNegativeMovementDirection()
+        private void SetNegativeHorizontalMovementDirection()
         {
-            p.MovementDirection = -1;
+            p.HorizontalMovementDirection = -1;
         }
 
-        private void SetPositiveMovementDirection()
+        private void SetPositiveHorizontalMovementDirection()
         {
-            p.MovementDirection = 1;
+            p.HorizontalMovementDirection = 1;
         }
 
-        private void ApplyPlatformSpeedToMovementDirection()
+        private void ApplyPlatformSpeedToHorizontalMovementDirection()
         {
-            p.MovementDirection = Sign(p.MovingPlatformCurrentSpeed.x);
+            p.HorizontalMovementDirection = (int) Sign(p.MovingPlatformCurrentSpeed.x);
         }
 
-        private void SetStoredMovementDirection()
+        private void SetStoredHorizontalMovementDirection()
         {
-            p.StoredMovementDirection = p.MovementDirection;
+            p.StoredHorizontalMovementDirection = p.HorizontalMovementDirection;
         }
         
         /* properties: dependencies */
@@ -231,28 +232,28 @@ namespace VFEngine.Platformer.Physics
             SetForcesApplied();
         }
 
-        public void OnSetMovementDirectionToStored()
+        public void OnSetHorizontalMovementDirectionToStored()
         {
-            SetMovementDirectionToStored();
+            SetHorizontalMovementDirectionToStored();
         }
-        public void OnSetNegativeMovementDirection()
+        public void OnSetNegativeHorizontalMovementDirection()
         {
-            SetNegativeMovementDirection();
-        }
-
-        public void OnSetPositiveMovementDirection()
-        {
-            SetPositiveMovementDirection();
+            SetNegativeHorizontalMovementDirection();
         }
 
-        public void OnApplyPlatformSpeedToMovementDirection()
+        public void OnSetPositiveHorizontalMovementDirection()
         {
-            ApplyPlatformSpeedToMovementDirection();
+            SetPositiveHorizontalMovementDirection();
         }
 
-        public void OnSetStoredMovementDirection()
+        public void OnApplyPlatformSpeedToHorizontalMovementDirection()
         {
-            SetStoredMovementDirection();
+            ApplyPlatformSpeedToHorizontalMovementDirection();
+        }
+
+        public void OnSetStoredHorizontalMovementDirection()
+        {
+            SetStoredHorizontalMovementDirection();
         }
     }
 }

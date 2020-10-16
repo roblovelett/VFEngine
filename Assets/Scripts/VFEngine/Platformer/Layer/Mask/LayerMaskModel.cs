@@ -24,18 +24,20 @@ namespace VFEngine.Platformer.Layer.Mask
         /* fields: methods */
         private async UniTaskVoid InitializeInternal()
         {
-            //var lTask1 = Async(InitializeData());
+            var lTask1 = Async(InitializeData());
             var lTask2 = Async(GetWarningMessages());
             var lTask3 = Async(InitializeModel());
-            var lTask = await ( /*lTask1,*/ lTask2, lTask3);
+            var lTask = await ( lTask1, lTask2, lTask3);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        /*private async UniTaskVoid InitializeData()
+        private async UniTaskVoid InitializeData()
         {
-            // foo
+            lm.PlatformMaskRef = lm.PlatformMask;
+            lm.OneWayPlatformMaskRef = lm.OneWayPlatformMask;
+            lm.MovingOneWayPlatformMaskRef = lm.MovingOneWayPlatformMask;
             await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
+        }
 
         private async UniTaskVoid GetWarningMessages()
         {

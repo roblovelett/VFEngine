@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static DebugExtensions;
     using static ColliderDirection;
     using static MathsExtensions;
+    using static Color;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
         menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
@@ -42,18 +43,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             switch (direction)
             {
                 case Up:
-                    rhc.UpHitStorage = new RaycastHit2D[yRaysNumberHalved];
+                    rhc.UpHitsStorage = new RaycastHit2D[yRaysNumberHalved];
                     break;
                 case Right:
-                    rhc.RightHitStorage = rhc.CastRaysBothSides
+                    rhc.RightHitsStorage = rhc.CastRaysBothSides
                         ? new RaycastHit2D[xRaysNumberHalved]
                         : new RaycastHit2D[xRaysNumber];
                     break;
                 case Down:
-                    rhc.DownHitStorage = new RaycastHit2D[yRaysNumberHalved];
+                    rhc.DownHitsStorage = new RaycastHit2D[yRaysNumberHalved];
                     break;
                 case Left:
-                    rhc.LeftHitStorage = rhc.CastRaysBothSides
+                    rhc.LeftHitsStorage = rhc.CastRaysBothSides
                         ? new RaycastHit2D[xRaysNumberHalved]
                         : new RaycastHit2D[xRaysNumber];
                     break;
@@ -69,6 +70,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
             rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
             rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
+            rhc.HorizontalHitsStorageIndexesAmountRef = rhc.CastRaysBothSides ? xRaysNumberHalved : xRaysNumber;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -157,6 +159,52 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.MovingPlatformCurrentGravity = rhc.MovingPlatformGravity;
         }
 
+        private void InitializeRightHitsStorage()
+        {
+            rhc.RightHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRays];
+        }
+
+        private void InitializeRightHitsStorageHalf()
+        {
+            rhc.RightHitsStorage = new RaycastHit2D[(int) Half(rhc.NumberOfHorizontalRays)];
+        }
+
+        private void InitializeLeftHitsStorage()
+        {
+            rhc.LeftHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRays];
+        }
+
+        private void InitializeLeftHitsStorageHalf()
+        {
+            rhc.LeftHitsStorage = new RaycastHit2D[(int) Half(rhc.NumberOfHorizontalRays)];
+        }
+
+        private void SetRightHitsStorageToIgnoreOneWayPlatform()
+        {
+            rhc.RightHitsStorage[0] = Raycast(rhc.RightRaycastOriginPoint, rhc.Transform.right, rhc.HorizontalRayLength,
+                rhc.PlatformMask, red, rhc.DrawRaycastGizmos);
+        }
+
+        private void SetLeftHitsStorageToIgnoreOneWayPlatform()
+        {
+            rhc.LeftHitsStorage[0] = Raycast(rhc.LeftRaycastOriginPoint, -rhc.Transform.right, rhc.HorizontalRayLength,
+                rhc.PlatformMask, red, rhc.DrawRaycastGizmos);
+        }
+
+        private void SetRightHitsStorage()
+        {
+            rhc.RightHitsStorage[rhc.RightHitsStorageIndex] = Raycast(rhc.RightRaycastOriginPoint, rhc.Transform.right,
+                rhc.HorizontalRayLength, rhc.PlatformMask & ~rhc.OneWayPlatformMask & ~rhc.MovingOneWayPlatformMask,
+                red, rhc.DrawRaycastGizmos);
+        }
+
+        private void SetLeftHitsStorage()
+        {
+            rhc.LeftHitsStorage[rhc.LeftHitsStorageIndex] = Raycast(rhc.LeftRaycastOriginPoint, -rhc.Transform.right,
+                rhc.HorizontalRayLength, rhc.PlatformMask & ~rhc.OneWayPlatformMask & ~rhc.MovingOneWayPlatformMask,
+                red, rhc.DrawRaycastGizmos);
+        }
+
         /* properties: dependencies */
 
         /* properties: methods */
@@ -212,6 +260,46 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             SetMovingPlatformCurrentGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void OnInitializeRightHitsStorage()
+        {
+            InitializeRightHitsStorage();
+        }
+
+        public void OnInitializeRightHitsStorageHalf()
+        {
+            InitializeRightHitsStorageHalf();
+        }
+
+        public void OnInitializeLeftHitsStorage()
+        {
+            InitializeLeftHitsStorage();
+        }
+
+        public void OnInitializeLeftHitsStorageHalf()
+        {
+            InitializeLeftHitsStorageHalf();
+        }
+
+        public void OnSetRightHitsStorageToIgnoreOneWayPlatform()
+        {
+            SetRightHitsStorageToIgnoreOneWayPlatform();
+        }
+
+        public void OnSetLeftHitsStorageToIgnoreOneWayPlatform()
+        {
+            SetLeftHitsStorageToIgnoreOneWayPlatform();
+        }
+
+        public void OnSetRightHitsStorage()
+        {
+            SetRightHitsStorage();
+        }
+
+        public void OnSetLeftHitsStorage()
+        {
+            SetLeftHitsStorage();
         }
     }
 }

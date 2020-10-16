@@ -140,5 +140,45 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             var rhcTask = await (rchTask1, rchTask2, rchTask3, rchTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void InitializeRightHitsStorage()
+        {
+            rightColliderModel.OnInitializeRightHitsStorage();
+        }
+
+        public void InitializeRightHitsStorageHalf()
+        {
+            rightColliderModel.OnInitializeRightHitsStorageHalf();
+        }
+
+        public void InitializeLeftHitsStorage()
+        {
+            leftColliderModel.OnInitializeLeftHitsStorage();
+        }
+
+        public void InitializeLeftHitsStorageHalf()
+        {
+            leftColliderModel.OnInitializeLeftHitsStorageHalf();
+        }
+
+        public void SetRightHitsStorageToIgnoreOneWayPlatform()
+        {
+            rightColliderModel.OnSetRightHitsStorageToIgnoreOneWayPlatform();
+        }
+
+        public void SetLeftHitsStorageToIgnoreOneWayPlatform()
+        {
+            leftColliderModel.OnSetLeftHitsStorageToIgnoreOneWayPlatform();
+        }
+
+        public void SetRightHitsStorage()
+        {
+            rightColliderModel.OnSetRightHitsStorage();
+        }
+
+        public void SetLeftHitsStorage()
+        {
+            leftColliderModel.OnSetLeftHitsStorage();
+        }
     }
 }
