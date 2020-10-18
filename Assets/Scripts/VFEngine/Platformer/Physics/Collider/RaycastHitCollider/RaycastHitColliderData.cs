@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
 using ScriptableObjects.Atoms.LayerMask.References;
+using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
+    using static Mathf;
+    using static Vector2;
 
     public class RaycastHitColliderData : MonoBehaviour
     {
@@ -25,17 +29,57 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
         [SerializeField] private BoolReference drawRaycastGizmos;
-        [SerializeField] private IntReference rightHitsStorageIndex;
-        [SerializeField] private IntReference leftHitsStorageIndex;
-
+        [SerializeField] private RaycastHit2DReference currentRightRaycast;
+        [SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        private Transform Transform => transform.Value;
+        
         /* fields */
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderBoundsCenter;
-        [SerializeField] private IntReference horizontalHitsStorageIndexesAmount;
+        [SerializeField] private IntReference horizontalHitsStorageLength;
+        [SerializeField] private IntReference currentRightHitsStorageIndex;
+        [SerializeField] private IntReference currentLeftHitsStorageIndex;
+        [SerializeField] private FloatReference currentRightHitDistance;
+        [SerializeField] private FloatReference currentLeftHitDistance;
+        [SerializeField] private Collider2DReference currentRightHitCollider;
+        [SerializeField] private Collider2DReference currentLeftHitCollider;
+        [SerializeField] private Collider2DReference ignoredCollider;
+        [SerializeField] private FloatReference currentRightHitAngle;
+        [SerializeField] private FloatReference currentLeftHitAngle;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
 
+        /* fields: methods */
+        private float SetCurrentRightHitDistance()
+        {
+            return RightHitsStorage[CurrentRightHitsStorageIndex].distance;
+        }
+
+        private float SetCurrentLeftHitDistance()
+        {
+            return LeftHitsStorage[CurrentLeftHitsStorageIndex].distance;
+        }
+
+        private Collider2D SetCurrentRightHitCollider()
+        {
+            return RightHitsStorage[CurrentRightHitsStorageIndex].collider;
+        }
+        
+        private Collider2D SetCurrentLeftHitCollider()
+        {
+            return LeftHitsStorage[CurrentLeftHitsStorageIndex].collider;
+        }
+
+        private float SetCurrentRightHitAngle()
+        {
+            return Abs(Angle(RightHitsStorage[CurrentRightHitsStorageIndex].normal, Transform.up));
+        }
+        private float SetCurrentLeftHitAngle()
+        {
+            return Abs(Angle(LeftHitsStorage[CurrentLeftHitsStorageIndex].normal, Transform.up));
+        }
+        
         /* properties: dependencies */
         public bool HasSettings => settings;
         public bool DisplayWarnings => settings.displayWarningsControl;
@@ -46,16 +90,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
         public int NumberOfVerticalRays => numberOfVerticalRays.Value;
         public bool CastRaysBothSides => castRaysBothSides.Value;
-        public Vector2 RightRaycastOriginPoint => rightRaycastOriginPoint.Value;
-        public Vector2 LeftRaycastOriginPoint => leftRaycastOriginPoint.Value;
-        public Transform Transform => transform.Value;
-        public float HorizontalRayLength => horizontalRayLength.Value;
-        public LayerMask PlatformMask => platformMask.Value;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
-        public bool DrawRaycastGizmos => drawRaycastGizmos.Value;
-        public int RightHitsStorageIndex => rightHitsStorageIndex.Value;
-        public int LeftHitsStorageIndex => leftHitsStorageIndex.Value;
+
+        public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value;
+        public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value;
         
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
@@ -79,18 +116,74 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = boxColliderBoundsCenter.Value;
         }
 
-        public int HorizontalHitsStorageIndexesAmountRef
+        public int HorizontalHitsStorageLength { get; set; }
+        public int HorizontalHitsStorageLengthRef
         {
-            set => value = horizontalHitsStorageIndexesAmount.Value;
+            set => value = horizontalHitsStorageLength.Value;
         }
 
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] RightHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] DownHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] LeftHitsStorage { get; set; } = new RaycastHit2D[0];
-        public RaycastHit2D UpHit { get; set; }
-        public RaycastHit2D RightHit { get; set; }
-        public RaycastHit2D DownHit { get; set; }
-        public RaycastHit2D LeftHit { get; set; }
+
+        public int CurrentRightHitsStorageIndex { get; set; }
+        public int CurrentRightHitsStorageIndexRef
+        {
+            set => value = currentRightHitsStorageIndex.Value;
+        }
+
+        public int CurrentLeftHitsStorageIndex { get; set; }
+        public int CurrentLeftHitsStorageIndexRef
+        {
+            set => value = currentLeftHitsStorageIndex.Value;
+        }
+
+        public float CurrentRightHitDistance => SetCurrentRightHitDistance();
+
+        public float CurrentLeftHitDistance => SetCurrentLeftHitDistance();
+
+        public float CurrentRightHitDistanceRef
+        {
+            set => value = currentRightHitDistance.Value;
+        }
+
+        public float CurrentLeftHitDistanceRef
+        {
+            set => value = currentLeftHitDistance.Value;
+        }
+
+        public Collider2D CurrentRightHitCollider => SetCurrentRightHitCollider();
+        public Collider2D CurrentLeftHitCollider => SetCurrentLeftHitCollider();
+
+        public Collider2D CurrentRightHitColliderRef
+        {
+            set => value = currentRightHitCollider.Value;
+        }
+
+        public Collider2D CurrentLeftHitColliderRef
+        {
+            set => value = currentLeftHitCollider.Value;
+        }
+
+        public Collider2D IgnoredCollider { get; set; }
+
+        public Collider2D IgnoredColliderRef
+        {
+            set => value = ignoredCollider.Value;
+        }
+
+        public float CurrentRightHitAngle => SetCurrentRightHitAngle();
+        public float CurrentLeftHitAngle => SetCurrentLeftHitAngle();
+
+        public float CurrentRightHitAngleRef
+        {
+            set => value = currentRightHitAngle.Value;
+        }
+
+        public float CurrentLeftHitAngleRef
+        {
+            set => value = currentLeftHitAngle.Value;
+        }
     }
 }

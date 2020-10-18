@@ -146,39 +146,48 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rightColliderModel.OnInitializeRightHitsStorage();
         }
 
-        public void InitializeRightHitsStorageHalf()
-        {
-            rightColliderModel.OnInitializeRightHitsStorageHalf();
-        }
-
         public void InitializeLeftHitsStorage()
         {
             leftColliderModel.OnInitializeLeftHitsStorage();
         }
 
-        public void InitializeLeftHitsStorageHalf()
+        public void InitializeRightHitsStorageIndex()
         {
-            leftColliderModel.OnInitializeLeftHitsStorageHalf();
+            rightColliderModel.OnInitializeRightHitsStorageIndex();
         }
 
-        public void SetRightHitsStorageToIgnoreOneWayPlatform()
+        public void InitializeLeftHitsStorageIndex()
         {
-            rightColliderModel.OnSetRightHitsStorageToIgnoreOneWayPlatform();
+            leftColliderModel.OnInitializeLeftHitsStorageIndex();
         }
 
-        public void SetLeftHitsStorageToIgnoreOneWayPlatform()
+        public void SetCurrentRightHitsStorage()
         {
-            leftColliderModel.OnSetLeftHitsStorageToIgnoreOneWayPlatform();
+            rightColliderModel.OnSetCurrentRightHitsStorage();
         }
 
-        public void SetRightHitsStorage()
+        public void SetCurrentLeftHitsStorage()
         {
-            rightColliderModel.OnSetRightHitsStorage();
+            leftColliderModel.OnSetCurrentLeftHitsStorage();
         }
 
-        public void SetLeftHitsStorage()
+        public void SetRightHitAngle()
         {
-            leftColliderModel.OnSetLeftHitsStorage();
+            rightColliderModel.OnSetRightHitAngle();
+        }
+
+        public void SetLeftHitAngle()
+        {
+            leftColliderModel.OnSetLeftHitAngle();
+        }
+        public void AddToRightHitsStorageIndex()
+        {
+            rightColliderModel.OnAddToRightHitsStorageIndex();
+        }
+        
+        public void AddToLeftHitsStorageIndex()
+        {
+            leftColliderModel.OnAddToLeftHitsStorageIndex();
         }
     }
 }

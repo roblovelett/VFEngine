@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static RaycastDirection;
     using static Vector2;
     using static MathsExtensions;
+    using static Color;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -40,10 +41,15 @@ namespace VFEngine.Platformer.Event.Raycast
             r.NumberOfHorizontalRaysRef = r.NumberOfHorizontalRays;
             r.NumberOfVerticalRaysRef = r.NumberOfVerticalRays;
             r.CastRaysOnBothSidesRef = r.CastRaysOnBothSides;
-            r.RaycastFromBottomRef = r.RaycastFromBottom;
-            r.RaycastToTopRef = r.RaycastToTop;
+            r.HorizontalRaycastFromBottomRef = r.HorizontalRaycastFromBottom;
+            r.HorizontalRaycastToTopRef = r.HorizontalRaycastToTop;
             r.HorizontalRayLengthRef = r.HorizontalRayLength;
+            r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
+            r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;
+            r.NumberOfHorizontalRaysPerSideRef = r.NumberOfHorizontalRaysPerSide;
             r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
+            r.CurrentRightRaycastRef = r.CurrentRightRaycast;
+            r.CurrentLeftRaycastRef = r.CurrentLeftRaycast;
             switch (rayDirection)
             {
                 case None:
@@ -161,6 +167,30 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
         }
 
+        private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        {
+            r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.HorizontalRayLength,
+                r.PlatformMask, red, r.DrawRaycastGizmos);
+        }
+
+        private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            r.CurrentLeftRaycast = Raycast(r.CurrentLeftRaycastOrigin, -r.Transform.right, r.HorizontalRayLength,
+                r.PlatformMask, red, r.DrawRaycastGizmos);
+        }
+
+        private void SetCurrentRightRaycast()
+        {
+            r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.HorizontalRayLength,
+                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
+        }
+
+        private void SetCurrentLeftRaycast()
+        {
+            r.CurrentLeftRaycast = Raycast(r.CurrentLeftRaycastOrigin, -r.Transform.right, r.HorizontalRayLength,
+                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
+        }
+
         private static float SetPositiveBounds(float offset, float size)
         {
             return Half(offset + size);
@@ -186,6 +216,26 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             SetRaysParameters();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void OnSetCurrentRightRaycastToIgnoreOneWayPlatform()
+        {
+            SetCurrentRightRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void OnSetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            SetCurrentLeftRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void OnSetCurrentRightRaycast()
+        {
+            SetCurrentRightRaycast();
+        }
+
+        public void OnSetCurrentLeftRaycast()
+        {
+            SetCurrentLeftRaycast();
         }
     }
 }

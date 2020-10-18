@@ -18,7 +18,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool WasTouchingCeilingLastFrame { get; private set; }
         public bool ColliderResized { get; private set; }
         public bool GroundedEvent { get; private set; }
-        public float LateralSlopeAngle { get; private set; }
+        public float RightLateralSlopeAngle { get; private set; }
+        public float LeftLateralSlopeAngle { get; private set; }
         public float BelowSlopeAngle { get; private set; }
         public float DistanceToLeftRaycastHit { get; private set; }
         public float DistanceToRightRaycastHit { get; private set; }
@@ -88,7 +89,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             ColliderResized = colliderResized;
         }
 
-        public void SetIsPassingSlopeAngle(bool passedSlopeAngle)
+        public void SetPassedSlopeAngle(bool passedSlopeAngle)
         {
             IsPassingSlopeAngle = passedSlopeAngle;
         }
@@ -98,9 +99,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             GroundedEvent = groundedEvent;
         }
 
-        public void SetLateralSlopeAngle(float lateralSlopeAngle)
+        public void SetRightHitAngle(float angle)
         {
-            LateralSlopeAngle = lateralSlopeAngle;
+            RightLateralSlopeAngle = angle;
+        }
+
+        public void SetLeftHitAngle(float angle)
+        {
+            LeftLateralSlopeAngle = angle;
         }
 
         public void SetBelowSlopeAngle(float belowSlopeAngle)
@@ -138,11 +144,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetIsCollidingLeft(false);
             SetIsCollidingRight(false);
             SetIsCollidingAbove(false);
-            SetIsPassingSlopeAngle(false);
+            SetPassedSlopeAngle(false);
             SetGroundedEvent(false);
             SetDistanceToLeftRaycastHit(-1);
             SetDistanceToRightRaycastHit(-1);
-            SetLateralSlopeAngle(0);
+            SetRightHitAngle(0);
+            SetLeftHitAngle(0);
         }
     }
 }

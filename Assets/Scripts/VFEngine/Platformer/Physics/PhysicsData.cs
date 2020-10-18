@@ -16,6 +16,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private GravityController gravityController;
         [SerializeField] private FloatReference movingPlatformCurrentGravity;
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
+        [SerializeField] private FloatReference maximumSlopeAngle;
 
         /* fields */
         [SerializeField] private new TransformReference transform;
@@ -48,7 +49,13 @@ namespace VFEngine.Platformer.Physics
         public float FallMultiplier => settings.fallMultiplier;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
+        public float MaximumSlopeAngle => settings.maximumSlopeAngle;
 
+        public float MaximumSlopeAngleRef
+        {
+            set => value = maximumSlopeAngle;
+        }
+        
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();

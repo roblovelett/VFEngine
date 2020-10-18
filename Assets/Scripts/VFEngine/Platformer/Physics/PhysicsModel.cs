@@ -37,6 +37,7 @@ namespace VFEngine.Platformer.Physics
             p.GravityActiveRef = p.state.GravityActive;
             p.FallSlowFactorRef = p.FallSlowFactor;
             p.HorizontalMovementDirectionRef = p.HorizontalMovementDirection;
+            p.MaximumSlopeAngleRef = p.MaximumSlopeAngle;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();

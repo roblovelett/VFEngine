@@ -10,8 +10,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static UniTaskExtensions;
     using static DebugExtensions;
     using static ColliderDirection;
-    using static MathsExtensions;
-    using static Color;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
         menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
@@ -36,27 +34,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeData(ColliderDirection direction)
         {
-            var xRaysNumber = rhc.NumberOfHorizontalRays;
-            var yRaysNumber = rhc.NumberOfVerticalRays;
-            var xRaysNumberHalved = (int) Half(xRaysNumber);
-            var yRaysNumberHalved = (int) Half(yRaysNumber);
+            var xRays = rhc.NumberOfHorizontalRays;
+            var yRays = rhc.NumberOfVerticalRays / 2;
+            if (rhc.CastRaysBothSides) xRays /= 2;
+            rhc.HorizontalHitsStorageLength = xRays;
             switch (direction)
             {
                 case Up:
-                    rhc.UpHitsStorage = new RaycastHit2D[yRaysNumberHalved];
+                    rhc.UpHitsStorage = new RaycastHit2D[yRays];
                     break;
                 case Right:
-                    rhc.RightHitsStorage = rhc.CastRaysBothSides
-                        ? new RaycastHit2D[xRaysNumberHalved]
-                        : new RaycastHit2D[xRaysNumber];
+                    rhc.RightHitsStorage = new RaycastHit2D[xRays];
                     break;
                 case Down:
-                    rhc.DownHitsStorage = new RaycastHit2D[yRaysNumberHalved];
+                    rhc.DownHitsStorage = new RaycastHit2D[yRays];
                     break;
                 case Left:
-                    rhc.LeftHitsStorage = rhc.CastRaysBothSides
-                        ? new RaycastHit2D[xRaysNumberHalved]
-                        : new RaycastHit2D[xRaysNumber];
+                    rhc.LeftHitsStorage = new RaycastHit2D[xRays];
                     break;
                 case None: break;
                 default:
@@ -70,7 +64,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
             rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
             rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
-            rhc.HorizontalHitsStorageIndexesAmountRef = rhc.CastRaysBothSides ? xRaysNumberHalved : xRaysNumber;
+            rhc.CurrentRightHitsStorageIndexRef = rhc.CurrentRightHitsStorageIndex;
+            rhc.CurrentLeftHitsStorageIndexRef = rhc.CurrentLeftHitsStorageIndex;
+            rhc.HorizontalHitsStorageLengthRef = rhc.HorizontalHitsStorageLength;
+            rhc.CurrentRightHitDistanceRef = rhc.CurrentRightHitDistance;
+            rhc.CurrentLeftHitDistanceRef = rhc.CurrentLeftHitDistance;
+            rhc.CurrentRightHitColliderRef = rhc.CurrentRightHitCollider;
+            rhc.CurrentLeftHitColliderRef = rhc.CurrentLeftHitCollider;
+            rhc.IgnoredColliderRef = rhc.IgnoredCollider;
+            rhc.CurrentRightHitAngleRef = rhc.CurrentRightHitAngle;
+            rhc.CurrentLeftHitAngleRef = rhc.CurrentLeftHitAngle;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -161,48 +164,52 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void InitializeRightHitsStorage()
         {
-            rhc.RightHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRays];
-        }
-
-        private void InitializeRightHitsStorageHalf()
-        {
-            rhc.RightHitsStorage = new RaycastHit2D[(int) Half(rhc.NumberOfHorizontalRays)];
+            rhc.RightHitsStorage = new RaycastHit2D[rhc.HorizontalHitsStorageLength];
         }
 
         private void InitializeLeftHitsStorage()
         {
-            rhc.LeftHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRays];
+            rhc.LeftHitsStorage = new RaycastHit2D[rhc.HorizontalHitsStorageLength];
         }
 
-        private void InitializeLeftHitsStorageHalf()
+        private void InitializeRightHitsStorageIndex()
         {
-            rhc.LeftHitsStorage = new RaycastHit2D[(int) Half(rhc.NumberOfHorizontalRays)];
+            rhc.CurrentRightHitsStorageIndex = 0;
         }
 
-        private void SetRightHitsStorageToIgnoreOneWayPlatform()
+        private void InitializeLeftHitsStorageIndex()
         {
-            rhc.RightHitsStorage[0] = Raycast(rhc.RightRaycastOriginPoint, rhc.Transform.right, rhc.HorizontalRayLength,
-                rhc.PlatformMask, red, rhc.DrawRaycastGizmos);
+            rhc.CurrentLeftHitsStorageIndex = 0;
         }
 
-        private void SetLeftHitsStorageToIgnoreOneWayPlatform()
+        private void SetCurrentRightHitsStorage()
         {
-            rhc.LeftHitsStorage[0] = Raycast(rhc.LeftRaycastOriginPoint, -rhc.Transform.right, rhc.HorizontalRayLength,
-                rhc.PlatformMask, red, rhc.DrawRaycastGizmos);
+            rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex] = rhc.CurrentRightRaycast;
+        }
+        
+        private void SetCurrentLeftHitsStorage()
+        {
+            rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex] = rhc.CurrentLeftRaycast;
         }
 
-        private void SetRightHitsStorage()
+        private void SetRightHitAngle()
         {
-            rhc.RightHitsStorage[rhc.RightHitsStorageIndex] = Raycast(rhc.RightRaycastOriginPoint, rhc.Transform.right,
-                rhc.HorizontalRayLength, rhc.PlatformMask & ~rhc.OneWayPlatformMask & ~rhc.MovingOneWayPlatformMask,
-                red, rhc.DrawRaycastGizmos);
+            rhc.state.SetRightHitAngle(rhc.CurrentRightHitAngle);
         }
 
-        private void SetLeftHitsStorage()
+        private void SetLeftHitAngle()
         {
-            rhc.LeftHitsStorage[rhc.LeftHitsStorageIndex] = Raycast(rhc.LeftRaycastOriginPoint, -rhc.Transform.right,
-                rhc.HorizontalRayLength, rhc.PlatformMask & ~rhc.OneWayPlatformMask & ~rhc.MovingOneWayPlatformMask,
-                red, rhc.DrawRaycastGizmos);
+            rhc.state.SetLeftHitAngle(rhc.CurrentLeftHitAngle);
+        }
+
+        private void AddToRightHitsStorageIndex()
+        {
+            rhc.CurrentRightHitsStorageIndex++;
+        }
+
+        private void AddToLeftHitsStorageIndex()
+        {
+            rhc.CurrentLeftHitsStorageIndex++;
         }
 
         /* properties: dependencies */
@@ -267,39 +274,49 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             InitializeRightHitsStorage();
         }
 
-        public void OnInitializeRightHitsStorageHalf()
-        {
-            InitializeRightHitsStorageHalf();
-        }
-
         public void OnInitializeLeftHitsStorage()
         {
             InitializeLeftHitsStorage();
         }
 
-        public void OnInitializeLeftHitsStorageHalf()
+        public void OnInitializeRightHitsStorageIndex()
         {
-            InitializeLeftHitsStorageHalf();
+            InitializeRightHitsStorageIndex();
         }
 
-        public void OnSetRightHitsStorageToIgnoreOneWayPlatform()
+        public void OnInitializeLeftHitsStorageIndex()
         {
-            SetRightHitsStorageToIgnoreOneWayPlatform();
+            InitializeLeftHitsStorageIndex();
         }
 
-        public void OnSetLeftHitsStorageToIgnoreOneWayPlatform()
+        public void OnSetCurrentRightHitsStorage()
         {
-            SetLeftHitsStorageToIgnoreOneWayPlatform();
+            SetCurrentRightHitsStorage();
         }
 
-        public void OnSetRightHitsStorage()
+        public void OnSetCurrentLeftHitsStorage()
         {
-            SetRightHitsStorage();
+            SetCurrentLeftHitsStorage();
         }
 
-        public void OnSetLeftHitsStorage()
+        public void OnAddToRightHitsStorageIndex()
         {
-            SetLeftHitsStorage();
+            AddToRightHitsStorageIndex();
+        }
+
+        public void OnAddToLeftHitsStorageIndex()
+        {
+            AddToLeftHitsStorageIndex();
+        }
+
+        public void OnSetRightHitAngle()
+        {
+            SetRightHitAngle();
+        }
+
+        public void OnSetLeftHitAngle()
+        {
+            SetLeftHitAngle();
         }
     }
 }

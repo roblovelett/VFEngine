@@ -75,5 +75,25 @@ namespace VFEngine.Platformer.Event.Raycast
             var rTask = await (rTask1, rTask2, rTask3, rTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        {
+            rightRaycastModel.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentRightRaycast()
+        {
+            rightRaycastModel.OnSetCurrentRightRaycast();
+        }
+
+        public void SetCurrentLeftRaycast()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycast();
+        }
     }
 }

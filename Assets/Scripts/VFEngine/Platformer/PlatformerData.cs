@@ -1,6 +1,5 @@
 ﻿using UnityAtoms.BaseAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -29,18 +28,27 @@ namespace VFEngine.Platformer
         [SerializeField] private Vector2Reference externalForce;
         [SerializeField] private BoolReference castRaysOnBothSides;
         [SerializeField] private IntReference horizontalMovementDirection;
-        [SerializeField] private Vector2Reference raycastFromBottom;
-        [SerializeField] private Vector2Reference raycastToTop;
+        [SerializeField] private Vector2Reference horizontalRaycastFromBottom;
+        [SerializeField] private Vector2Reference horizontalRaycastToTop;
         [SerializeField] private IntReference numberOfHorizontalRays;
-        [SerializeField] private IntReference horizontalHitsStorageIndexesAmount;
+        [SerializeField] private Vector2Reference currentRightRaycastOrigin;
+        [SerializeField] private Vector2Reference currentLeftRaycastOrigin;
         [SerializeField] private BoolReference wasGroundedLastFrame;
-
-        /* fields */
-        [SerializeField] private Vector2Reference rightRaycastOriginPoint;
-        [SerializeField] private Vector2Reference leftRaycastOriginPoint;
         [SerializeField] private IntReference rightHitsStorageIndex;
         [SerializeField] private IntReference leftHitsStorageIndex;
-        [SerializeField] private FloatReference raycastHitAngle;
+        [SerializeField] private FloatReference horizontalRayLength;
+        [SerializeField] private IntReference horizontalHitsStorageLength;
+        [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
+        [SerializeField] private FloatReference currentRightHitDistance;
+        [SerializeField] private FloatReference currentLeftHitDistance;
+        [SerializeField] private Collider2DReference currentRightHitCollider;
+        [SerializeField] private Collider2DReference currentLeftHitCollider;
+        [SerializeField] private Collider2DReference ignoredCollider;
+        [SerializeField] private FloatReference currentRightHitAngle;
+        [SerializeField] private FloatReference currentLeftHitAngle;
+        [SerializeField] private FloatReference maximumSlopeAngle;
+
+        /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
         /* properties: dependencies */
@@ -60,84 +68,28 @@ namespace VFEngine.Platformer
         public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
         public Vector2 ExternalForce => externalForce.Value;
         public int HorizontalMovementDirection => horizontalMovementDirection.Value;
-        public Vector2 RaycastFromBottom => raycastFromBottom.Value;
-        public Vector2 RaycastToTop => raycastToTop.Value;
+        public Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
+        public Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
         public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
-        public int HorizontalHitsStorageIndexesAmount => horizontalHitsStorageIndexesAmount.Value;
+        public int RightHitsStorageIndex => rightHitsStorageIndex.Value;
+        public int LeftHitsStorageIndex => leftHitsStorageIndex;
+        public float HorizontalRayLength => horizontalRayLength.Value;
+        public int HorizontalHitsStorageLength => horizontalHitsStorageLength;
+        public Vector2 CurrentRightRaycastOrigin => currentRightRaycastOrigin.Value;
+        public Vector2 CurrentLeftRaycastOrigin => currentLeftRaycastOrigin.Value;
+        public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public bool WasGroundedLastFrame => wasGroundedLastFrame.Value;
+        public float CurrentRightHitDistance => currentRightHitDistance.Value;
+        public float CurrentLeftHitDistance => currentLeftHitDistance.Value;
+        public Collider2D CurrentRightHitCollider => currentRightHitCollider.Value;
+        public Collider2D CurrentLeftHitCollider => currentLeftHitCollider.Value;
+        public Collider2D IgnoredCollider => ignoredCollider.Value;
+        public float CurrentRightHitAngle => currentRightHitAngle.Value;
+
+        public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
+        public float MaximumSlopeAngle => maximumSlopeAngle.Value;
 
         /* properties */
-        public float RaycastHitAngleRef
-        {
-            set => value = raycastHitAngle.Value;
-        }
-
-        public float RaycastHitAngle { get; set; }
-
-        public Vector2 RightRaycastOriginPointRef
-        {
-            set => value = rightRaycastOriginPoint.Value;
-        }
-
-        public Vector2 RightRaycastOriginPoint { get; set; }
-
-        public Vector2 LeftRaycastOriginPointRef
-        {
-            set => value = leftRaycastOriginPoint.Value;
-        }
-
-        public Vector2 LeftRaycastOriginPoint { get; set; }
-
-        public int RightHitsStorageIndexRef
-        {
-            set => value = rightHitsStorageIndex.Value;
-        }
-
-        public int LeftHitsStorageIndexRef
-        {
-            set => value = leftHitsStorageIndex.Value;
-        }
-        
-        public int RightHitsStorageIndex { get; set; }
-        public int LeftHitsStorageIndex { get; set; }
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }
 }
-
-/* fields: dependencies */
-/*
-
-[SerializeField] private GravityController gravityController;
-[SerializeField] private StickyRaycastController stickyRaycastController;
-[SerializeField] private SafetyBoxcastController safetyBoxcastController;
-[SerializeField] private BoolReference isCollidingWithMovingPlatform;
-[SerializeField] private Vector3Reference movingPlatformCurrentSpeed;
-[SerializeField] private BoolReference wasTouchingCeilingLastFrame;
-[SerializeField] private FloatReference movementDirectionThreshold;
-[SerializeField] private Vector2Reference externalForce;
-[SerializeField] private BoolReference castRaysOnBothSides;
-[SerializeField] private FloatReference tolerance;
-[SerializeField] private FloatReference movementDirection;
-
-/* fields */
-/*
-[SerializeField] private BoolReference setGravity;
-[SerializeField] private BoolReference applyAscentMultiplierToGravity;
-[SerializeField] private BoolReference applyFallMultiplierToGravity;
-[SerializeField] private BoolReference applyGravityToSpeed;
-[SerializeField] private BoolReference applyFallSlowFactorToSpeed;
-
-/* fields: methods */
-/*
-/* properties: dependencies */
-/*
-public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
-public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
-public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
-public float MovementDirectionThreshold => movementDirectionThreshold.Value;
-public Vector2 ExternalForce => externalForce.Value;
-public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
-public float Tolerance => tolerance.Value;
-public float MovementDirection => movementDirection.Value;
-
-}*/
