@@ -38,6 +38,8 @@ namespace VFEngine.Platformer.Physics
             p.FallSlowFactorRef = p.FallSlowFactor;
             p.HorizontalMovementDirectionRef = p.HorizontalMovementDirection;
             p.MaximumSlopeAngleRef = p.MaximumSlopeAngle;
+            p.NewRightPositionDistanceRef = p.NewRightPositionDistance;
+            p.NewLeftPositionDistanceRef = p.NewLeftPositionDistance;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -45,7 +47,7 @@ namespace VFEngine.Platformer.Physics
 
         private async UniTaskVoid GetWarningMessages()
         {
-            if (DisplayWarnings)
+            if (p.DisplayWarnings)
             {
                 const string ph = "Physics";
                 var settings = $"{ph} Settings";
@@ -128,7 +130,7 @@ namespace VFEngine.Platformer.Physics
             p.NewPositionY = p.MovingPlatformCurrentSpeed.y * deltaTime;
         }
 
-        private void StopHorizontalSpeed()
+        private void StopHorizontalSpeedOnPlatformTest()
         {
             p.Speed = -p.NewPosition / deltaTime;
             p.SpeedX = -p.SpeedX;
@@ -143,7 +145,7 @@ namespace VFEngine.Platformer.Physics
         {
             p.HorizontalMovementDirection = p.StoredHorizontalMovementDirection;
         }
-        
+
         private void SetNegativeHorizontalMovementDirection()
         {
             p.HorizontalMovementDirection = -1;
@@ -163,9 +165,33 @@ namespace VFEngine.Platformer.Physics
         {
             p.StoredHorizontalMovementDirection = p.HorizontalMovementDirection;
         }
-        
-        /* properties: dependencies */
-        private bool DisplayWarnings => p.DisplayWarnings;
+
+        private void SetNewPositiveHorizontalPosition()
+        {
+            p.NewPositionX = SetNewHorizontalPosition(true, p.NewRightPositionDistance, p.BoundsWidth, p.RayOffset);
+        }
+
+        private void SetNewNegativeHorizontalPosition()
+        {
+            p.NewPositionX = SetNewHorizontalPosition(false, p.NewLeftPositionDistance, p.BoundsWidth, p.RayOffset);
+        }
+
+        private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)
+        {
+            var positiveX = -distance + width / 2 + offset * 2;
+            var negativeX = distance - width / 2 - offset * 2;
+            return positiveDirection ? positiveX : negativeX;
+        }
+
+        private void StopHorizontalSpeed()
+        {
+            p.SpeedX = 0;
+        }
+
+        private void StopNewHorizontalPosition()
+        {
+            p.NewPositionX = 0;
+        }
 
         /* properties: methods */
         public void OnInitialize()
@@ -197,7 +223,7 @@ namespace VFEngine.Platformer.Physics
         {
             ApplyFallSlowFactorToVerticalSpeed();
         }
-        
+
         public void OnSetNewPosition()
         {
             SetNewPosition();
@@ -223,9 +249,9 @@ namespace VFEngine.Platformer.Physics
             ApplyMovingPlatformSpeedToNewPosition();
         }
 
-        public void OnStopHorizontalSpeed()
+        public void OnStopHorizontalSpeedOnPlatformTest()
         {
-            StopHorizontalSpeed();
+            StopHorizontalSpeedOnPlatformTest();
         }
 
         public void OnSetForcesApplied()
@@ -237,6 +263,7 @@ namespace VFEngine.Platformer.Physics
         {
             SetHorizontalMovementDirectionToStored();
         }
+
         public void OnSetNegativeHorizontalMovementDirection()
         {
             SetNegativeHorizontalMovementDirection();
@@ -255,6 +282,26 @@ namespace VFEngine.Platformer.Physics
         public void OnSetStoredHorizontalMovementDirection()
         {
             SetStoredHorizontalMovementDirection();
+        }
+
+        public void OnSetNewPositiveHorizontalPosition()
+        {
+            SetNewPositiveHorizontalPosition();
+        }
+
+        public void OnSetNewNegativeHorizontalPosition()
+        {
+            SetNewNegativeHorizontalPosition();
+        }
+
+        public void OnStopHorizontalSpeed()
+        {
+            StopHorizontalSpeed();
+        }
+
+        public void OnStopNewHorizontalPosition()
+        {
+            StopNewHorizontalPosition();
         }
     }
 }

@@ -79,9 +79,9 @@ namespace VFEngine.Platformer.Physics
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void StopHorizontalSpeed()
+        public void StopHorizontalSpeedOnPlatformTest()
         {
-            model.OnStopHorizontalSpeed();
+            model.OnStopHorizontalSpeedOnPlatformTest();
         }
 
         public void SetForcesApplied()
@@ -111,6 +111,26 @@ namespace VFEngine.Platformer.Physics
         public void SetStoredHorizontalMovementDirection()
         {
             model.OnSetStoredHorizontalMovementDirection();
+        }
+
+        public void SetNewPositiveHorizontalPosition()
+        {
+            model.OnSetNewPositiveHorizontalPosition();
+        }
+
+        public void SetNewNegativeHorizontalPosition()
+        {
+            model.OnSetNewNegativeHorizontalPosition();
+        }
+
+        public void StopHorizontalSpeed()
+        {
+            model.OnStopHorizontalSpeed();
+        }
+
+        public void StopNewHorizontalPosition()
+        {
+            model.OnStopNewHorizontalPosition();
         }
     }
 }

@@ -47,6 +47,7 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference currentRightHitAngle;
         [SerializeField] private FloatReference currentLeftHitAngle;
         [SerializeField] private FloatReference maximumSlopeAngle;
+        [SerializeField] private BoolReference isGrounded;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -88,6 +89,7 @@ namespace VFEngine.Platformer
 
         public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
         public float MaximumSlopeAngle => maximumSlopeAngle.Value;
+        public bool IsGrounded => isGrounded.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

@@ -47,10 +47,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Collider2DReference ignoredCollider;
         [SerializeField] private FloatReference currentRightHitAngle;
         [SerializeField] private FloatReference currentLeftHitAngle;
+        [SerializeField] private Vector2Reference currentRightHitPoint;
+        [SerializeField] private Vector2Reference currentLeftHitPoint;
+        [SerializeField] private BoolReference isGrounded;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
-
+        
         /* fields: methods */
+        private Vector2 SetCurrentRightHitPoint()
+        {
+            return RightHitsStorage[CurrentRightHitsStorageIndex].point;
+        }
+
+        private Vector2 SetCurrentLeftHitPoint()
+        {
+            return LeftHitsStorage[CurrentLeftHitsStorageIndex].point;
+        }
+        
         private float SetCurrentRightHitDistance()
         {
             return RightHitsStorage[CurrentRightHitsStorageIndex].distance;
@@ -79,7 +92,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             return Abs(Angle(LeftHitsStorage[CurrentLeftHitsStorageIndex].normal, Transform.up));
         }
-        
+
         /* properties: dependencies */
         public bool HasSettings => settings;
         public bool DisplayWarnings => settings.displayWarningsControl;
@@ -96,7 +109,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-        public List<RaycastHit2D> contactList = new List<RaycastHit2D>();
+        public readonly List<RaycastHit2D> contactList = new List<RaycastHit2D>();
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
         public float MovingPlatformCurrentGravity { get; set; }
         public float MovingPlatformGravity { get; } = -500f;
@@ -184,6 +197,24 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public float CurrentLeftHitAngleRef
         {
             set => value = currentLeftHitAngle.Value;
+        }
+
+        public Vector2 CurrentRightHitPoint => SetCurrentRightHitPoint();
+        public Vector2 CurrentLeftHitPoint => SetCurrentLeftHitPoint();
+
+        public Vector2 CurrentRightHitPointRef
+        {
+            set => value = currentRightHitPoint.Value;
+        }
+
+        public Vector2 CurrentLeftHitPointRef
+        {
+            set => value = currentLeftHitPoint.Value;
+        }
+
+        public bool IsGroundedRef
+        {
+            set => value = isGrounded.Value;
         }
     }
 }

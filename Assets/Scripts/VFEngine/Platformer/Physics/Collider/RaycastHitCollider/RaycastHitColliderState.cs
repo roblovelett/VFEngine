@@ -18,12 +18,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool WasTouchingCeilingLastFrame { get; private set; }
         public bool ColliderResized { get; private set; }
         public bool GroundedEvent { get; private set; }
+        public bool PassedRightSlopeAngle { get; private set; }
+        public bool PassedLeftSlopeAngle { get; private set; }
         public float RightLateralSlopeAngle { get; private set; }
         public float LeftLateralSlopeAngle { get; private set; }
         public float BelowSlopeAngle { get; private set; }
-        public float DistanceToLeftRaycastHit { get; private set; }
-        public float DistanceToRightRaycastHit { get; private set; }
+        public float DistanceToLeftCollider { get; private set; }
+        public float DistanceToRightCollider { get; private set; }
         public GameObject CurrentWallCollider { get; private set; }
+        public GameObject RightCurrentWallCollider { get; private set; }
+        public GameObject LeftCurrentWallCollider { get; private set; }
         public GameObject StandingOn { get; private set; }
         public GameObject StandingOnLastFrame { get; private set; }
         public bool IsGrounded => IsCollidingBelow;
@@ -44,6 +48,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             IsCollidingWithFrictionSurface = isCollidingWithFrictionSurface;
         }
 
+        public void SetIsColliding(bool colliding)
+        {
+            SetIsCollidingAbove(colliding);
+            SetIsCollidingLeft(colliding);
+            SetIsCollidingRight(colliding);
+        }
+        
         public void SetIsCollidingRight(bool isCollidingRight)
         {
             IsCollidingRight = isCollidingRight;
@@ -89,14 +100,31 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             ColliderResized = colliderResized;
         }
 
-        public void SetPassedSlopeAngle(bool passedSlopeAngle)
+        public void SetPassedRightSlopeAngle(bool pass)
         {
-            IsPassingSlopeAngle = passedSlopeAngle;
+            PassedRightSlopeAngle = pass;
+        }
+
+        public void SetPassedLeftSlopeAngle(bool pass)
+        {
+            PassedLeftSlopeAngle = pass;
+        }
+        
+        public void SetPassedSlopeAngles(bool passed)
+        {
+            SetPassedRightSlopeAngle(passed);
+            SetPassedLeftSlopeAngle(passed);
         }
 
         public void SetGroundedEvent(bool groundedEvent)
         {
             GroundedEvent = groundedEvent;
+        }
+
+        public void SetHitAngles(float angle)
+        {
+            SetRightHitAngle(angle);
+            SetLeftHitAngle(angle);
         }
 
         public void SetRightHitAngle(float angle)
@@ -114,19 +142,36 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             BelowSlopeAngle = belowSlopeAngle;
         }
 
-        public void SetDistanceToLeftRaycastHit(float distanceToLeftRaycastHit)
+        public void SetDistanceToColliders(float distance)
         {
-            DistanceToLeftRaycastHit = distanceToLeftRaycastHit;
+            DistanceToLeftCollider = distance;
+            DistanceToRightCollider = distance;
         }
 
-        public void SetDistanceToRightRaycastHit(float distanceToRightRaycastHit)
+        public void SetDistanceToLeftCollider(float distance)
         {
-            DistanceToRightRaycastHit = distanceToRightRaycastHit;
+            DistanceToLeftCollider = distance;
         }
 
-        public void SetCurrentWallCollider(GameObject currentWallCollider)
+        public void SetDistanceToRightCollider(float distance)
         {
-            CurrentWallCollider = currentWallCollider;
+            DistanceToRightCollider = distance;
+        }
+
+        public void SetCurrentWallColliderNull()
+        {
+            SetRightCurrentWallCollider(null);
+            SetLeftCurrentWallCollider(null);
+        }
+
+        public void SetRightCurrentWallCollider(GameObject currentWallCollider)
+        {
+            RightCurrentWallCollider = currentWallCollider;
+        }
+        
+        public void SetLeftCurrentWallCollider(GameObject currentWallCollider)
+        {
+            LeftCurrentWallCollider = currentWallCollider;
         }
 
         public void SetStandingOnLastFrame(GameObject standingOnLastFrame)
@@ -141,15 +186,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         public void Reset()
         {
-            SetIsCollidingLeft(false);
-            SetIsCollidingRight(false);
-            SetIsCollidingAbove(false);
-            SetPassedSlopeAngle(false);
+            SetIsColliding(false);
+            SetPassedSlopeAngles(false);
             SetGroundedEvent(false);
-            SetDistanceToLeftRaycastHit(-1);
-            SetDistanceToRightRaycastHit(-1);
-            SetRightHitAngle(0);
-            SetLeftHitAngle(0);
+            SetDistanceToColliders(-1);
+            SetHitAngles(0);
         }
     }
 }

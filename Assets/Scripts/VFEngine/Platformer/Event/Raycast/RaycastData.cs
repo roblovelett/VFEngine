@@ -68,7 +68,6 @@ namespace VFEngine.Platformer.Event.Raycast
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
         public RaycastHit2D CurrentRightRaycast { get; set; }
         public RaycastHit2D CurrentLeftRaycast { get; set; }
-
         public RaycastHit2D CurrentRightRaycastRef
         {
             set => value = currentRightRaycast.Value;
