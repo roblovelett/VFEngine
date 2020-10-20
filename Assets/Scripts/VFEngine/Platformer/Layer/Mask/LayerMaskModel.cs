@@ -37,6 +37,8 @@ namespace VFEngine.Platformer.Layer.Mask
             lm.PlatformMaskRef = lm.PlatformMask;
             lm.OneWayPlatformMaskRef = lm.OneWayPlatformMask;
             lm.MovingOneWayPlatformMaskRef = lm.MovingOneWayPlatformMask;
+            lm.MidHeightOneWayPlatformMaskRef = lm.MidHeightOneWayPlatformMask;
+            lm.StairsMaskRef = lm.StairsMask;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -129,6 +131,21 @@ namespace VFEngine.Platformer.Layer.Mask
                 lm.RaysBelowLayerMaskPlatforms & ~lm.MidHeightOneWayPlatformMask;
         }
 
+        private void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
+        {
+            lm.RaysBelowLayerMaskPlatforms = lm.RaysBelowLayerMaskPlatformsWithoutMidHeight;
+        }
+
+        private void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
+        {
+            lm.RaysBelowLayerMaskPlatforms = (lm.RaysBelowLayerMaskPlatforms & ~lm.OneWayPlatformMask) | lm.StairsMask;
+        }
+
+        private void SetRaysBelowLayerMaskPlatformsToOneWay()
+        {
+            lm.RaysBelowLayerMaskPlatforms &= ~lm.OneWayPlatformMask;
+        }
+
         /* properties: methods */
         public void Initialize()
         {
@@ -148,6 +165,21 @@ namespace VFEngine.Platformer.Layer.Mask
         public void OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight()
         {
             SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
+        {
+            SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
+        {
+            SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatformsToOneWay()
+        {
+            SetRaysBelowLayerMaskPlatformsToOneWay();
         }
     }
 }

@@ -40,5 +40,20 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             model.OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight();
         }
+
+        public void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
+        {
+            model.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+        }
+
+        public void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
+        {
+            model.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+        }
+
+        public void SetRaysBelowLayerMaskPlatformsToOneWay()
+        {
+            model.OnSetRaysBelowLayerMaskPlatformsToOneWay();
+        }
     }
 }

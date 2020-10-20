@@ -71,6 +71,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
             rhc.CurrentRightHitsStorageIndexRef = rhc.CurrentRightHitsStorageIndex;
             rhc.CurrentLeftHitsStorageIndexRef = rhc.CurrentLeftHitsStorageIndex;
+            rhc.CurrentUpHitsStorageIndexRef = rhc.CurrentUpHitsStorageIndex;
+            rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
             rhc.HorizontalHitsStorageLengthRef = rhc.HorizontalHitsStorageLength;
             rhc.CurrentRightHitDistanceRef = rhc.CurrentRightHitDistance;
             rhc.CurrentLeftHitDistanceRef = rhc.CurrentLeftHitDistance;
@@ -87,6 +89,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.VerticalHitsStorageLengthRef = rhc.VerticalHitsStorageLength;
             rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
             rhc.IsStandingOnLastFrameNotNullRef = rhc.IsStandingOnLastFrameNotNull;
+            rhc.StandingOnColliderRef = rhc.state.StandingOnCollider;
+            rhc.ColliderBottomCenterPositionRef = rhc.ColliderBottomCenterPosition;
+            rhc.DownHitsStorageSmallestDistanceIndexRef = rhc.DownHitsStorageSmallestDistanceIndex;
+            rhc.DownHitConnectedRef = rhc.DownHitConnected;
+            rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -295,6 +302,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.UpHitsStorage = new RaycastHit2D[rhc.VerticalHitsStorageLength];
         }
 
+        private void InitializeDownHitsStorageSmallestDistanceIndex()
+        {
+            rhc.DownHitsStorageSmallestDistanceIndex = 0;
+        }
+
+        private void InitializeDownHitConnected()
+        {
+            rhc.DownHitConnected = false;
+        }
+
+        private void InitializeDownHitsStorageIndex()
+        {
+            rhc.CurrentDownHitsStorageIndex = 0;
+        }
+
+        private void AddDownHitsStorageIndex()
+        {
+            rhc.CurrentDownHitsStorageIndex++;
+        }
+
         /* properties: dependencies */
 
         /* properties: methods */
@@ -464,6 +491,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnInitializeDownHitsStorage()
         {
             InitializeDownHitsStorage();
+        }
+
+        public void OnInitializeDownHitsStorageSmallestDistanceIndex()
+        {
+            InitializeDownHitsStorageSmallestDistanceIndex();
+        }
+
+        public void OnInitializeDownHitConnected()
+        {
+            InitializeDownHitConnected();
+        }
+
+        public void OnInitializeDownHitsStorageIndex()
+        {
+            InitializeDownHitsStorageIndex();
+        }
+
+        public void OnAddDownHitsStorageIndex()
+        {
+            AddDownHitsStorageIndex();
         }
     }
 }

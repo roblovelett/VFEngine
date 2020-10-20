@@ -5,8 +5,8 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
-// ReSharper disable UnusedVariable
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer
 {
     using static UniTaskExtensions;
@@ -178,8 +178,7 @@ namespace VFEngine.Platformer
         {
             switch (direction)
             {
-                case Up:
-                    break;
+                case Up: break;
                 case Right:
                     Async(CastHorizontalRays(direction));
                     break;
@@ -212,47 +211,84 @@ namespace VFEngine.Platformer
             }
 
             var rayLength = SetDownRayLength();
-            
-            if (p.OnMovingPlatform)
-            {
-                p.Raycast.DoubleDownRayLength();
-            }
-
-            if (p.NewPosition.y < 0)
-            {
-                p.Raycast.SetDownRayLengthToVerticalNewPosition();
-            }
-
-            if (p.DownHitsStorageLength != p.NumberOfVerticalRaysPerSide)
-            {
-                p.RaycastHitCollider.InitializeDownHitsStorage();
-            }
-
+            if (p.OnMovingPlatform) p.Raycast.DoubleDownRayLength();
+            if (p.NewPosition.y < 0) p.Raycast.SetDownRayLengthToVerticalNewPosition();
+            var rhcTask1 = Async(InitializeDownHitsStorage());
             var rTask1 = Async(SetVerticalRaycast());
             var lmTask1 = Async(SetRaysBelowLayerMask());
-
-            var task1 = await (rTask1, lmTask1);
-
-            if (p.WasGroundedLastFrame)
+            var task1 = await (rhcTask1, rTask1, lmTask1);
+            if (p.WasGroundedLastFrame && p.IsStandingOnLastFrameNotNull)
             {
-                if (p.IsStandingOnLastFrameNotNull)
+                var maskContainsLayer = MaskContainsLayer(p.MidHeightOneWayPlatformMask, p.StandingOnLastFrame.layer);
+                if (maskContainsLayer) p.LayerMask.SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+                maskContainsLayer = MaskContainsLayer(p.StairsMask, p.StandingOnLastFrame.layer);
+                var boundsContainsPosition =
+                    BoundsContainsPosition(p.StandingOnCollider.bounds, p.ColliderBottomCenterPosition);
+                if (maskContainsLayer && boundsContainsPosition)
+                    p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+                if (p.OnMovingPlatform && p.NewPosition.y > 0)
+                    p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
+
+                var raysAmount = p.NumberOfVerticalRaysPerSide;
+                var smallestDistance = p.SmallestDistance;
+                var downHitsStorageSmallestDistanceIndex = InitializeDownHitsStorageSmallestDistanceIndex();
+                var downHitConnected = InitializeDownHitConnected();
+                
+                for (var i = 0; i < raysAmount; i++)
                 {
-                    // ===========================================================================================================
+                    // set ray origin point
+                    if (p.NewPosition.y > 0 && !p.WasGroundedLastFrame)
+                        p.Raycast.SetCurrentDownRaycastToIgnoreOneWayPlatform();
+                    else p.Raycast.SetCurrentDownRaycast();
+
+                    p.RaycastHitCollider.SetCurrentDownHitsStorage();
+                    //
+                    //
+                    //
+                    // ===============================================================================================
+                    p.RaycastHitCollider.AddDownHitsStorageIndex();
                 }
             }
-            
+
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeDownHitsStorage()
+        {
+            if (p.DownHitsStorageLength != p.NumberOfVerticalRaysPerSide)
+                p.RaycastHitCollider.InitializeDownHitsStorage();
+            p.RaycastHitCollider.InitializeDownHitsStorageIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        private bool InitializeDownHitConnected()
+        {
+            p.RaycastHitCollider.InitializeDownHitConnected();
+            return p.DownHitConnected;
+        }
+
+        private int InitializeDownHitsStorageSmallestDistanceIndex()
+        {
+            p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex();
+            return p.DownHitsStorageSmallestDistanceIndex;
+        }
+
+        private static bool BoundsContainsPosition(Bounds bounds, Vector2 colliderPosition)
+        {
+            return bounds.Contains(colliderPosition);
+        }
+
+        private static bool MaskContainsLayer(LayerMask mask, int layer)
+        {
+            return LayerMaskContains(mask, layer);
         }
 
         private async UniTaskVoid SetRaysBelowLayerMask()
         {
             var lmTask1 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatforms());
             var lmTask2 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutOneWay());
-            
             var task1 = await (lmTask1, lmTask2);
-            
             p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
-            
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

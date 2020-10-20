@@ -1,5 +1,5 @@
-﻿using UnityAtoms.BaseAtoms;
-using UnityAtoms.Editor;
+﻿using ScriptableObjects.Atoms.LayerMask.References;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
@@ -60,6 +60,13 @@ namespace VFEngine.Platformer
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
+        [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask;
+        [SerializeField] private LayerMaskReference stairsMask;
+        [SerializeField] private Collider2DReference standingOnCollider;
+        [SerializeField] private Vector2Reference colliderBottomCenterPosition;
+        [SerializeField] private FloatReference smallestDistance;
+        [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
+        [SerializeField] private BoolReference downHitConnected;
         
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -113,7 +120,14 @@ namespace VFEngine.Platformer
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
         public bool IsStandingOnLastFrameNotNull => isStandingOnLastFrameNotNull.Value;
-
+        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value;
+        public LayerMask StairsMask => stairsMask.Value;
+        public Collider2D StandingOnCollider => standingOnCollider.Value;
+        public Vector2 ColliderBottomCenterPosition => colliderBottomCenterPosition.Value;
+        public float SmallestDistance => smallestDistance.Value;
+        public int DownHitsStorageSmallestDistanceIndex => downHitsStorageSmallestDistanceIndex.Value;
+        public bool DownHitConnected => downHitConnected.Value;
+        
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }

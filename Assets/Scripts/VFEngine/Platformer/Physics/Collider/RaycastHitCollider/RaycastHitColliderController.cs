@@ -254,5 +254,25 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downColliderModel.OnInitializeDownHitsStorage();
         }
+
+        public void InitializeDownHitsStorageSmallestDistanceIndex()
+        {
+            downColliderModel.OnInitializeDownHitsStorageSmallestDistanceIndex();
+        }
+
+        public void InitializeDownHitConnected()
+        {
+            downColliderModel.OnInitializeDownHitConnected();
+        }
+
+        public void InitializeDownHitsStorageIndex()
+        {
+            downColliderModel.OnInitializeDownHitsStorageIndex();
+        }
+
+        public void AddDownHitsStorageIndex()
+        {
+            downColliderModel.OnAddDownHitsStorageIndex();
+        }
     }
 }

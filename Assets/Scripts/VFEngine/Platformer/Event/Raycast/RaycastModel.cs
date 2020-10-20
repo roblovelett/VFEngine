@@ -47,12 +47,15 @@ namespace VFEngine.Platformer.Event.Raycast
             r.HorizontalRayLengthRef = r.HorizontalRayLength;
             r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
             r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;
+            r.CurrentUpRaycastOriginRef = r.CurrentUpRaycastOrigin;
+            r.CurrentDownRaycastOriginRef = r.CurrentDownRaycastOrigin;
             r.NumberOfHorizontalRaysPerSideRef = r.NumberOfHorizontalRaysPerSide;
             r.NumberOfVerticalRaysPerSideRef = r.NumberOfVerticalRaysPerSide;
             r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
             r.CurrentRightRaycastRef = r.CurrentRightRaycast;
             r.CurrentLeftRaycastRef = r.CurrentLeftRaycast;
             r.DownRayLengthRef = r.DownRayLength;
+            r.SmallestDistanceRef = RaycastData.SmallestDistance;
             switch (rayDirection)
             {
                 case None:

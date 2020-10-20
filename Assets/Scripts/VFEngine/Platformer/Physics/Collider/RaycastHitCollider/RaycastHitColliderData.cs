@@ -47,6 +47,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private IntReference upHitsStorageLength;
         [SerializeField] private IntReference currentRightHitsStorageIndex;
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
+        [SerializeField] private IntReference currentDownHitsStorageIndex;
+        [SerializeField] private IntReference currentUpHitsStorageIndex;
         [SerializeField] private FloatReference currentRightHitDistance;
         [SerializeField] private FloatReference currentLeftHitDistance;
         [SerializeField] private Collider2DReference currentRightHitCollider;
@@ -61,6 +63,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
+        [SerializeField] private Collider2DReference standingOnCollider;
+        [SerializeField] private Vector2Reference colliderBottomCenterPosition;
+        [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
+        [SerializeField] private BoolReference downHitConnected;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -102,6 +108,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private float SetCurrentLeftHitAngle()
         {
             return Abs(Angle(LeftHitsStorage[CurrentLeftHitsStorageIndex].normal, Transform.up));
+        }
+
+        private Vector2 SetColliderBottomCenterPosition()
+        {
+            var bounds = new Vector2();
+            var colliderBounds = boxCollider.bounds;
+            bounds.x = colliderBounds.center.x;
+            bounds.y = colliderBounds.min.y;
+            return bounds;
         }
 
         /* properties: dependencies */
@@ -180,16 +195,30 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = leftHitsStorageLength.Value;
         }
 
-        public int CurrentRightHitsStorageIndex { get; set; }
+        public int CurrentRightHitsStorageIndex { get; set; } = 0;
         public int CurrentRightHitsStorageIndexRef
         {
             set => value = currentRightHitsStorageIndex.Value;
         }
 
-        public int CurrentLeftHitsStorageIndex { get; set; }
+        public int CurrentLeftHitsStorageIndex { get; set; } = 0;
         public int CurrentLeftHitsStorageIndexRef
         {
             set => value = currentLeftHitsStorageIndex.Value;
+        }
+        
+        public int CurrentDownHitsStorageIndex { get; set; } = 0;
+
+        public int CurrentDownHitsStorageIndexRef
+        {
+            set => value = currentDownHitsStorageIndex.Value;
+        }
+
+        public int CurrentUpHitsStorageIndex { get; set; } = 0;
+
+        public int CurrentUpHitsStorageIndexRef
+        {
+            set => value = currentUpHitsStorageIndex.Value;
         }
 
         public float CurrentRightHitDistance => SetCurrentRightHitDistance();
@@ -281,6 +310,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool IsStandingOnLastFrameNotNullRef
         {
             set => value = isStandingOnLastFrameNotNull.Value;
+        }
+
+        public Collider2D StandingOnColliderRef
+        {
+            set => value = standingOnCollider.Value;
+        }
+
+        public Vector2 ColliderBottomCenterPosition => SetColliderBottomCenterPosition();
+
+        public Vector2 ColliderBottomCenterPositionRef
+        {
+            set => value = colliderBottomCenterPosition.Value;
+        }
+
+        public int DownHitsStorageSmallestDistanceIndex { get; set; }
+
+        public int DownHitsStorageSmallestDistanceIndexRef
+        {
+            set => value = downHitsStorageSmallestDistanceIndex.Value;
+        }
+        
+        public bool DownHitConnected { get; set; }
+
+        public bool DownHitConnectedRef
+        {
+            set => value = downHitConnected.Value;
         }
     }
 }
