@@ -48,6 +48,10 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             set => value = movingOneWayPlatformMask.Value;
         }
+        
+        public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutMidHeight { get; set; }
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

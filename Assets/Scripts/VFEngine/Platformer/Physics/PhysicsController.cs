@@ -132,5 +132,15 @@ namespace VFEngine.Platformer.Physics
         {
             model.OnStopNewHorizontalPosition();
         }
+
+        public void SetIsFalling()
+        {
+            model.OnSetIsFalling();
+        }
+
+        public void SetIsNotFalling()
+        {
+            model.OnSetIsNotFalling();
+        }
     }
 }

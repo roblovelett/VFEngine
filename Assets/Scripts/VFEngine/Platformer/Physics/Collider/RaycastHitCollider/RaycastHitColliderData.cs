@@ -3,6 +3,7 @@ using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
+using UnityAtoms.Editor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VFEngine.Tools;
@@ -31,13 +32,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private BoolReference drawRaycastGizmos;
         [SerializeField] private RaycastHit2DReference currentRightRaycast;
         [SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         private Transform Transform => transform.Value;
         
         /* fields */
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderBoundsCenter;
+        [SerializeField] private IntReference verticalHitsStorageLength;
         [SerializeField] private IntReference horizontalHitsStorageLength;
+        [SerializeField] private IntReference rightHitsStorageLength;
+        [SerializeField] private IntReference leftHitsStorageLength;
+        [SerializeField] private IntReference downHitsStorageLength;
+        [SerializeField] private IntReference upHitsStorageLength;
         [SerializeField] private IntReference currentRightHitsStorageIndex;
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
         [SerializeField] private FloatReference currentRightHitDistance;
@@ -50,6 +57,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference currentRightHitPoint;
         [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private BoolReference isGrounded;
+        [SerializeField] private FloatReference friction;
+        [SerializeField] private BoolReference onMovingPlatform;
+        [SerializeField] private GameObjectReference standingOnLastFrame;
+        [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -134,11 +145,40 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = horizontalHitsStorageLength.Value;
         }
+        
+        public int VerticalHitsStorageLength { get; set; }
+
+        public int VerticalHitsStorageLengthRef
+        {
+            set => value = verticalHitsStorageLength.Value;
+        }
 
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] RightHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] DownHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] LeftHitsStorage { get; set; } = new RaycastHit2D[0];
+
+        public int UpHitsStorageLength => UpHitsStorage.Length;
+        public int RightHitsStorageLength => RightHitsStorage.Length;
+        public int DownHitsStorageLength => DownHitsStorage.Length;
+        public int LeftHitsStorageLength => LeftHitsStorage.Length;
+
+        public int UpHitsStorageLengthRef
+        {
+            set => value = upHitsStorageLength.Value;
+        }
+        public int RightHitsStorageLengthRef
+        {
+            set => value = rightHitsStorageLength.Value;
+        }
+        public int DownHitsStorageLengthRef
+        {
+            set => value = downHitsStorageLength.Value;
+        }
+        public int LeftHitsStorageLengthRef
+        {
+            set => value = leftHitsStorageLength.Value;
+        }
 
         public int CurrentRightHitsStorageIndex { get; set; }
         public int CurrentRightHitsStorageIndexRef
@@ -215,6 +255,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool IsGroundedRef
         {
             set => value = isGrounded.Value;
+        }
+        
+        public float Friction { get; set; }
+
+        public float FrictionRef
+        {
+            set => value = friction.Value;
+        }
+
+        public bool OnMovingPlatformRef
+        {
+            set => value = onMovingPlatform.Value;
+        }
+
+        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
+
+        public GameObject StandingOnLastFrameRef
+        {
+            set => value = standingOnLastFrame.Value;
+        }
+
+        public bool IsStandingOnLastFrameNotNull => state.StandingOnLastFrame != null;
+
+        public bool IsStandingOnLastFrameNotNullRef
+        {
+            set => value = isStandingOnLastFrameNotNull.Value;
         }
     }
 }

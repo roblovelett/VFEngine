@@ -40,6 +40,9 @@ namespace VFEngine.Platformer.Physics
             p.MaximumSlopeAngleRef = p.MaximumSlopeAngle;
             p.NewRightPositionDistanceRef = p.NewRightPositionDistance;
             p.NewLeftPositionDistanceRef = p.NewLeftPositionDistance;
+            p.NewPositionRef = p.NewPosition;
+            p.SmallValueRef = p.SmallValue;
+            p.GravityRef = p.Gravity;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -193,6 +196,16 @@ namespace VFEngine.Platformer.Physics
             p.NewPositionX = 0;
         }
 
+        private void SetIsFalling()
+        {
+            p.state.SetIsFalling(true);
+        }
+
+        private void SetIsNotFalling()
+        {
+            p.state.SetIsFalling(false);
+        }
+
         /* properties: methods */
         public void OnInitialize()
         {
@@ -302,6 +315,16 @@ namespace VFEngine.Platformer.Physics
         public void OnStopNewHorizontalPosition()
         {
             StopNewHorizontalPosition();
+        }
+
+        public void OnSetIsFalling()
+        {
+            SetIsFalling();
+        }
+
+        public void OnSetIsNotFalling()
+        {
+            SetIsNotFalling();
         }
     }
 }

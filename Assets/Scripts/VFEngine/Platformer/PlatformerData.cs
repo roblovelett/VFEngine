@@ -1,4 +1,5 @@
 ﻿using UnityAtoms.BaseAtoms;
+using UnityAtoms.Editor;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
@@ -48,7 +49,18 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference currentLeftHitAngle;
         [SerializeField] private FloatReference maximumSlopeAngle;
         [SerializeField] private BoolReference isGrounded;
-
+        [SerializeField] private FloatReference friction;
+        [SerializeField] private Vector2Reference newPosition;
+        [SerializeField] private FloatReference smallValue;
+        [SerializeField] private FloatReference gravity;
+        [SerializeField] private BoolReference isFalling;
+        [SerializeField] private FloatReference downRayLength;
+        [SerializeField] private BoolReference onMovingPlatform;
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
+        [SerializeField] private IntReference downHitsStorageLength;
+        [SerializeField] private GameObjectReference standingOnLastFrame;
+        [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
+        
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
@@ -90,6 +102,17 @@ namespace VFEngine.Platformer
         public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
         public float MaximumSlopeAngle => maximumSlopeAngle.Value;
         public bool IsGrounded => isGrounded.Value;
+        public float Friction => friction.Value;
+        public Vector2 NewPosition => newPosition.Value;
+        public float SmallValue => smallValue.Value;
+        public float Gravity => gravity.Value;
+        public bool IsFalling => isFalling.Value;
+        public bool OnMovingPlatform => onMovingPlatform.Value;
+        public float DownRayLength => downRayLength.Value;
+        public int DownHitsStorageLength => downHitsStorageLength.Value;
+        public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
+        public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
+        public bool IsStandingOnLastFrameNotNull => isStandingOnLastFrameNotNull.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

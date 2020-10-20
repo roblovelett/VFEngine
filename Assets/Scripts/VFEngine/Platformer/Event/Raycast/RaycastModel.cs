@@ -12,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Vector2;
     using static MathsExtensions;
     using static Color;
+    using static Mathf;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -47,9 +48,11 @@ namespace VFEngine.Platformer.Event.Raycast
             r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
             r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;
             r.NumberOfHorizontalRaysPerSideRef = r.NumberOfHorizontalRaysPerSide;
+            r.NumberOfVerticalRaysPerSideRef = r.NumberOfVerticalRaysPerSide;
             r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
             r.CurrentRightRaycastRef = r.CurrentRightRaycast;
             r.CurrentLeftRaycastRef = r.CurrentLeftRaycast;
+            r.DownRayLengthRef = r.DownRayLength;
             switch (rayDirection)
             {
                 case None:
@@ -191,6 +194,42 @@ namespace VFEngine.Platformer.Event.Raycast
                 r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
         }
 
+        private void InitializeDownRayLength()
+        {
+            r.DownRayLength = r.BoundsHeight / 2 + r.RayOffset;
+        }
+
+        private void DoubleDownRayLength()
+        {
+            r.DownRayLength *= 2;
+        }
+
+        private void SetDownRayLengthToVerticalNewPosition()
+        {
+            r.DownRayLength += Abs(r.NewPosition.y);
+        }
+
+        private void SetVerticalRaycastFromLeft()
+        {
+            r.VerticalRaycastFromLeft = SetVerticalRaycast(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner, r.Transform,
+                r.RayOffset, r.NewPosition.x);
+        }
+
+        private void SetVerticalRaycastToRight()
+        {
+            r.VerticalRaycastToRight = SetVerticalRaycast(r.BoundsBottomRightCorner, r.BoundsTopRightCorner,
+                r.Transform, r.RayOffset, r.NewPosition.x);
+        }
+
+        private static Vector2 SetVerticalRaycast(Vector2 boundsBottomCorner, Vector2 boundsTopCorner,
+            Transform transform, float offset, float positionX)
+        {
+            var verticalRay = (boundsBottomCorner + boundsTopCorner) / 2;
+            verticalRay += (Vector2) transform.up * offset;
+            verticalRay += (Vector2) transform.right * positionX;
+            return verticalRay;
+        }
+
         private static float SetPositiveBounds(float offset, float size)
         {
             return Half(offset + size);
@@ -236,6 +275,31 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentLeftRaycast()
         {
             SetCurrentLeftRaycast();
+        }
+
+        public void OnInitializeDownRayLength()
+        {
+            InitializeDownRayLength();
+        }
+
+        public void OnDoubleDownRayLength()
+        {
+            DoubleDownRayLength();
+        }
+
+        public void OnSetDownRayLengthToVerticalNewPosition()
+        {
+            SetDownRayLengthToVerticalNewPosition();
+        }
+
+        public void OnSetVerticalRaycastFromLeft()
+        {
+            SetVerticalRaycastFromLeft();
+        }
+
+        public void OnSetVerticalRaycastToRight()
+        {
+            SetVerticalRaycastToRight();
         }
     }
 }

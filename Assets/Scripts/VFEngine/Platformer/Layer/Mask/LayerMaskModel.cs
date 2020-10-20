@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static LayerMask;
@@ -27,7 +28,7 @@ namespace VFEngine.Platformer.Layer.Mask
             var lTask1 = Async(InitializeData());
             var lTask2 = Async(GetWarningMessages());
             var lTask3 = Async(InitializeModel());
-            var lTask = await ( lTask1, lTask2, lTask3);
+            var lTask = await (lTask1, lTask2, lTask3);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -111,10 +112,42 @@ namespace VFEngine.Platformer.Layer.Mask
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        /* properties: methods */
-        public UniTask<UniTaskVoid> Initialize()
+        private void SetRaysBelowLayerMaskPlatforms()
         {
-            return Async(InitializeInternal());
+            lm.RaysBelowLayerMaskPlatforms = lm.PlatformMask;
+        }
+
+        private void SetRaysBelowLayerMaskPlatformsWithoutOneWay()
+        {
+            lm.RaysBelowLayerMaskPlatformsWithoutOneWay = lm.PlatformMask & ~lm.MidHeightOneWayPlatformMask &
+                                                          ~lm.OneWayPlatformMask & ~lm.MovingOneWayPlatformMask;
+        }
+
+        private void SetRaysBelowLayerMaskPlatformsWithoutMidHeight()
+        {
+            lm.RaysBelowLayerMaskPlatformsWithoutMidHeight =
+                lm.RaysBelowLayerMaskPlatforms & ~lm.MidHeightOneWayPlatformMask;
+        }
+
+        /* properties: methods */
+        public void Initialize()
+        {
+            Async(InitializeInternal());
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatforms()
+        {
+            SetRaysBelowLayerMaskPlatforms();
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatformsWithoutOneWay()
+        {
+            SetRaysBelowLayerMaskPlatformsWithoutOneWay();
+        }
+
+        public void OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight()
+        {
+            SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
         }
     }
 }

@@ -95,5 +95,32 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             leftRaycastModel.OnSetCurrentLeftRaycast();
         }
+
+        public void InitializeDownRayLength()
+        {
+            downRaycastModel.OnInitializeDownRayLength();
+        }
+
+        public void DoubleDownRayLength()
+        {
+            downRaycastModel.OnDoubleDownRayLength();
+        }
+
+        public void SetDownRayLengthToVerticalNewPosition()
+        {
+            downRaycastModel.OnSetDownRayLengthToVerticalNewPosition();
+        }
+
+        public async UniTaskVoid SetVerticalRaycastFromLeft()
+        {
+            downRaycastModel.OnSetVerticalRaycastFromLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetVerticalRaycastToRight()
+        {
+            downRaycastModel.OnSetVerticalRaycastToRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

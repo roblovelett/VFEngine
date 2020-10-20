@@ -37,7 +37,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             var xRays = rhc.NumberOfHorizontalRays;
             var yRays = rhc.NumberOfVerticalRays / 2;
             if (rhc.CastRaysBothSides) xRays /= 2;
-            rhc.HorizontalHitsStorageLength = xRays;
             switch (direction)
             {
                 case Up:
@@ -61,6 +60,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                     break;
             }
 
+            rhc.HorizontalHitsStorageLength = xRays;
+            rhc.VerticalHitsStorageLength = yRays;
+            rhc.UpHitsStorageLengthRef = rhc.UpHitsStorageLength;
+            rhc.RightHitsStorageLengthRef = rhc.RightHitsStorageLength;
+            rhc.DownHitsStorageLengthRef = rhc.DownHitsStorageLength;
+            rhc.LeftHitsStorageLengthRef = rhc.LeftHitsStorageLength;
             rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
             rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
             rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
@@ -77,6 +82,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentRightHitPointRef = rhc.CurrentRightHitPoint;
             rhc.CurrentLeftHitPointRef = rhc.CurrentLeftHitPoint;
             rhc.IsGroundedRef = rhc.state.IsGrounded;
+            rhc.FrictionRef = rhc.Friction;
+            rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
+            rhc.VerticalHitsStorageLengthRef = rhc.VerticalHitsStorageLength;
+            rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
+            rhc.IsStandingOnLastFrameNotNullRef = rhc.IsStandingOnLastFrameNotNull;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -265,6 +275,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentLeftHitsStorageIndex++;
         }
 
+        private void InitializeFriction()
+        {
+            rhc.Friction = 0;
+        }
+
+        private void SetIsNotCollidingBelow()
+        {
+            rhc.state.SetIsCollidingAbove(false);
+        }
+
+        private void InitializeDownHitsStorage()
+        {
+            rhc.DownHitsStorage = new RaycastHit2D[rhc.VerticalHitsStorageLength];
+        }
+
+        private void InitializeUpHitsStorage()
+        {
+            rhc.UpHitsStorage = new RaycastHit2D[rhc.VerticalHitsStorageLength];
+        }
+
         /* properties: dependencies */
 
         /* properties: methods */
@@ -419,6 +449,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnAddToLeftHitsStorageIndex()
         {
             AddToLeftHitsStorageIndex();
+        }
+
+        public void OnInitializeFriction()
+        {
+            InitializeFriction();
+        }
+
+        public void OnSetIsNotCollidingBelow()
+        {
+            SetIsNotCollidingBelow();
+        }
+
+        public void OnInitializeDownHitsStorage()
+        {
+            InitializeDownHitsStorage();
         }
     }
 }

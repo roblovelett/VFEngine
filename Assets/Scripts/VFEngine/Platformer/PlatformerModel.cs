@@ -15,6 +15,7 @@ namespace VFEngine.Platformer
     using static TimeExtensions;
     using static Mathf;
     using static RaycastDirection;
+    using static LayerMaskExtensions;
 
     [CreateAssetMenu(fileName = "PlatformerModel", menuName = "VFEngine/Platformer/Platformer Model", order = 0)]
     public class PlatformerModel : ScriptableObject, IModel
@@ -177,11 +178,14 @@ namespace VFEngine.Platformer
         {
             switch (direction)
             {
-                case Up: break;
+                case Up:
+                    break;
                 case Right:
                     Async(CastHorizontalRays(direction));
                     break;
-                case Down: break;
+                case Down:
+                    Async(CastRaysDown());
+                    break;
                 case Left:
                     Async(CastHorizontalRays(direction));
                     break;
@@ -194,6 +198,82 @@ namespace VFEngine.Platformer
             }
 
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid CastRaysDown()
+        {
+            var friction = SetFriction();
+            if (p.NewPosition.y < p.SmallValue) p.Physics.SetIsFalling();
+            else p.Physics.SetIsNotFalling();
+            if (p.Gravity > 0 && !p.IsFalling)
+            {
+                p.RaycastHitCollider.SetIsNotCollidingBelow();
+                return;
+            }
+
+            var rayLength = SetDownRayLength();
+            
+            if (p.OnMovingPlatform)
+            {
+                p.Raycast.DoubleDownRayLength();
+            }
+
+            if (p.NewPosition.y < 0)
+            {
+                p.Raycast.SetDownRayLengthToVerticalNewPosition();
+            }
+
+            if (p.DownHitsStorageLength != p.NumberOfVerticalRaysPerSide)
+            {
+                p.RaycastHitCollider.InitializeDownHitsStorage();
+            }
+
+            var rTask1 = Async(SetVerticalRaycast());
+            var lmTask1 = Async(SetRaysBelowLayerMask());
+
+            var task1 = await (rTask1, lmTask1);
+
+            if (p.WasGroundedLastFrame)
+            {
+                if (p.IsStandingOnLastFrameNotNull)
+                {
+                    // ===========================================================================================================
+                }
+            }
+            
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetRaysBelowLayerMask()
+        {
+            var lmTask1 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatforms());
+            var lmTask2 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutOneWay());
+            
+            var task1 = await (lmTask1, lmTask2);
+            
+            p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
+            
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetVerticalRaycast()
+        {
+            var rTask1 = Async(p.Raycast.SetVerticalRaycastFromLeft());
+            var rTask2 = Async(p.Raycast.SetVerticalRaycastToRight());
+            var task1 = await (rTask1, rTask2);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private float SetDownRayLength()
+        {
+            p.Raycast.InitializeDownRayLength();
+            return p.DownRayLength;
+        }
+
+        private float SetFriction()
+        {
+            p.RaycastHitCollider.InitializeFriction();
+            return p.Friction;
         }
 
         private async UniTaskVoid CastHorizontalRays(RaycastDirection direction)

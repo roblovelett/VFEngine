@@ -37,6 +37,9 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private IntReference horizontalMovementDirection;
         [SerializeField] private FloatReference newRightPositionDistance;
         [SerializeField] private FloatReference newLeftPositionDistance;
+        [SerializeField] private Vector2Reference newPosition;
+        [SerializeField] private FloatReference smallValue;
+        [SerializeField] private FloatReference gravity;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -71,6 +74,11 @@ namespace VFEngine.Platformer.Physics
         public bool HasGravityController => gravityController;
         public bool HasTransform => characterTransform;
         public float Gravity => settings.gravity;
+
+        public float GravityRef
+        {
+            set => value = gravity.Value;
+        }
         public float AscentMultiplier => settings.ascentMultiplier;
         public float FallMultiplier => settings.fallMultiplier;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
@@ -131,15 +139,18 @@ namespace VFEngine.Platformer.Physics
 
         public Vector2 NewPosition { get; set; }
 
+        public Vector2 NewPositionRef
+        {
+            set => value = newPosition.Value;
+        }
+
         public float NewPositionX
         {
-            get => NewPosition.x;
             set => value = NewPosition.x;
         }
 
         public float NewPositionY
         {
-            get => NewPosition.y;
             set => value = NewPosition.y;
         }
 
@@ -154,6 +165,13 @@ namespace VFEngine.Platformer.Physics
         public float NewLeftPositionDistanceRef
         {
             set => value = newLeftPositionDistance.Value;
+        }
+
+        public float SmallValue { get; set; } = 0.0001f;
+
+        public float SmallValueRef
+        {
+            set => value = smallValue.Value;
         }
     }
 }

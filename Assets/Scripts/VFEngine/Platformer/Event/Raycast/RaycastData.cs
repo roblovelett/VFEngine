@@ -3,6 +3,7 @@ using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast
@@ -26,9 +27,11 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private IntReference currentRightHitsStorageIndex;
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
         [SerializeField] private IntReference horizontalHitsStorageLength;
+        [SerializeField] private IntReference verticalHitsStorageLength;
         [SerializeField] private LayerMaskReference platformMask;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
+        [SerializeField] private Vector2Reference newPosition;
 
         /* fields */
         [SerializeField] private IntReference numberOfHorizontalRays;
@@ -41,8 +44,10 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference currentRightRaycastOrigin;
         [SerializeField] private Vector2Reference currentLeftRaycastOrigin;
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         [SerializeField] private RaycastHit2DReference currentRightRaycast;
         [SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        [SerializeField] private FloatReference downRayLength;
         private const float ObstacleHeightTolerance = 0.05f;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
@@ -63,6 +68,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public int CurrentRightHitsStorageIndex => currentRightHitsStorageIndex.Value;
         public int CurrentLeftHitsStorageIndex => currentLeftHitsStorageIndex.Value;
         public int NumberOfHorizontalRaysPerSide => horizontalHitsStorageLength.Value;
+        public int NumberOfVerticalRaysPerSide => verticalHitsStorageLength.Value;
         public LayerMask PlatformMask => platformMask.Value;
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
@@ -82,6 +88,13 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = numberOfHorizontalRaysPerSide.Value;
         }
+
+        public int NumberOfVerticalRaysPerSideRef
+        {
+            set => value = numberOfVerticalRaysPerSide.Value;
+        }
+
+        public Vector2 NewPosition => newPosition.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
@@ -145,6 +158,16 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = currentLeftRaycastOrigin.Value;
         }
+
+        public float DownRayLength { get; set; }
+
+        public float DownRayLengthRef
+        {
+            set => value = downRayLength.Value;
+        }
+        
+        public Vector2 VerticalRaycastFromLeft { get; set; }
+        public Vector2 VerticalRaycastToRight { get; set; }
 
         /* fields: methods */
         private Vector2 SetHorizontalRaycastFromBottom()
