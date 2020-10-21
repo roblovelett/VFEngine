@@ -171,6 +171,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftColliderModel.OnSetCurrentLeftHitsStorage();
         }
 
+        public async UniTaskVoid SetCurrentDownHitsStorage()
+        {
+            downColliderModel.OnSetCurrentDownHitsStorage();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void SetRightHitAngle()
         {
             rightColliderModel.OnSetRightHitAngle();
@@ -255,14 +261,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnInitializeDownHitsStorage();
         }
 
-        public void InitializeDownHitsStorageSmallestDistanceIndex()
+        public async UniTaskVoid InitializeDownHitsStorageSmallestDistanceIndex()
         {
             downColliderModel.OnInitializeDownHitsStorageSmallestDistanceIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void InitializeDownHitConnected()
+        public async UniTaskVoid InitializeDownHitConnected()
         {
             downColliderModel.OnInitializeDownHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void InitializeDownHitsStorageIndex()
@@ -273,6 +281,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void AddDownHitsStorageIndex()
         {
             downColliderModel.OnAddDownHitsStorageIndex();
+        }
+
+        public async UniTaskVoid SetRaycastDownHitAt(int index)
+        {
+            downColliderModel.OnSetRaycastDownHitAt(index);
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
     }
 }

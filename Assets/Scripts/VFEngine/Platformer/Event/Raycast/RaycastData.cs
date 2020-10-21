@@ -34,6 +34,8 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private LayerMaskReference platformMask;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
         [SerializeField] private Vector2Reference newPosition;
 
         /* fields */
@@ -43,6 +45,8 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private BoolReference drawRaycastGizmos;
         [SerializeField] private Vector2Reference horizontalRaycastFromBottom;
         [SerializeField] private Vector2Reference horizontalRaycastToTop;
+        [SerializeField] private Vector2Reference verticalRaycastFromLeft;
+        [SerializeField] private Vector2Reference verticalRaycastToRight;
         [SerializeField] private FloatReference horizontalRayLength;
         [SerializeField] private Vector2Reference currentRightRaycastOrigin;
         [SerializeField] private Vector2Reference currentLeftRaycastOrigin;
@@ -52,6 +56,8 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         [SerializeField] private RaycastHit2DReference currentRightRaycast;
         [SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        [SerializeField] private RaycastHit2DReference currentUpRaycast;
+        [SerializeField] private RaycastHit2DReference currentDownRaycast;
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private FloatReference smallestDistance;
         private const float ObstacleHeightTolerance = 0.05f;
@@ -81,8 +87,12 @@ namespace VFEngine.Platformer.Event.Raycast
         public LayerMask PlatformMask => platformMask.Value;
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value;
         public RaycastHit2D CurrentRightRaycast { get; set; }
         public RaycastHit2D CurrentLeftRaycast { get; set; }
+        public RaycastHit2D CurrentUpRaycast { get; set; }
+        public RaycastHit2D CurrentDownRaycast { get; set; }
         public RaycastHit2D CurrentRightRaycastRef
         {
             set => value = currentRightRaycast.Value;
@@ -91,6 +101,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastHit2D CurrentLeftRaycastRef
         {
             set => value = currentLeftRaycast.Value;
+        }
+
+        public RaycastHit2D CurrentUpRaycastRef
+        {
+            set => value = currentUpRaycast.Value;
+        }
+
+        public RaycastHit2D CurrentDownRaycastRef
+        {
+            set => value = currentDownRaycast.Value;
         }
 
         public int NumberOfHorizontalRaysPerSideRef
@@ -189,6 +209,16 @@ namespace VFEngine.Platformer.Event.Raycast
         
         public Vector2 VerticalRaycastFromLeft { get; set; }
         public Vector2 VerticalRaycastToRight { get; set; }
+
+        public Vector2 VerticalRaycastFromLeftRef
+        {
+            set => value = verticalRaycastFromLeft.Value;
+        }
+
+        public Vector2 VerticalRaycastToRightRef
+        {
+            set => value = verticalRaycastToRight.Value;
+        }
         public static float SmallestDistance => MaxValue;
         public float SmallestDistanceRef
         {

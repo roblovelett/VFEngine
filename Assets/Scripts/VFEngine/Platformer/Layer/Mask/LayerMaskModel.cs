@@ -39,6 +39,7 @@ namespace VFEngine.Platformer.Layer.Mask
             lm.MovingOneWayPlatformMaskRef = lm.MovingOneWayPlatformMask;
             lm.MidHeightOneWayPlatformMaskRef = lm.MidHeightOneWayPlatformMask;
             lm.StairsMaskRef = lm.StairsMask;
+            lm.RaysBelowLayerMaskPlatformsWithoutOneWayRef = lm.RaysBelowLayerMaskPlatformsWithoutOneWay;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

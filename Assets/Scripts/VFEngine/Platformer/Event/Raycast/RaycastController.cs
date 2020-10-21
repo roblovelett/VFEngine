@@ -86,6 +86,13 @@ namespace VFEngine.Platformer.Event.Raycast
             leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
         }
 
+        public void SetCurrentDownRaycastToIgnoreOneWayPlatform()
+        {
+            downRaycastModel.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
+        }
+
+        //public void SetCurrentUpRaycastToIgnoreOneWayPlatform() {}
+
         public void SetCurrentRightRaycast()
         {
             rightRaycastModel.OnSetCurrentRightRaycast();
@@ -94,6 +101,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetCurrentLeftRaycast()
         {
             leftRaycastModel.OnSetCurrentLeftRaycast();
+        }
+
+        public void SetCurrentDownRaycast()
+        {
+            downRaycastModel.OnSetCurrentDownRaycast();
         }
 
         public void InitializeDownRayLength()

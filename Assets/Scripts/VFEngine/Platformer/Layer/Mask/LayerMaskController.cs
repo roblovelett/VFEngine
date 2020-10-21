@@ -55,5 +55,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             model.OnSetRaysBelowLayerMaskPlatformsToOneWay();
         }
+        
+        
     }
 }

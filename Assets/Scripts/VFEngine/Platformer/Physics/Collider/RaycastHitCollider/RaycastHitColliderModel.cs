@@ -76,6 +76,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.HorizontalHitsStorageLengthRef = rhc.HorizontalHitsStorageLength;
             rhc.CurrentRightHitDistanceRef = rhc.CurrentRightHitDistance;
             rhc.CurrentLeftHitDistanceRef = rhc.CurrentLeftHitDistance;
+            rhc.CurrentDownHitSmallestDistanceRef = rhc.CurrentDownHitSmallestDistance;
             rhc.CurrentRightHitColliderRef = rhc.CurrentRightHitCollider;
             rhc.CurrentLeftHitColliderRef = rhc.CurrentLeftHitCollider;
             rhc.IgnoredColliderRef = rhc.IgnoredCollider;
@@ -85,6 +86,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentLeftHitPointRef = rhc.CurrentLeftHitPoint;
             rhc.IsGroundedRef = rhc.state.IsGrounded;
             rhc.FrictionRef = rhc.Friction;
+            rhc.RaycastDownHitAtRef = rhc.RaycastDownHitAt;
             rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
             rhc.VerticalHitsStorageLengthRef = rhc.VerticalHitsStorageLength;
             rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
@@ -212,6 +214,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex] = rhc.CurrentLeftRaycast;
         }
 
+        private void SetCurrentDownHitsStorage()
+        {
+            rhc.DownHitsStorage[rhc.CurrentDownHitsStorageIndex] = rhc.CurrentDownRaycast;
+        }
+
         private void SetRightHitAngle()
         {
             rhc.state.SetRightHitAngle(rhc.CurrentRightHitAngle);
@@ -322,6 +329,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentDownHitsStorageIndex++;
         }
 
+        private void SetRaycastDownHitAt(int index)
+        {
+            rhc.RaycastDownHitAt = rhc.DownHitsStorage[index];
+        }
+
         /* properties: dependencies */
 
         /* properties: methods */
@@ -407,6 +419,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetCurrentLeftHitsStorage()
         {
             SetCurrentLeftHitsStorage();
+        }
+
+        public void OnSetCurrentDownHitsStorage()
+        {
+            SetCurrentDownHitsStorage();
         }
 
         public void OnSetRightHitAngle()
@@ -511,6 +528,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnAddDownHitsStorageIndex()
         {
             AddDownHitsStorageIndex();
+        }
+
+        public void OnSetRaycastDownHitAt(int index)
+        {
+            SetRaycastDownHitAt(index);
         }
     }
 }

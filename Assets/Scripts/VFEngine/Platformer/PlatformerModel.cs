@@ -226,25 +226,29 @@ namespace VFEngine.Platformer
                     BoundsContainsPosition(p.StandingOnCollider.bounds, p.ColliderBottomCenterPosition);
                 if (maskContainsLayer && boundsContainsPosition)
                     p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
-                if (p.OnMovingPlatform && p.NewPosition.y > 0)
-                    p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
-
+                if (p.OnMovingPlatform && p.NewPosition.y > 0) p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
+                var rchTask2 = Async(p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex());
+                var rchTask3 = Async(p.RaycastHitCollider.InitializeDownHitConnected());
+                var task2 = await (rchTask2, rchTask3);
                 var raysAmount = p.NumberOfVerticalRaysPerSide;
                 var smallestDistance = p.SmallestDistance;
-                var downHitsStorageSmallestDistanceIndex = InitializeDownHitsStorageSmallestDistanceIndex();
-                var downHitConnected = InitializeDownHitConnected();
-                
+                var smallestDistanceIndex = p.DownHitsStorageSmallestDistanceIndex;
+                var downHitConnected = p.DownHitConnected;
                 for (var i = 0; i < raysAmount; i++)
                 {
-                    // set ray origin point
                     if (p.NewPosition.y > 0 && !p.WasGroundedLastFrame)
                         p.Raycast.SetCurrentDownRaycastToIgnoreOneWayPlatform();
                     else p.Raycast.SetCurrentDownRaycast();
+                    var rchTask4 = Async(p.RaycastHitCollider.SetCurrentDownHitsStorage());
+                    var rchTask5 = Async(p.RaycastHitCollider.SetRaycastDownHitAt(i));
+                    var task3 = await (rchTask2, rchTask3);
+                    var distance = p.CurrentDownHitSmallestDistance;
+                    var downHitAt = p.RaycastDownHitAt;
+                    if (downHitAt)
+                    {
+                        // =========== //
+                    }
 
-                    p.RaycastHitCollider.SetCurrentDownHitsStorage();
-                    //
-                    //
-                    //
                     // ===============================================================================================
                     p.RaycastHitCollider.AddDownHitsStorageIndex();
                 }
@@ -259,18 +263,6 @@ namespace VFEngine.Platformer
                 p.RaycastHitCollider.InitializeDownHitsStorage();
             p.RaycastHitCollider.InitializeDownHitsStorageIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
-        
-        private bool InitializeDownHitConnected()
-        {
-            p.RaycastHitCollider.InitializeDownHitConnected();
-            return p.DownHitConnected;
-        }
-
-        private int InitializeDownHitsStorageSmallestDistanceIndex()
-        {
-            p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex();
-            return p.DownHitsStorageSmallestDistanceIndex;
         }
 
         private static bool BoundsContainsPosition(Bounds bounds, Vector2 colliderPosition)

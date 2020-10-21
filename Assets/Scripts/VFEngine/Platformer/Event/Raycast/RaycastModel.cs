@@ -13,6 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static MathsExtensions;
     using static Color;
     using static Mathf;
+    using static RaycastData;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -44,6 +45,8 @@ namespace VFEngine.Platformer.Event.Raycast
             r.CastRaysOnBothSidesRef = r.CastRaysOnBothSides;
             r.HorizontalRaycastFromBottomRef = r.HorizontalRaycastFromBottom;
             r.HorizontalRaycastToTopRef = r.HorizontalRaycastToTop;
+            r.VerticalRaycastFromLeftRef = r.VerticalRaycastFromLeft;
+            r.VerticalRaycastToRightRef = r.VerticalRaycastToRight;
             r.HorizontalRayLengthRef = r.HorizontalRayLength;
             r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
             r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;
@@ -54,8 +57,10 @@ namespace VFEngine.Platformer.Event.Raycast
             r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
             r.CurrentRightRaycastRef = r.CurrentRightRaycast;
             r.CurrentLeftRaycastRef = r.CurrentLeftRaycast;
+            r.CurrentUpRaycastRef = r.CurrentUpRaycast;
+            r.CurrentDownRaycastRef = r.CurrentDownRaycast;
             r.DownRayLengthRef = r.DownRayLength;
-            r.SmallestDistanceRef = RaycastData.SmallestDistance;
+            r.SmallestDistanceRef = SmallestDistance;
             switch (rayDirection)
             {
                 case None:
@@ -197,6 +202,19 @@ namespace VFEngine.Platformer.Event.Raycast
                 r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
         }
 
+        private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
+        {
+            r.CurrentDownRaycast = Raycast(r.CurrentDownRaycastOrigin, -r.Transform.up, r.DownRayLength,
+                r.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, r.DrawRaycastGizmos);
+        }
+
+        private void SetCurrentDownRaycast()
+        {
+            r.CurrentDownRaycast = Raycast(r.CurrentDownRaycastOrigin, -r.Transform.up, r.DownRayLength,
+                r.RaysBelowLayerMaskPlatforms, blue, r.DrawRaycastGizmos);
+        }
+        
+
         private void InitializeDownRayLength()
         {
             r.DownRayLength = r.BoundsHeight / 2 + r.RayOffset;
@@ -270,6 +288,11 @@ namespace VFEngine.Platformer.Event.Raycast
             SetCurrentLeftRaycastToIgnoreOneWayPlatform();
         }
 
+        public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
+        {
+            SetCurrentDownRaycastToIgnoreOneWayPlatform();
+        }
+
         public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
@@ -278,6 +301,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentLeftRaycast()
         {
             SetCurrentLeftRaycast();
+        }
+        
+        public void OnSetCurrentDownRaycast()
+        {
+            SetCurrentDownRaycast();
         }
 
         public void OnInitializeDownRayLength()

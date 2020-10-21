@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
+using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
@@ -42,6 +43,7 @@ namespace VFEngine.Platformer
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private FloatReference currentRightHitDistance;
         [SerializeField] private FloatReference currentLeftHitDistance;
+        [SerializeField] private FloatReference currentDownHitSmallestDistance;
         [SerializeField] private Collider2DReference currentRightHitCollider;
         [SerializeField] private Collider2DReference currentLeftHitCollider;
         [SerializeField] private Collider2DReference ignoredCollider;
@@ -67,6 +69,7 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference smallestDistance;
         [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
         [SerializeField] private BoolReference downHitConnected;
+        [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -127,6 +130,9 @@ namespace VFEngine.Platformer
         public float SmallestDistance => smallestDistance.Value;
         public int DownHitsStorageSmallestDistanceIndex => downHitsStorageSmallestDistanceIndex.Value;
         public bool DownHitConnected => downHitConnected.Value;
+
+        public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
+        public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
         
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
