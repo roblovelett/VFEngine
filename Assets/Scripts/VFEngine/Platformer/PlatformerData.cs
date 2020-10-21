@@ -70,7 +70,8 @@ namespace VFEngine.Platformer
         [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
         [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
-        
+        [SerializeField] private Vector3Reference crossBelowSlopeAngle;
+
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
@@ -133,7 +134,8 @@ namespace VFEngine.Platformer
 
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
         public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
-        
+        public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
+
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }

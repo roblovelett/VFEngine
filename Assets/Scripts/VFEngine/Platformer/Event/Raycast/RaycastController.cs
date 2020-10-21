@@ -134,5 +134,17 @@ namespace VFEngine.Platformer.Event.Raycast
             downRaycastModel.OnSetVerticalRaycastToRight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public async UniTaskVoid InitializeSmallestDistance()
+        {
+            downRaycastModel.OnInitializeSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetSmallestDistanceToDownHitDistance()
+        {
+            downRaycastModel.OnSetSmallestDistanceToDownHitDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

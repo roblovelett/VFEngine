@@ -288,5 +288,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnSetRaycastDownHitAt(index);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public async UniTaskVoid SetDownHitConnected()
+        {
+            downColliderModel.OnSetDownHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleAt(int index)
+        {
+            downColliderModel.OnSetBelowSlopeAngleAt(index);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetCrossBelowSlopeAngleAt(int index)
+        {
+            downColliderModel.OnSetCrossBelowSlopeAngleAt(index);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetSmallestDistanceIndexAt(int index)
+        {
+            downColliderModel.OnSetSmallestDistanceIndexAt(index);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetNegativeBelowSlopeAngle()
+        {
+            downColliderModel.OnSetNegativeBelowSlopeAngle();
+        }
     }
 }

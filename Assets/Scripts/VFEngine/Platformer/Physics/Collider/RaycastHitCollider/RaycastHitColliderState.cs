@@ -31,6 +31,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public GameObject StandingOn { get; private set; }
         public Collider2D StandingOnCollider { get; private set; }
         public GameObject StandingOnLastFrame { get; private set; }
+        public Vector3 CrossBelowSlopeAngle { get; private set; }
         public bool IsGrounded => IsCollidingBelow;
         public bool HasCollisions => IsCollidingRight || IsCollidingLeft || IsCollidingAbove || IsCollidingBelow;
 
@@ -188,6 +189,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void SetStandingOnCollider(Collider2D collider)
         {
             StandingOnCollider = collider;
+        }
+
+        public void SetCrossBelowSlopeAngle(Vector3 cross)
+        {
+            CrossBelowSlopeAngle = cross;
         }
 
         public void Reset()

@@ -201,8 +201,9 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid CastRaysDown()
         {
+            var smallValue = p.SmallValue;
             var friction = SetFriction();
-            if (p.NewPosition.y < p.SmallValue) p.Physics.SetIsFalling();
+            if (p.NewPosition.y < smallValue) p.Physics.SetIsFalling();
             else p.Physics.SetIsNotFalling();
             if (p.Gravity > 0 && !p.IsFalling)
             {
@@ -227,9 +228,10 @@ namespace VFEngine.Platformer
                 if (maskContainsLayer && boundsContainsPosition)
                     p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
                 if (p.OnMovingPlatform && p.NewPosition.y > 0) p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
+                var rTask2 = Async(p.Raycast.InitializeSmallestDistance());
                 var rchTask2 = Async(p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex());
                 var rchTask3 = Async(p.RaycastHitCollider.InitializeDownHitConnected());
-                var task2 = await (rchTask2, rchTask3);
+                var task2 = await (rTask2, rchTask2, rchTask3);
                 var raysAmount = p.NumberOfVerticalRaysPerSide;
                 var smallestDistance = p.SmallestDistance;
                 var smallestDistanceIndex = p.DownHitsStorageSmallestDistanceIndex;
@@ -246,12 +248,91 @@ namespace VFEngine.Platformer
                     var downHitAt = p.RaycastDownHitAt;
                     if (downHitAt)
                     {
-                        // =========== //
+                        if (downHitAt.collider == p.IgnoredCollider) continue;
+                        var rchTask6 = Async(p.RaycastHitCollider.SetDownHitConnected());
+                        var rchTask7 = Async(p.RaycastHitCollider.SetBelowSlopeAngleAt(i));
+                        var rchTask8 = Async(p.RaycastHitCollider.SetCrossBelowSlopeAngleAt(i));
+                        var task4 = await (rchTask6, rchTask7, rchTask8);
+                        if (p.CrossBelowSlopeAngle.z < 0) p.RaycastHitCollider.SetNegativeBelowSlopeAngle();
+                        if (downHitAt.distance < smallestDistance)
+                        {
+                            var rchTask9 = Async(p.RaycastHitCollider.SetSmallestDistanceIndexAt(i));
+                            var rTask3 = Async(p.Raycast.SetSmallestDistanceToDownHitDistance());
+                            var task5 = await (rchTask9, rTask3);
+                        }
                     }
 
-                    // ===============================================================================================
+                    if (distance < smallValue) break;
                     p.RaycastHitCollider.AddDownHitsStorageIndex();
                 }
+
+                if (downHitConnected)
+                {
+                    ///////////////////////////////////////////////////////////////////////////////////////////
+                    /*
+                    StandingOn = _belowHitsStorage[smallestDistanceIndex].collider.gameObject;
+                    StandingOnCollider = _belowHitsStorage[smallestDistanceIndex].collider;
+
+                    // if the character is jumping onto a (1-way) platform but not high enough, we do nothing
+                    if (!State.WasGroundedLastFrame && smallestDistance < _boundsHeight / 2 &&
+                        (OneWayPlatformMask.MMContains(StandingOn.layer) ||
+                         MovingOneWayPlatformMask.MMContains(StandingOn.layer)))
+                    {
+                        State.IsCollidingBelow = false;
+                        return;
+                    }
+
+                    State.IsFalling = false;
+                    State.IsCollidingBelow = true;
+
+                    // if we're applying an external force (jumping, jetpack...) we only apply that
+                    if (_externalForce.y > 0 && _speed.y > 0)
+                    {
+                        _newPosition.y = _speed.y * Time.deltaTime;
+                        State.IsCollidingBelow = false;
+                    }
+                    // if not, we just adjust the position based on the raycast hit
+                    else
+                    {
+                        var distance = MMMaths.DistanceBetweenPointAndLine(
+                            _belowHitsStorage[smallestDistanceIndex].point, _verticalRayCastFromLeft,
+                            _verticalRayCastToRight);
+                        _newPosition.y = -distance + _boundsHeight / 2 + RayOffset;
+                    }
+
+                    if (!State.WasGroundedLastFrame && _speed.y > 0) _newPosition.y += _speed.y * Time.deltaTime;
+                    if (Mathf.Abs(_newPosition.y) < _smallValue) _newPosition.y = 0;
+
+                    // we check if whatever we're standing on applies a friction change
+                    _frictionTest = _belowHitsStorage[smallestDistanceIndex].collider.gameObject
+                        .MMGetComponentNoAlloc<SurfaceModifier>();
+                    if (_frictionTest != null)
+                        _friction = _belowHitsStorage[smallestDistanceIndex].collider.GetComponent<SurfaceModifier>()
+                            .Friction;
+
+                    // we check if the character is standing on a moving platform
+                    _movingPlatformTest = _belowHitsStorage[smallestDistanceIndex].collider.gameObject
+                        .MMGetComponentNoAlloc<MMPathMovement>();
+                    if (_movingPlatformTest != null && State.IsGrounded)
+                        _movingPlatform = _movingPlatformTest.GetComponent<MMPathMovement>();
+                    else DetachFromMovingPlatform();
+                    */
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                }
+                else
+                {
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                    /*
+                    State.IsCollidingBelow = false;
+                    if (State.OnAMovingPlatform) DetachFromMovingPlatform();
+                    */
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                }
+                ////////////////////////////////////////////////////////////////////////////////////////////
+                /*
+                if (StickToSlopes) StickToSlope();
+                */
+                ////////////////////////////////////////////////////////////////////////////////////////////
             }
 
             await SetYieldOrSwitchToThreadPoolAsync();

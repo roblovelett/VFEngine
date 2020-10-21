@@ -10,6 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static UniTaskExtensions;
     using static DebugExtensions;
     using static ColliderDirection;
+    using static Vector2;
+    using static Vector3;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
         menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
@@ -96,6 +98,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.DownHitsStorageSmallestDistanceIndexRef = rhc.DownHitsStorageSmallestDistanceIndex;
             rhc.DownHitConnectedRef = rhc.DownHitConnected;
             rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
+            rhc.CrossBelowSlopeAngleRef = rhc.state.CrossBelowSlopeAngle;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -334,6 +337,31 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.RaycastDownHitAt = rhc.DownHitsStorage[index];
         }
 
+        private void SetDownHitConnected()
+        {
+            rhc.DownHitConnected = true;
+        }
+
+        private void SetBelowSlopeAngleAt(int index)
+        {
+            rhc.state.SetBelowSlopeAngle(Vector2.Angle(rhc.DownHitsStorage[index].normal, rhc.Transform.up));
+        }
+
+        private void SetCrossBelowSlopeAngleAt(int index)
+        {
+            rhc.state.SetCrossBelowSlopeAngle(Cross(rhc.Transform.up, rhc.DownHitsStorage[index].normal));
+        }
+
+        private void SetSmallestDistanceIndexAt(int index)
+        {
+            rhc.DownHitsStorageSmallestDistanceIndex = index;
+        }
+
+        private void SetNegativeBelowSlopeAngle()
+        {
+            rhc.state.SetCrossBelowSlopeAngle(-rhc.state.CrossBelowSlopeAngle);
+        }
+
         /* properties: dependencies */
 
         /* properties: methods */
@@ -533,6 +561,31 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetRaycastDownHitAt(int index)
         {
             SetRaycastDownHitAt(index);
+        }
+
+        public void OnSetDownHitConnected()
+        {
+            SetDownHitConnected();
+        }
+
+        public void OnSetBelowSlopeAngleAt(int index)
+        {
+            SetBelowSlopeAngleAt(index);
+        }
+
+        public void OnSetCrossBelowSlopeAngleAt(int index)
+        {
+            SetCrossBelowSlopeAngleAt(index);
+        }
+
+        public void OnSetSmallestDistanceIndexAt(int index)
+        {
+            SetSmallestDistanceIndexAt(index);
+        }
+
+        public void OnSetNegativeBelowSlopeAngle()
+        {
+            SetNegativeBelowSlopeAngle();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
@@ -13,7 +14,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static MathsExtensions;
     using static Color;
     using static Mathf;
-    using static RaycastData;
+    using static Single;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -60,7 +61,8 @@ namespace VFEngine.Platformer.Event.Raycast
             r.CurrentUpRaycastRef = r.CurrentUpRaycast;
             r.CurrentDownRaycastRef = r.CurrentDownRaycast;
             r.DownRayLengthRef = r.DownRayLength;
-            r.SmallestDistanceRef = SmallestDistance;
+            r.SmallestDistanceRef = r.SmallestDistance;
+            r.SmallValueRef = r.SmallValue;
             switch (rayDirection)
             {
                 case None:
@@ -242,6 +244,16 @@ namespace VFEngine.Platformer.Event.Raycast
                 r.Transform, r.RayOffset, r.NewPosition.x);
         }
 
+        private void InitializeSmallestDistance()
+        {
+            r.SmallestDistance = MaxValue;
+        }
+
+        private void SetSmallestDistanceToDownHitDistance()
+        {
+            r.SmallestDistance = r.RaycastDownHitAt.distance;
+        }
+
         private static Vector2 SetVerticalRaycast(Vector2 boundsBottomCorner, Vector2 boundsTopCorner,
             Transform transform, float offset, float positionX)
         {
@@ -331,6 +343,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetVerticalRaycastToRight()
         {
             SetVerticalRaycastToRight();
+        }
+
+        public void OnInitializeSmallestDistance()
+        {
+            InitializeSmallestDistance();
+        }
+
+        public void OnSetSmallestDistanceToDownHitDistance()
+        {
+            SetSmallestDistanceToDownHitDistance();
         }
     }
 }

@@ -38,7 +38,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         [SerializeField] private Vector2Reference verticalRaycastFromLeft;
         [SerializeField] private Vector2Reference verticalRaycastToRight;
-        private Transform Transform => transform.Value;
         
         /* fields */
         [SerializeField] private Vector2Reference boxColliderSize;
@@ -74,6 +73,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
         [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
+        [SerializeField] private Vector3Reference crossBelowSlopeAngle;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -142,7 +142,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
         public int NumberOfVerticalRays => numberOfVerticalRays.Value;
         public bool CastRaysBothSides => castRaysBothSides.Value;
-
+        public Transform Transform => transform.Value;
         public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value;
         public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value;
         public RaycastHit2D CurrentDownRaycast => currentDownRaycast.Value;
@@ -367,6 +367,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool DownHitConnectedRef
         {
             set => value = downHitConnected.Value;
+        }
+
+        public Vector3 CrossBelowSlopeAngleRef
+        {
+            set => value = crossBelowSlopeAngle.Value;
         }
     }
 }
