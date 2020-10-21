@@ -246,9 +246,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftColliderModel.OnAddToLeftHitsStorageIndex();
         }
 
-        public void InitializeFriction()
+        public async UniTaskVoid InitializeFriction()
         {
             downColliderModel.OnInitializeFriction();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
         
         public void SetIsNotCollidingBelow()

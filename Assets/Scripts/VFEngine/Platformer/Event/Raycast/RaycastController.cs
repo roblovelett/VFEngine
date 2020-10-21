@@ -108,9 +108,10 @@ namespace VFEngine.Platformer.Event.Raycast
             downRaycastModel.OnSetCurrentDownRaycast();
         }
 
-        public void InitializeDownRayLength()
+        public async UniTaskVoid InitializeDownRayLength()
         {
             downRaycastModel.OnInitializeDownRayLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void DoubleDownRayLength()
