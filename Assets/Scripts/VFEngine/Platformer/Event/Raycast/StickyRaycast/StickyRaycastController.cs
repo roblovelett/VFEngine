@@ -3,29 +3,19 @@ using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
-    using static StickyRaycastModel;
     using static ScriptableObjectExtensions;
+    using static Debug;
+    using static StickyRaycastData;
 
     public class StickyRaycastController : MonoBehaviour, IController
     {
-        
+        [SerializeField] private StickyRaycastModel model;
+
+        private void Awake()
+        {
+            if (!model) model = LoadData(ModelPath) as StickyRaycastModel;
+            Assert(model != null, nameof(model) + " !=  null");
+            model.OnInitialize();
+        }
     }
 }
-
-/* fields */
-/*
-[SerializeField] private StickyRaycastModel model;
-
-/* fields: methods */
-/*
-private void Awake()
-{
-    if (!model) model = LoadData(ModelPath) as StickyRaycastModel;
-    Debug.Assert(model != null, nameof(model) + " != null");
-    model.Initialize();
-}
-
-/* properties */
-/*
-public ScriptableObject Model => model;
-/* properties: methods */

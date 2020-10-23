@@ -16,7 +16,7 @@ namespace VFEngine.Tools
             return component;
         }
 
-        public static T GetComponentNoAllocation<T>(this GameObject @this) where T : Component
+        public static T GetComponentNoAllocation<T>(this GameObject @this) where T : class
         {
             @this.GetComponents(typeof(T), ComponentCache);
             var component = ComponentCache.Count > 0 ? ComponentCache[0] : null;

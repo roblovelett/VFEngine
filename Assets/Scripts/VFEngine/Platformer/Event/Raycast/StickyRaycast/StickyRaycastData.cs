@@ -5,10 +5,30 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static DebugExtensions;
+    using static ScriptableObjectExtensions;
 
     public class StickyRaycastData : MonoBehaviour
     {
+        [SerializeField] private StickyRaycastSettings settings;
+        [SerializeField] private FloatReference stickToSlopesOffsetY;
+        [SerializeField] private FloatReference stickyRaycastLength;
+        private const string SrPath = "Event/Raycast/StickyRaycast/";
+        private static readonly string ModelAssetPath = $"{SrPath}DefaultStickyRaycastModel.asset";
         
+        
+        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public float StickToSlopesOffsetY => settings.stickToSlopesOffsetY;
+        public float StickToSlopesOffsetYRef
+        {
+            set => value = stickToSlopesOffsetY;
+        }
+
+        public float StickyRaycastLength { get; set; } = 0f;
+
+        public float StickyRaycastLengthRef
+        {
+            set => value = stickyRaycastLength.Value;
+        }
     }
 }
 

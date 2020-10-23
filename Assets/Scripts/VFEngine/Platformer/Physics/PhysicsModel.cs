@@ -43,6 +43,8 @@ namespace VFEngine.Platformer.Physics
             p.NewPositionRef = p.NewPosition;
             p.SmallValueRef = p.SmallValue;
             p.GravityRef = p.Gravity;
+            p.StickToSlopesControlRef = p.StickToSlopesControl;
+            p.IsJumpingRef = p.state.IsJumping;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -125,7 +127,7 @@ namespace VFEngine.Platformer.Physics
 
         private void DisableGravity()
         {
-            p.state.SetGravity(false);
+            p.state.SetGravityActive(false);
         }
 
         private void ApplyMovingPlatformSpeedToNewPosition()
@@ -225,6 +227,11 @@ namespace VFEngine.Platformer.Physics
         private void StopNewVerticalPosition()
         {
             p.NewPositionY = 0;
+        }
+
+        private void SetGravityActive()
+        {
+            p.state.SetGravityActive(true);
         }
 
         /* properties: methods */
@@ -366,6 +373,11 @@ namespace VFEngine.Platformer.Physics
         public void OnStopNewVerticalPosition()
         {
             StopNewVerticalPosition();
+        }
+
+        public void OnSetGravityActive()
+        {
+            SetGravityActive();
         }
     }
 }

@@ -6,5 +6,3 @@ namespace VFEngine.Platformer.Physics.Movement.PathMovement
     {
     }
 }
-
-//public Vector3 CurrentSpeed { get; } = Vector3.zero;

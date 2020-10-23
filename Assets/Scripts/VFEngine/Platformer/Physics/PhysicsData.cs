@@ -42,6 +42,8 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference gravity;
+        [SerializeField] private BoolReference stickToSlopesControl;
+        [SerializeField] private BoolReference isJumping;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -59,6 +61,16 @@ namespace VFEngine.Platformer.Physics
         }
 
         /* properties dependencies */
+        public bool IsJumpingRef
+        {
+            set => value = isJumping.Value;
+        }
+        public bool StickToSlopesControl => settings.stickToSlopeControl;
+
+        public bool StickToSlopesControlRef
+        {
+            set => value = stickToSlopesControl.Value;
+        }
         public Transform Transform
         {
             get => characterTransform;

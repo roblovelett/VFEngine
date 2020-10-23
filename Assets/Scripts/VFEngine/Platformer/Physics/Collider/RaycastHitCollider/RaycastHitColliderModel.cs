@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -10,7 +11,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static UniTaskExtensions;
     using static DebugExtensions;
     using static ColliderDirection;
-    using static Vector2;
     using static Vector3;
 
     [CreateAssetMenu(fileName = "RaycastHitColliderModel",
@@ -20,6 +20,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         /* fields: dependencies */
         [FormerlySerializedAs("r")] [LabelText("Raycast Hit Collider Data")] [SerializeField]
         private RaycastHitColliderData rhc;
+
+        private PhysicsMaterialData physicsMaterialData;
 
         /* fields */
         private const string Rh = "Raycast Hit Collider";
@@ -87,7 +89,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentRightHitPointRef = rhc.CurrentRightHitPoint;
             rhc.CurrentLeftHitPointRef = rhc.CurrentLeftHitPoint;
             rhc.IsGroundedRef = rhc.state.IsGrounded;
-            rhc.FrictionRef = rhc.Friction;
             rhc.RaycastDownHitAtRef = rhc.RaycastDownHitAt;
             rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
             rhc.VerticalHitsStorageLengthRef = rhc.VerticalHitsStorageLength;
@@ -104,21 +105,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.StandingOnWithSmallestDistanceColliderRef = rhc.StandingOnWithSmallestDistanceCollider;
             rhc.StandingOnWithSmallestDistanceLayerRef = rhc.StandingOnWithSmallestDistanceLayer;
             rhc.StandingOnWithSmallestDistancePointRef = rhc.StandingOnWithSmallestDistancePoint;
-            
-            
-            
-            
-            
-            rhc.HasFrictionRef = rhc.HasFriction;
+            rhc.HasPhysicsMaterialClosestToDownHitRef = rhc.HasPhysicsMaterialClosestToDownHit;
+            rhc.HasPathMovementClosestToDownHitRef = rhc.HasPathMovementClosestToDownHit;
             rhc.FrictionRef = rhc.Friction;
-            
-            
-            
-            
-            
-            
-            rhc.OnMovingPlatformPathMovementControllerRef = rhc.OnMovingPlatformPathMovementController;
-            rhc.OnMovingPlatformHasPathMovementControllerRef = rhc.OnMovingPlatformHasPathMovementController;
+            rhc.HasMovingPlatformRef = rhc.HasMovingPlatform;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -231,7 +221,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex] = rhc.CurrentRightRaycast;
         }
-        
+
         private void SetCurrentLeftHitsStorage()
         {
             rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex] = rhc.CurrentLeftRaycast;
@@ -364,12 +354,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void SetBelowSlopeAngleAt()
         {
-            rhc.state.SetBelowSlopeAngle(Vector2.Angle(rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal, rhc.Transform.up));
+            rhc.state.SetBelowSlopeAngle(
+                Vector2.Angle(rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal, rhc.Transform.up));
         }
 
         private void SetCrossBelowSlopeAngleAt()
         {
-            rhc.state.SetCrossBelowSlopeAngle(Cross(rhc.Transform.up, rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal));
+            rhc.state.SetCrossBelowSlopeAngle(Cross(rhc.Transform.up,
+                rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal));
         }
 
         private void SetSmallestDistanceIndexAt()
@@ -390,6 +382,39 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private void SetIsCollidingBelow()
         {
             rhc.state.SetIsCollidingBelow(true);
+        }
+
+        private void SetFrictionToDownHitWithSmallestDistancesFriction()
+        {
+            if (!rhc.HasPhysicsMaterialClosestToDownHit) return;
+            // ReSharper disable once PossibleNullReferenceException
+            rhc.Friction = rhc.PhysicsMaterialClosestToDownHit.Friction;
+        }
+
+        private void SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
+        {
+            if (!rhc.HasPathMovementClosestToDownHit) return;
+            rhc.MovingPlatform = rhc.PathMovementClosestToDownHit;
+        }
+
+        private void SetHasMovingPlatform()
+        {
+            rhc.HasMovingPlatform = true;
+        }
+
+        private void SetMovingPlatformToNull()
+        {
+            rhc.MovingPlatform = null;
+        }
+
+        private void SetDoesNotHaveMovingPlatform()
+        {
+            rhc.HasMovingPlatform = false;
+        }
+
+        private void StopMovingPlatformCurrentGravity()
+        {
+            rhc.MovingPlatformCurrentGravity = 0;
         }
 
         /* properties: dependencies */
@@ -543,6 +568,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             AddLeftHitToContactList();
         }
+
         public void OnAddToRightHitsStorageIndex()
         {
             AddToRightHitsStorageIndex();
@@ -630,7 +656,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         public void OnSetFrictionToDownHitWithSmallestDistancesFriction()
         {
-            
+            SetFrictionToDownHitWithSmallestDistancesFriction();
+        }
+
+        public void OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
+        {
+            SetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
+        }
+
+        public void OnSetHasMovingPlatform()
+        {
+            SetHasMovingPlatform();
+        }
+
+        public void OnSetMovingPlatformToNull()
+        {
+            SetMovingPlatformToNull();
+        }
+
+        public void OnSetDoesNotHaveMovingPlatform()
+        {
+            SetDoesNotHaveMovingPlatform();
+        }
+
+        public void OnStopMovingPlatformCurrentGravity()
+        {
+            StopMovingPlatformCurrentGravity();
         }
     }
 }

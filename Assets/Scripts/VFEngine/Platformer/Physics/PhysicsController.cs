@@ -164,6 +164,12 @@ namespace VFEngine.Platformer.Physics
         {
             model.OnStopNewVerticalPosition();
         }
+
+        public async UniTaskVoid SetGravityActive()
+        {
+            model.OnSetGravityActive();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
         
     }
 }

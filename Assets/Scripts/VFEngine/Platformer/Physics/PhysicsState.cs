@@ -16,7 +16,7 @@
             IsJumping = isJumping;
         }
 
-        public void SetGravity(bool gravity)
+        public void SetGravityActive(bool gravity)
         {
             GravityActive = gravity;
         }

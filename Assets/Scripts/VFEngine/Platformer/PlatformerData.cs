@@ -2,7 +2,9 @@
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
@@ -19,6 +21,7 @@ namespace VFEngine.Platformer
         [SerializeField] private PhysicsController physics;
         [SerializeField] private RaycastController raycast;
         [SerializeField] private RaycastHitColliderController raycastHitCollider;
+        [SerializeField] private StickyRaycastController stickyRaycast;
         [SerializeField] private LayerMaskController layerMask;
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
@@ -77,8 +80,13 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference boundsHeight;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
-        [SerializeField] private BoolReference collidingWithPhysicsMaterial;
-        [SerializeField] private BoolReference hasFriction;
+        [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit;
+        [SerializeField] private BoolReference hasPathMovementClosestToDownHit;
+        [SerializeField] private BoolReference hasMovingPlatform;
+        [SerializeField] private BoolReference stickToSlopesControl;
+        [SerializeField] private FloatReference stickToSlopesOffsetY;
+        [SerializeField] private BoolReference isJumping;
+        [SerializeField] private FloatReference stickyRaycastLength;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -90,6 +98,7 @@ namespace VFEngine.Platformer
         public RaycastController Raycast => raycast;
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
+        public StickyRaycastController StickyRaycast => stickyRaycast;
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
         public float FallSlowFactor => fallSlowFactor.Value;
@@ -121,7 +130,6 @@ namespace VFEngine.Platformer
         public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
         public float MaximumSlopeAngle => maximumSlopeAngle.Value;
         public bool IsGrounded => isGrounded.Value;
-        public float Friction => friction.Value;
         public Vector2 NewPosition => newPosition.Value;
         public float SmallValue => smallValue.Value;
         public float Gravity => gravity.Value;
@@ -149,8 +157,13 @@ namespace VFEngine.Platformer
         public float BoundsHeight => boundsHeight.Value;
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
-        public bool CollidingWithPhysicsMaterial => collidingWithPhysicsMaterial.Value;
-        public bool HasFriction => hasFriction.Value;
+        public bool HasPhysicsMaterialDataClosestToDownHit => hasPhysicsMaterialClosestToDownHit.Value;
+        public bool HasPathMovementControllerClosestToDownHit => hasPathMovementClosestToDownHit.Value;
+        public bool HasMovingPlatform => hasMovingPlatform.Value;
+        public bool StickToSlopesControl => stickToSlopesControl.Value;
+        public float StickToSlopesOffsetY => stickToSlopesOffsetY.Value;
+        public bool IsJumping => isJumping.Value;
+        public float StickyRaycastLength => stickyRaycastLength.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

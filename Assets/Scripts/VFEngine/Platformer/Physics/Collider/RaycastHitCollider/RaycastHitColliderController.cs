@@ -337,5 +337,35 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downColliderModel.OnSetFrictionToDownHitWithSmallestDistancesFriction();
         }
+
+        public async UniTaskVoid SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
+        {
+            downColliderModel.OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetHasMovingPlatform()
+        {
+            downColliderModel.OnSetHasMovingPlatform();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid SetMovingPlatformToNull()
+        {
+            downColliderModel.OnSetMovingPlatformToNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid SetDoesNotHaveMovingPlatform()
+        {
+            downColliderModel.OnSetDoesNotHaveMovingPlatform();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid StopMovingPlatformCurrentGravity()
+        {
+            downColliderModel.OnStopMovingPlatformCurrentGravity();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

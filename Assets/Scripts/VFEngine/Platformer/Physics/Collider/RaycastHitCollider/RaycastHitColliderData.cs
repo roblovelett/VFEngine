@@ -68,7 +68,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private BoolReference isGrounded;
         [SerializeField] private FloatReference friction;
-        [SerializeField] private BoolReference hasFriction;
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
@@ -83,10 +82,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Collider2DReference standingOnWithSmallestDistanceCollider;
         [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer;
         [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
-        [SerializeField] private BoolReference collidingWithPhysicsMaterial;
-        [SerializeField] private BoolReference collidedWithPhysicsMaterialHasFriction;
-        [SerializeField] private PathMovementController onMovingPlatformPathMovementController;
-        [SerializeField] private BoolReference onMovingPlatformHasPathMovementController;
+        [SerializeField] private BoolReference hasPhysicsMaterialData;
+        [SerializeField] private BoolReference hasPathMovementData;
+        [SerializeField] private BoolReference hasMovingPlatform;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -144,10 +142,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             bounds.y = colliderBounds.min.y;
             return bounds;
         }
-
-        [CanBeNull] private PhysicsMaterialController SetCollidedWithPhysicsMaterialController()
+        private static PhysicsMaterialData SetPhysicsMaterialClosestToDownHit(GameObject standingOn)
         {
-            return StandingOnWithSmallestDistanceCollider.gameObject.GetComponentNoAllocation<PhysicsMaterialController>();
+            return standingOn.GetComponentNoAllocation<PhysicsMaterialData>();
+        }
+
+        private static PathMovementData SetPathMovementClosestToDownHit(GameObject standingOn)
+        {
+            return standingOn.GetComponentNoAllocation<PathMovementData>();
         }
 
         /* properties: dependencies */
@@ -420,48 +422,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = standingOnWithSmallestDistancePoint.Value;
         }
         
-        [CanBeNull] public PhysicsMaterialController CollidedWithPhysicsMaterialController => SetCollidedWithPhysicsMaterialController();
-        
+        [CanBeNull] public PhysicsMaterialData PhysicsMaterialClosestToDownHit => SetPhysicsMaterialClosestToDownHit(StandingOnWithSmallestDistance.gameObject);
+        [CanBeNull] public PathMovementData PathMovementClosestToDownHit => SetPathMovementClosestToDownHit(StandingOnWithSmallestDistance.gameObject);
 
-        //[CanBeNull] public PhysicsMaterialController CollidedWithPhysicsMaterialController { get; set; }
+        public bool HasPathMovementClosestToDownHit => PathMovementClosestToDownHit != null;
 
-        //public PhysicsMaterialController CollidedWithPhysicsMaterialControllerRef
-        //{
-        //    set => value = collidedWithPhysicsMaterialController;
-        //}
-
-        //public bool CollidingWithPhysicsMaterial => CollidedWithPhysicsMaterialController != null;
-
-        //public bool CollidingWithPhysicsMaterialRef
-        //{
-        //    set => value = collidingWithPhysicsMaterial.Value;
-        //}
-        
-        public bool HasFriction => Friction != null;
-
-        public bool HasFrictionRef
+        public bool HasPathMovementClosestToDownHitRef
         {
-            set => value = collidedWithPhysicsMaterialHasFriction.Value;
+            set => value = hasPathMovementData.Value;
+        }
+        public bool HasPhysicsMaterialClosestToDownHit => PhysicsMaterialClosestToDownHit != null;
+
+        public bool HasPhysicsMaterialClosestToDownHitRef
+        {
+            set => value = hasPhysicsMaterialData.Value;
         }
         
-        public float? Friction { get; set; }
+        public float Friction { get; set; }
 
-        public float? FrictionRef
+        public float FrictionRef
         {
             set => value = friction.Value;
         }
-        
-        [CanBeNull] public PathMovementController OnMovingPlatformPathMovementController { get; set; }
-        public PathMovementController OnMovingPlatformPathMovementControllerRef
-        {
-            set => value = onMovingPlatformPathMovementController;
-        }
+        public PathMovementData MovingPlatform { get; set; }
+        public bool HasMovingPlatform { get; set; }
 
-        public bool OnMovingPlatformHasPathMovementController => OnMovingPlatformPathMovementController != null;
-
-        public bool OnMovingPlatformHasPathMovementControllerRef
+        public bool HasMovingPlatformRef
         {
-            set => value = onMovingPlatformHasPathMovementController.Value;
+            set => value = hasMovingPlatform.Value;
         }
     }
 }

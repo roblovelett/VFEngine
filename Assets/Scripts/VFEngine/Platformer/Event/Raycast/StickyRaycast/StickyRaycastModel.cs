@@ -13,7 +13,17 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Model", order = 0)]
     public class StickyRaycastModel : ScriptableObject, IModel
     {
+        [SerializeField] private StickyRaycastData sr;
+        private void Initialize()
+        {
+            sr.StickToSlopesOffsetYRef = sr.StickToSlopesOffsetY;
+            sr.StickyRaycastLengthRef = sr.StickyRaycastLength;
+        }
         
+        public void OnInitialize()
+        {
+            Initialize();
+        }
     }
 }
 

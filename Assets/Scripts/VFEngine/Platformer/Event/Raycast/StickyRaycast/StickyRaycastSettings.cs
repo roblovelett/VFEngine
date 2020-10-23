@@ -9,6 +9,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     public class StickyRaycastSettings : ScriptableObject
     {
         [SerializeField] public float stickyRaycastLength = 0.5f;
+        [SerializeField] public float stickToSlopesOffsetY = 0.2f;
         [LabelText("Draw Raycast Gizmos")] [SerializeField] public bool drawRaycastGizmosControl = true;
         [LabelText("Display Warnings")] [SerializeField] public bool displayWarningsControl = true;
     }

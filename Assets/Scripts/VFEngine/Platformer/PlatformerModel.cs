@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
@@ -183,6 +182,7 @@ namespace VFEngine.Platformer
         private async UniTaskVoid CastRaysDown()
         {
             var rhcTask1 = Async(p.RaycastHitCollider.SetIsNotCollidingBelow());
+            var phTask1 = Async(DetachFromMovingPlatform());
             SetIsFalling(p.SmallValue, p.NewPosition.y);
             if (!(p.Gravity > 0) || p.IsFalling)
             {
@@ -266,7 +266,7 @@ namespace VFEngine.Platformer
                         if (p.CurrentDownHitSmallestDistance < p.SmallValue) break;
                         p.RaycastHitCollider.AddDownHitsStorageIndex();
                     }
-
+                    
                     if (p.DownHitConnected)
                     {
                         var notHighEnoughForOneWayPlatform = SetNotHighEnoughForOneWayPlatform(p.WasGroundedLastFrame,
@@ -278,14 +278,14 @@ namespace VFEngine.Platformer
                             return;
                         }
 
-                        var phTask1 = Async(p.Physics.SetIsNotFalling());
+                        var phTask2 = Async(p.Physics.SetIsNotFalling());
                         var rhcTask14 = Async(p.RaycastHitCollider.SetIsCollidingBelow());
-                        var task7 = await (phTask1, rhcTask14);
+                        var task7 = await (phTask2, rhcTask14);
                         var applyingExternalForce = SetApplyingExternalForce(p.ExternalForce.y, p.Speed.y);
                         if (applyingExternalForce)
                         {
-                            var phTask2 = Async(p.Physics.ApplySpeedToHorizontalNewPosition());
-                            var task8 = await (phTask2, rhcTask14);
+                            var phTask3 = Async(p.Physics.ApplySpeedToHorizontalNewPosition());
+                            var task8 = await (phTask3, rhcTask14);
                         }
                         else
                         {
@@ -295,31 +295,65 @@ namespace VFEngine.Platformer
 
                         if (!p.WasGroundedLastFrame && p.Speed.y > 0) p.Physics.ApplySpeedToVerticalNewPosition();
                         if (Abs(p.NewPosition.y) < p.SmallValue) p.Physics.StopNewVerticalPosition();
-
-                        // friction surface test
-                        /*if (p.HasFriction)
-                        {
+                        if (p.HasPhysicsMaterialDataClosestToDownHit)
                             p.RaycastHitCollider.SetFrictionToDownHitWithSmallestDistancesFriction();
-                        }*/
-
-                        // moving platform test
+                        if (p.HasPathMovementControllerClosestToDownHit && p.IsGrounded)
+                        {
+                            var rhcTask15 = Async(p.RaycastHitCollider
+                                .SetMovingPlatformToDownHitWithSmallestDistancesPathMovement());
+                            var rhcTask16 = Async(p.RaycastHitCollider.SetHasMovingPlatform());
+                            var task9 = await (rhcTask15, rhcTask16);
+                        }
+                        else
+                        {
+                            await phTask1;
+                        }
                     }
                     else
                     {
-                        await rhcTask1;
-                        if (p.OnMovingPlatform)
-                        {
-                            // detach from moving platform
-                        }
+                        var task10 = await (rhcTask1, phTask1);
                     }
 
-                    //if StickToSlopes
-                    //StickToSlope();
+                    if (p.StickToSlopesControl) StickToSlope();
                 }
             }
             else
             {
                 await rhcTask1;
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void StickToSlope()
+        {
+            var stickToSlope = SetStickToSlope(p.NewPosition.y, p.StickToSlopesOffsetY, p.IsJumping,
+                p.StickToSlopesControl, p.WasGroundedLastFrame, p.ExternalForce.y, p.HasMovingPlatform,
+                p.IsStandingOnLastFrameNotNull, p.StairsMask, p.StandingOnLastFrame.layer);
+            if (!stickToSlope) return;
+            if (p.StickyRaycastLength == 0) p.StickyRaycast.SetStickyRaycastLength();
+            //============================================================================================================ 
+        }
+
+        private static bool SetStickToSlope(float positionY, float offsetY, bool isJumping, bool stickToSlopes,
+            bool wasGroundedLastFrame, float forceY, bool hasPlatform, bool standingOnLastFrameNotNull,
+            LayerMask stairs, LayerMask standingOnLastFrame)
+        {
+            return !(positionY >= offsetY) && !(positionY <= -offsetY) && !isJumping && stickToSlopes &&
+                wasGroundedLastFrame && !(forceY > 0) && !hasPlatform || !wasGroundedLastFrame &&
+                standingOnLastFrameNotNull && LayerMaskContains(stairs, standingOnLastFrame) && !isJumping;
+        }
+
+        private async UniTaskVoid DetachFromMovingPlatform()
+        {
+            if (p.HasMovingPlatform)
+            {
+                var phTask = Async(p.Physics.SetGravityActive());
+                var rhcTask1 = Async(p.RaycastHitCollider.SetOnMovingPlatform());
+                var rhcTask2 = Async(p.RaycastHitCollider.SetMovingPlatformToNull());
+                var rhcTask3 = Async(p.RaycastHitCollider.SetDoesNotHaveMovingPlatform());
+                var rhcTask4 = Async(p.RaycastHitCollider.StopMovingPlatformCurrentGravity());
+                var task = await (phTask, rhcTask1, rhcTask2, rhcTask3, rhcTask4);
             }
 
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -558,13 +592,6 @@ namespace VFEngine.Platformer
         {
             if (direction == Right) p.RaycastHitCollider.AddToRightHitsStorageIndex();
             p.RaycastHitCollider.AddToLeftHitsStorageIndex();
-        }
-
-        private void OutOfRangeException(RaycastDirection direction)
-        {
-            if (!p.DisplayWarnings) return;
-            const string error = "Direction must have value of Up, Right, Down, or Left of type RaycastDirection.";
-            throw new ArgumentOutOfRangeException(nameof(direction), direction, error);
         }
 
         /* properties: methods */
