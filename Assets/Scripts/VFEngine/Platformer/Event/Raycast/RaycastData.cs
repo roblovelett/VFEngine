@@ -37,6 +37,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
+        [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
         private Vector2 Speed => speed.Value;
         
         /* fields */
@@ -62,6 +63,8 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private FloatReference smallestDistance;
         [SerializeField] private FloatReference smallValue;
+        [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         private const float ObstacleHeightTolerance = 0.05f;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
@@ -126,6 +129,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
         public Vector2 NewPosition => newPosition.Value;
         public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
+        public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
@@ -157,6 +161,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 BoundsCenter { get; set; }
         public float BoundsWidth { get; set; }
         public float BoundsHeight { get; set; }
+
+        public float BoundsHeightRef
+        {
+            set => value = boundsHeight.Value;
+        }
         public Vector2 HorizontalRaycastFromBottom => SetHorizontalRaycastFromBottom();
         public Vector2 HorizontalRaycastToTop => SetHorizontalRaycastToTop();
 
@@ -234,6 +243,13 @@ namespace VFEngine.Platformer.Event.Raycast
         public float SmallValueRef
         {
             set => value = smallValue.Value;
+        }
+
+        public float DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint { get; set; }
+
+        public float DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef
+        {
+            set => value = distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
         }
 
         /* fields: methods */

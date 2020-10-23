@@ -138,9 +138,32 @@ namespace VFEngine.Platformer.Physics
             model.OnSetIsFalling();
         }
 
-        public void SetIsNotFalling()
+        public async UniTaskVoid SetIsNotFalling()
         {
             model.OnSetIsNotFalling();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public async UniTaskVoid ApplySpeedToHorizontalNewPosition()
+        {
+            model.OnApplySpeedToHorizontalNewPosition();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
+        {
+            model.OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
+        }
+
+        public void ApplySpeedToVerticalNewPosition()
+        {
+            model.OnApplySpeedToVerticalNewPosition();
+        }
+
+        public void StopNewVerticalPosition()
+        {
+            model.OnStopNewVerticalPosition();
+        }
+        
     }
 }

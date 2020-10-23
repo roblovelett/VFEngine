@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
@@ -6,6 +7,8 @@ using UnityAtoms.BaseAtoms;
 using UnityAtoms.Editor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VFEngine.Platformer.Physics.Movement.PathMovement;
+using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
@@ -65,6 +68,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private BoolReference isGrounded;
         [SerializeField] private FloatReference friction;
+        [SerializeField] private BoolReference hasFriction;
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
@@ -74,6 +78,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
+        [SerializeField] private RaycastHit2DReference downHitWithSmallestDistance;
+        [SerializeField] private GameObjectReference standingOnWithSmallestDistance;
+        [SerializeField] private Collider2DReference standingOnWithSmallestDistanceCollider;
+        [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer;
+        [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
+        [SerializeField] private BoolReference collidingWithPhysicsMaterial;
+        [SerializeField] private BoolReference collidedWithPhysicsMaterialHasFriction;
+        [SerializeField] private PathMovementController onMovingPlatformPathMovementController;
+        [SerializeField] private BoolReference onMovingPlatformHasPathMovementController;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -130,6 +143,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             bounds.x = colliderBounds.center.x;
             bounds.y = colliderBounds.min.y;
             return bounds;
+        }
+
+        [CanBeNull] private PhysicsMaterialController SetCollidedWithPhysicsMaterialController()
+        {
+            return StandingOnWithSmallestDistanceCollider.gameObject.GetComponentNoAllocation<PhysicsMaterialController>();
         }
 
         /* properties: dependencies */
@@ -316,13 +334,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = isGrounded.Value;
         }
-        
-        public float Friction { get; set; }
-
-        public float FrictionRef
-        {
-            set => value = friction.Value;
-        }
 
         public bool OnMovingPlatformRef
         {
@@ -372,6 +383,85 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public Vector3 CrossBelowSlopeAngleRef
         {
             set => value = crossBelowSlopeAngle.Value;
+        }
+        
+        public RaycastHit2D DownHitWithSmallestDistance { get; set; }
+
+        public RaycastHit2D DownHitWithSmallestDistanceRef
+        {
+            set => value = downHitWithSmallestDistance.Value;
+        }
+
+        public GameObject StandingOnWithSmallestDistance => DownHitWithSmallestDistance.collider.gameObject;
+
+        public GameObject StandingOnWithSmallestDistanceRef
+        {
+            set => value = standingOnWithSmallestDistance.Value;
+        }
+
+        public Collider2D StandingOnWithSmallestDistanceCollider => DownHitWithSmallestDistance.collider;
+
+        public Collider2D StandingOnWithSmallestDistanceColliderRef
+        {
+            set => value = standingOnWithSmallestDistanceCollider.Value;
+        }
+
+        public LayerMask StandingOnWithSmallestDistanceLayer => DownHitWithSmallestDistance.collider.gameObject.layer;
+
+        public LayerMask StandingOnWithSmallestDistanceLayerRef
+        {
+            set => value = standingOnWithSmallestDistanceLayer.Value;
+        }
+
+        public Vector2 StandingOnWithSmallestDistancePoint => DownHitWithSmallestDistance.point;
+
+        public Vector2 StandingOnWithSmallestDistancePointRef
+        {
+            set => value = standingOnWithSmallestDistancePoint.Value;
+        }
+        
+        [CanBeNull] public PhysicsMaterialController CollidedWithPhysicsMaterialController => SetCollidedWithPhysicsMaterialController();
+        
+
+        //[CanBeNull] public PhysicsMaterialController CollidedWithPhysicsMaterialController { get; set; }
+
+        //public PhysicsMaterialController CollidedWithPhysicsMaterialControllerRef
+        //{
+        //    set => value = collidedWithPhysicsMaterialController;
+        //}
+
+        //public bool CollidingWithPhysicsMaterial => CollidedWithPhysicsMaterialController != null;
+
+        //public bool CollidingWithPhysicsMaterialRef
+        //{
+        //    set => value = collidingWithPhysicsMaterial.Value;
+        //}
+        
+        public bool HasFriction => Friction != null;
+
+        public bool HasFrictionRef
+        {
+            set => value = collidedWithPhysicsMaterialHasFriction.Value;
+        }
+        
+        public float? Friction { get; set; }
+
+        public float? FrictionRef
+        {
+            set => value = friction.Value;
+        }
+        
+        [CanBeNull] public PathMovementController OnMovingPlatformPathMovementController { get; set; }
+        public PathMovementController OnMovingPlatformPathMovementControllerRef
+        {
+            set => value = onMovingPlatformPathMovementController;
+        }
+
+        public bool OnMovingPlatformHasPathMovementController => OnMovingPlatformPathMovementController != null;
+
+        public bool OnMovingPlatformHasPathMovementControllerRef
+        {
+            set => value = onMovingPlatformHasPathMovementController.Value;
         }
     }
 }

@@ -206,6 +206,27 @@ namespace VFEngine.Platformer.Physics
             p.state.SetIsFalling(false);
         }
 
+        private void ApplySpeedToHorizontalNewPosition()
+        {
+            p.NewPositionY = p.SpeedY * deltaTime;
+        }
+
+        private void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
+        {
+            p.NewPositionY = -p.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint +
+                             p.BoundsHeight / 2 + p.RayOffset;
+        }
+
+        private void ApplySpeedToVerticalNewPosition()
+        {
+            p.NewPositionY += p.SpeedY * deltaTime;
+        }
+
+        private void StopNewVerticalPosition()
+        {
+            p.NewPositionY = 0;
+        }
+
         /* properties: methods */
         public void OnInitialize()
         {
@@ -325,6 +346,26 @@ namespace VFEngine.Platformer.Physics
         public void OnSetIsNotFalling()
         {
             SetIsNotFalling();
+        }
+
+        public void OnApplySpeedToHorizontalNewPosition()
+        {
+            ApplySpeedToHorizontalNewPosition();
+        }
+
+        public void OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
+        {
+            ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
+        }
+
+        public void OnApplySpeedToVerticalNewPosition()
+        {
+            ApplySpeedToVerticalNewPosition();
+        }
+
+        public void OnStopNewVerticalPosition()
+        {
+            StopNewVerticalPosition();
         }
     }
 }

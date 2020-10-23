@@ -147,5 +147,10 @@ namespace VFEngine.Platformer.Event.Raycast
             downRaycastModel.OnSetSmallestDistanceToDownHitDistance();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint()
+        {
+            downRaycastModel.OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
+        }
     }
 }

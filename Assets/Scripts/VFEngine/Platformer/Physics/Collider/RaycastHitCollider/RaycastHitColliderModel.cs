@@ -99,6 +99,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.DownHitConnectedRef = rhc.DownHitConnected;
             rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
             rhc.CrossBelowSlopeAngleRef = rhc.state.CrossBelowSlopeAngle;
+            rhc.DownHitWithSmallestDistanceRef = rhc.DownHitWithSmallestDistance;
+            rhc.StandingOnWithSmallestDistanceRef = rhc.StandingOnWithSmallestDistance;
+            rhc.StandingOnWithSmallestDistanceColliderRef = rhc.StandingOnWithSmallestDistanceCollider;
+            rhc.StandingOnWithSmallestDistanceLayerRef = rhc.StandingOnWithSmallestDistanceLayer;
+            rhc.StandingOnWithSmallestDistancePointRef = rhc.StandingOnWithSmallestDistancePoint;
+            
+            
+            
+            
+            
+            rhc.HasFrictionRef = rhc.HasFriction;
+            rhc.FrictionRef = rhc.Friction;
+            
+            
+            
+            
+            
+            
+            rhc.OnMovingPlatformPathMovementControllerRef = rhc.OnMovingPlatformPathMovementController;
+            rhc.OnMovingPlatformHasPathMovementControllerRef = rhc.OnMovingPlatformHasPathMovementController;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -299,7 +319,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void SetIsNotCollidingBelow()
         {
-            rhc.state.SetIsCollidingAbove(false);
+            rhc.state.SetIsCollidingBelow(false);
         }
 
         private void InitializeDownHitsStorage()
@@ -332,9 +352,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentDownHitsStorageIndex++;
         }
 
-        private void SetRaycastDownHitAt(int index)
+        private void SetRaycastDownHitAt()
         {
-            rhc.RaycastDownHitAt = rhc.DownHitsStorage[index];
+            rhc.RaycastDownHitAt = rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex];
         }
 
         private void SetDownHitConnected()
@@ -342,24 +362,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.DownHitConnected = true;
         }
 
-        private void SetBelowSlopeAngleAt(int index)
+        private void SetBelowSlopeAngleAt()
         {
-            rhc.state.SetBelowSlopeAngle(Vector2.Angle(rhc.DownHitsStorage[index].normal, rhc.Transform.up));
+            rhc.state.SetBelowSlopeAngle(Vector2.Angle(rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal, rhc.Transform.up));
         }
 
-        private void SetCrossBelowSlopeAngleAt(int index)
+        private void SetCrossBelowSlopeAngleAt()
         {
-            rhc.state.SetCrossBelowSlopeAngle(Cross(rhc.Transform.up, rhc.DownHitsStorage[index].normal));
+            rhc.state.SetCrossBelowSlopeAngle(Cross(rhc.Transform.up, rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].normal));
         }
 
-        private void SetSmallestDistanceIndexAt(int index)
+        private void SetSmallestDistanceIndexAt()
         {
-            rhc.DownHitsStorageSmallestDistanceIndex = index;
+            rhc.DownHitsStorageSmallestDistanceIndex = rhc.CurrentDownHitsStorageIndex;
         }
 
         private void SetNegativeBelowSlopeAngle()
         {
             rhc.state.SetCrossBelowSlopeAngle(-rhc.state.CrossBelowSlopeAngle);
+        }
+
+        private void SetDownHitWithSmallestDistance()
+        {
+            rhc.DownHitWithSmallestDistance = rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex];
+        }
+
+        private void SetIsCollidingBelow()
+        {
+            rhc.state.SetIsCollidingBelow(true);
         }
 
         /* properties: dependencies */
@@ -558,9 +588,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             AddDownHitsStorageIndex();
         }
 
-        public void OnSetRaycastDownHitAt(int index)
+        public void OnSetRaycastDownHitAt()
         {
-            SetRaycastDownHitAt(index);
+            SetRaycastDownHitAt();
         }
 
         public void OnSetDownHitConnected()
@@ -568,24 +598,39 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetDownHitConnected();
         }
 
-        public void OnSetBelowSlopeAngleAt(int index)
+        public void OnSetBelowSlopeAngleAt()
         {
-            SetBelowSlopeAngleAt(index);
+            SetBelowSlopeAngleAt();
         }
 
-        public void OnSetCrossBelowSlopeAngleAt(int index)
+        public void OnSetCrossBelowSlopeAngleAt()
         {
-            SetCrossBelowSlopeAngleAt(index);
+            SetCrossBelowSlopeAngleAt();
         }
 
-        public void OnSetSmallestDistanceIndexAt(int index)
+        public void OnSetSmallestDistanceIndexAt()
         {
-            SetSmallestDistanceIndexAt(index);
+            SetSmallestDistanceIndexAt();
         }
 
         public void OnSetNegativeBelowSlopeAngle()
         {
             SetNegativeBelowSlopeAngle();
+        }
+
+        public void OnSetDownHitWithSmallestDistance()
+        {
+            SetDownHitWithSmallestDistance();
+        }
+
+        public void OnSetIsCollidingBelow()
+        {
+            SetIsCollidingBelow();
+        }
+
+        public void OnSetFrictionToDownHitWithSmallestDistancesFriction()
+        {
+            
         }
     }
 }

@@ -18,6 +18,7 @@ namespace VFEngine.Platformer.Layer.Mask
         [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask;
         [SerializeField] private LayerMaskReference stairsMask;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
+        
         private const string LmPath = "Layer/Mask/";
         private static readonly string ModelAssetPath = $"{LmPath}DefaultLayerMaskModel.asset";
 

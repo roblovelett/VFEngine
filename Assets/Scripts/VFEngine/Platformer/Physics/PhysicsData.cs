@@ -24,6 +24,8 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference rayOffset;
+        [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
+        [SerializeField] private FloatReference boundsHeight;
         private Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
         private Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
         private Vector2 CurrentRightHitPoint => currentRightHitPoint.Value;
@@ -93,6 +95,11 @@ namespace VFEngine.Platformer.Physics
         public float BoundsWidth => boundsWidth.Value;
         public float RayOffset => rayOffset.Value;
 
+        public float DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint =>
+            distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
+
+        public float BoundsHeight => boundsHeight.Value;
+
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
@@ -146,11 +153,13 @@ namespace VFEngine.Platformer.Physics
 
         public float NewPositionX
         {
+            get => NewPosition.x;
             set => value = NewPosition.x;
         }
 
         public float NewPositionY
         {
+            get => NewPosition.y;
             set => value = NewPosition.y;
         }
 

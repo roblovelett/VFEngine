@@ -71,6 +71,14 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
+        [SerializeField] private GameObjectReference standingOnWithSmallestDistance;
+        [SerializeField] private Collider2DReference standingOnWithSmallestDistanceCollider;
+        [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer;
+        [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private LayerMaskReference oneWayPlatformMask;
+        [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
+        [SerializeField] private BoolReference collidingWithPhysicsMaterial;
+        [SerializeField] private BoolReference hasFriction;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -135,6 +143,14 @@ namespace VFEngine.Platformer
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
         public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
         public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
+        public GameObject StandingOnWithSmallestDistance => standingOnWithSmallestDistance.Value;
+        public Collider2D StandingOnWithSmallestDistanceCollider => standingOnWithSmallestDistanceCollider.Value;
+        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer.Value;
+        public float BoundsHeight => boundsHeight.Value;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
+        public bool CollidingWithPhysicsMaterial => collidingWithPhysicsMaterial.Value;
+        public bool HasFriction => hasFriction.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

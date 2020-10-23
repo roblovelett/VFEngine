@@ -63,6 +63,9 @@ namespace VFEngine.Platformer.Event.Raycast
             r.DownRayLengthRef = r.DownRayLength;
             r.SmallestDistanceRef = r.SmallestDistance;
             r.SmallValueRef = r.SmallValue;
+            r.BoundsHeightRef = r.BoundsHeight;
+            r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef =
+                r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
             switch (rayDirection)
             {
                 case None:
@@ -254,6 +257,16 @@ namespace VFEngine.Platformer.Event.Raycast
             r.SmallestDistance = r.RaycastDownHitAt.distance;
         }
 
+        private void SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint()
+        {
+            r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint = SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint(r.StandingOnWithSmallestDistancePoint, r.VerticalRaycastFromLeft, r.VerticalRaycastToRight); //
+        }
+
+        private static float SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint(Vector2 point, Vector2 verticalRayFromLeft, Vector2 verticalRayToRight)
+        {
+            return DistanceBetweenPointAndLine(point, verticalRayFromLeft, verticalRayToRight);;
+        }
+
         private static Vector2 SetVerticalRaycast(Vector2 boundsBottomCorner, Vector2 boundsTopCorner,
             Transform transform, float offset, float positionX)
         {
@@ -353,6 +366,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetSmallestDistanceToDownHitDistance()
         {
             SetSmallestDistanceToDownHitDistance();
+        }
+
+        public void OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint()
+        {
+            SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
         }
     }
 }

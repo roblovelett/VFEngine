@@ -251,11 +251,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnInitializeFriction();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
-        public void SetIsNotCollidingBelow()
-        {
-            downColliderModel.OnSetIsNotCollidingBelow();
-        }
 
         public void InitializeDownHitsStorage()
         {
@@ -274,9 +269,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void InitializeDownHitsStorageIndex()
+        public async UniTaskVoid InitializeDownHitsStorageIndex()
         {
             downColliderModel.OnInitializeDownHitsStorageIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void AddDownHitsStorageIndex()
@@ -284,9 +280,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnAddDownHitsStorageIndex();
         }
 
-        public async UniTaskVoid SetRaycastDownHitAt(int index)
+        public async UniTaskVoid SetRaycastDownHitAt()
         {
-            downColliderModel.OnSetRaycastDownHitAt(index);
+            downColliderModel.OnSetRaycastDownHitAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -296,27 +292,50 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetBelowSlopeAngleAt(int index)
+        public async UniTaskVoid SetBelowSlopeAngleAt()
         {
-            downColliderModel.OnSetBelowSlopeAngleAt(index);
+            downColliderModel.OnSetBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetCrossBelowSlopeAngleAt(int index)
+        public async UniTaskVoid SetCrossBelowSlopeAngleAt()
         {
-            downColliderModel.OnSetCrossBelowSlopeAngleAt(index);
+            downColliderModel.OnSetCrossBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetSmallestDistanceIndexAt(int index)
+        public async UniTaskVoid SetSmallestDistanceIndexAt()
         {
-            downColliderModel.OnSetSmallestDistanceIndexAt(index);
+            downColliderModel.OnSetSmallestDistanceIndexAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetNegativeBelowSlopeAngle()
         {
             downColliderModel.OnSetNegativeBelowSlopeAngle();
+        }
+
+        public async UniTaskVoid SetDownHitWithSmallestDistance()
+        {
+            downColliderModel.OnSetDownHitWithSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetIsCollidingBelow()
+        {
+            downColliderModel.OnSetIsCollidingBelow();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid SetIsNotCollidingBelow()
+        {
+            downColliderModel.OnSetIsNotCollidingBelow();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetFrictionToDownHitWithSmallestDistancesFriction()
+        {
+            downColliderModel.OnSetFrictionToDownHitWithSmallestDistancesFriction();
         }
     }
 }
