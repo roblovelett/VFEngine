@@ -3,6 +3,7 @@ using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
@@ -23,6 +24,7 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastHitColliderController raycastHitCollider;
         [SerializeField] private StickyRaycastController stickyRaycast;
         [SerializeField] private LayerMaskController layerMask;
+        [SerializeField] private SafetyBoxcastController safetyBoxcast;
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
@@ -87,6 +89,18 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference stickToSlopesOffsetY;
         [SerializeField] private BoolReference isJumping;
         [SerializeField] private FloatReference stickyRaycastLength;
+        [SerializeField] private FloatReference rightStickyRaycastLength;
+        [SerializeField] private FloatReference leftStickyRaycastLength;
+        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft;
+        [SerializeField] private Vector3Reference crossBelowSlopeAngleRight;
+        [SerializeField] private FloatReference belowSlopeAngleLeft;
+        [SerializeField] private FloatReference belowSlopeAngleRight;
+        [SerializeField] private BoolReference castFromLeft;
+        [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private BoolReference hasSafetyBoxcast;
+        [SerializeField] private Collider2DReference safetyBoxcastCollider;
+        [SerializeField] private RaycastHit2DReference leftStickyRaycast;
+        [SerializeField] private RaycastHit2DReference rightStickyRaycast;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -99,6 +113,7 @@ namespace VFEngine.Platformer
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
         public StickyRaycastController StickyRaycast => stickyRaycast;
+        public SafetyBoxcastController SafetyBoxcast => safetyBoxcast;
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
         public float FallSlowFactor => fallSlowFactor.Value;
@@ -164,7 +179,19 @@ namespace VFEngine.Platformer
         public float StickToSlopesOffsetY => stickToSlopesOffsetY.Value;
         public bool IsJumping => isJumping.Value;
         public float StickyRaycastLength => stickyRaycastLength.Value;
-
+        public float LeftStickyRaycastLength => leftStickyRaycastLength.Value;
+        public float RightStickyRaycastLength => rightStickyRaycastLength.Value;
+        public Vector3 CrossBelowSlopeAngleLeft => crossBelowSlopeAngleLeft.Value;
+        public Vector3 CrossBelowSlopeAngleRight => crossBelowSlopeAngleRight.Value;
+        public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
+        public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
+        public bool CastFromLeft => castFromLeft.Value;
+        public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
+        public bool HasSafetyBoxcast => hasSafetyBoxcast.Value;
+        public Collider2D SafetyBoxcastCollider => safetyBoxcastCollider.Value;
+        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }

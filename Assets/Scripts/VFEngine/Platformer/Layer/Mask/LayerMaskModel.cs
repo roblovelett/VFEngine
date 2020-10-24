@@ -40,6 +40,7 @@ namespace VFEngine.Platformer.Layer.Mask
             lm.MidHeightOneWayPlatformMaskRef = lm.MidHeightOneWayPlatformMask;
             lm.StairsMaskRef = lm.StairsMask;
             lm.RaysBelowLayerMaskPlatformsWithoutOneWayRef = lm.RaysBelowLayerMaskPlatformsWithoutOneWay;
+            lm.RaysBelowLayerMaskPlatformsRef = lm.RaysBelowLayerMaskPlatforms;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

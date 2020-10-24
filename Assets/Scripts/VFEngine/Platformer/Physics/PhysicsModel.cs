@@ -45,6 +45,7 @@ namespace VFEngine.Platformer.Physics
             p.GravityRef = p.Gravity;
             p.StickToSlopesControlRef = p.StickToSlopesControl;
             p.IsJumpingRef = p.state.IsJumping;
+            p.SafetyBoxcastControlRef = p.SafetyBoxcastControl;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -234,6 +235,29 @@ namespace VFEngine.Platformer.Physics
             p.state.SetGravityActive(true);
         }
 
+        private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
+        {
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y, p.RightStickyRaycastOriginY, p.BoundsHeight);
+        }
+
+        private void ApplyLeftStickyRaycastToNewVerticalPosition()
+        {
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
+                p.LeftStickyRaycastOriginY, p.BoundsHeight);
+        }
+
+        private void ApplyRightStickyRaycastToNewVerticalPosition()
+        {
+            
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);
+        }
+
+        private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY, float boundsHeight)
+        {
+            return -Abs(pointY - originY) + boundsHeight / 2;
+        }
+
         /* properties: methods */
         public void OnInitialize()
         {
@@ -378,6 +402,21 @@ namespace VFEngine.Platformer.Physics
         public void OnSetGravityActive()
         {
             SetGravityActive();
+        }
+        
+        public void OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
+        {
+            ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
+        }
+
+        public void OnApplyLeftStickyRaycastToNewVerticalPosition()
+        {
+            ApplyLeftStickyRaycastToNewVerticalPosition();
+        }
+
+        public void OnApplyRightStickyRaycastToNewVerticalPosition()
+        {
+            ApplyRightStickyRaycastToNewVerticalPosition();
         }
     }
 }

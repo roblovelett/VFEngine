@@ -63,7 +63,13 @@ namespace VFEngine.Platformer.Event.Raycast
             r.DownRayLengthRef = r.DownRayLength;
             r.SmallestDistanceRef = r.SmallestDistance;
             r.SmallValueRef = r.SmallValue;
+            r.BoundsRef = r.Bounds;
             r.BoundsHeightRef = r.BoundsHeight;
+            r.BoundsWidthRef = r.BoundsWidth;
+            r.RayOffsetRef = r.RayOffset;
+            r.BoundsBottomLeftCornerRef = r.BoundsBottomLeftCorner;
+            r.BoundsBottomRightCornerRef = r.BoundsBottomRightCorner;
+            r.BoundsCenterRef = r.BoundsCenter;
             r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef =
                 r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
             switch (rayDirection)

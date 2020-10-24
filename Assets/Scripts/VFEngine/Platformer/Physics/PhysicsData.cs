@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Gravity;
@@ -26,6 +27,11 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private RaycastHit2DReference safetyBoxcast;
+        [SerializeField] private FloatReference leftStickyRaycastOriginY;
+        [SerializeField] private FloatReference rightStickyRaycastOriginY;
+        [SerializeField] private RaycastHit2DReference leftStickyRaycast;
+        [SerializeField] private RaycastHit2DReference rightStickyRaycast;
         private Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
         private Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
         private Vector2 CurrentRightHitPoint => currentRightHitPoint.Value;
@@ -44,6 +50,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference gravity;
         [SerializeField] private BoolReference stickToSlopesControl;
         [SerializeField] private BoolReference isJumping;
+        [SerializeField] private BoolReference safetyBoxcastControl;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -61,6 +68,17 @@ namespace VFEngine.Platformer.Physics
         }
 
         /* properties dependencies */
+        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
+        public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
+        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
+        public bool SafetyBoxcastControl => settings.safetyBoxcastControl;
+
+        public bool SafetyBoxcastControlRef
+        {
+            set => value = safetyBoxcastControl.Value;
+        }
         public bool IsJumpingRef
         {
             set => value = isJumping.Value;

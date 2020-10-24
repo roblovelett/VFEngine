@@ -170,6 +170,23 @@ namespace VFEngine.Platformer.Physics
             model.OnSetGravityActive();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
+        public async UniTaskVoid ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
+        {
+            model.OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid ApplyLeftStickyRaycastToNewVerticalPosition()
+        {
+            model.OnApplyLeftStickyRaycastToNewVerticalPosition();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid ApplyRightStickyRaycastToNewVerticalPosition()
+        {
+            model.OnApplyRightStickyRaycastToNewVerticalPosition();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

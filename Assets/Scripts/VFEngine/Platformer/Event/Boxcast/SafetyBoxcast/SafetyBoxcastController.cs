@@ -1,32 +1,36 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Tools;
-using Debug = System.Diagnostics.Debug;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
-    using static SafetyBoxcastModel;
+    using static Debug;
+    using static SafetyBoxcastData;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     public class SafetyBoxcastController : MonoBehaviour, IController
     {
-        
+        [SerializeField] private SafetyBoxcastModel model;
+
+        private void Awake()
+        {
+            if (!model) model = LoadData(ModelPath) as SafetyBoxcastModel;
+            Assert(model != null, nameof(model) + " != null");
+            model.OnInitialize();
+        }
+
+        public async UniTaskVoid SetSafetyBoxcastForImpassableAngle()
+        {
+            model.OnSetSafetyBoxcastForImpassableAngle();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetHasSafetyBoxcast()
+        {
+            model.OnSetHasSafetyBoxcast();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }
-
-/* fields */
-/*
-[SerializeField] private SafetyBoxcastModel model;
-
-/* fields: methods */
-/*
-private void Awake()
-{
-if (!model) model = LoadData(ModelPath) as SafetyBoxcastModel;
-Debug.Assert(model != null, nameof(model) + " != null");
-model.Initialize();
-}
-
-/* properties */
-/*
-public ScriptableObject Model => model;
-/* properties: methods */

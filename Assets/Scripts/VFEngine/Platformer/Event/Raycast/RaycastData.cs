@@ -38,6 +38,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
+        [SerializeField] private FloatReference rayOffset;
         private Vector2 Speed => speed.Value;
         
         /* fields */
@@ -63,7 +64,12 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private FloatReference smallestDistance;
         [SerializeField] private FloatReference smallValue;
+        [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private Vector2Reference bounds;
+        [SerializeField] private Vector2Reference boundsCenter;
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
+        [SerializeField] private Vector2Reference boundsBottomRightCorner;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         private const float ObstacleHeightTolerance = 0.05f;
         private const string RPath = "Event/Raycast/";
@@ -82,6 +88,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 BoxColliderBoundsCenter => boxColliderBoundsCenter.Value;
         public float DistanceToGroundRayMaximumLength => settings.distanceToGroundRayMaximumLength;
         public float RayOffset => settings.rayOffset;
+
+        public float RayOffsetRef
+        {
+            set => value = rayOffset.Value;
+        }
         public int CurrentRightHitsStorageIndex => currentRightHitsStorageIndex.Value;
         public int CurrentLeftHitsStorageIndex => currentLeftHitsStorageIndex.Value;
         public int CurrentDownHitsStorageIndex => currentDownHitsStorageIndex.Value;
@@ -153,13 +164,40 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = castRaysOnBothSides.Value;
         }
+        
+        public Vector2 Bounds => new Vector2 {x = BoundsWidth, y = BoundsHeight};
+
+        public Vector2 BoundsRef
+        {
+            set => value = bounds.Value;
+        }
 
         public Vector2 BoundsTopLeftCorner { get; set; }
         public Vector2 BoundsTopRightCorner { get; set; }
         public Vector2 BoundsBottomLeftCorner { get; set; }
+
+        public Vector2 BoundsBottomLeftCornerRef
+        {
+            set => value = boundsBottomLeftCorner.Value;
+        }
         public Vector2 BoundsBottomRightCorner { get; set; }
+
+        public Vector2 BoundsBottomRightCornerRef
+        {
+            set => value = boundsBottomRightCorner.Value;
+        }
         public Vector2 BoundsCenter { get; set; }
+
+        public Vector2 BoundsCenterRef
+        {
+            set => value = boundsCenter.Value;
+        }
         public float BoundsWidth { get; set; }
+
+        public float BoundsWidthRef
+        {
+            set => value = boundsWidth.Value;
+        }
         public float BoundsHeight { get; set; }
 
         public float BoundsHeightRef
