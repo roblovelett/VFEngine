@@ -85,6 +85,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private BoolReference hasPhysicsMaterialData;
         [SerializeField] private BoolReference hasPathMovementData;
         [SerializeField] private BoolReference hasMovingPlatform;
+        [SerializeField] private BoolReference upHitConnected;
+        [SerializeField] private IntReference upHitsStorageCollidingIndex;
+        [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -173,6 +176,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = raycastDownHitAt.Value;
         }
+        public RaycastHit2D RaycastUpHitAt { get; set; }
+
+        public RaycastHit2D RaycastUpHitAtRef
+        {
+            set => value = raycastUpHitAt.Value;
+        }
         public Vector2 VerticalRaycastFromLeft => verticalRaycastFromLeft.Value;
         public Vector2 VerticalRaycastToRight => verticalRaycastToRight.Value;
         
@@ -180,6 +189,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly List<RaycastHit2D> contactList = new List<RaycastHit2D>();
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
+        public int UpHitsStorageCollidingIndex { get; set; }
+
+        public int UpHitsStorageCollidingIndexRef
+        {
+            set => value = upHitsStorageCollidingIndex.Value;
+        }
+        public bool UpHitConnected { get; set; }
+
+        public bool UpHitConnectedRef
+        {
+            set => value = upHitConnected.Value;
+        }
         public float MovingPlatformCurrentGravity { get; set; }
         public float MovingPlatformGravity { get; } = -500f;
 

@@ -150,5 +150,44 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             downRaycastModel.OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
         }
+        
+        public async UniTaskVoid InitializeUpRaycastLength()
+        {
+            upRaycastModel.OnInitializeUpRaycastLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid InitializeUpRaycastStart()
+        {
+            upRaycastModel.OnInitializeUpRaycastStart();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid InitializeUpRaycastEnd()
+        {
+            upRaycastModel.OnInitializeUpRaycastEnd();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid InitializeUpRaycastSmallestDistance()
+        {
+            upRaycastModel.OnInitializeUpRaycastSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetCurrentUpRaycastOriginPoint()
+        {
+            upRaycastModel.OnSetCurrentUpRaycastOriginPoint();
+        }
+
+        public void SetCurrentUpRaycast()
+        {
+            upRaycastModel.OnSetCurrentUpRaycast();
+        }
+
+        public void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
+        {
+            upRaycastModel.OnSetUpRaycastSmallestDistanceToRaycastUpHitAt();
+        }
     }
 }

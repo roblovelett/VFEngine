@@ -72,6 +72,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsCenterRef = r.BoundsCenter;
             r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef =
                 r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
+            r.UpRaycastSmallestDistanceRef = r.UpRaycastSmallestDistance;
             switch (rayDirection)
             {
                 case None:
@@ -296,6 +297,45 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return r.Transform.TransformPoint(new Vector2(x, y));
         }
+        
+        private void InitializeUpRaycastLength()
+        {
+            r.UpRayLength = r.IsGrounded ? r.RayOffset : r.NewPosition.y;
+        }
+
+        private void InitializeUpRaycastStart()
+        {
+            r.UpRaycastStart = (r.BoundsBottomLeftCorner + r.BoundsTopLeftCorner) / 2 * 2 +
+                               (Vector2) r.Transform.right * r.NewPosition.x;
+        }
+
+        private void InitializeUpRaycastEnd()
+        {
+            r.UpRaycastEnd = (r.BoundsBottomRightCorner + r.BoundsTopRightCorner) / 2 * 2 +
+                             (Vector2) r.Transform.right * r.NewPosition.y;
+        }
+
+        private void InitializeUpRaycastSmallestDistance()
+        {
+            r.UpRaycastSmallestDistance = MaxValue;
+        }
+
+        private void SetCurrentUpRaycastOriginPoint()
+        {
+            r.CurrentUpRaycastOrigin = Lerp(r.UpRaycastStart, r.UpRaycastEnd,
+                r.CurrentUpHitsStorageIndex / (float) (r.NumberOfVerticalRaysPerSide - 1));
+        }
+
+        private void SetCurrentUpRaycast()
+        {
+            r.CurrentUpRaycast = Raycast(r.CurrentUpRaycastOrigin, r.Transform.up, r.UpRayLength,
+                r.PlatformMask & ~ r.OneWayPlatformMask & ~ r.MovingOneWayPlatformMask, cyan, r.DrawRaycastGizmos);
+        }
+
+        private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
+        {
+            r.UpRaycastSmallestDistance = r.RaycastUpHitAt.distance;
+        }
 
         public async UniTaskVoid Initialize(RaycastDirection rayDirection)
         {
@@ -377,6 +417,40 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint()
         {
             SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
+        }
+        public void OnInitializeUpRaycastLength()
+        {
+            InitializeUpRaycastLength();
+        }
+
+        public void OnInitializeUpRaycastStart()
+        {
+            InitializeUpRaycastStart();
+        }
+
+        public void OnInitializeUpRaycastEnd()
+        {
+            InitializeUpRaycastEnd();
+        }
+
+        public void OnInitializeUpRaycastSmallestDistance()
+        {
+            InitializeUpRaycastSmallestDistance();
+        }
+
+        public void OnSetCurrentUpRaycastOriginPoint()
+        {
+            SetCurrentUpRaycastOriginPoint();
+        }
+
+        public void OnSetCurrentUpRaycast()
+        {
+            SetCurrentUpRaycast();
+        }
+
+        public void OnSetUpRaycastSmallestDistanceToRaycastUpHitAt()
+        {
+            SetUpRaycastSmallestDistanceToRaycastUpHitAt();
         }
     }
 }

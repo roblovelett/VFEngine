@@ -367,5 +367,61 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnStopMovingPlatformCurrentGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+        
+        public async UniTaskVoid InitializeUpHitConnected()
+        {
+            upColliderModel.OnInitializeUpHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid InitializeUpHitsStorageCollidingIndex()
+        {
+            upColliderModel.OnInitializeUpHitsStorageCollidingIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid InitializeUpHitsStorageCurrentIndex()
+        {
+            upColliderModel.OnInitializeUpHitsStorageCurrentIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void InitializeUpHitsStorage()
+        {
+            upColliderModel.OnInitializeUpHitsStorage();
+        }
+
+        public void AddToUpHitsStorageCurrentIndex()
+        {
+            upColliderModel.OnAddToUpHitsStorageCurrentIndex();
+        }
+
+        public void SetCurrentUpHitsStorage()
+        {
+            upColliderModel.OnSetCurrentUpHitsStorage();
+        }
+
+        public void SetRaycastUpHitAt()
+        {
+            upColliderModel.OnSetRaycastUpHitAt();
+        }
+
+        public async UniTaskVoid SetUpHitConnected()
+        {
+            upColliderModel.OnSetUpHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetUpHitsStorageCollidingIndexAt()
+        {
+            upColliderModel.OnSetUpHitsStorageCollidingIndexAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetIsCollidingAbove()
+        {
+            upColliderModel.OnSetIsCollidingAbove();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

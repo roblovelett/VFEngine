@@ -101,6 +101,10 @@ namespace VFEngine.Platformer
         [SerializeField] private Collider2DReference safetyBoxcastCollider;
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        [SerializeField] private IntReference upHitsStorageLength;
+        [SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        [SerializeField] private FloatReference upRaycastSmallestDistance;
+        [SerializeField] private BoolReference upHitConnected;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
@@ -191,6 +195,10 @@ namespace VFEngine.Platformer
         public Collider2D SafetyBoxcastCollider => safetyBoxcastCollider.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        public int UpHitsStorageLength => upHitsStorageLength.Value;
+        public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
+        public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
+        public bool UpHitConnected => upHitConnected.Value;
         
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

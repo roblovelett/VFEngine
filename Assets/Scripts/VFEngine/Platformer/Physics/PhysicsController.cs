@@ -188,5 +188,21 @@ namespace VFEngine.Platformer.Physics
             model.OnApplyRightStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void StopVerticalSpeed()
+        {
+            model.OnStopVerticalSpeed();
+        }
+
+        public async UniTaskVoid SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
+        {
+            model.OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void StopVerticalForce()
+        {
+            model.OnStopVerticalForce();
+        }
     }
 }

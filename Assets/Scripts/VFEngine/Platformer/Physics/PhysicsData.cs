@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference rightStickyRaycastOriginY;
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        [SerializeField] private FloatReference upRaycastSmallestDistance;
         private Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
         private Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
         private Vector2 CurrentRightHitPoint => currentRightHitPoint.Value;
@@ -51,6 +52,9 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private BoolReference stickToSlopesControl;
         [SerializeField] private BoolReference isJumping;
         [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private Vector2Reference externalForce;
+        [SerializeField] private FloatReference externalForceX;
+        [SerializeField] private FloatReference externalForceY;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -68,6 +72,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         /* properties dependencies */
+        public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
         public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
@@ -133,6 +138,34 @@ namespace VFEngine.Platformer.Physics
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
+        public Vector2 ExternalForce { get; set; } = new Vector2(0,0);
+
+        public Vector2 ExternalForceRef
+        {
+            set => value = externalForce.Value;
+        }
+
+        public float ExternalForceX
+        {
+            get => ExternalForce.x;
+            set => value = ExternalForce.x;
+        }
+
+        public float ExternalForceXRef
+        {
+            set => value = externalForceX.Value;
+        }
+
+        public float ExternalForceY
+        {
+            get => ExternalForce.y;
+            set => value = ExternalForce.y;
+        }
+
+        public float ExternalForceYRef
+        {
+            set => value = externalForceY.Value;
+        }
         public float CurrentGravity { get; set; }
         public Vector2 Speed { get; set; } = new Vector2(0, 0);
         public Vector2 ForcesApplied { get; set; }

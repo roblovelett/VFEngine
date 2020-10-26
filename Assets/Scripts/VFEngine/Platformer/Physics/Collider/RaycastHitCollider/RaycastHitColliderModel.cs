@@ -109,6 +109,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.HasPathMovementClosestToDownHitRef = rhc.HasPathMovementClosestToDownHit;
             rhc.FrictionRef = rhc.Friction;
             rhc.HasMovingPlatformRef = rhc.HasMovingPlatform;
+            rhc.UpHitConnectedRef = rhc.UpHitConnected;
+            rhc.UpHitsStorageCollidingIndexRef = rhc.UpHitsStorageCollidingIndex;
+            rhc.RaycastUpHitAtRef = rhc.RaycastUpHitAt;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -314,12 +317,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void InitializeDownHitsStorage()
         {
-            rhc.DownHitsStorage = new RaycastHit2D[rhc.VerticalHitsStorageLength];
+            rhc.DownHitsStorage = new RaycastHit2D[rhc.NumberOfVerticalRaysPerSide];
         }
 
         private void InitializeUpHitsStorage()
         {
-            rhc.UpHitsStorage = new RaycastHit2D[rhc.VerticalHitsStorageLength];
+            rhc.UpHitsStorage = new RaycastHit2D[rhc.NumberOfVerticalRaysPerSide];
         }
 
         private void InitializeDownHitsStorageSmallestDistanceIndex()
@@ -345,6 +348,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private void SetRaycastDownHitAt()
         {
             rhc.RaycastDownHitAt = rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex];
+        }
+
+        private void SetRaycastUpHitAt()
+        {
+            rhc.RaycastUpHitAt = rhc.UpHitsStorage[rhc.CurrentUpHitsStorageIndex];
         }
 
         private void SetDownHitConnected()
@@ -417,6 +425,46 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.MovingPlatformCurrentGravity = 0;
         }
 
+        private void InitializeUpHitConnected()
+        {
+            rhc.UpHitConnected = false;
+        }
+
+        private void InitializeUpHitsStorageCollidingIndex()
+        {
+            rhc.UpHitsStorageCollidingIndex = 0;
+        }
+
+        private void InitializeUpHitsStorageCurrentIndex()
+        {
+            rhc.CurrentUpHitsStorageIndex = 0;
+        }
+
+        private void AddToUpHitsStorageCurrentIndex()
+        {
+            rhc.CurrentUpHitsStorageIndex++;
+        }
+
+        private void SetCurrentUpHitsStorage()
+        {
+            rhc.UpHitsStorage[rhc.CurrentUpHitsStorageIndex] = rhc.CurrentUpRaycast;
+        }
+
+        private void SetUpHitConnected()
+        {
+            rhc.UpHitConnected = true;
+        }
+
+        private void SetUpHitsStorageCollidingIndexAt()
+        {
+            rhc.UpHitsStorageCollidingIndex = rhc.CurrentUpHitsStorageIndex;
+        }
+
+        private void SetIsCollidingAbove()
+        {
+            rhc.state.SetIsCollidingAbove(true);
+        }
+        
         /* properties: dependencies */
 
         /* properties: methods */
@@ -682,6 +730,56 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnStopMovingPlatformCurrentGravity()
         {
             StopMovingPlatformCurrentGravity();
+        }
+        
+        public void OnInitializeUpHitConnected()
+        {
+            InitializeUpHitConnected();
+        }
+
+        public void OnInitializeUpHitsStorageCollidingIndex()
+        {
+            InitializeUpHitsStorageCollidingIndex();
+        }
+
+        public void OnInitializeUpHitsStorageCurrentIndex()
+        {
+            InitializeUpHitsStorageCurrentIndex();
+        }
+
+        public void OnInitializeUpHitsStorage()
+        {
+            InitializeUpHitsStorage();
+        }
+
+        public void OnAddToUpHitsStorageCurrentIndex()
+        {
+            AddToUpHitsStorageCurrentIndex();
+        }
+
+        public void OnSetCurrentUpHitsStorage()
+        {
+            SetCurrentUpHitsStorage();
+        }
+
+        public void OnSetRaycastUpHitAt()
+        {
+            SetRaycastUpHitAt();
+        }
+
+        public void OnSetUpHitConnected()
+        {
+            SetUpHitConnected();
+        }
+
+        public void OnSetUpHitsStorageCollidingIndexAt()
+        {
+            SetUpHitsStorageCollidingIndexAt();
+        }
+
+        public void OnSetIsCollidingAbove()
+        {
+            SetIsCollidingAbove();
         }
     }
 }

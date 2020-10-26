@@ -177,36 +177,44 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid CastRaysUp()
         {
-            // Set UpRaycastLength
-            // Set InitializeUpHitConnected (false)
-            // Set AboveRaycastStart
-            // SetAboveRaycastEnd
-            // If UpHitStorage.Length != numberOfVerticalRaysPerSide
-                // Initialize UpHitsStorage to new UpHitsStorage[numberOfVerticalRaysPerSide
-            // Initialize UpRaycast smallestDistance = float.MaxValue
-            // Initialize UpHits CollidingIndex to 0
-            // Initialize UpHits CurrentIndex to 0
-            // for i=0; i < numberOfVerticalRaysPerSide; i++
-                // Set CurrentUpRaycastOriginPoint
-                // Set CurrentUpRaycast
-                // Set UpHitsStorage[CurrentIndex] = CurrentUpRaycast
-                // if UpHitsStorage[CurrentIndex]
-                    // Set UpHitConnected to True
-                    // Set CollidingIndex to CurrentIndex
-                    // if UpHitsStorage[CurrentIndex].Collider == IgnoredCollider break;
-                    // if UpHitsStorage[CurrentIndex].distance < smallestDistance
-                        // Set smallestDistance to UpHitsStorage[CurrentIndex].distance
-                // UpHitsCurrentIndex++
-                
-            // if UpHitConnected
-                // Set NewVerticalPosition
-                // if IsGrounded & NewVerticalPosition < 0
-                    // StopNewVerticalPosition
-                // Set IsCollidingAbove to true
-                // if !WasTouchingCeilingLastFrame
-                    // Set Speed to new Vector2(Speed.x, 0f)
-                // Set Vertical Force to 0
-            
+            var rTask1 = Async(p.Raycast.InitializeUpRaycastLength());
+            var rTask2 = Async(p.Raycast.InitializeUpRaycastStart());
+            var rTask3 = Async(p.Raycast.InitializeUpRaycastEnd());
+            var rTask4 = Async(p.Raycast.InitializeUpRaycastSmallestDistance());
+            var rhcTask1 = Async(p.RaycastHitCollider.InitializeUpHitConnected());
+            var rhcTask2 = Async(p.RaycastHitCollider.InitializeUpHitsStorageCollidingIndex());
+            var rhcTask3 = Async(p.RaycastHitCollider.InitializeUpHitsStorageCurrentIndex());
+            var task1 = await (rTask1, rTask2, rTask3, rTask4, rhcTask1, rhcTask2, rhcTask3);
+            if (p.UpHitsStorageLength != p.NumberOfVerticalRaysPerSide) p.RaycastHitCollider.InitializeUpHitsStorage();
+            for (var i = 0; i < p.NumberOfVerticalRaysPerSide; i++)
+            {
+                p.Raycast.SetCurrentUpRaycastOriginPoint();
+                p.Raycast.SetCurrentUpRaycast();
+                p.RaycastHitCollider.SetCurrentUpHitsStorage();
+                p.RaycastHitCollider.SetRaycastUpHitAt();
+                if (p.RaycastUpHitAt)
+                {
+                    var rhcTask4 = Async(p.RaycastHitCollider.SetUpHitConnected());
+                    var rhcTask5 = Async(p.RaycastHitCollider.SetUpHitsStorageCollidingIndexAt());
+                    var task2 = await (rhcTask4, rhcTask5);
+                    if (p.RaycastUpHitAt.collider == p.IgnoredCollider) break;
+                    if (p.RaycastUpHitAt.distance < p.UpRaycastSmallestDistance)
+                        p.Raycast.SetUpRaycastSmallestDistanceToRaycastUpHitAt();
+                }
+
+                if (p.UpHitConnected)
+                {
+                    var phTask1 = Async(p.Physics.SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight());
+                    var rhcTask6 = Async(p.RaycastHitCollider.SetIsCollidingAbove());
+                    var task3 = await (phTask1, rhcTask6);
+                    if (p.IsGrounded && p.NewPosition.y < 0) p.Physics.StopNewVerticalPosition();
+                    if (!p.WasTouchingCeilingLastFrame) p.Physics.StopVerticalSpeed();
+                    p.Physics.StopVerticalForce();
+                }
+
+                p.RaycastHitCollider.AddToUpHitsStorageCurrentIndex();
+            }
+
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -585,7 +593,7 @@ namespace VFEngine.Platformer
                             var rchTask2 = Async(SetLeftDistanceToLeftCollider());
                             var task1 = await (rchTask1, rchTask2);
                         }
-                        else if (direction == Right)
+                        else
                         {
                             var rchTask2 = Async(SetRightIsCollidingRight());
                             var rchTask3 = Async(SetRightDistanceToRightCollider());

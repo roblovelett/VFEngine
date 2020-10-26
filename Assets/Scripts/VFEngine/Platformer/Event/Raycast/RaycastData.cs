@@ -39,6 +39,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
         [SerializeField] private FloatReference rayOffset;
+        [SerializeField] private BoolReference isGrounded;
         private Vector2 Speed => speed.Value;
         
         /* fields */
@@ -71,11 +72,15 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference boundsBottomLeftCorner;
         [SerializeField] private Vector2Reference boundsBottomRightCorner;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
+        [SerializeField] private FloatReference upRaycastSmallestDistance;
+        [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         private const float ObstacleHeightTolerance = 0.05f;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
 
         /* properties: dependencies */
+        public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
+        public bool IsGrounded => isGrounded.Value;
         public bool HasSettings => settings;
         public bool DrawRaycastGizmos => settings.drawRaycastGizmosControl;
         public int NumberOfHorizontalRays => settings.numberOfHorizontalRays;
@@ -143,6 +148,15 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
 
         /* properties */
+        public float UpRayLength { get; set; }
+        public Vector2 UpRaycastStart { get; set; } = new Vector2(0,0);
+        public Vector2 UpRaycastEnd { get; set; } = new Vector2(0, 0);
+        public float UpRaycastSmallestDistance { get; set; }
+
+        public float UpRaycastSmallestDistanceRef
+        {
+            set => value = upRaycastSmallestDistance.Value;
+        }
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         public bool DrawRaycastGizmosRef
@@ -228,7 +242,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 CurrentLeftRaycastOrigin => SetLeftRaycastOrigin();
 
         public Vector2 CurrentDownRaycastOrigin => SetDownRaycastOrigin();
-        public Vector2 CurrentUpRaycastOrigin => SetUpRaycastOrigin();
+        public Vector2 CurrentUpRaycastOrigin { get; set; }
 
         public Vector2 CurrentDownRaycastOriginRef
         {

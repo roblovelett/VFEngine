@@ -46,6 +46,9 @@ namespace VFEngine.Platformer.Physics
             p.StickToSlopesControlRef = p.StickToSlopesControl;
             p.IsJumpingRef = p.state.IsJumping;
             p.SafetyBoxcastControlRef = p.SafetyBoxcastControl;
+            p.ExternalForceRef = p.ExternalForce;
+            p.ExternalForceXRef = p.ExternalForceX;
+            p.ExternalForceYRef = p.ExternalForceY;
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -258,6 +261,22 @@ namespace VFEngine.Platformer.Physics
             return -Abs(pointY - originY) + boundsHeight / 2;
         }
 
+        private void StopVerticalSpeed()
+        {
+            p.Speed = new Vector2(p.SpeedX, 0f);
+        }
+
+        private void SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
+        {
+            p.NewPositionY = p.UpRaycastSmallestDistance - p.BoundsHeight / 2;
+        }
+
+        private void StopVerticalForce()
+        {
+            p.SpeedY = 0f;
+            p.ExternalForceY = 0f;
+        }
+
         /* properties: methods */
         public void OnInitialize()
         {
@@ -417,6 +436,21 @@ namespace VFEngine.Platformer.Physics
         public void OnApplyRightStickyRaycastToNewVerticalPosition()
         {
             ApplyRightStickyRaycastToNewVerticalPosition();
+        }
+
+        public void OnStopVerticalSpeed()
+        {
+            StopVerticalSpeed();
+        }
+
+        public void OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
+        {
+            SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
+        }
+
+        public void OnStopVerticalForce()
+        {
+            StopVerticalForce();
         }
     }
 }
