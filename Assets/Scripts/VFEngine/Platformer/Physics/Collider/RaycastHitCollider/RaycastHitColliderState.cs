@@ -123,18 +123,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             GroundedEvent = groundedEvent;
         }
 
-        public void SetHitAngles(float angle)
+        public void SetSlopeAngles(float angle)
         {
-            SetRightHitAngle(angle);
-            SetLeftHitAngle(angle);
+            SetRightLateralSlopeAngle(angle);
+            SetLeftLateralSlopeAngle(angle);
         }
 
-        public void SetRightHitAngle(float angle)
+        public void SetRightLateralSlopeAngle(float angle)
         {
             RightLateralSlopeAngle = angle;
         }
 
-        public void SetLeftHitAngle(float angle)
+        public void SetLeftLateralSlopeAngle(float angle)
         {
             LeftLateralSlopeAngle = angle;
         }
@@ -202,7 +202,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetPassedSlopeAngles(false);
             SetGroundedEvent(false);
             SetDistanceToColliders(-1);
-            SetHitAngles(0);
+            SetSlopeAngles(0);
         }
     }
 }

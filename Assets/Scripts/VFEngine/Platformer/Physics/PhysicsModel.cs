@@ -38,8 +38,6 @@ namespace VFEngine.Platformer.Physics
             p.FallSlowFactorRef = p.FallSlowFactor;
             p.HorizontalMovementDirectionRef = p.HorizontalMovementDirection;
             p.MaximumSlopeAngleRef = p.MaximumSlopeAngle;
-            p.NewRightPositionDistanceRef = p.NewRightPositionDistance;
-            p.NewLeftPositionDistanceRef = p.NewLeftPositionDistance;
             p.NewPositionRef = p.NewPosition;
             p.SmallValueRef = p.SmallValue;
             p.GravityRef = p.Gravity;
@@ -177,12 +175,12 @@ namespace VFEngine.Platformer.Physics
 
         private void SetNewPositiveHorizontalPosition()
         {
-            p.NewPositionX = SetNewHorizontalPosition(true, p.NewRightPositionDistance, p.BoundsWidth, p.RayOffset);
+            p.NewPositionX = SetNewHorizontalPosition(true, p.DistanceBetweenRightHitAndRaycastOrigin, p.BoundsWidth, p.RayOffset);
         }
 
         private void SetNewNegativeHorizontalPosition()
         {
-            p.NewPositionX = SetNewHorizontalPosition(false, p.NewLeftPositionDistance, p.BoundsWidth, p.RayOffset);
+            p.NewPositionX = SetNewHorizontalPosition(false, p.DistanceBetweenLeftHitAndRaycastOrigin, p.BoundsWidth, p.RayOffset);
         }
 
         private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)

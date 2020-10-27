@@ -123,9 +123,10 @@ namespace VFEngine.Platformer.Physics
             model.OnSetNewNegativeHorizontalPosition();
         }
 
-        public void StopHorizontalSpeed()
+        public async UniTaskVoid StopHorizontalSpeed()
         {
             model.OnStopHorizontalSpeed();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void StopNewHorizontalPosition()

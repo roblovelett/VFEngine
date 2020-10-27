@@ -177,34 +177,38 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetRightHitAngle()
+        public void SetCurrentRightHitAngle()
         {
-            rightColliderModel.OnSetRightHitAngle();
+            rightColliderModel.OnSetCurrentRightHitAngle();
         }
 
-        public void SetLeftHitAngle()
+        public void SetCurrentLeftHitAngle()
         {
-            leftColliderModel.OnSetLeftHitAngle();
+            leftColliderModel.OnSetCurrentLeftHitAngle();
         }
 
-        public void SetRightIsCollidingRight()
+        public async UniTaskVoid SetRightIsCollidingRight()
         {
             rightColliderModel.OnSetRightIsCollidingRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetRightDistanceToRightCollider()
+        public async UniTaskVoid SetRightDistanceToRightCollider()
         {
             rightColliderModel.OnSetRightDistanceToRightCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetLeftIsCollidingLeft()
+        public async UniTaskVoid SetLeftIsCollidingLeft()
         {
             leftColliderModel.OnSetLeftIsCollidingLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetLeftDistanceToLeftCollider()
+        public async UniTaskVoid SetLeftDistanceToLeftCollider()
         {
             leftColliderModel.OnSetLeftDistanceToLeftCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetRightCurrentWallCollider()
@@ -212,21 +216,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rightColliderModel.OnSetRightCurrentWallCollider();
         }
 
-        public void SetRightFailedSlopeAngle()
-        {
-            rightColliderModel.OnSetRightFailedSlopeAngle();
-        }
-
         public void SetLeftCurrentWallCollider()
         {
             leftColliderModel.OnSetLeftCurrentWallCollider();
         }
-
-        public void SetLeftFailedSlopeAngle()
-        {
-            leftColliderModel.OnSetLeftFailedSlopeAngle();
-        }
-
         public void AddRightHitToContactList()
         {
             rightColliderModel.OnAddRightHitToContactList();
@@ -422,6 +415,56 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             upColliderModel.OnSetIsCollidingAbove();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetCurrentRightHitDistance()
+        {
+            rightColliderModel.OnSetCurrentRightHitDistance();
+        }
+
+        public void SetCurrentLeftHitDistance()
+        {
+            leftColliderModel.OnSetCurrentLeftHitDistance();
+        }
+
+        public void SetCurrentRightHitCollider()
+        {
+            rightColliderModel.OnSetCurrentRightHitCollider();
+        }
+
+        public void SetCurrentLeftHitCollider()
+        {
+            leftColliderModel.OnSetCurrentLeftHitCollider();
+        }
+
+        public void SetCurrentRightLateralSlopeAngle()
+        {
+            rightColliderModel.OnSetCurrentRightLateralSlopeAngle();
+        }
+
+        public void SetCurrentLeftLateralSlopeAngle()
+        {
+            leftColliderModel.OnSetCurrentLeftLateralSlopeAngle();
+        }
+
+        public void SetRightFailedSlopeAngle()
+        {
+            rightColliderModel.OnSetRightFailedSlopeAngle();
+        }
+
+        public void SetLeftFailedSlopeAngle()
+        {
+            leftColliderModel.OnSetLeftFailedSlopeAngle();
+        }
+
+        public void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
+        {
+            rightColliderModel.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
+        }
+
+        public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
+        {
+            leftColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
         }
     }
 }

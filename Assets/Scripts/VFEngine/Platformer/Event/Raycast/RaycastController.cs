@@ -219,5 +219,35 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             leftRaycastModel.OnInitializeLeftRaycastLength();
         }
+
+        public void SetCurrentRightRaycastOrigin()
+        {
+            rightRaycastModel.OnSetCurrentRightRaycastOrigin();
+        }
+
+        public void SetCurrentLeftRaycastOrigin()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycastOrigin();
+        }
+
+        public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        {
+            rightRaycastModel.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentRightRaycast()
+        {
+            rightRaycastModel.OnSetCurrentRightRaycast();
+        }
+
+        public void SetCurrentLeftRaycast()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycast();
+        }
     }
 }

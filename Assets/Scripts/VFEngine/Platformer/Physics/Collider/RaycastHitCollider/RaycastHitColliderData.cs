@@ -39,7 +39,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private Vector2Reference verticalRaycastFromLeft;
         [SerializeField] private Vector2Reference verticalRaycastToRight;
-        
+        [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin;
+        [SerializeField] private Vector2Reference rightRaycastToTopOrigin;
+        [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin;
+        [SerializeField] private Vector2Reference leftRaycastToTopOrigin;
+
         /* fields */
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
@@ -86,6 +90,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private BoolReference upHitConnected;
         [SerializeField] private IntReference upHitsStorageCollidingIndex;
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
+        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
         
@@ -100,16 +106,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             return LeftHitsStorage[CurrentLeftHitsStorageIndex].point;
         }
         
-        private float SetCurrentRightHitDistance()
-        {
-            return RightHitsStorage[CurrentRightHitsStorageIndex].distance;
-        }
-
-        private float SetCurrentLeftHitDistance()
-        {
-            return LeftHitsStorage[CurrentLeftHitsStorageIndex].distance;
-        }
-
         private float SetCurrentDownHitSmallestDistance()
         {
             return DistanceBetweenPointAndLine(DownHitsStorage[DownHitsStorageSmallestDistanceIndex].point,
@@ -124,15 +120,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private Collider2D SetCurrentLeftHitCollider()
         {
             return LeftHitsStorage[CurrentLeftHitsStorageIndex].collider;
-        }
-
-        private float SetCurrentRightHitAngle()
-        {
-            return Abs(Angle(RightHitsStorage[CurrentRightHitsStorageIndex].normal, Transform.up));
-        }
-        private float SetCurrentLeftHitAngle()
-        {
-            return Abs(Angle(LeftHitsStorage[CurrentLeftHitsStorageIndex].normal, Transform.up));
         }
 
         private Vector2 SetColliderBottomCenterPosition()
@@ -181,7 +168,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public Vector2 VerticalRaycastToRight => verticalRaycastToRight.Value;
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-       
+        public Vector2 RightRaycastFromBottomOrigin => rightRaycastFromBottomOrigin.Value;
+        public Vector2 RightRaycastToTopOrigin => rightRaycastToTopOrigin.Value;
+        public Vector2 LeftRaycastFromBottomOrigin => leftRaycastFromBottomOrigin.Value;
+        public Vector2 LeftRaycastToTopOrigin => leftRaycastToTopOrigin.Value;
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
@@ -278,9 +268,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = currentUpHitsStorageIndex.Value;
         }
 
-        public float CurrentRightHitDistance => SetCurrentRightHitDistance();
+        public float CurrentRightHitDistance { get; set; }
 
-        public float CurrentLeftHitDistance => SetCurrentLeftHitDistance();
+        public float CurrentRightHitDistanceRef
+        {
+            set => value = currentRightHitDistance.Value;
+        }
+
+        public float CurrentLeftHitDistance { get; set; }
+        public float CurrentLeftHitDistanceRef
+        {
+            set => value = currentLeftHitDistance.Value;
+        }
 
         public float CurrentDownHitDistance { get; set; }
         public float CurrentUpHitDistance { get; set; }
@@ -290,18 +289,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = currentDownHitSmallestDistance.Value;
         }
-        public float CurrentRightHitDistanceRef
-        {
-            set => value = currentRightHitDistance.Value;
-        }
 
-        public float CurrentLeftHitDistanceRef
-        {
-            set => value = currentLeftHitDistance.Value;
-        }
-
-        public Collider2D CurrentRightHitCollider => SetCurrentRightHitCollider();
-        public Collider2D CurrentLeftHitCollider => SetCurrentLeftHitCollider();
+        public Collider2D CurrentRightHitCollider { get; set; }
+        public Collider2D CurrentLeftHitCollider { get; set; }
 
         public Collider2D CurrentRightHitColliderRef
         {
@@ -320,8 +310,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = ignoredCollider.Value;
         }
 
-        public float CurrentRightHitAngle => SetCurrentRightHitAngle();
-        public float CurrentLeftHitAngle => SetCurrentLeftHitAngle();
+        public float CurrentRightHitAngle { get; set; }
+        public float CurrentLeftHitAngle { get; set; }
 
         public float CurrentRightHitAngleRef
         {
@@ -331,19 +321,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public float CurrentLeftHitAngleRef
         {
             set => value = currentLeftHitAngle.Value;
-        }
-
-        public Vector2 CurrentRightHitPoint => SetCurrentRightHitPoint();
-        public Vector2 CurrentLeftHitPoint => SetCurrentLeftHitPoint();
-
-        public Vector2 CurrentRightHitPointRef
-        {
-            set => value = currentRightHitPoint.Value;
-        }
-
-        public Vector2 CurrentLeftHitPointRef
-        {
-            set => value = currentLeftHitPoint.Value;
         }
 
         public bool IsGroundedRef
@@ -463,5 +440,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = hasMovingPlatform.Value;
         }
+        
+        public float DistanceBetweenRightHitAndRaycastOrigin { get; set; }
+
+        public float DistanceBetweenRightHitAndRaycastOriginRef
+        {
+            set => value = distanceBetweenRightHitAndRaycastOrigin.Value;
+        }
+        public float DistanceBetweenLeftHitAndRaycastOrigin { get; set; }
+
+        public float DistanceBetweenLeftHitAndRaycastOriginRef
+        {
+            set => value = distanceBetweenLeftHitAndRaycastOrigin.Value;
+        }
+        
     }
 }

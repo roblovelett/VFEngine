@@ -19,10 +19,6 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference movingPlatformCurrentGravity;
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
         [SerializeField] private FloatReference maximumSlopeAngle;
-        [SerializeField] private Vector2Reference horizontalRaycastFromBottom;
-        [SerializeField] private Vector2Reference horizontalRaycastToTop;
-        [SerializeField] private Vector2Reference currentRightHitPoint;
-        [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
@@ -33,10 +29,8 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
-        private Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
-        private Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
-        private Vector2 CurrentRightHitPoint => currentRightHitPoint.Value;
-        private Vector2 CurrentLeftHitPoint => currentLeftHitPoint.Value;
+        [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
+        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
 
         /* fields */
         [SerializeField] private new TransformReference transform;
@@ -59,19 +53,10 @@ namespace VFEngine.Platformer.Physics
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
         /* fields: methods */
-        private float SetNewRightPositionDistance()
-        {
-            return DistanceBetweenPointAndLine(CurrentRightHitPoint, HorizontalRaycastFromBottom,
-                HorizontalRaycastToTop);
-        }
-
-        private float SetNewLeftPositionDistance()
-        {
-            return DistanceBetweenPointAndLine(CurrentLeftHitPoint, HorizontalRaycastFromBottom,
-                HorizontalRaycastToTop);
-        }
 
         /* properties dependencies */
+        public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
+        public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
@@ -225,9 +210,6 @@ namespace VFEngine.Platformer.Physics
             get => NewPosition.y;
             set => value = NewPosition.y;
         }
-
-        public float NewRightPositionDistance => SetNewRightPositionDistance();
-        public float NewLeftPositionDistance => SetNewLeftPositionDistance();
 
         public float NewRightPositionDistanceRef
         {
