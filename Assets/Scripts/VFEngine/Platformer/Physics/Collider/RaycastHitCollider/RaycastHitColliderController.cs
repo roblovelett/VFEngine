@@ -151,14 +151,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftColliderModel.OnInitializeLeftHitsStorage();
         }
 
-        public void InitializeRightHitsStorageIndex()
+        public void InitializeCurrentRightHitsStorageIndex()
         {
-            rightColliderModel.OnInitializeRightHitsStorageIndex();
+            rightColliderModel.OnInitializeCurrentRightHitsStorageIndex();
         }
 
-        public void InitializeLeftHitsStorageIndex()
+        public void InitializeCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnInitializeLeftHitsStorageIndex();
+            leftColliderModel.OnInitializeCurrentLeftHitsStorageIndex();
         }
 
         public void SetCurrentRightHitsStorage()
@@ -236,14 +236,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnAddLeftHitToContactList();
         }
-        public void AddToRightHitsStorageIndex()
+        public void AddToCurrentRightHitsStorageIndex()
         {
-            rightColliderModel.OnAddToRightHitsStorageIndex();
+            rightColliderModel.OnAddToCurrentRightHitsStorageIndex();
         }
         
-        public void AddToLeftHitsStorageIndex()
+        public void AddToCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnAddToLeftHitsStorageIndex();
+            leftColliderModel.OnAddToCurrentLeftHitsStorageIndex();
         }
 
         public async UniTaskVoid InitializeFriction()

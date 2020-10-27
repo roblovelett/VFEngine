@@ -38,34 +38,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeData(ColliderDirection direction)
         {
-            var xRays = rhc.NumberOfHorizontalRays;
-            var yRays = rhc.NumberOfVerticalRays / 2;
-            if (rhc.CastRaysBothSides) xRays /= 2;
-            switch (direction)
-            {
-                case Up:
-                    rhc.UpHitsStorage = new RaycastHit2D[yRays];
-                    break;
-                case Right:
-                    rhc.RightHitsStorage = new RaycastHit2D[xRays];
-                    break;
-                case Down:
-                    rhc.DownHitsStorage = new RaycastHit2D[yRays];
-                    break;
-                case Left:
-                    rhc.LeftHitsStorage = new RaycastHit2D[xRays];
-                    break;
-                case None: break;
-                default:
-                    if (rhc.DisplayWarnings)
-                        DebugLogWarning(1,
-                            $"{Rh} initialized with incorrect value. Please use ColliderDirection of " +
-                            "value Up, Right, Down, Left, or None.");
-                    break;
-            }
-
-            rhc.HorizontalHitsStorageLength = xRays;
-            rhc.VerticalHitsStorageLength = yRays;
             rhc.UpHitsStorageLengthRef = rhc.UpHitsStorageLength;
             rhc.RightHitsStorageLengthRef = rhc.RightHitsStorageLength;
             rhc.DownHitsStorageLengthRef = rhc.DownHitsStorageLength;
@@ -77,7 +49,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentLeftHitsStorageIndexRef = rhc.CurrentLeftHitsStorageIndex;
             rhc.CurrentUpHitsStorageIndexRef = rhc.CurrentUpHitsStorageIndex;
             rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
-            rhc.HorizontalHitsStorageLengthRef = rhc.HorizontalHitsStorageLength;
             rhc.CurrentRightHitDistanceRef = rhc.CurrentRightHitDistance;
             rhc.CurrentLeftHitDistanceRef = rhc.CurrentLeftHitDistance;
             rhc.CurrentDownHitSmallestDistanceRef = rhc.CurrentDownHitSmallestDistance;
@@ -202,20 +173,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void InitializeRightHitsStorage()
         {
-            rhc.RightHitsStorage = new RaycastHit2D[rhc.HorizontalHitsStorageLength];
+            rhc.RightHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRaysPerSide];
         }
 
         private void InitializeLeftHitsStorage()
         {
-            rhc.LeftHitsStorage = new RaycastHit2D[rhc.HorizontalHitsStorageLength];
+            rhc.LeftHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRaysPerSide];
         }
 
-        private void InitializeRightHitsStorageIndex()
+        private void InitializeCurrentRightHitsStorageIndex()
         {
             rhc.CurrentRightHitsStorageIndex = 0;
         }
 
-        private void InitializeLeftHitsStorageIndex()
+        private void InitializeCurrentLeftHitsStorageIndex()
         {
             rhc.CurrentLeftHitsStorageIndex = 0;
         }
@@ -295,12 +266,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.contactList.Add(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex]);
         }
 
-        private void AddToRightHitsStorageIndex()
+        private void AddToCurrentRightHitsStorageIndex()
         {
             rhc.CurrentRightHitsStorageIndex++;
         }
 
-        private void AddToLeftHitsStorageIndex()
+        private void AddToCurrentLeftHitsStorageIndex()
         {
             rhc.CurrentLeftHitsStorageIndex++;
         }
@@ -532,14 +503,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             InitializeLeftHitsStorage();
         }
 
-        public void OnInitializeRightHitsStorageIndex()
+        public void OnInitializeCurrentRightHitsStorageIndex()
         {
-            InitializeRightHitsStorageIndex();
+            InitializeCurrentRightHitsStorageIndex();
         }
 
-        public void OnInitializeLeftHitsStorageIndex()
+        public void OnInitializeCurrentLeftHitsStorageIndex()
         {
-            InitializeLeftHitsStorageIndex();
+            InitializeCurrentLeftHitsStorageIndex();
         }
 
         public void OnSetCurrentRightHitsStorage()
@@ -617,14 +588,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             AddLeftHitToContactList();
         }
 
-        public void OnAddToRightHitsStorageIndex()
+        public void OnAddToCurrentRightHitsStorageIndex()
         {
-            AddToRightHitsStorageIndex();
+            AddToCurrentRightHitsStorageIndex();
         }
 
-        public void OnAddToLeftHitsStorageIndex()
+        public void OnAddToCurrentLeftHitsStorageIndex()
         {
-            AddToLeftHitsStorageIndex();
+            AddToCurrentLeftHitsStorageIndex();
         }
 
         public void OnInitializeFriction()

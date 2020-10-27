@@ -570,14 +570,21 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid CastHorizontalRays(RaycastDirection direction)
         {
-            var raysAmount = p.NumberOfHorizontalRaysPerSide;
-            InitializeHorizontalHitsStorage(direction, p.HorizontalHitsStorageLength, raysAmount);
-            for (var i = 0; i < raysAmount; i++)
+            var rTask1 = Async(SetHorizontalRaycastFromBottomOrigin(direction));
+            var rTask2 = Async(SetHorizontalRaycastToTopOrigin(direction));
+            var rTask3 = Async(SetHorizontalRaycastLength(direction));
+            var rhcTask1 = Async(InitializeCurrentHorizontalHitsStorageIndex(direction));
+            var rhcTask2 = Async(SetHorizontalHitsStorageSize(direction));
+            var task1 = await (rTask1, rTask2, rTask3,rhcTask1, rhcTask2);
+            
+            for (var i = 0; i < p.NumberOfHorizontalRaysPerSide; i++)
             {
-                if (p.WasGroundedLastFrame && i == 0) SetCurrentRaycastToIgnoreOneWayPlatform(direction);
-                else SetCurrentRaycast(direction);
+                SetCurrentHorizontalRaycastOrigin(direction);
+                
+                /*if (p.WasGroundedLastFrame && i == 0) SetCurrentRaycastToIgnoreOneWayPlatform(direction);
+                else SetCurrentRaycast(direction);*/
                 SetCurrentSideHitsStorage(direction);
-                var hitsDistance = SetHitsDistance(direction);
+                /*var hitsDistance = SetHitsDistance(direction);
                 if (hitsDistance > 0)
                 {
                     var hitCollider = SetHitCollider(direction);
@@ -591,7 +598,7 @@ namespace VFEngine.Platformer
                         {
                             var rchTask1 = Async(SetLeftIsCollidingLeft());
                             var rchTask2 = Async(SetLeftDistanceToLeftCollider());
-                            var task1 = await (rchTask1, rchTask2);
+                            //var task1 = await (rchTask1, rchTask2);
                         }
                         else
                         {
@@ -613,12 +620,61 @@ namespace VFEngine.Platformer
 
                         break;
                     }
-                }
+                }*/
 
-                AddHorizontalHitsStorageIndex(direction);
+                AddToCurrentHorizontalHitsStorageIndex(direction);
             }
 
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void SetCurrentHorizontalRaycastOrigin(RaycastDirection direction)
+        {
+            if (direction == Right) p.Raycast.SetCurrentRightRaycastOrigin();
+            else p.Raycast.SetCurrentLeftRaycastOrigin();
+        }
+
+        private async UniTaskVoid SetHorizontalHitsStorageSize(RaycastDirection direction)
+        {
+            if (direction == Right && p.RightHitsStorageLength != p.NumberOfHorizontalRaysPerSide)
+                p.RaycastHitCollider.InitializeRightHitsStorage();
+            else if (p.LeftHitsStorageLength != p.NumberOfHorizontalRaysPerSide)
+                p.RaycastHitCollider.InitializeLeftHitsStorage();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetHorizontalRaycastLength(RaycastDirection direction)
+        {
+            if (direction == Right) p.Raycast.InitializeRightRaycastLength();
+            else p.Raycast.InitializeLeftRaycastLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        private async UniTaskVoid SetHorizontalRaycastToTopOrigin(RaycastDirection direction)
+        {
+            if (direction == Right) p.Raycast.SetRightRaycastToTopOrigin();
+            else p.Raycast.SetLeftRaycastToTopOrigin();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetHorizontalRaycastFromBottomOrigin(RaycastDirection direction)
+        {
+            if (direction == Right) p.Raycast.SetRightRaycastFromBottomOrigin();
+            else p.Raycast.SetLeftRaycastFromBottomOrigin();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        private async UniTaskVoid InitializeCurrentHorizontalHitsStorageIndex(RaycastDirection direction)
+        {
+            if (direction == Right) p.RaycastHitCollider.InitializeCurrentRightHitsStorageIndex();
+            else p.RaycastHitCollider.InitializeCurrentLeftHitsStorageIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void AddToCurrentHorizontalHitsStorageIndex(RaycastDirection direction)
+        {
+            if (direction == Right) p.RaycastHitCollider.AddToCurrentRightHitsStorageIndex();
+            p.RaycastHitCollider.AddToCurrentLeftHitsStorageIndex();
         }
 
         private async UniTaskVoid StopHorizontalSpeed()
@@ -711,7 +767,7 @@ namespace VFEngine.Platformer
             else p.RaycastHitCollider.SetCurrentLeftHitsStorage();
         }
 
-        private void SetCurrentRaycast(RaycastDirection direction)
+        /*private void SetCurrentRaycast(RaycastDirection direction)
         {
             if (direction == Right) p.Raycast.SetCurrentRightRaycast();
             else p.Raycast.SetCurrentLeftRaycast();
@@ -721,27 +777,15 @@ namespace VFEngine.Platformer
         {
             if (direction == Right) p.Raycast.SetCurrentRightRaycastToIgnoreOneWayPlatform();
             else p.Raycast.SetCurrentLeftRaycastToIgnoreOneWayPlatform();
-        }
+        }*/
 
-        private void InitializeHorizontalHitsStorage(RaycastDirection direction, int length, int rays)
+        /*private void InitializeHorizontalHitsStorage(RaycastDirection direction, int length, int rays)
         {
             InitializeHorizontalHitsStorageIndex(direction);
             if (length == rays) return;
             if (direction == Right) p.RaycastHitCollider.InitializeRightHitsStorage();
             else p.RaycastHitCollider.InitializeLeftHitsStorage();
-        }
-
-        private void InitializeHorizontalHitsStorageIndex(RaycastDirection direction)
-        {
-            if (direction == Right) p.RaycastHitCollider.InitializeRightHitsStorageIndex();
-            else p.RaycastHitCollider.InitializeLeftHitsStorageIndex();
-        }
-
-        private void AddHorizontalHitsStorageIndex(RaycastDirection direction)
-        {
-            if (direction == Right) p.RaycastHitCollider.AddToRightHitsStorageIndex();
-            p.RaycastHitCollider.AddToLeftHitsStorageIndex();
-        }
+        }*/
 
         /* properties: methods */
         public void OnInitialize()

@@ -105,11 +105,15 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private BoolReference upHitConnected;
+        [SerializeField] private IntReference rightHitsStorageLength;
+        [SerializeField] private IntReference leftHitsStorageLength;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
         /* properties: dependencies */
+        public int LeftHitsStorageLength => leftHitsStorageLength.Value;
+        public int RightHitsStorageLength => rightHitsStorageLength.Value;
         public bool DisplayWarnings => settings.displayWarningsControl;
         public bool HasSettings => settings;
         public PhysicsController Physics => physics;

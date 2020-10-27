@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -15,6 +16,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Color;
     using static Mathf;
     using static Single;
+    using static Time;
 
     [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
         order = 0)]
@@ -41,25 +43,27 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private async UniTaskVoid InitializeData(RaycastDirection rayDirection)
         {
+            
+            if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
+            else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
+            r.NumberOfHorizontalRaysPerSideRef = r.NumberOfHorizontalRaysPerSide;
+            r.NumberOfVerticalRaysPerSideRef = r.NumberOfVerticalRaysPerSide;
             r.NumberOfHorizontalRaysRef = r.NumberOfHorizontalRays;
             r.NumberOfVerticalRaysRef = r.NumberOfVerticalRays;
             r.CastRaysOnBothSidesRef = r.CastRaysOnBothSides;
-            r.HorizontalRaycastFromBottomRef = r.HorizontalRaycastFromBottom;
-            r.HorizontalRaycastToTopRef = r.HorizontalRaycastToTop;
             r.VerticalRaycastFromLeftRef = r.VerticalRaycastFromLeft;
             r.VerticalRaycastToRightRef = r.VerticalRaycastToRight;
-            r.HorizontalRayLengthRef = r.HorizontalRayLength;
-            r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
-            r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;
+            /*r.CurrentRightRaycastOriginRef = r.CurrentRightRaycastOrigin;
+            r.CurrentLeftRaycastOriginRef = r.CurrentLeftRaycastOrigin;*/
             r.CurrentUpRaycastOriginRef = r.CurrentUpRaycastOrigin;
             r.CurrentDownRaycastOriginRef = r.CurrentDownRaycastOrigin;
-            r.NumberOfHorizontalRaysPerSideRef = r.NumberOfHorizontalRaysPerSide;
-            r.NumberOfVerticalRaysPerSideRef = r.NumberOfVerticalRaysPerSide;
             r.DrawRaycastGizmosRef = r.DrawRaycastGizmos;
             r.CurrentRightRaycastRef = r.CurrentRightRaycast;
             r.CurrentLeftRaycastRef = r.CurrentLeftRaycast;
             r.CurrentUpRaycastRef = r.CurrentUpRaycast;
             r.CurrentDownRaycastRef = r.CurrentDownRaycast;
+            r.LeftRayLengthRef = r.LeftRayLength;
+            r.RightRayLengthRef = r.RightRayLength;
             r.DownRayLengthRef = r.DownRayLength;
             r.SmallestDistanceRef = r.SmallestDistance;
             r.SmallValueRef = r.SmallValue;
@@ -190,7 +194,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
         }
 
-        private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        /*private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
             r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.HorizontalRayLength,
                 r.PlatformMask, red, r.DrawRaycastGizmos);
@@ -212,7 +216,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.CurrentLeftRaycast = Raycast(r.CurrentLeftRaycastOrigin, -r.Transform.right, r.HorizontalRayLength,
                 r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
-        }
+        }*/
 
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
@@ -337,6 +341,71 @@ namespace VFEngine.Platformer.Event.Raycast
             r.UpRaycastSmallestDistance = r.RaycastUpHitAt.distance;
         }
 
+        private void SetRightRaycastFromBottomOrigin()
+        {
+            r.RightRaycastFromBottomOrigin = SetRaycastFromBottomOrigin(r.BoundsBottomRightCorner, r.BoundsBottomLeftCorner,
+                r.Transform, r.ObstacleHeightTolerance);
+        }
+
+        private void SetLeftRaycastFromBottomOrigin()
+        {
+            r.LeftRaycastFromBottomOrigin = SetRaycastFromBottomOrigin(r.BoundsBottomRightCorner, r.BoundsBottomLeftCorner,
+                r.Transform, r.ObstacleHeightTolerance);
+        }
+
+        private void SetRightRaycastToTopOrigin()
+        {
+            r.RightRaycastToTopOrigin = SetRaycastToTopOrigin(r.BoundsTopLeftCorner, r.BoundsTopRightCorner,
+                r.Transform, r.ObstacleHeightTolerance);
+        }
+
+        private void SetLeftRaycastToTopOrigin()
+        {
+            r.LeftRaycastToTopOrigin = SetRaycastToTopOrigin(r.BoundsTopLeftCorner, r.BoundsTopRightCorner,
+                r.Transform, r.ObstacleHeightTolerance);
+        }
+        
+        private static Vector2 SetRaycastToTopOrigin(Vector2 bounds1, Vector2 bounds2, Transform t, float obstacleTolerance)
+        {
+            var b = SetBounds(bounds1, bounds2);
+            var tol = SetTolerance(t, obstacleTolerance);
+            b -= tol;
+            return b;
+        }
+
+        private static Vector2 SetRaycastFromBottomOrigin(Vector2 bounds1, Vector2 bounds2, Transform t, float obstacleTolerance)
+        {
+            var b = SetBounds(bounds1,bounds2);
+            var tol = SetTolerance(t, obstacleTolerance);
+            b += tol;
+            return b;
+        }
+
+        private static Vector2 SetBounds(Vector2 bounds1, Vector2 bounds2)
+        {
+            return (bounds1 + bounds2) / 2;
+        }
+
+        private static Vector2 SetTolerance(Transform t, float obstacleTolerance)
+        {
+            return (Vector2) t.up * obstacleTolerance;
+        }
+
+        private void InitializeRightRaycastLength()
+        {
+            r.RightRayLength = SetHorizontalRayLength(r.Speed.x, r.BoundsWidth, r.RayOffset);
+        }
+
+        private void InitializeLeftRaycastLength()
+        {
+            r.LeftRayLength = SetHorizontalRayLength(r.Speed.x, r.BoundsWidth, r.RayOffset);
+        }
+
+        private static float SetHorizontalRayLength(float x, float width, float offset)
+        {
+            return Abs(x * deltaTime) + width / 2 + offset * 2;
+        }
+
         public async UniTaskVoid Initialize(RaycastDirection rayDirection)
         {
             await Async(InitializeInternal(rayDirection));
@@ -349,7 +418,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCurrentRightRaycastToIgnoreOneWayPlatform()
+        /*public void OnSetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
             SetCurrentRightRaycastToIgnoreOneWayPlatform();
         }
@@ -357,14 +426,14 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
             SetCurrentLeftRaycastToIgnoreOneWayPlatform();
-        }
+        }*/
 
         public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
             SetCurrentDownRaycastToIgnoreOneWayPlatform();
         }
 
-        public void OnSetCurrentRightRaycast()
+        /*public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
         }
@@ -372,7 +441,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentLeftRaycast()
         {
             SetCurrentLeftRaycast();
-        }
+        }*/
         
         public void OnSetCurrentDownRaycast()
         {
@@ -451,6 +520,36 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
             SetUpRaycastSmallestDistanceToRaycastUpHitAt();
+        }
+
+        public void OnSetRightRaycastFromBottomOrigin()
+        {
+            SetRightRaycastFromBottomOrigin();
+        }
+
+        public void OnSetLeftRaycastFromBottomOrigin()
+        {
+            SetLeftRaycastFromBottomOrigin();
+        }
+
+        public void OnSetRightRaycastToTopOrigin()
+        {
+            SetRightRaycastToTopOrigin();
+        }
+
+        public void OnSetLeftRaycastToTopOrigin()
+        {
+            SetLeftRaycastToTopOrigin();
+        }
+
+        public void OnInitializeRightRaycastLength()
+        {
+            InitializeRightRaycastLength();
+        }
+
+        public void OnInitializeLeftRaycastLength()
+        {
+            InitializeLeftRaycastLength();
         }
     }
 }

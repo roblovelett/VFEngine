@@ -23,9 +23,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         /* fields: dependencies */
         [SerializeField] private RaycastHitColliderSettings settings;
         [SerializeField] private BoxCollider2D boxCollider;
-        [SerializeField] private IntReference numberOfHorizontalRays;
-        [SerializeField] private IntReference numberOfVerticalRays;
-        [SerializeField] private BoolReference castRaysBothSides;
         [SerializeField] private Vector2Reference rightRaycastOriginPoint;
         [SerializeField] private Vector2Reference leftRaycastOriginPoint;
         [SerializeField] private new TransformReference transform;
@@ -39,6 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private RaycastHit2DReference currentDownRaycast;
         [SerializeField] private RaycastHit2DReference currentUpRaycast;
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
+        [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private Vector2Reference verticalRaycastFromLeft;
         [SerializeField] private Vector2Reference verticalRaycastToRight;
         
@@ -162,9 +160,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public Vector2 OriginalColliderSize => boxCollider.size;
         public Vector2 OriginalColliderOffset => boxCollider.offset;
         public Vector2 OriginalColliderBoundsCenter => boxCollider.bounds.center;
-        public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
-        public int NumberOfVerticalRays => numberOfVerticalRays.Value;
-        public bool CastRaysBothSides => castRaysBothSides.Value;
         public Transform Transform => transform.Value;
         public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value;
         public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value;
@@ -184,7 +179,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         }
         public Vector2 VerticalRaycastFromLeft => verticalRaycastFromLeft.Value;
         public Vector2 VerticalRaycastToRight => verticalRaycastToRight.Value;
-        
+        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
+        public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
+       
+
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly List<RaycastHit2D> contactList = new List<RaycastHit2D>();
@@ -219,12 +217,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = boxColliderBoundsCenter.Value;
         }
 
-        public int HorizontalHitsStorageLength { get; set; }
-        public int HorizontalHitsStorageLengthRef
-        {
-            set => value = horizontalHitsStorageLength.Value;
-        }
-        
         public int VerticalHitsStorageLength { get; set; }
 
         public int VerticalHitsStorageLengthRef
@@ -239,6 +231,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         public int UpHitsStorageLength => UpHitsStorage.Length;
         public int RightHitsStorageLength => RightHitsStorage.Length;
+        public int RightHitsStorageLengthRef
+        {
+            set => value = rightHitsStorageLength.Value;
+        }
         public int DownHitsStorageLength => DownHitsStorage.Length;
         public int LeftHitsStorageLength => LeftHitsStorage.Length;
 
@@ -246,10 +242,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = upHitsStorageLength.Value;
         }
-        public int RightHitsStorageLengthRef
-        {
-            set => value = rightHitsStorageLength.Value;
-        }
+        
         public int DownHitsStorageLengthRef
         {
             set => value = downHitsStorageLength.Value;
@@ -362,8 +355,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = onMovingPlatform.Value;
         }
-
-        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
 
         public GameObject StandingOnLastFrameRef
         {

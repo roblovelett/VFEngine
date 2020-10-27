@@ -3,6 +3,7 @@ using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
+using UnityAtoms.Editor;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -28,8 +29,6 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
         [SerializeField] private IntReference currentDownHitsStorageIndex;
         [SerializeField] private IntReference currentUpHitsStorageIndex;
-        [SerializeField] private IntReference horizontalHitsStorageLength;
-        [SerializeField] private IntReference verticalHitsStorageLength;
         [SerializeField] private LayerMaskReference platformMask;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
@@ -40,18 +39,14 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private BoolReference isGrounded;
-        private Vector2 Speed => speed.Value;
-        
+
         /* fields */
         [SerializeField] private IntReference numberOfHorizontalRays;
         [SerializeField] private IntReference numberOfVerticalRays;
         [SerializeField] private BoolReference castRaysOnBothSides;
         [SerializeField] private BoolReference drawRaycastGizmos;
-        [SerializeField] private Vector2Reference horizontalRaycastFromBottom;
-        [SerializeField] private Vector2Reference horizontalRaycastToTop;
         [SerializeField] private Vector2Reference verticalRaycastFromLeft;
         [SerializeField] private Vector2Reference verticalRaycastToRight;
-        [SerializeField] private FloatReference horizontalRayLength;
         [SerializeField] private Vector2Reference currentRightRaycastOrigin;
         [SerializeField] private Vector2Reference currentLeftRaycastOrigin;
         [SerializeField] private Vector2Reference currentUpRaycastOrigin;
@@ -63,10 +58,14 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private RaycastHit2DReference currentUpRaycast;
         [SerializeField] private RaycastHit2DReference currentDownRaycast;
         [SerializeField] private FloatReference downRayLength;
+        [SerializeField] private FloatReference leftRayLength;
+        [SerializeField] private FloatReference rightRayLength;
         [SerializeField] private FloatReference smallestDistance;
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin;
+        [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin;
         [SerializeField] private Vector2Reference bounds;
         [SerializeField] private Vector2Reference boundsCenter;
         [SerializeField] private Vector2Reference boundsBottomLeftCorner;
@@ -74,11 +73,11 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
-        private const float ObstacleHeightTolerance = 0.05f;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
 
         /* properties: dependencies */
+        public Vector2 Speed => speed.Value;
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
         public bool IsGrounded => isGrounded.Value;
         public bool HasSettings => settings;
@@ -103,8 +102,8 @@ namespace VFEngine.Platformer.Event.Raycast
         public int CurrentDownHitsStorageIndex => currentDownHitsStorageIndex.Value;
         public int CurrentUpHitsStorageIndex => currentUpHitsStorageIndex.Value;
 
-        public int NumberOfHorizontalRaysPerSide => horizontalHitsStorageLength.Value;
-        public int NumberOfVerticalRaysPerSide => verticalHitsStorageLength.Value;
+        public int NumberOfHorizontalRaysPerSide { get; set; }
+        public int NumberOfVerticalRaysPerSide => settings.numberOfVerticalRays / 2;
         public LayerMask PlatformMask => platformMask.Value;
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
@@ -148,6 +147,15 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
 
         /* properties */
+        public float ObstacleHeightTolerance => 0.05f;
+        public Vector2 RightRaycastFromBottomOrigin { get; set; } = new Vector2(0,0);
+        
+        public Vector2 LeftRaycastFromBottomOrigin { get; set; } = new Vector2(0,0);
+     
+        public Vector2 RightRaycastToTopOrigin { get; set; } = new Vector2(0,0);
+        public Vector2 LeftRaycastToTopOrigin { get; set; } = new Vector2(0,0);
+
+        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public float UpRayLength { get; set; }
         public Vector2 UpRaycastStart { get; set; } = new Vector2(0,0);
         public Vector2 UpRaycastEnd { get; set; } = new Vector2(0, 0);
@@ -157,8 +165,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = upRaycastSmallestDistance.Value;
         }
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
         public bool DrawRaycastGizmosRef
         {
             set => value = drawRaycastGizmos.Value;
@@ -218,28 +224,8 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = boundsHeight.Value;
         }
-        public Vector2 HorizontalRaycastFromBottom => SetHorizontalRaycastFromBottom();
-        public Vector2 HorizontalRaycastToTop => SetHorizontalRaycastToTop();
-
-        public Vector2 HorizontalRaycastFromBottomRef
-        {
-            set => value = horizontalRaycastFromBottom.Value;
-        }
-
-        public Vector2 HorizontalRaycastToTopRef
-        {
-            set => value = horizontalRaycastToTop.Value;
-        }
-
-        public float HorizontalRayLength => SetHorizontalRayLength();
-
-        public float HorizontalRayLengthRef
-        {
-            set => value = horizontalRayLength.Value;
-        }
-
-        public Vector2 CurrentRightRaycastOrigin => SetRightRaycastOrigin();
-        public Vector2 CurrentLeftRaycastOrigin => SetLeftRaycastOrigin();
+        //public Vector2 CurrentRightRaycastOrigin => SetRightRaycastOrigin();
+        //public Vector2 CurrentLeftRaycastOrigin => SetLeftRaycastOrigin();
 
         public Vector2 CurrentDownRaycastOrigin => SetDownRaycastOrigin();
         public Vector2 CurrentUpRaycastOrigin { get; set; }
@@ -254,21 +240,26 @@ namespace VFEngine.Platformer.Event.Raycast
             set => value = currentUpRaycastOrigin.Value;
         }
 
-        public Vector2 CurrentRightRaycastOriginRef
-        {
-            set => value = currentRightRaycastOrigin.Value;
-        }
-
-        public Vector2 CurrentLeftRaycastOriginRef
-        {
-            set => value = currentLeftRaycastOrigin.Value;
-        }
-
         public float DownRayLength { get; set; }
 
         public float DownRayLengthRef
         {
             set => value = downRayLength.Value;
+        }
+        
+        public float LeftRayLength { get; set; }
+
+        public float LeftRayLengthRef
+        {
+            set => value = leftRayLength.Value;
+        }
+        
+        
+        public float RightRayLength { get; set; }
+
+        public float RightRayLengthRef
+        {
+            set => value = rightRayLength.Value;
         }
         
         public Vector2 VerticalRaycastFromLeft { get; set; }
@@ -305,32 +296,12 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         /* fields: methods */
-        private Vector2 SetHorizontalRaycastFromBottom()
-        {
-            return Distance(BoundsBottomLeftCorner, BoundsBottomRightCorner) + Tolerance(Transform);
-        }
-
-        private Vector2 SetHorizontalRaycastToTop()
-        {
-            return Distance(BoundsTopLeftCorner, BoundsTopRightCorner) - Tolerance(Transform);
-        }
-
-        private static Vector2 Distance(Vector2 b1, Vector2 b2)
-        {
-            return (b1 + b2) / 2;
-        }
-
-        private static Vector2 Tolerance(Transform t)
-        {
-            return (Vector2) t.up * ObstacleHeightTolerance;
-        }
-
         private float SetHorizontalRayLength()
         {
             return Half(Abs(Speed.x * deltaTime) + BoundsWidth) + RayOffset * 2;
         }
 
-        private Vector2 SetRightRaycastOrigin()
+        /*private Vector2 SetRightRaycastOrigin()
         {
             return SetRaycastOrigin(HorizontalRaycastFromBottom, HorizontalRaycastToTop, CurrentRightHitsStorageIndex,
                 NumberOfHorizontalRaysPerSide);
@@ -340,7 +311,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return SetRaycastOrigin(HorizontalRaycastFromBottom, HorizontalRaycastToTop, CurrentLeftHitsStorageIndex,
                 NumberOfHorizontalRaysPerSide);
-        }
+        }*/
 
         private Vector2 SetDownRaycastOrigin()
         {
@@ -362,50 +333,3 @@ namespace VFEngine.Platformer.Event.Raycast
         }
     }
 }
-
-/* 
-// fields: dependencies
-[SerializeField] public Vector3Reference movingPlatformCurrentSpeed;
-[SerializeField] public BoolReference isCollidingWithMovingPlatform;
-[SerializeField] public BoolReference wasTouchingCeilingLastFrame;
-[SerializeField] public BoolReference castRaysOnBothSides;
-
-//properties: dependencies
-public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
-public float DistanceToGroundRayMaximumLength => settings.distanceToGroundRayMaximumLength;
-public float RayOffset => settings.rayOffset;
-public bool DrawRaycastGizmos => settings.drawRaycastGizmosControl;
-public Vector3 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
-public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
-public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
-
-// properties
-public float HorizontalRayLength { get; set; }
-public float HorizontalRaySpacing { get; set; }
-public float HorizontalRayCount { get; set; }
-public float VerticalRaySpacing { get; set; }
-public float VerticalRayCount { get; set; }
-public float DistanceToGround { get; set; }
-public LayerMask PlatformsLayerMaskBelow { get; set; }
-public LayerMask NonOneWayPlatformsLayerMaskBelow { get; set; }
-public LayerMask NonMidHeightPlatformsLayerMaskBelow { get; set; }
-public Vector2 OriginalSizeRaycastOrigin { get; set; }
-public Vector2 HorizontalRayCastFromBottom { get; set; } = Vector2.zero;
-public Vector2 HorizontalRayCastToTop { get; set; } = Vector2.zero;
-public Vector2 VerticalRayCastFromLeft { get; set; } = Vector2.zero;
-public Vector2 VerticalRayCastToRight { get; set; } = Vector2.zero;
-public Vector2 AboveRayCastStart { get; set; } = Vector2.zero;
-public Vector2 AboveRayCastEnd { get; set; } = Vector2.zero;
-public Vector2 RayCastOrigin { get; set; } = Vector2.zero;
-public RaycastHit2D DistanceToGroundRaycast { get; set; }
-public Vector3 BoundsTop => SetBoundsSide(BoundsTopLeftCorner, BoundsTopRightCorner);
-public Vector3 BoundsBottom => SetBoundsSide(BoundsBottomLeftCorner, BoundsBottomRightCorner);
-public Vector3 BoundsRight => SetBoundsSide(BoundsTopRightCorner, BoundsBottomRightCorner);
-public Vector3 BoundsLeft => SetBoundsSide(BoundsTopLeftCorner, BoundsBottomLeftCorner);
-public Vector2 Bounds => new Vector2 {x = BoundsWidth, y = BoundsHeight};
-
-private static Vector2 SetBoundsSide(Vector2 corner1, Vector2 corner2)
-{
-    return (corner1 + corner2) / 2;
-}
-*/

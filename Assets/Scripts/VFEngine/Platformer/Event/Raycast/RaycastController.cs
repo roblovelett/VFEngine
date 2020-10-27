@@ -76,7 +76,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        /*public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
             rightRaycastModel.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
         }
@@ -84,14 +84,14 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
             leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
-        }
+        }*/
 
         public void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
             downRaycastModel.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
         }
 
-        public void SetCurrentRightRaycast()
+        /*public void SetCurrentRightRaycast()
         {
             rightRaycastModel.OnSetCurrentRightRaycast();
         }
@@ -99,7 +99,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetCurrentLeftRaycast()
         {
             leftRaycastModel.OnSetCurrentLeftRaycast();
-        }
+        }*/
 
         public void SetCurrentDownRaycast()
         {
@@ -188,6 +188,36 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
             upRaycastModel.OnSetUpRaycastSmallestDistanceToRaycastUpHitAt();
+        }
+        
+        public void SetRightRaycastFromBottomOrigin()
+        {
+            rightRaycastModel.OnSetRightRaycastFromBottomOrigin();
+        }
+
+        public void SetLeftRaycastFromBottomOrigin()
+        {
+            leftRaycastModel.OnSetLeftRaycastFromBottomOrigin();
+        }
+
+        public void SetRightRaycastToTopOrigin()
+        {
+            rightRaycastModel.OnSetRightRaycastToTopOrigin();
+        }
+
+        public void SetLeftRaycastToTopOrigin()
+        {
+            leftRaycastModel.OnSetLeftRaycastToTopOrigin();
+        }
+
+        public void InitializeRightRaycastLength()
+        {
+            rightRaycastModel.OnInitializeRightRaycastLength();
+        }
+
+        public void InitializeLeftRaycastLength()
+        {
+            leftRaycastModel.OnInitializeLeftRaycastLength();
         }
     }
 }
