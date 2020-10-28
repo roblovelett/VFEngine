@@ -8,7 +8,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static Debug;
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-    using static ColliderDirection;
     using static UniTaskExtensions;
 
     public class RaycastHitColliderController : MonoBehaviour, IController
@@ -26,10 +25,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private async void Awake()
         {
             GetModels();
-            var rTask1 = Async(upColliderModel.Initialize(Up));
-            var rTask2 = Async(rightColliderModel.Initialize(Right));
-            var rTask3 = Async(downColliderModel.Initialize(Down));
-            var rTask4 = Async(leftColliderModel.Initialize(Left));
+            var rTask1 = Async(upColliderModel.Initialize());
+            var rTask2 = Async(rightColliderModel.Initialize());
+            var rTask3 = Async(downColliderModel.Initialize());
+            var rTask4 = Async(leftColliderModel.Initialize());
             var rTask = await (rTask1, rTask2, rTask3, rTask4);
         }
 
@@ -220,6 +219,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnSetLeftCurrentWallCollider();
         }
+
         public void AddRightHitToContactList()
         {
             rightColliderModel.OnAddRightHitToContactList();
@@ -229,11 +229,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnAddLeftHitToContactList();
         }
+
         public void AddToCurrentRightHitsStorageIndex()
         {
             rightColliderModel.OnAddToCurrentRightHitsStorageIndex();
         }
-        
+
         public void AddToCurrentLeftHitsStorageIndex()
         {
             leftColliderModel.OnAddToCurrentLeftHitsStorageIndex();
@@ -319,7 +320,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnSetIsCollidingBelow();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid SetIsNotCollidingBelow()
         {
             downColliderModel.OnSetIsNotCollidingBelow();
@@ -342,37 +343,37 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnSetHasMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid SetMovingPlatformToNull()
         {
             downColliderModel.OnSetMovingPlatformToNull();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid SetDoesNotHaveMovingPlatform()
         {
             downColliderModel.OnSetDoesNotHaveMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid StopMovingPlatformCurrentGravity()
         {
             downColliderModel.OnStopMovingPlatformCurrentGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid InitializeUpHitConnected()
         {
             upColliderModel.OnInitializeUpHitConnected();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid InitializeUpHitsStorageCollidingIndex()
         {
             upColliderModel.OnInitializeUpHitsStorageCollidingIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid InitializeUpHitsStorageCurrentIndex()
         {
             upColliderModel.OnInitializeUpHitsStorageCurrentIndex();

@@ -11,7 +11,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static UniTaskExtensions;
     using static DebugExtensions;
-    using static ColliderDirection;
     using static Vector3;
     using static Mathf;
     using static MathsExtensions;
@@ -28,16 +27,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private const string Rh = "Raycast Hit Collider";
 
         /* fields: methods */
-        private async UniTaskVoid InitializeInternal(ColliderDirection direction)
+        private async UniTaskVoid InitializeInternal()
         {
-            var rTask1 = Async(InitializeData(direction));
+            var rTask1 = Async(InitializeData());
             var rTask2 = Async(GetWarningMessages());
             var rTask3 = Async(InitializeModel());
             var rTask = await (rTask1, rTask2, rTask3);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private async UniTaskVoid InitializeData(ColliderDirection direction)
+        private async UniTaskVoid InitializeData()
         {
             rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
             rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
@@ -124,7 +123,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.PhysicsMaterialClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
             rhc.PathMovementClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PathMovementData>();            rhc.contactList.Clear();
+                .GetComponentNoAllocation<PathMovementData>();
+            rhc.contactList.Clear();
             rhc.state.SetCurrentWallColliderNull();
             rhc.state.Reset();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -294,7 +294,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
-            
             rhc.DistanceBetweenRightHitAndRaycastOrigin = DistanceBetweenPointAndLine(
                 rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex].point, rhc.RightRaycastFromBottomOrigin,
                 rhc.RightRaycastToTopOrigin);
@@ -492,13 +491,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].point, rhc.VerticalRaycastFromLeft,
                 rhc.VerticalRaycastToRight);
         }
-        
-        /* properties: dependencies */
 
         /* properties: methods */
-        public async UniTaskVoid Initialize(ColliderDirection direction)
+        public async UniTaskVoid Initialize()
         {
-            Async(InitializeInternal(direction));
+            Async(InitializeInternal());
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -759,7 +756,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             StopMovingPlatformCurrentGravity();
         }
-        
+
         public void OnInitializeUpHitConnected()
         {
             InitializeUpHitConnected();
