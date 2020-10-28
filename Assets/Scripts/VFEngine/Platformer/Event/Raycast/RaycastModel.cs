@@ -304,10 +304,10 @@ namespace VFEngine.Platformer.Event.Raycast
             r.UpRaycastSmallestDistance = MaxValue;
         }
 
-        private void SetCurrentUpRaycastOriginPoint()
+        private void SetCurrentUpRaycastOrigin()
         {
-            r.CurrentUpRaycastOrigin = Lerp(r.UpRaycastStart, r.UpRaycastEnd,
-                r.CurrentUpHitsStorageIndex / (float) (r.NumberOfVerticalRaysPerSide - 1));
+            r.CurrentUpRaycastOrigin = SetCurrentRaycastOrigin(r.UpRaycastStart, r.UpRaycastEnd,
+                r.CurrentUpHitsStorageIndex, r.NumberOfVerticalRaysPerSide);
         }
 
         private void SetCurrentUpRaycast()
@@ -379,6 +379,12 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.CurrentLeftRaycast = Raycast(r.CurrentLeftRaycastOrigin, -r.Transform.right, r.LeftRayLength,
                 r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
+        }
+        
+        private void SetCurrentDownRaycastOriginPoint()
+        {
+            r.CurrentDownRaycastOrigin = SetCurrentRaycastOrigin(r.VerticalRaycastFromLeft, r.VerticalRaycastToRight,
+                r.CurrentDownHitsStorageIndex, r.NumberOfVerticalRaysPerSide);
         }
 
         private static Vector2 SetCurrentRaycastOrigin(Vector2 origin1, Vector2 origin2, int index, int rays)
@@ -531,9 +537,9 @@ namespace VFEngine.Platformer.Event.Raycast
             InitializeUpRaycastSmallestDistance();
         }
 
-        public void OnSetCurrentUpRaycastOriginPoint()
+        public void OnSetCurrentUpRaycastOrigin()
         {
-            SetCurrentUpRaycastOriginPoint();
+            SetCurrentUpRaycastOrigin();
         }
 
         public void OnSetCurrentUpRaycast()
@@ -584,6 +590,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentLeftRaycastOrigin()
         {
             SetCurrentLeftRaycastOrigin();
+        }
+
+        public void OnSetCurrentDownRaycastOriginPoint()
+        {
+            SetCurrentDownRaycastOriginPoint();
         }
     }
 }

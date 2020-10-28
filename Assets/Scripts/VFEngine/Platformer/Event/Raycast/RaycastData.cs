@@ -9,7 +9,6 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
-    using static Vector2;
     using static Single;
 
     public class RaycastData : MonoBehaviour
@@ -251,7 +250,7 @@ namespace VFEngine.Platformer.Event.Raycast
             set => value = boundsHeight.Value;
         }
 
-        public Vector2 CurrentDownRaycastOrigin => SetDownRaycastOrigin();
+        public Vector2 CurrentDownRaycastOrigin { get; set; }
         public Vector2 CurrentUpRaycastOrigin { get; set; }
 
         public Vector2 CurrentDownRaycastOriginRef
@@ -317,25 +316,6 @@ namespace VFEngine.Platformer.Event.Raycast
         public float DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef
         {
             set => value = distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
-        }
-
-        /* fields: methods */
-        private Vector2 SetDownRaycastOrigin()
-        {
-            return SetRaycastOrigin(VerticalRaycastFromLeft, VerticalRaycastToRight, CurrentDownHitsStorageIndex,
-                NumberOfVerticalRaysPerSide);
-        }
-
-        private Vector2 SetUpRaycastOrigin()
-        {
-            return SetRaycastOrigin(VerticalRaycastFromLeft, VerticalRaycastToRight, CurrentUpHitsStorageIndex,
-                NumberOfVerticalRaysPerSide);
-        }
-
-        private static Vector2 SetRaycastOrigin(Vector2 negativeRaycast, Vector2 positiveRaycast, int index,
-            int raysNumber)
-        {
-            return Lerp(negativeRaycast, positiveRaycast, index / (float) raysNumber - 1);
         }
     }
 }

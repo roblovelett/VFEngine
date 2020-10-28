@@ -175,9 +175,9 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetCurrentUpRaycastOriginPoint()
+        public void SetCurrentUpRaycastOrigin()
         {
-            upRaycastModel.OnSetCurrentUpRaycastOriginPoint();
+            upRaycastModel.OnSetCurrentUpRaycastOrigin();
         }
 
         public void SetCurrentUpRaycast()
@@ -248,6 +248,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetCurrentLeftRaycast()
         {
             leftRaycastModel.OnSetCurrentLeftRaycast();
+        }
+
+        public void SetCurrentDownRaycastOriginPoint()
+        {
+            downRaycastModel.OnSetCurrentDownRaycastOriginPoint();
         }
     }
 }

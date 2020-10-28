@@ -8,7 +8,6 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
-    using static MathsExtensions;
 
     public class PhysicsData : MonoBehaviour
     {
@@ -38,8 +37,6 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
         [SerializeField] private IntReference horizontalMovementDirection;
-        [SerializeField] private FloatReference newRightPositionDistance;
-        [SerializeField] private FloatReference newLeftPositionDistance;
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference gravity;
@@ -51,8 +48,6 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference externalForceY;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
-
-        /* fields: methods */
 
         /* properties dependencies */
         public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
@@ -69,16 +64,19 @@ namespace VFEngine.Platformer.Physics
         {
             set => value = safetyBoxcastControl.Value;
         }
+
         public bool IsJumpingRef
         {
             set => value = isJumping.Value;
         }
+
         public bool StickToSlopesControl => settings.stickToSlopeControl;
 
         public bool StickToSlopesControlRef
         {
             set => value = stickToSlopesControl.Value;
         }
+
         public Transform Transform
         {
             get => characterTransform;
@@ -101,6 +99,7 @@ namespace VFEngine.Platformer.Physics
         {
             set => value = gravity.Value;
         }
+
         public float AscentMultiplier => settings.ascentMultiplier;
         public float FallMultiplier => settings.fallMultiplier;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
@@ -123,7 +122,7 @@ namespace VFEngine.Platformer.Physics
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
-        public Vector2 ExternalForce { get; set; } = new Vector2(0,0);
+        public Vector2 ExternalForce { get; set; } = new Vector2(0, 0);
 
         public Vector2 ExternalForceRef
         {
@@ -151,6 +150,7 @@ namespace VFEngine.Platformer.Physics
         {
             set => value = externalForceY.Value;
         }
+
         public float CurrentGravity { get; set; }
         public Vector2 Speed { get; set; } = new Vector2(0, 0);
         public Vector2 ForcesApplied { get; set; }
@@ -209,16 +209,6 @@ namespace VFEngine.Platformer.Physics
         {
             get => NewPosition.y;
             set => value = NewPosition.y;
-        }
-
-        public float NewRightPositionDistanceRef
-        {
-            set => value = newRightPositionDistance.Value;
-        }
-
-        public float NewLeftPositionDistanceRef
-        {
-            set => value = newLeftPositionDistance.Value;
         }
 
         public float SmallValue { get; set; } = 0.0001f;

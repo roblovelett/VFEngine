@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -23,8 +24,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [FormerlySerializedAs("r")] [LabelText("Raycast Hit Collider Data")] [SerializeField]
         private RaycastHitColliderData rhc;
 
-        private PhysicsMaterialData physicsMaterialData;
-
         /* fields */
         private const string Rh = "Raycast Hit Collider";
 
@@ -40,10 +39,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeData(ColliderDirection direction)
         {
-            rhc.UpHitsStorageLengthRef = rhc.UpHitsStorageLength;
-            rhc.RightHitsStorageLengthRef = rhc.RightHitsStorageLength;
-            rhc.DownHitsStorageLengthRef = rhc.DownHitsStorageLength;
-            rhc.LeftHitsStorageLengthRef = rhc.LeftHitsStorageLength;
             rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
             rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
             rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
@@ -62,7 +57,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.IsGroundedRef = rhc.state.IsGrounded;
             rhc.RaycastDownHitAtRef = rhc.RaycastDownHitAt;
             rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
-            rhc.VerticalHitsStorageLengthRef = rhc.VerticalHitsStorageLength;
             rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
             rhc.IsStandingOnLastFrameNotNullRef = rhc.IsStandingOnLastFrameNotNull;
             rhc.StandingOnColliderRef = rhc.state.StandingOnCollider;
@@ -127,7 +121,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeModel()
         {
-            rhc.contactList.Clear();
+            rhc.PhysicsMaterialClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PhysicsMaterialData>();
+            rhc.PathMovementClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PathMovementData>();            rhc.contactList.Clear();
             rhc.state.SetCurrentWallColliderNull();
             rhc.state.Reset();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -419,14 +416,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void SetFrictionToDownHitWithSmallestDistancesFriction()
         {
-            if (!rhc.HasPhysicsMaterialClosestToDownHit) return;
-            // ReSharper disable once PossibleNullReferenceException
+            if (rhc.PhysicsMaterialClosestToDownHit is null) return;
             rhc.Friction = rhc.PhysicsMaterialClosestToDownHit.Friction;
         }
 
         private void SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
         {
-            if (!rhc.HasPathMovementClosestToDownHit) return;
+            if (rhc.PathMovementClosestToDownHit is null) return;
             rhc.MovingPlatform = rhc.PathMovementClosestToDownHit;
         }
 
@@ -488,6 +484,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private void SetIsCollidingAbove()
         {
             rhc.state.SetIsCollidingAbove(true);
+        }
+
+        private void SetCurrentDownHitSmallestDistance()
+        {
+            rhc.CurrentDownHitSmallestDistance = DistanceBetweenPointAndLine(
+                rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].point, rhc.VerticalRaycastFromLeft,
+                rhc.VerticalRaycastToRight);
         }
         
         /* properties: dependencies */
@@ -845,6 +848,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
             SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+        }
+
+        public void OnSetCurrentDownHitSmallestDistance()
+        {
+            SetCurrentDownHitSmallestDistance();
         }
     }
 }

@@ -4,9 +4,7 @@ using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
-using UnityAtoms.Editor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -14,23 +12,13 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
-    using static Mathf;
-    using static Vector2;
-    using static MathsExtensions;
 
     public class RaycastHitColliderData : MonoBehaviour
     {
         /* fields: dependencies */
         [SerializeField] private RaycastHitColliderSettings settings;
         [SerializeField] private BoxCollider2D boxCollider;
-        [SerializeField] private Vector2Reference rightRaycastOriginPoint;
-        [SerializeField] private Vector2Reference leftRaycastOriginPoint;
         [SerializeField] private new TransformReference transform;
-        [SerializeField] private FloatReference horizontalRayLength;
-        [SerializeField] private LayerMaskReference platformMask;
-        [SerializeField] private LayerMaskReference oneWayPlatformMask;
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
-        [SerializeField] private BoolReference drawRaycastGizmos;
         [SerializeField] private RaycastHit2DReference currentRightRaycast;
         [SerializeField] private RaycastHit2DReference currentLeftRaycast;
         [SerializeField] private RaycastHit2DReference currentDownRaycast;
@@ -48,12 +36,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderBoundsCenter;
-        [SerializeField] private IntReference verticalHitsStorageLength;
-        [SerializeField] private IntReference horizontalHitsStorageLength;
-        [SerializeField] private IntReference rightHitsStorageLength;
-        [SerializeField] private IntReference leftHitsStorageLength;
-        [SerializeField] private IntReference downHitsStorageLength;
-        [SerializeField] private IntReference upHitsStorageLength;
         [SerializeField] private IntReference currentRightHitsStorageIndex;
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
         [SerializeField] private IntReference currentDownHitsStorageIndex;
@@ -66,8 +48,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Collider2DReference ignoredCollider;
         [SerializeField] private FloatReference currentRightHitAngle;
         [SerializeField] private FloatReference currentLeftHitAngle;
-        [SerializeField] private Vector2Reference currentRightHitPoint;
-        [SerializeField] private Vector2Reference currentLeftHitPoint;
         [SerializeField] private BoolReference isGrounded;
         [SerializeField] private FloatReference friction;
         [SerializeField] private BoolReference onMovingPlatform;
@@ -94,51 +74,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
-        
-        /* fields: methods */
-        private Vector2 SetCurrentRightHitPoint()
-        {
-            return RightHitsStorage[CurrentRightHitsStorageIndex].point;
-        }
-
-        private Vector2 SetCurrentLeftHitPoint()
-        {
-            return LeftHitsStorage[CurrentLeftHitsStorageIndex].point;
-        }
-        
-        private float SetCurrentDownHitSmallestDistance()
-        {
-            return DistanceBetweenPointAndLine(DownHitsStorage[DownHitsStorageSmallestDistanceIndex].point,
-                VerticalRaycastFromLeft, VerticalRaycastToRight);
-        }
-
-        private Collider2D SetCurrentRightHitCollider()
-        {
-            return RightHitsStorage[CurrentRightHitsStorageIndex].collider;
-        }
-        
-        private Collider2D SetCurrentLeftHitCollider()
-        {
-            return LeftHitsStorage[CurrentLeftHitsStorageIndex].collider;
-        }
-
-        private Vector2 SetColliderBottomCenterPosition()
-        {
-            var bounds = new Vector2();
-            var colliderBounds = boxCollider.bounds;
-            bounds.x = colliderBounds.center.x;
-            bounds.y = colliderBounds.min.y;
-            return bounds;
-        }
-        private static PhysicsMaterialData SetPhysicsMaterialClosestToDownHit(GameObject standingOn)
-        {
-            return standingOn.GetComponentNoAllocation<PhysicsMaterialData>();
-        }
-
-        private static PathMovementData SetPathMovementClosestToDownHit(GameObject standingOn)
-        {
-            return standingOn.GetComponentNoAllocation<PathMovementData>();
-        }
 
         /* properties: dependencies */
         public bool HasSettings => settings;
@@ -158,12 +93,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = raycastDownHitAt.Value;
         }
+
         public RaycastHit2D RaycastUpHitAt { get; set; }
 
         public RaycastHit2D RaycastUpHitAtRef
         {
             set => value = raycastUpHitAt.Value;
         }
+
         public Vector2 VerticalRaycastFromLeft => verticalRaycastFromLeft.Value;
         public Vector2 VerticalRaycastToRight => verticalRaycastToRight.Value;
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
@@ -183,12 +120,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = upHitsStorageCollidingIndex.Value;
         }
+
         public bool UpHitConnected { get; set; }
 
         public bool UpHitConnectedRef
         {
             set => value = upHitConnected.Value;
         }
+
         public float MovingPlatformCurrentGravity { get; set; }
         public float MovingPlatformGravity { get; } = -500f;
 
@@ -207,53 +146,24 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = boxColliderBoundsCenter.Value;
         }
 
-        public int VerticalHitsStorageLength { get; set; }
-
-        public int VerticalHitsStorageLengthRef
-        {
-            set => value = verticalHitsStorageLength.Value;
-        }
-
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] RightHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] DownHitsStorage { get; set; } = new RaycastHit2D[0];
         public RaycastHit2D[] LeftHitsStorage { get; set; } = new RaycastHit2D[0];
-
-        public int UpHitsStorageLength => UpHitsStorage.Length;
-        public int RightHitsStorageLength => RightHitsStorage.Length;
-        public int RightHitsStorageLengthRef
-        {
-            set => value = rightHitsStorageLength.Value;
-        }
-        public int DownHitsStorageLength => DownHitsStorage.Length;
-        public int LeftHitsStorageLength => LeftHitsStorage.Length;
-
-        public int UpHitsStorageLengthRef
-        {
-            set => value = upHitsStorageLength.Value;
-        }
-        
-        public int DownHitsStorageLengthRef
-        {
-            set => value = downHitsStorageLength.Value;
-        }
-        public int LeftHitsStorageLengthRef
-        {
-            set => value = leftHitsStorageLength.Value;
-        }
-
         public int CurrentRightHitsStorageIndex { get; set; } = 0;
+
         public int CurrentRightHitsStorageIndexRef
         {
             set => value = currentRightHitsStorageIndex.Value;
         }
 
         public int CurrentLeftHitsStorageIndex { get; set; } = 0;
+
         public int CurrentLeftHitsStorageIndexRef
         {
             set => value = currentLeftHitsStorageIndex.Value;
         }
-        
+
         public int CurrentDownHitsStorageIndex { get; set; } = 0;
 
         public int CurrentDownHitsStorageIndexRef
@@ -276,14 +186,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         }
 
         public float CurrentLeftHitDistance { get; set; }
+
         public float CurrentLeftHitDistanceRef
         {
             set => value = currentLeftHitDistance.Value;
         }
 
-        public float CurrentDownHitDistance { get; set; }
-        public float CurrentUpHitDistance { get; set; }
-        public float CurrentDownHitSmallestDistance => SetCurrentDownHitSmallestDistance();
+        public float CurrentDownHitSmallestDistance { get; set; }
 
         public float CurrentDownHitSmallestDistanceRef
         {
@@ -350,7 +259,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = standingOnCollider.Value;
         }
 
-        public Vector2 ColliderBottomCenterPosition => SetColliderBottomCenterPosition();
+        public Vector2 ColliderBottomCenterPosition
+        {
+            get
+            {
+                var position = new Vector2();
+                var bounds = boxCollider.bounds;
+                position.x = bounds.center.x;
+                position.y = bounds.min.y;
+                return position;
+            }
+        }
 
         public Vector2 ColliderBottomCenterPositionRef
         {
@@ -363,7 +282,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = downHitsStorageSmallestDistanceIndex.Value;
         }
-        
+
         public bool DownHitConnected { get; set; }
 
         public bool DownHitConnectedRef
@@ -375,7 +294,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = crossBelowSlopeAngle.Value;
         }
-        
+
         public RaycastHit2D DownHitWithSmallestDistance { get; set; }
 
         public RaycastHit2D DownHitWithSmallestDistanceRef
@@ -410,29 +329,30 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = standingOnWithSmallestDistancePoint.Value;
         }
-        
-        [CanBeNull] public PhysicsMaterialData PhysicsMaterialClosestToDownHit => SetPhysicsMaterialClosestToDownHit(StandingOnWithSmallestDistance.gameObject);
-        [CanBeNull] public PathMovementData PathMovementClosestToDownHit => SetPathMovementClosestToDownHit(StandingOnWithSmallestDistance.gameObject);
 
+        [CanBeNull] public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
+        [CanBeNull] public PathMovementData PathMovementClosestToDownHit { get; set; }
         public bool HasPathMovementClosestToDownHit => PathMovementClosestToDownHit != null;
 
         public bool HasPathMovementClosestToDownHitRef
         {
             set => value = hasPathMovementData.Value;
         }
+
         public bool HasPhysicsMaterialClosestToDownHit => PhysicsMaterialClosestToDownHit != null;
 
         public bool HasPhysicsMaterialClosestToDownHitRef
         {
             set => value = hasPhysicsMaterialData.Value;
         }
-        
+
         public float Friction { get; set; }
 
         public float FrictionRef
         {
             set => value = friction.Value;
         }
+
         public PathMovementData MovingPlatform { get; set; }
         public bool HasMovingPlatform { get; set; }
 
@@ -440,19 +360,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             set => value = hasMovingPlatform.Value;
         }
-        
+
         public float DistanceBetweenRightHitAndRaycastOrigin { get; set; }
 
         public float DistanceBetweenRightHitAndRaycastOriginRef
         {
             set => value = distanceBetweenRightHitAndRaycastOrigin.Value;
         }
+
         public float DistanceBetweenLeftHitAndRaycastOrigin { get; set; }
 
         public float DistanceBetweenLeftHitAndRaycastOriginRef
         {
             set => value = distanceBetweenLeftHitAndRaycastOrigin.Value;
         }
-        
     }
 }

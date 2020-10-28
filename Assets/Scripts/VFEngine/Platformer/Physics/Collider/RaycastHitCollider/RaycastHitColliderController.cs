@@ -466,5 +466,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
         }
+
+        public async UniTaskVoid SetCurrentDownHitSmallestDistance()
+        {
+            downColliderModel.OnSetCurrentDownHitSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }
