@@ -1,7 +1,9 @@
-﻿using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿using System.Collections.Generic;
+using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
@@ -30,6 +32,8 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
         [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
+        [SerializeField] private FloatReference belowSlopeAngle;
+        [SerializeField] private RaycastHitColliderContactList rhcContact;
 
         /* fields */
         [SerializeField] private new TransformReference transform;
@@ -50,6 +54,11 @@ namespace VFEngine.Platformer.Physics
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
         /* properties dependencies */
+        public float Physics2DPushForce => settings.physics2DPushForce;
+        public bool Physics2DInteractionControl => settings.physics2DInteractionControl;
+        public Vector2 MaximumVelocity => settings.maximumVelocity;
+        public float BelowSlopeAngle => belowSlopeAngle.Value;
+        public AnimationCurve SlopeAngleSpeedFactor => settings.slopeAngleSpeedFactor;
         public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
         public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
@@ -118,11 +127,18 @@ namespace VFEngine.Platformer.Physics
             distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
 
         public float BoundsHeight => boundsHeight.Value;
+        public IEnumerable<RaycastHit2D> ContactList => rhcContact.List;
 
         /* properties */
+        public Vector2 WorldSpeed { get; set; } = Vector2.zero;
+        public Rigidbody2D CurrentHitRigidBody { get; set; }
+
+        public bool CurrentHitRigidBodyCanBePushed { get; set; }
+        public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
+        
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
-        public Vector2 ExternalForce { get; set; } = new Vector2(0, 0);
+        public Vector2 ExternalForce { get; set; } = Vector2.zero;
 
         public Vector2 ExternalForceRef
         {
@@ -152,7 +168,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         public float CurrentGravity { get; set; }
-        public Vector2 Speed { get; set; } = new Vector2(0, 0);
+        public Vector2 Speed { get; set; } = Vector2.zero;
         public Vector2 ForcesApplied { get; set; }
         public int HorizontalMovementDirection { get; set; }
 

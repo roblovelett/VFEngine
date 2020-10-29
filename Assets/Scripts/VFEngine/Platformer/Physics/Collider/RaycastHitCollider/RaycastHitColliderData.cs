@@ -31,8 +31,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private Vector2Reference rightRaycastToTopOrigin;
         [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin;
         [SerializeField] private Vector2Reference leftRaycastToTopOrigin;
+        [SerializeField] private IntReference savedBelowLayer;
 
         /* fields */
+        [SerializeField] private RaycastHitColliderContactList contactList;
         [SerializeField] private Vector2Reference boxColliderSize;
         [SerializeField] private Vector2Reference boxColliderOffset;
         [SerializeField] private Vector2Reference boxColliderBoundsCenter;
@@ -72,10 +74,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
         [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
+        [SerializeField] private FloatReference belowSlopeAngle;
+        [SerializeField] private BoolReference isCollidingBelow;
+        [SerializeField] private BoolReference isCollidingLeft;
+        [SerializeField] private BoolReference isCollidingRight;
+        [SerializeField] private BoolReference isCollidingAbove;
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
+        [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
+        [SerializeField] private FloatReference boundsHeight;
         private const string RhcPath = "Physics/Collider/RaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{RhcPath}DefaultRaycastHitColliderModel.asset";
 
         /* properties: dependencies */
+        public int SavedBelowLayer => savedBelowLayer.Value;
+        public float BoundsHeight => boundsHeight.Value;
+        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
+        public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
+        public float BelowSlopeAngleRef
+        {
+            set => value = belowSlopeAngle.Value;
+        }
+        public float BelowSlopeAngle => state.BelowSlopeAngle;
         public bool HasSettings => settings;
         public bool DisplayWarnings => settings.displayWarningsControl;
         public bool HasBoxCollider => boxCollider;
@@ -112,8 +131,29 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-        public readonly List<RaycastHit2D> contactList = new List<RaycastHit2D>();
+
+        public RaycastHitColliderContactList ContactList => contactList;
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
+        public bool IsCollidingAboveRef
+        {
+            set => value = isCollidingAbove.Value;
+        }
+
+        public bool IsCollidingBelowRef
+        {
+            set => value = isCollidingBelow.Value;
+        }
+
+        public bool IsCollidingLeftRef
+        {
+            set => value = isCollidingLeft.Value;
+        }
+
+        public bool IsCollidingRightRef
+        {
+            set => value = isCollidingRight.Value;
+        }
+
         public int UpHitsStorageCollidingIndex { get; set; }
 
         public int UpHitsStorageCollidingIndexRef

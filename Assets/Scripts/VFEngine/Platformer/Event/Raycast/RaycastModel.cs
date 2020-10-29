@@ -78,6 +78,9 @@ namespace VFEngine.Platformer.Event.Raycast
             r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPointRef =
                 r.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
             r.UpRaycastSmallestDistanceRef = r.UpRaycastSmallestDistance;
+            r.DistanceToGroundRayMaximumLengthRef = r.DistanceToGroundRayMaximumLength;
+            r.DistanceToGroundRaycastRef = r.DistanceToGroundRaycast;
+            r.DistanceToGroundRaycastNotNullRef = r.DistanceToGroundRaycastNotNull;
             switch (rayDirection)
             {
                 case None:
@@ -435,6 +438,22 @@ namespace VFEngine.Platformer.Event.Raycast
             return Abs(x * deltaTime) + width / 2 + offset * 2;
         }
 
+        private void SetDistanceToGroundRaycastOrigin()
+        {
+            r.DistanceToGroundRaycastOrigin = new Vector2()
+            {
+                x = r.BelowSlopeAngle < 0 ? r.BoundsBottomLeftCorner.x : r.BoundsBottomRightCorner.x,
+                y = r.BoundsCenter.y
+            };
+        }
+
+        private void SetDistanceToGroundRaycast()
+        {
+            r.DistanceToGroundRaycast = Raycast(r.DistanceToGroundRaycastOrigin, -r.Transform.up,
+                r.DistanceToGroundRayMaximumLength, r.RaysBelowLayerMaskPlatforms, blue);
+            r.DistanceToGroundRaycastNotNull = true;
+        }
+
         public async UniTaskVoid Initialize(RaycastDirection rayDirection)
         {
             await Async(InitializeInternal(rayDirection));
@@ -595,6 +614,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetCurrentDownRaycastOriginPoint()
         {
             SetCurrentDownRaycastOriginPoint();
+        }
+
+        public void OnSetDistanceToGroundRaycastOrigin()
+        {
+            SetDistanceToGroundRaycastOrigin();
+        }
+
+        public void OnSetDistanceToGroundRaycast()
+        {
+            SetDistanceToGroundRaycast();
         }
     }
 }

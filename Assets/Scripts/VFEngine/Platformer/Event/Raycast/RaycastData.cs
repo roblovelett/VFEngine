@@ -34,6 +34,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private BoolReference isGrounded;
+        [SerializeField] private FloatReference belowSlopeAngle;
 
         /* fields */
         [SerializeField] private IntReference numberOfHorizontalRays;
@@ -68,10 +69,14 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
+        [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
+        [SerializeField] private BoolReference distanceToGroundRaycastNotNull;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
 
         /* properties: dependencies */
+        public float BelowSlopeAngle => belowSlopeAngle.Value;
         public Vector2 Speed => speed.Value;
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
         public bool IsGrounded => isGrounded.Value;
@@ -86,6 +91,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public Transform Transform => transform.Value;
         public Vector2 BoxColliderBoundsCenter => boxColliderBoundsCenter.Value;
         public float DistanceToGroundRayMaximumLength => settings.distanceToGroundRayMaximumLength;
+
+        public float DistanceToGroundRayMaximumLengthRef
+        {
+            set => value = distanceToGroundRayMaximumLength.Value;
+        }
         public float RayOffset => settings.rayOffset;
 
         public float RayOffsetRef
@@ -144,6 +154,21 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
 
         /* properties */
+        public Vector2 DistanceToGroundRaycastOrigin { get; set; }
+
+        public RaycastHit2D DistanceToGroundRaycast { get; set; }
+
+        public RaycastHit2D DistanceToGroundRaycastRef
+        {
+            set => value = distanceToGroundRaycast.Value;
+        }
+        
+        public bool DistanceToGroundRaycastNotNull { get; set; }
+
+        public bool DistanceToGroundRaycastNotNullRef
+        {
+            set => value = distanceToGroundRaycastNotNull.Value;
+        }
         public Vector2 CurrentRightRaycastOrigin { get; set; } = new Vector2(0, 0);
         public Vector2 CurrentLeftRaycastOrigin { get; set; } = new Vector2(0, 0);
         public static float ObstacleHeightTolerance => 0.05f;

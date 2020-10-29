@@ -11,6 +11,8 @@ namespace VFEngine.Platformer.Physics
     using static UniTaskExtensions;
     using static Time;
     using static Mathf;
+    using static Vector2;
+    using static RigidbodyType2D;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = "VFEngine/Platformer/Physics/Physics Model", order = 0)]
     public class PhysicsModel : ScriptableObject, IModel
@@ -32,6 +34,7 @@ namespace VFEngine.Platformer.Physics
 
         private async UniTaskVoid InitializeData()
         {
+            p.CurrentHitRigidBodyCanBePushed = SetCurrentHitRigidBodyCanBePushed(p.CurrentHitRigidBody);
             p.TransformRef = p.Transform;
             p.SpeedRef = p.Speed;
             p.GravityActiveRef = p.state.GravityActive;
@@ -50,6 +53,11 @@ namespace VFEngine.Platformer.Physics
             p.state.Reset();
             if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private static bool SetCurrentHitRigidBodyCanBePushed(Rigidbody2D body)
+        {
+            return body != null && !body.isKinematic && body.bodyType != Static;
         }
 
         private async UniTaskVoid GetWarningMessages()
@@ -275,6 +283,49 @@ namespace VFEngine.Platformer.Physics
             p.ExternalForceY = 0f;
         }
 
+        private void StopNewPosition()
+        {
+            p.NewPosition = zero;
+        }
+
+        private void SetNewSpeed()
+        {
+            p.Speed = p.NewPosition / deltaTime;
+        }
+
+        private void ApplySlopeAngleSpeedFactorToHorizontalSpeed()
+        {
+            p.SpeedX *= p.SlopeAngleSpeedFactor.Evaluate(Abs(p.BelowSlopeAngle) * Sign(p.Speed.y));
+        }
+
+        private void ClampSpeedToMaxVelocity()
+        {
+            p.SpeedX = Clamp(p.Speed.x, -p.MaximumVelocity.x, p.MaximumVelocity.x);
+            p.SpeedY = Clamp(p.Speed.y, -p.MaximumVelocity.y, p.MaximumVelocity.y);
+        }
+
+        private void ContactListHit()
+        {
+            if (!p.Physics2DInteractionControl) return;
+            foreach (var hit in p.ContactList)
+            {
+                p.CurrentHitRigidBody = hit.collider.attachedRigidbody;
+                if (!p.CurrentHitRigidBodyCanBePushed) return;
+                p.CurrentPushDirection = new Vector2(p.ExternalForce.x, 0);
+                p.CurrentHitRigidBody.velocity = p.CurrentPushDirection.normalized * p.Physics2DPushForce;
+            }
+        }
+
+        private void StopExternalForce()
+        {
+            p.ExternalForce = zero;
+        }
+
+        private void SetWorldSpeedToSpeed()
+        {
+            p.WorldSpeed = p.Speed;
+        }
+
         /* properties: methods */
         public void OnInitialize()
         {
@@ -449,6 +500,41 @@ namespace VFEngine.Platformer.Physics
         public void OnStopVerticalForce()
         {
             StopVerticalForce();
+        }
+
+        public void OnStopNewPosition()
+        {
+            StopNewPosition();
+        }
+
+        public void OnSetNewSpeed()
+        {
+            SetNewSpeed();
+        }
+
+        public void OnApplySlopeAngleSpeedFactorToHorizontalSpeed()
+        {
+            ApplySlopeAngleSpeedFactorToHorizontalSpeed();
+        }
+
+        public void OnClampSpeedToMaxVelocity()
+        {
+            ClampSpeedToMaxVelocity();
+        }
+
+        public void OnContactListHit()
+        {
+            ContactListHit();
+        }
+
+        public void OnStopExternalForce()
+        {
+            StopExternalForce();
+        }
+
+        public void OnSetWorldSpeedToSpeed()
+        {
+            SetWorldSpeedToSpeed();
         }
     }
 }

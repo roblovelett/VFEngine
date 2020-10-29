@@ -29,6 +29,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             sb.HasSafetyBoxcastRef = sb.HasSafetyBoxcast;
             sb.SafetyBoxcastColliderRef = sb.SafetyBoxcastCollider;
             sb.SafetyBoxcastRef = sb.SafetyBoxcast;
+            sb.SafetyBoxcastDistanceRef = sb.SafetyBoxcastDistance;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -48,7 +49,13 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             sb.HasSafetyBoxcast = true;
         }
-
+        
+        private void SetSafetyBoxcast()
+        {
+            var transformUp = sb.Transform.up;
+            sb.SafetyBoxcast = Boxcast(sb.BoundsCenter, sb.Bounds, Angle(transformUp, up),
+                sb.NewPosition.normalized, sb.NewPosition.magnitude, sb.PlatformMask, red, true);
+        }
         public void OnInitialize()
         {
             Async(Initialize());
@@ -62,6 +69,11 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public void OnSetHasSafetyBoxcast()
         {
             SetHasSafetyBoxcast();
+        }
+
+        public void OnSetSafetyBoxcast()
+        {
+            SetSafetyBoxcast();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -10,6 +11,7 @@ namespace VFEngine.Platformer.Layer.Mask
     {
         /* fields: dependencies */
         [SerializeField] private LayerMaskSettings settings;
+        [SerializeField] private GameObjectReference standingOnLastFrame;
 
         /* fields */
         [SerializeField] private LayerMaskReference platformMask;
@@ -19,10 +21,14 @@ namespace VFEngine.Platformer.Layer.Mask
         [SerializeField] private LayerMaskReference stairsMask;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
+        [SerializeField] private IntReference savedBelowLayer;
         private const string LmPath = "Layer/Mask/";
         private static readonly string ModelAssetPath = $"{LmPath}DefaultLayerMaskModel.asset";
 
         /* properties: dependencies */
+        private GameObject StandingOnLastFrame => standingOnLastFrame.Value;
+
+        public int StandingOnLastFrameLayer => StandingOnLastFrame.layer;
         public bool DisplayWarnings => settings.displayWarningsControl;
         public bool HasSettings => settings;
 
@@ -80,5 +86,11 @@ namespace VFEngine.Platformer.Layer.Mask
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public LayerMask SavedPlatformMask { get; set; }
+        public int SavedBelowLayer { get; set; }
+
+        public int SavedBelowLayerRef
+        {
+            set => value = savedBelowLayer.Value;
+        }
     }
 }

@@ -41,6 +41,7 @@ namespace VFEngine.Platformer.Layer.Mask
             lm.StairsMaskRef = lm.StairsMask;
             lm.RaysBelowLayerMaskPlatformsWithoutOneWayRef = lm.RaysBelowLayerMaskPlatformsWithoutOneWay;
             lm.RaysBelowLayerMaskPlatformsRef = lm.RaysBelowLayerMaskPlatforms;
+            lm.SavedBelowLayerRef = lm.SavedBelowLayer;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -148,6 +149,11 @@ namespace VFEngine.Platformer.Layer.Mask
             lm.RaysBelowLayerMaskPlatforms &= ~lm.OneWayPlatformMask;
         }
 
+        private void SetSavedBelowLayerToStandingOnLastFrameLayer()
+        {
+            lm.SavedBelowLayer = lm.StandingOnLastFrameLayer;
+        }
+
         /* properties: methods */
         public void Initialize()
         {
@@ -182,6 +188,11 @@ namespace VFEngine.Platformer.Layer.Mask
         public void OnSetRaysBelowLayerMaskPlatformsToOneWay()
         {
             SetRaysBelowLayerMaskPlatformsToOneWay();
+        }
+
+        public void OnSetSavedBelowLayerToStandingOnLastFrameLayer()
+        {
+            SetSavedBelowLayerToStandingOnLastFrameLayer();
         }
     }
 }

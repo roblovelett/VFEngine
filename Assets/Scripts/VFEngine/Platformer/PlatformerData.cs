@@ -56,14 +56,12 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference currentLeftHitAngle;
         [SerializeField] private FloatReference maximumSlopeAngle;
         [SerializeField] private BoolReference isGrounded;
-        [SerializeField] private FloatReference friction;
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference gravity;
         [SerializeField] private BoolReference isFalling;
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private BoolReference onMovingPlatform;
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
@@ -107,11 +105,25 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference upHitConnected;
         [SerializeField] private IntReference rightHitsStorageLength;
         [SerializeField] private IntReference leftHitsStorageLength;
+        [SerializeField] private FloatReference safetyBoxcastDistance;
+        [SerializeField] private BoolReference isCollidingBelow;
+        [SerializeField] private BoolReference isCollidingLeft;
+        [SerializeField] private BoolReference isCollidingRight;
+        [SerializeField] private BoolReference isCollidingAbove;
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
+        [SerializeField] private BoolReference distanceToGroundRaycastNotNull;
+        [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
 
         /* fields */
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
         /* properties: dependencies */
+        public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
+        public bool IsCollidingAbove => isCollidingAbove.Value;
+        public bool IsCollidingBelow => isCollidingBelow.Value;
+        public bool IsCollidingLeft => isCollidingLeft.Value;
+        public bool IsCollidingRight => isCollidingRight.Value;
+        public float SafetyBoxcastDistance => safetyBoxcastDistance.Value;
         public int LeftHitsStorageLength => leftHitsStorageLength.Value;
         public int RightHitsStorageLength => rightHitsStorageLength.Value;
         public bool DisplayWarnings => settings.displayWarningsControl;
@@ -203,7 +215,9 @@ namespace VFEngine.Platformer
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public bool UpHitConnected => upHitConnected.Value;
-        
+        public bool DistanceToGroundRaycastNotNull => distanceToGroundRaycastNotNull.Value;
+        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
+
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
     }

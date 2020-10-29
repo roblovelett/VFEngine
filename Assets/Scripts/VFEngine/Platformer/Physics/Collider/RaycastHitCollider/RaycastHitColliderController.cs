@@ -473,5 +473,36 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downColliderModel.OnSetCurrentDownHitSmallestDistance();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void SetGroundedEvent()
+        {
+            downColliderModel.OnSetGroundedEvent();
+        }
+
+        public async UniTaskVoid InitializeDistanceToGround()
+        {
+            downColliderModel.OnInitializeDistanceToGround();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void DecreaseDistanceToGround()
+        {
+            downColliderModel.OnDecreaseDistanceToGround();
+        }
+
+        public void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
+        {
+            downColliderModel.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
+        }
+
+        public void SetStandingOnLastFrameLayerToPlatforms()
+        {
+            downColliderModel.OnSetStandingOnLastFrameLayerToPlatforms();
+        }
+
+        public void SetStandingOnLastFrameLayerToSavedBelowLayer()
+        {
+            downColliderModel.OnSetStandingOnLastFrameLayerToSavedBelowLayer();
+        }
     }
 }

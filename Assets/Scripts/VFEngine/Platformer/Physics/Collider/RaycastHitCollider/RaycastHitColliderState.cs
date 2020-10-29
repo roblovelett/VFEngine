@@ -2,6 +2,7 @@
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
+    using static LayerMask;
     public class RaycastHitColliderState
     {
         public bool IsCollidingWithMovingPlatform { get; private set; }
@@ -20,6 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool GroundedEvent { get; private set; }
         public bool PassedRightSlopeAngle { get; private set; }
         public bool PassedLeftSlopeAngle { get; private set; }
+        public float DistanceToGround { get; private set; }
         public float RightLateralSlopeAngle { get; private set; }
         public float LeftLateralSlopeAngle { get; private set; }
         public float BelowSlopeAngle { get; private set; }
@@ -35,6 +37,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool IsGrounded => IsCollidingBelow;
         public bool HasCollisions => IsCollidingRight || IsCollidingLeft || IsCollidingAbove || IsCollidingBelow;
 
+
+        public void SetStandingOnLastFrameLayer(string name)
+        {
+            StandingOnLastFrame.layer = NameToLayer(name);
+        }
+
+        public void SetStandingOnLastFrameLayer(int number)
+        {
+            StandingOnLastFrame.layer = number;
+        }
+        public void SetDistanceToGround(float distance)
+        {
+            DistanceToGround = distance;
+        }
         public void SetIsCollidingWithMovingPlatform(bool isCollidingWithMovingPlatform)
         {
             IsCollidingWithMovingPlatform = isCollidingWithMovingPlatform;
@@ -50,7 +66,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             IsCollidingWithFrictionSurface = isCollidingWithFrictionSurface;
         }
 
-        public void SetIsColliding(bool colliding)
+        private void SetIsColliding(bool colliding)
         {
             SetIsCollidingAbove(colliding);
             SetIsCollidingLeft(colliding);
@@ -111,8 +127,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             PassedLeftSlopeAngle = pass;
         }
-        
-        public void SetPassedSlopeAngles(bool passed)
+
+        private void SetPassedSlopeAngles(bool passed)
         {
             SetPassedRightSlopeAngle(passed);
             SetPassedLeftSlopeAngle(passed);
@@ -123,7 +139,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             GroundedEvent = groundedEvent;
         }
 
-        public void SetSlopeAngles(float angle)
+        private void SetSlopeAngles(float angle)
         {
             SetRightLateralSlopeAngle(angle);
             SetLeftLateralSlopeAngle(angle);
@@ -144,7 +160,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             BelowSlopeAngle = belowSlopeAngle;
         }
 
-        public void SetDistanceToColliders(float distance)
+        private void SetDistanceToColliders(float distance)
         {
             DistanceToLeftCollider = distance;
             DistanceToRightCollider = distance;

@@ -15,6 +15,7 @@ namespace VFEngine.Platformer
     using static Mathf;
     using static RaycastDirection;
     using static LayerMaskExtensions;
+    using static Time;
 
     [CreateAssetMenu(fileName = "PlatformerModel", menuName = "VFEngine/Platformer/Platformer Model", order = 0)]
     public class PlatformerModel : ScriptableObject, IModel
@@ -76,14 +77,16 @@ namespace VFEngine.Platformer
             await Async(TestMovingPlatform());
             await Async(SetHorizontalMovementDirection());
             await Async(StartRaycasts());
-            // MoveTransform
-            // Set Rays Params
-            // Set New Speed
-            // Set States
-            // Set Distance To Ground
-            // Reset External Force
-            // On FrameExit
-            // Update World Speed
+            var pTask3 = Async(MoveTransform());
+            var pTask4 = Async(p.Raycast.SetRaysParameters());
+            var pTask5 = Async(SetNewSpeed());
+            var task2 = await (pTask3, pTask4, pTask5);
+            var pTask6 = Async(SetStates());
+            var pTask7 = Async(SetDistanceToGround());
+            var pTask8 = Async(p.Physics.StopExternalForce());
+            var pTask9 = Async(SetStandingOnLastFrameToSavedBelowLayer());
+            var pTask10 = Async(p.Physics.SetWorldSpeedToSpeed());
+            var task3 = await (pTask6, pTask7, pTask8, pTask9, pTask10);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -155,23 +158,26 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid StartRaycasts()
         {
-            var rTask1 = Async(CastRaysUp());
-            var rTask2 = Async(CastHorizontalRays(Right));
-            var rTask3 = Async(CastRaysDown());
-            var rTask4 = Async(CastHorizontalRays(Left));
+            var rTaskUp = Async(CastRaysUp());
+            var rTaskRight = Async(CastHorizontalRays(Right));
+            var rTaskDown = Async(CastRaysDown());
+            var rTaskLeft = Async(CastHorizontalRays(Left));
             if (p.CastRaysOnBothSides)
             {
-                var task1 = await (rTask1, rTask2, rTask3, rTask4);
+                await rTaskLeft;
+                await rTaskRight;
             }
             else if (p.HorizontalMovementDirection == 1)
             {
-                var task2 = await (rTask1, rTask2, rTask3);
+                await rTaskRight;
             }
             else
             {
-                var task3 = await (rTask1, rTask3, rTask4);
+                await rTaskLeft;
             }
 
+            await rTaskDown;
+            await rTaskUp;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -235,31 +241,31 @@ namespace VFEngine.Platformer
                 var task2 = await (rhcTask2, rhcTask3, rTask1, rTask2, lmTask1);
                 if (p.OnMovingPlatform) p.Raycast.DoubleDownRayLength();
                 if (p.NewPosition.y < 0) p.Raycast.SetDownRayLengthToVerticalNewPosition();
+                var midHeightOneWayPlatformMaskContains =
+                    LayerMaskContains(p.MidHeightOneWayPlatformMask, p.StandingOnLastFrame.layer);
+                if (p.IsStandingOnLastFrameNotNull)
+                {
+                    p.LayerMask.SetSavedBelowLayerToStandingOnLastFrameLayer();
+                    if (midHeightOneWayPlatformMaskContains)
+                        p.RaycastHitCollider.SetStandingOnLastFrameLayerToPlatforms();
+                }
+
                 if (p.WasGroundedLastFrame && p.IsStandingOnLastFrameNotNull)
                 {
-                    bool midHeightOneWayPlatformMaskContains;
                     bool stairsMaskContains;
                     bool standingOnColliderBoundsContains;
                     bool newPositionYGtZero;
-                    var pTask1 = Async(SetMidHeightOneWayPlatformMaskContains());
-                    var pTask2 = Async(SetStairsMaskContains());
-                    var pTask3 = Async(SetStandingOnColliderBoundsContains());
-                    var pTask4 = Async(SetNewPositionYGtZero());
-                    var task3 = await (pTask1, pTask2, pTask3, pTask4);
-                    var pTask5 = Async(ApplyToRaysBelowLayerMask(midHeightOneWayPlatformMaskContains,
+                    var pTask1 = Async(SetStairsMaskContains());
+                    var pTask2 = Async(SetStandingOnColliderBoundsContains());
+                    var pTask3 = Async(SetNewPositionYGtZero());
+                    var task3 = await (pTask1, pTask2, pTask3);
+                    var pTask4 = Async(ApplyToRaysBelowLayerMask(midHeightOneWayPlatformMaskContains,
                         stairsMaskContains, standingOnColliderBoundsContains, p.OnMovingPlatform, newPositionYGtZero));
                     var rTask3 = Async(p.Raycast.InitializeSmallestDistance());
                     var rhcTask4 = Async(p.RaycastHitCollider.InitializeDownHitsStorageIndex());
                     var rhcTask5 = Async(p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex());
                     var rhcTask6 = Async(p.RaycastHitCollider.InitializeDownHitConnected());
-                    var task4 = await (pTask5, rTask3, rhcTask4, rhcTask5, rhcTask6);
-
-                    async UniTaskVoid SetMidHeightOneWayPlatformMaskContains()
-                    {
-                        midHeightOneWayPlatformMaskContains = LayerMaskContains(p.MidHeightOneWayPlatformMask,
-                            p.StandingOnLastFrame.layer);
-                        await SetYieldOrSwitchToThreadPoolAsync();
-                    }
+                    var task4 = await (pTask4, rTask3, rhcTask4, rhcTask5, rhcTask6);
 
                     async UniTaskVoid SetStairsMaskContains()
                     {
@@ -529,7 +535,7 @@ namespace VFEngine.Platformer
             bool stairsMaskContains, bool standingOnColliderBoundsContains, bool onMovingPlatform,
             bool newPositionYGtZero)
         {
-            if (midHeightOneWayPlatformMaskContains)
+            if (!midHeightOneWayPlatformMaskContains)
                 p.LayerMask.SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
             if (stairsMaskContains && standingOnColliderBoundsContains)
                 p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
@@ -779,6 +785,72 @@ namespace VFEngine.Platformer
         {
             if (direction == Right) p.RaycastHitCollider.SetCurrentRightHitsStorage();
             else p.RaycastHitCollider.SetCurrentLeftHitsStorage();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid MoveTransform()
+        {
+            if (p.SafetyBoxcastControl)
+            {
+                var sbTask1 = Async(p.SafetyBoxcast.SetSafetyBoxcast());
+                var sbTask2 = Async(p.SafetyBoxcast.SetHasSafetyBoxcast());
+                var task1 = await (sbTask1, sbTask2);
+                if (p.HasSafetyBoxcast && Abs(p.SafetyBoxcastDistance - p.NewPosition.magnitude) < 0.002f)
+                {
+                    p.Physics.StopNewPosition();
+                    return;
+                }
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetNewSpeed()
+        {
+            if (deltaTime > 0) p.Physics.SetNewSpeed();
+            if (p.IsGrounded) p.Physics.ApplySlopeAngleSpeedFactorToHorizontalSpeed();
+            if (!p.OnMovingPlatform) p.Physics.ClampSpeedToMaxVelocity();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetStates()
+        {
+            if (!p.WasGroundedLastFrame && p.IsCollidingBelow) p.RaycastHitCollider.SetGroundedEvent();
+            if (p.IsCollidingLeft || p.IsCollidingRight || p.IsCollidingBelow || p.IsCollidingAbove)
+                p.Physics.OnContactListHit();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetDistanceToGround()
+        {
+            if (p.DistanceToGroundRayMaximumLength > 0)
+            {
+                p.Raycast.SetDistanceToGroundRaycastOrigin();
+                var rTask1 = Async(p.Raycast.SetDistanceToGroundRaycast());
+                var rhcTask2 = Async(p.RaycastHitCollider.InitializeDistanceToGround());
+                var task1 = await (rTask1, rhcTask2);
+                if (p.DistanceToGroundRaycastNotNull)
+                {
+                    if (p.DistanceToGroundRaycast.collider == p.IgnoredCollider)
+                    {
+                        p.RaycastHitCollider.DecreaseDistanceToGround();
+                        return;
+                    }
+
+                    p.RaycastHitCollider.ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
+                }
+                else
+                {
+                    p.RaycastHitCollider.DecreaseDistanceToGround();
+                }
+            }
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetStandingOnLastFrameToSavedBelowLayer()
+        {
+            if (p.IsStandingOnLastFrameNotNull) p.RaycastHitCollider.SetStandingOnLastFrameLayerToSavedBelowLayer();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

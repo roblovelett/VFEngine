@@ -205,5 +205,42 @@ namespace VFEngine.Platformer.Physics
         {
             model.OnStopVerticalForce();
         }
+
+        public void StopNewPosition()
+        {
+            model.OnStopNewPosition();
+        }
+
+        public void SetNewSpeed()
+        {
+            model.OnSetNewSpeed();
+        }
+
+        public void ApplySlopeAngleSpeedFactorToHorizontalSpeed()
+        {
+            model.OnApplySlopeAngleSpeedFactorToHorizontalSpeed();
+        }
+
+        public void ClampSpeedToMaxVelocity()
+        {
+            model.OnClampSpeedToMaxVelocity();
+        }
+
+        public void OnContactListHit()
+        {
+            model.OnContactListHit();
+        }
+
+        public async UniTaskVoid StopExternalForce()
+        {
+            model.OnStopExternalForce();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetWorldSpeedToSpeed()
+        {
+            model.OnSetWorldSpeedToSpeed();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

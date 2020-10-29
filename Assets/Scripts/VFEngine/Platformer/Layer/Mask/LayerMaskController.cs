@@ -55,7 +55,10 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             model.OnSetRaysBelowLayerMaskPlatformsToOneWay();
         }
-        
-        
+
+        public void SetSavedBelowLayerToStandingOnLastFrameLayer()
+        {
+            model.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
+        }
     }
 }

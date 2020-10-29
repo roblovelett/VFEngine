@@ -78,6 +78,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.RaycastUpHitAtRef = rhc.RaycastUpHitAt;
             rhc.DistanceBetweenRightHitAndRaycastOriginRef = rhc.DistanceBetweenRightHitAndRaycastOrigin;
             rhc.DistanceBetweenLeftHitAndRaycastOriginRef = rhc.DistanceBetweenLeftHitAndRaycastOrigin;
+            rhc.BelowSlopeAngleRef = rhc.BelowSlopeAngle;
+            rhc.IsCollidingAboveRef = rhc.state.IsCollidingAbove;
+            rhc.IsCollidingBelowRef = rhc.state.IsCollidingBelow;
+            rhc.IsCollidingLeftRef = rhc.state.IsCollidingLeft;
+            rhc.IsCollidingRightRef = rhc.state.IsCollidingRight;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -124,7 +129,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 .GetComponentNoAllocation<PhysicsMaterialData>();
             rhc.PathMovementClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PathMovementData>();
-            rhc.contactList.Clear();
+            ClearContactList();
             rhc.state.SetCurrentWallColliderNull();
             rhc.state.Reset();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -132,7 +137,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void ClearContactList()
         {
-            rhc.contactList.Clear();
+            rhc.ContactList.Clear();
         }
 
         private void SetWasGroundedLastFrame()
@@ -308,12 +313,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void AddRightHitToContactList()
         {
-            rhc.contactList.Add(rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex]);
+            rhc.ContactList.Add(rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex]);
         }
 
         private void AddLeftHitToContactList()
         {
-            rhc.contactList.Add(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex]);
+            rhc.ContactList.Add(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex]);
         }
 
         private void AddToCurrentRightHitsStorageIndex()
@@ -490,6 +495,36 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentDownHitSmallestDistance = DistanceBetweenPointAndLine(
                 rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].point, rhc.VerticalRaycastFromLeft,
                 rhc.VerticalRaycastToRight);
+        }
+
+        private void SetGroundedEvent()
+        {
+            rhc.state.SetGroundedEvent(true);
+        }
+
+        private void InitializeDistanceToGround()
+        {
+            rhc.state.SetDistanceToGround(rhc.DistanceToGroundRayMaximumLength);
+        }
+
+        private void DecreaseDistanceToGround()
+        {
+            rhc.state.SetDistanceToGround(rhc.state.DistanceToGround - 1f);
+        }
+
+        private void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
+        {
+            rhc.state.SetDistanceToGround(rhc.DistanceToGroundRaycast.distance - rhc.BoundsHeight / 2);
+        }
+
+        private void SetStandingOnLastFrameLayerToPlatforms()
+        {
+            rhc.state.SetStandingOnLastFrameLayer("Platforms");
+        }
+
+        private void SetStandingOnLastFrameLayerToSavedBelowLayer()
+        {
+            rhc.state.SetStandingOnLastFrameLayer(rhc.SavedBelowLayer);
         }
 
         /* properties: methods */
@@ -850,6 +885,36 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetCurrentDownHitSmallestDistance()
         {
             SetCurrentDownHitSmallestDistance();
+        }
+
+        public void OnSetGroundedEvent()
+        {
+            SetGroundedEvent();
+        }
+
+        public void OnInitializeDistanceToGround()
+        {
+            InitializeDistanceToGround();
+        }
+
+        public void OnDecreaseDistanceToGround()
+        {
+            DecreaseDistanceToGround();
+        }
+
+        public void OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
+        {
+            ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
+        }
+
+        public void OnSetStandingOnLastFrameLayerToPlatforms()
+        {
+            SetStandingOnLastFrameLayerToPlatforms();
+        }
+
+        public void OnSetStandingOnLastFrameLayerToSavedBelowLayer()
+        {
+            SetStandingOnLastFrameLayerToSavedBelowLayer();
         }
     }
 }
