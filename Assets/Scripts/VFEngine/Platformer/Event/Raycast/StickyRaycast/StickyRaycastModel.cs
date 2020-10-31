@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -52,6 +51,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             sr.CrossBelowSlopeAngleRightRef = sr.CrossBelowSlopeAngleRight;
             sr.BelowSlopeAngleLeftRef = sr.BelowSlopeAngleLeft;
             sr.BelowSlopeAngleRightRef = sr.BelowSlopeAngleRight;
+            sr.CastFromLeftRef = sr.state.IsCastingToLeft;
         }
 
         private void SetStickyRaycastLength()
@@ -64,6 +64,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         {
             sr.StickyRaycastLength = sr.StickyRaycastLength;
         }
+
         private void SetLeftStickyRaycastLength()
         {
             sr.LeftStickyRaycastLength =
@@ -126,7 +127,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetDoNotCastFromLeft()
         {
-            sr.CastFromLeft = false;
+            sr.state.SetCastToLeft(false);
         }
 
         private void InitializeBelowSlopeAngle()
@@ -166,7 +167,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
-            sr.CastFromLeft = Abs(sr.BelowSlopeAngleLeft) > Abs(sr.BelowSlopeAngleRight);
+            sr.state.SetCastToLeft(Abs(sr.BelowSlopeAngleLeft) > Abs(sr.BelowSlopeAngleRight));
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleLeft()
@@ -176,12 +177,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithBelowSlopeAngleLtZero()
         {
-            sr.CastFromLeft = sr.BelowSlopeAngle < 0f;
+            sr.state.SetCastToLeft(sr.BelowSlopeAngle < 0f);
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
-            sr.CastFromLeft = sr.BelowSlopeAngleRight < 0f;
+            sr.state.SetCastToLeft(sr.BelowSlopeAngleRight < 0f);
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleRight()
@@ -191,12 +192,17 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftLtZero()
         {
-            sr.CastFromLeft = sr.BelowSlopeAngleLeft < 0f;
+            sr.state.SetCastToLeft(sr.BelowSlopeAngleLeft < 0f);
         }
 
         private void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
-            sr.CastFromLeft = sr.LeftStickyRaycast.distance < sr.RightStickyRaycast.distance;
+            sr.state.SetCastToLeft(sr.LeftStickyRaycast.distance < sr.RightStickyRaycast.distance);
+        }
+
+        private void ResetState()
+        {
+            sr.state.Reset();
         }
 
         public async UniTaskVoid OnInitialize()
@@ -340,6 +346,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public void OnSetCastFromLeftWithLeftDistanceLtRightDistance()
         {
             SetCastFromLeftWithLeftDistanceLtRightDistance();
+        }
+
+        public void OnResetState()
+        {
+            ResetState();
         }
     }
 }

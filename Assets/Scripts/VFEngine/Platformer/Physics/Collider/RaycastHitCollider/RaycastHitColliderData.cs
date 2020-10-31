@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
@@ -90,10 +89,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public float BoundsHeight => boundsHeight.Value;
         public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
+
         public float BelowSlopeAngleRef
         {
             set => value = belowSlopeAngle.Value;
         }
+
         public float BelowSlopeAngle => state.BelowSlopeAngle;
         public bool HasSettings => settings;
         public bool DisplayWarnings => settings.displayWarningsControl;
@@ -131,9 +132,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         /* properties */
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
         public RaycastHitColliderContactList ContactList => contactList;
         public readonly RaycastHitColliderState state = new RaycastHitColliderState();
+
         public bool IsCollidingAboveRef
         {
             set => value = isCollidingAbove.Value;

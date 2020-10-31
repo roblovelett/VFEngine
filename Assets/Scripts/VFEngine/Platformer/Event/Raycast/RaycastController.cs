@@ -265,5 +265,17 @@ namespace VFEngine.Platformer.Event.Raycast
             downRaycastModel.OnSetDistanceToGroundRaycast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public async UniTaskVoid SetHasDistanceToGroundRaycast()
+        {
+            downRaycastModel.OnSetHasDistanceToGroundRaycast();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid ResetState()
+        {
+            downRaycastModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

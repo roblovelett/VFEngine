@@ -71,7 +71,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
         [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
-        [SerializeField] private BoolReference distanceToGroundRaycastNotNull;
+        [SerializeField] private BoolReference hasDistanceToGroundRaycast;
         private const string RPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RPath}DefaultRaycastModel.asset";
 
@@ -96,6 +96,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = distanceToGroundRayMaximumLength.Value;
         }
+
         public float RayOffset => settings.rayOffset;
 
         public float RayOffsetRef
@@ -154,21 +155,20 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
 
         /* properties */
+        public readonly RaycastState state = new RaycastState();
         public Vector2 DistanceToGroundRaycastOrigin { get; set; }
-
         public RaycastHit2D DistanceToGroundRaycast { get; set; }
 
         public RaycastHit2D DistanceToGroundRaycastRef
         {
             set => value = distanceToGroundRaycast.Value;
         }
-        
-        public bool DistanceToGroundRaycastNotNull { get; set; }
 
-        public bool DistanceToGroundRaycastNotNullRef
+        public bool HasDistanceToGroundRaycastRef
         {
-            set => value = distanceToGroundRaycastNotNull.Value;
+            set => value = hasDistanceToGroundRaycast.Value;
         }
+
         public Vector2 CurrentRightRaycastOrigin { get; set; } = new Vector2(0, 0);
         public Vector2 CurrentLeftRaycastOrigin { get; set; } = new Vector2(0, 0);
         public static float ObstacleHeightTolerance => 0.05f;

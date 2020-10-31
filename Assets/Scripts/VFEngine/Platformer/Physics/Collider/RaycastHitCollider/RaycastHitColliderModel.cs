@@ -527,6 +527,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.state.SetStandingOnLastFrameLayer(rhc.SavedBelowLayer);
         }
 
+        private void SetStandingOn()
+        {
+            rhc.state.SetStandingOn(rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].collider.gameObject);
+        }
+
+        private void SetStandingOnCollider()
+        {
+            rhc.state.SetStandingOnCollider(rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex].collider);
+        }
+
         /* properties: methods */
         public async UniTaskVoid Initialize()
         {
@@ -915,6 +925,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetStandingOnLastFrameLayerToSavedBelowLayer()
         {
             SetStandingOnLastFrameLayerToSavedBelowLayer();
+        }
+
+        public void OnSetStandingOn()
+        {
+            SetStandingOn();
+        }
+
+        public void OnSetStandingOnCollider()
+        {
+            SetStandingOnCollider();
         }
     }
 }

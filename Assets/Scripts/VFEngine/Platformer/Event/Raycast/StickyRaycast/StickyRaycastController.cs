@@ -12,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
     public class StickyRaycastController : MonoBehaviour, IController
     {
+        [SerializeField] private StickyRaycastModel model;
         [SerializeField] private StickyRaycastModel leftRaycastModel;
         [SerializeField] private StickyRaycastModel rightRaycastModel;
         private StickyRaycastModel[] models;
@@ -26,8 +27,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void GetModels()
         {
-            models = new[] {leftRaycastModel, rightRaycastModel};
-            var names = new[] {"leftRaycastModel, rightRaycastModel"};
+            models = new[] {model, leftRaycastModel, rightRaycastModel};
+            var names = new[] {"model, leftRaycastModel, rightRaycastModel"};
             for (var i = 0; i < models.Length; i++)
             {
                 if (models[i]) continue;
@@ -35,9 +36,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 switch (i)
                 {
                     case 0:
-                        leftRaycastModel = models[i];
+                        model = models[i];
                         break;
                     case 1:
+                        leftRaycastModel = models[i];
+                        break;
+                    case 2:
                         rightRaycastModel = models[i];
                         break;
                 }
@@ -201,6 +205,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
             leftRaycastModel.OnSetCastFromLeftWithLeftDistanceLtRightDistance();
+        }
+
+        public void ResetState()
+        {
+            model.OnResetState();
         }
     }
 }

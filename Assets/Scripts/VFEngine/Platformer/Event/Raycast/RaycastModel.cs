@@ -80,7 +80,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.UpRaycastSmallestDistanceRef = r.UpRaycastSmallestDistance;
             r.DistanceToGroundRayMaximumLengthRef = r.DistanceToGroundRayMaximumLength;
             r.DistanceToGroundRaycastRef = r.DistanceToGroundRaycast;
-            r.DistanceToGroundRaycastNotNullRef = r.DistanceToGroundRaycastNotNull;
+            r.HasDistanceToGroundRaycastRef = r.state.HasDistanceToGroundRaycast;
             switch (rayDirection)
             {
                 case None:
@@ -451,7 +451,16 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.DistanceToGroundRaycast = Raycast(r.DistanceToGroundRaycastOrigin, -r.Transform.up,
                 r.DistanceToGroundRayMaximumLength, r.RaysBelowLayerMaskPlatforms, blue);
-            r.DistanceToGroundRaycastNotNull = true;
+        }
+
+        private void SetHasDistanceToGroundRaycast()
+        {
+            r.state.SetHasDistanceToGroundRaycast(true);
+        }
+
+        private void ResetState()
+        {
+            r.state.Reset();
         }
 
         public async UniTaskVoid Initialize(RaycastDirection rayDirection)
@@ -624,6 +633,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetDistanceToGroundRaycast()
         {
             SetDistanceToGroundRaycast();
+        }
+        
+        public void OnSetHasDistanceToGroundRaycast()
+        {
+            SetHasDistanceToGroundRaycast();
+        }
+
+        public void OnResetState()
+        {
+            ResetState();
         }
     }
 }

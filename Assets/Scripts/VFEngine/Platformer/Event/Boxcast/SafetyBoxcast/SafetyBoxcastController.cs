@@ -38,5 +38,10 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             model.OnSetSafetyBoxcast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public void ResetState()
+        {
+            model.OnResetState();
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         /* fields */
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        [SerializeField] private BoolReference castFromLeft;
         private const string SrPath = "Event/Raycast/StickyRaycast/";
         private static readonly string ModelAssetPath = $"{SrPath}DefaultStickyRaycastModel.asset";
 
@@ -60,6 +61,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
 
         /* properties */
+        public readonly StickyRaycastState state = new StickyRaycastState();
         public float StickyRaycastLength { get; set; }
 
         public float StickyRaycastLengthRef
@@ -116,7 +118,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         {
             set => value = rightStickyRaycast.Value;
         }
-        public bool CastFromLeft { get; set; }
+
+        public bool CastFromLeftRef
+        {
+            set=>value=castFromLeft.Value;
+        }
         public float BelowSlopeAngle { get; set; }
         public float BelowSlopeAngleLeft { get; set; }
 

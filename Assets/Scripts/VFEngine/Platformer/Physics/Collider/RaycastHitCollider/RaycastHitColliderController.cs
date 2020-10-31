@@ -504,5 +504,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downColliderModel.OnSetStandingOnLastFrameLayerToSavedBelowLayer();
         }
+        
+        public async UniTaskVoid SetStandingOn()
+        {
+            downColliderModel.OnSetStandingOn();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetStandingOnCollider()
+        {
+            downColliderModel.OnSetStandingOnCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
     }
 }

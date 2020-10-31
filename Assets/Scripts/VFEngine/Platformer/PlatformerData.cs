@@ -35,16 +35,7 @@ namespace VFEngine.Platformer
         [SerializeField] private Vector2Reference externalForce;
         [SerializeField] private BoolReference castRaysOnBothSides;
         [SerializeField] private IntReference horizontalMovementDirection;
-        [SerializeField] private Vector2Reference horizontalRaycastFromBottom;
-        [SerializeField] private Vector2Reference horizontalRaycastToTop;
-        [SerializeField] private IntReference numberOfHorizontalRays;
-        [SerializeField] private Vector2Reference currentRightRaycastOrigin;
-        [SerializeField] private Vector2Reference currentLeftRaycastOrigin;
         [SerializeField] private BoolReference wasGroundedLastFrame;
-        [SerializeField] private IntReference rightHitsStorageIndex;
-        [SerializeField] private IntReference leftHitsStorageIndex;
-        [SerializeField] private FloatReference horizontalRayLength;
-        [SerializeField] private IntReference horizontalHitsStorageLength;
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private FloatReference currentRightHitDistance;
         [SerializeField] private FloatReference currentLeftHitDistance;
@@ -60,7 +51,6 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference gravity;
         [SerializeField] private BoolReference isFalling;
-        [SerializeField] private FloatReference downRayLength;
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private GameObjectReference standingOnLastFrame;
@@ -70,12 +60,9 @@ namespace VFEngine.Platformer
         [SerializeField] private Collider2DReference standingOnCollider;
         [SerializeField] private Vector2Reference colliderBottomCenterPosition;
         [SerializeField] private FloatReference smallestDistance;
-        [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
         [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
-        [SerializeField] private GameObjectReference standingOnWithSmallestDistance;
-        [SerializeField] private Collider2DReference standingOnWithSmallestDistanceCollider;
         [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer;
         [SerializeField] private FloatReference boundsHeight;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
@@ -111,7 +98,7 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference isCollidingRight;
         [SerializeField] private BoolReference isCollidingAbove;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        [SerializeField] private BoolReference distanceToGroundRaycastNotNull;
+        [SerializeField] private BoolReference hasDistanceToGroundRaycast;
         [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
 
         /* fields */
@@ -144,15 +131,6 @@ namespace VFEngine.Platformer
         public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
         public Vector2 ExternalForce => externalForce.Value;
         public int HorizontalMovementDirection => horizontalMovementDirection.Value;
-        public Vector2 HorizontalRaycastFromBottom => horizontalRaycastFromBottom.Value;
-        public Vector2 HorizontalRaycastToTop => horizontalRaycastToTop.Value;
-        public int NumberOfHorizontalRays => numberOfHorizontalRays.Value;
-        public int RightHitsStorageIndex => rightHitsStorageIndex.Value;
-        public int LeftHitsStorageIndex => leftHitsStorageIndex;
-        public float HorizontalRayLength => horizontalRayLength.Value;
-        public int HorizontalHitsStorageLength => horizontalHitsStorageLength;
-        public Vector2 CurrentRightRaycastOrigin => currentRightRaycastOrigin.Value;
-        public Vector2 CurrentLeftRaycastOrigin => currentLeftRaycastOrigin.Value;
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public bool WasGroundedLastFrame => wasGroundedLastFrame.Value;
         public float CurrentRightHitDistance => currentRightHitDistance.Value;
@@ -161,7 +139,6 @@ namespace VFEngine.Platformer
         public Collider2D CurrentLeftHitCollider => currentLeftHitCollider.Value;
         public Collider2D IgnoredCollider => ignoredCollider.Value;
         public float CurrentRightHitAngle => currentRightHitAngle.Value;
-
         public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
         public float MaximumSlopeAngle => maximumSlopeAngle.Value;
         public bool IsGrounded => isGrounded.Value;
@@ -170,7 +147,6 @@ namespace VFEngine.Platformer
         public float Gravity => gravity.Value;
         public bool IsFalling => isFalling.Value;
         public bool OnMovingPlatform => onMovingPlatform.Value;
-        public float DownRayLength => downRayLength.Value;
         public int DownHitsStorageLength => downHitsStorageLength.Value;
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
@@ -180,14 +156,10 @@ namespace VFEngine.Platformer
         public Collider2D StandingOnCollider => standingOnCollider.Value;
         public Vector2 ColliderBottomCenterPosition => colliderBottomCenterPosition.Value;
         public float SmallestDistance => smallestDistance.Value;
-        public int DownHitsStorageSmallestDistanceIndex => downHitsStorageSmallestDistanceIndex.Value;
         public bool DownHitConnected => downHitConnected.Value;
-
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
         public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
         public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
-        public GameObject StandingOnWithSmallestDistance => standingOnWithSmallestDistance.Value;
-        public Collider2D StandingOnWithSmallestDistanceCollider => standingOnWithSmallestDistanceCollider.Value;
         public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer.Value;
         public float BoundsHeight => boundsHeight.Value;
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
@@ -215,7 +187,7 @@ namespace VFEngine.Platformer
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public bool UpHitConnected => upHitConnected.Value;
-        public bool DistanceToGroundRaycastNotNull => distanceToGroundRaycastNotNull.Value;
+        public bool HasDistanceToGroundRaycast => hasDistanceToGroundRaycast.Value;
         public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
 
         /* properties */

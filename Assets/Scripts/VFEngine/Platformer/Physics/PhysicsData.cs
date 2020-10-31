@@ -132,10 +132,8 @@ namespace VFEngine.Platformer.Physics
         /* properties */
         public Vector2 WorldSpeed { get; set; } = Vector2.zero;
         public Rigidbody2D CurrentHitRigidBody { get; set; }
-
         public bool CurrentHitRigidBodyCanBePushed { get; set; }
         public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
-        
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly PhysicsState state = new PhysicsState();
         public Vector2 ExternalForce { get; set; } = Vector2.zero;

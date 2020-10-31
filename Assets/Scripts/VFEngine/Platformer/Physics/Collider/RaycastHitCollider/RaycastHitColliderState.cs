@@ -14,7 +14,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool IsCollidingBelow { get; private set; }
         public bool IsCollidingWithLevelBounds { get; private set; }
         public bool OnMovingPlatform { get; private set; }
-        public bool IsPassingSlopeAngle { get; private set; }
         public bool WasGroundedLastFrame { get; private set; }
         public bool WasTouchingCeilingLastFrame { get; private set; }
         public bool ColliderResized { get; private set; }
@@ -111,11 +110,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void SetWasTouchingCeilingLastFrame(bool wasTouchingCeilingLastFrame)
         {
             WasTouchingCeilingLastFrame = wasTouchingCeilingLastFrame;
-        }
-
-        public void SetColliderResized(bool colliderResized)
-        {
-            ColliderResized = colliderResized;
         }
 
         public void SetPassedRightSlopeAngle(bool pass)

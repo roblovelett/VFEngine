@@ -26,7 +26,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private async UniTaskVoid InitializeData()
         {
-            sb.HasSafetyBoxcastRef = sb.HasSafetyBoxcast;
+            sb.HasSafetyBoxcastRef = sb.state.HasSafetyBoxcast;
             sb.SafetyBoxcastColliderRef = sb.SafetyBoxcastCollider;
             sb.SafetyBoxcastRef = sb.SafetyBoxcast;
             sb.SafetyBoxcastDistanceRef = sb.SafetyBoxcastDistance;
@@ -35,6 +35,24 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private async UniTaskVoid GetWarningMessages()
         {
+            /* fields: methods */
+            /*
+            private void GetWarningMessage()
+            {
+            if (!DisplayWarnings) return;
+            var warningMessage = "";
+            var warningMessageCount = 0;
+                if (!settings) warningMessage += FieldMessage("Settings", "Layer Mask Settings");
+                if (!safetyBoxcastControl) warningMessage += FieldMessage("Safety Boxcast Control", "Bool Reference");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldMessage(string field, string scriptableObject)
+            {
+                warningMessageCount++;
+                return $"{field} field not set to {scriptableObject} ScriptableObject.";
+            }
+            }
+            */
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -47,7 +65,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void SetHasSafetyBoxcast()
         {
-            sb.HasSafetyBoxcast = true;
+            sb.state.SetHasSafetyBoxcast(true);
         }
         
         private void SetSafetyBoxcast()
@@ -55,6 +73,11 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             var transformUp = sb.Transform.up;
             sb.SafetyBoxcast = Boxcast(sb.BoundsCenter, sb.Bounds, Angle(transformUp, up),
                 sb.NewPosition.normalized, sb.NewPosition.magnitude, sb.PlatformMask, red, true);
+        }
+
+        private void ResetState()
+        {
+            sb.state.Reset();
         }
         public void OnInitialize()
         {
@@ -74,6 +97,11 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public void OnSetSafetyBoxcast()
         {
             SetSafetyBoxcast();
+        }
+
+        public void OnResetState()
+        {
+            ResetState();
         }
     }
 }
