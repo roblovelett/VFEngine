@@ -3,9 +3,9 @@
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static LayerMask;
+
     public class RaycastHitColliderState
     {
-        public bool IsCollidingWithMovingPlatform { get; private set; }
         public bool IsCollidingWithStairs { get; private set; }
         public bool IsCollidingWithFrictionSurface { get; private set; }
         public bool IsCollidingRight { get; private set; }
@@ -16,7 +16,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public bool OnMovingPlatform { get; private set; }
         public bool WasGroundedLastFrame { get; private set; }
         public bool WasTouchingCeilingLastFrame { get; private set; }
-        public bool ColliderResized { get; private set; }
         public bool GroundedEvent { get; private set; }
         public bool PassedRightSlopeAngle { get; private set; }
         public bool PassedLeftSlopeAngle { get; private set; }
@@ -46,13 +45,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             StandingOnLastFrame.layer = number;
         }
+
         public void SetDistanceToGround(float distance)
         {
             DistanceToGround = distance;
-        }
-        public void SetIsCollidingWithMovingPlatform(bool isCollidingWithMovingPlatform)
-        {
-            IsCollidingWithMovingPlatform = isCollidingWithMovingPlatform;
         }
 
         public void SetIsCollidingWithStairs(bool isCollidingWithStairs)
@@ -71,7 +67,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetIsCollidingLeft(colliding);
             SetIsCollidingRight(colliding);
         }
-        
+
         public void SetIsCollidingRight(bool isCollidingRight)
         {
             IsCollidingRight = isCollidingRight;
@@ -90,11 +86,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void SetIsCollidingBelow(bool isCollidingBelow)
         {
             IsCollidingBelow = isCollidingBelow;
-        }
-
-        public void SetIsCollidingWithLevelBounds(bool isCollidingWithLevelBounds)
-        {
-            IsCollidingWithLevelBounds = isCollidingWithLevelBounds;
         }
 
         public void SetOnMovingPlatform(bool onMovingPlatform)
@@ -180,7 +171,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             RightCurrentWallCollider = currentWallCollider;
         }
-        
+
         public void SetLeftCurrentWallCollider(GameObject currentWallCollider)
         {
             LeftCurrentWallCollider = currentWallCollider;

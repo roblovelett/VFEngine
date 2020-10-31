@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -20,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     public class RaycastHitColliderModel : ScriptableObject, IModel
     {
         /* fields: dependencies */
-        [FormerlySerializedAs("r")] [LabelText("Raycast Hit Collider Data")] [SerializeField]
+        [LabelText("Raycast Hit Collider Data")] [SerializeField]
         private RaycastHitColliderData rhc;
 
         /* fields */
@@ -57,7 +56,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.RaycastDownHitAtRef = rhc.RaycastDownHitAt;
             rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
             rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
-            rhc.IsStandingOnLastFrameNotNullRef = rhc.IsStandingOnLastFrameNotNull;
+            rhc.IsStandingOnLastFrameRef = rhc.IsStandingOnLastFrame;
             rhc.StandingOnColliderRef = rhc.state.StandingOnCollider;
             rhc.ColliderBottomCenterPositionRef = rhc.ColliderBottomCenterPosition;
             rhc.DownHitsStorageSmallestDistanceIndexRef = rhc.DownHitsStorageSmallestDistanceIndex;
@@ -129,6 +128,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 .GetComponentNoAllocation<PhysicsMaterialData>();
             rhc.PathMovementClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PathMovementData>();
+            rhc.IsStandingOnLastFrame = rhc.state.StandingOnLastFrame != null;
+            rhc.HasMovingPlatform = rhc.MovingPlatform != null;
             ClearContactList();
             rhc.state.SetCurrentWallColliderNull();
             rhc.state.Reset();
@@ -168,6 +169,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private void SetOnMovingPlatform()
         {
             rhc.state.SetOnMovingPlatform(true);
+        }
+
+        private void SetNotOnMovingPlatform()
+        {
+            rhc.state.SetOnMovingPlatform(false);
         }
 
         private void SetMovingPlatformCurrentGravity()
@@ -430,19 +436,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.MovingPlatform = rhc.PathMovementClosestToDownHit;
         }
 
-        private void SetHasMovingPlatform()
-        {
-            rhc.HasMovingPlatform = true;
-        }
-
         private void SetMovingPlatformToNull()
         {
             rhc.MovingPlatform = null;
-        }
-
-        private void SetDoesNotHaveMovingPlatform()
-        {
-            rhc.HasMovingPlatform = false;
         }
 
         private void StopMovingPlatformCurrentGravity()
@@ -782,19 +778,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
         }
 
-        public void OnSetHasMovingPlatform()
-        {
-            SetHasMovingPlatform();
-        }
-
         public void OnSetMovingPlatformToNull()
         {
             SetMovingPlatformToNull();
-        }
-
-        public void OnSetDoesNotHaveMovingPlatform()
-        {
-            SetDoesNotHaveMovingPlatform();
         }
 
         public void OnStopMovingPlatformCurrentGravity()
@@ -935,6 +921,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public void OnSetStandingOnCollider()
         {
             SetStandingOnCollider();
+        }
+
+        public void OnSetNotOnMovingPlatform()
+        {
+            SetNotOnMovingPlatform();
         }
     }
 }

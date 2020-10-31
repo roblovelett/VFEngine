@@ -4,6 +4,7 @@ using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -53,7 +54,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private FloatReference friction;
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private GameObjectReference standingOnLastFrame;
-        [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
+        [SerializeField] private BoolReference isStandingOnLastFrame;
         [SerializeField] private Collider2DReference standingOnCollider;
         [SerializeField] private Vector2Reference colliderBottomCenterPosition;
         [SerializeField] private IntReference downHitsStorageSmallestDistanceIndex;
@@ -288,11 +289,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             set => value = standingOnLastFrame.Value;
         }
 
-        public bool IsStandingOnLastFrameNotNull => state.StandingOnLastFrame != null;
+        public bool IsStandingOnLastFrame { get; set; }
 
-        public bool IsStandingOnLastFrameNotNullRef
+        public bool IsStandingOnLastFrameRef
         {
-            set => value = isStandingOnLastFrameNotNull.Value;
+            set => value = isStandingOnLastFrame.Value;
         }
 
         public Collider2D StandingOnColliderRef

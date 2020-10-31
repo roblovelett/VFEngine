@@ -54,7 +54,7 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private GameObjectReference standingOnLastFrame;
-        [SerializeField] private BoolReference isStandingOnLastFrameNotNull;
+        [SerializeField] private BoolReference isStandingOnLastFrame;
         [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask;
         [SerializeField] private LayerMaskReference stairsMask;
         [SerializeField] private Collider2DReference standingOnCollider;
@@ -150,7 +150,7 @@ namespace VFEngine.Platformer
         public int DownHitsStorageLength => downHitsStorageLength.Value;
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
-        public bool IsStandingOnLastFrameNotNull => isStandingOnLastFrameNotNull.Value;
+        public bool IsStandingOnLastFrame => isStandingOnLastFrame.Value;
         public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value;
         public LayerMask StairsMask => stairsMask.Value;
         public Collider2D StandingOnCollider => standingOnCollider.Value;
