@@ -5,6 +5,7 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 {
     using static RaycastData;
@@ -12,7 +13,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
     public class UpRaycastData : MonoBehaviour
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private BoolReference isGrounded;
         [SerializeField] private BoolReference drawRaycastGizmos;
         [SerializeField] private FloatReference rayOffset;
@@ -29,14 +33,20 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
 
-        /* fields */
+        #endregion
+
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private Vector2Reference currentUpRaycastOrigin;
         [SerializeField] private RaycastHit2DReference currentUpRaycast;
         private static readonly string UpRaycastPath = $"{RaycastPath}UpRaycast/";
         private static readonly string ModelAssetPath = $"{UpRaycastPath}DefaultUpRaycastModel.asset";
 
-        /* properties: dependencies */
+        #endregion
+
+        #region properties
+
+        #region dependencies
+
         public bool IsGrounded => isGrounded.Value;
         public bool DrawRaycastGizmos => drawRaycastGizmos.Value;
         public int CurrentUpHitsStorageIndex => currentUpHitsStorageIndex.Value;
@@ -53,7 +63,8 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         public Transform Transform => transform.Value;
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
 
-        /* properties */
+        #endregion
+
         public float UpRayLength { get; set; }
         public Vector2 UpRaycastStart { get; set; } = Vector2.zero;
         public Vector2 UpRaycastEnd { get; set; } = Vector2.zero;
@@ -75,5 +86,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         }
 
         public static readonly string UpRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #endregion
     }
 }

@@ -20,7 +20,7 @@ namespace VFEngine.Platformer.Event.Boxcast
             safetyBoxcastModel.OnInitialize();
         }
 
-        #region safety boxcast
+        #region safety boxcast model
         
         public async UniTaskVoid SetSafetyBoxcastForImpassableAngle()
         {

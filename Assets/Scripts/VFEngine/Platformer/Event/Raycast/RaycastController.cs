@@ -2,9 +2,9 @@
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
-using VFEngine.Platformer.Event.Raycast.StickyRaycast;
-using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
-using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.DownRaycast;
+using VFEngine.Platformer.Event.Raycast.LeftRaycast;
+using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -13,6 +13,9 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static RaycastData;
     using static UpRaycastData;
+    using static RightRaycastData;
+    using static DownRaycastData;
+    using static LeftRaycastData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
@@ -26,9 +29,9 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private DownRaycastModel downRaycastModel;
         [SerializeField] private LeftRaycastModel leftRaycastModel;
         [SerializeField] private DistanceToGroundRaycastModel distanceToGroundRaycastModel;
-        [SerializeField] private StickyRaycastModel stickyRaycastModel;
-        [SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
-        [SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
+        //[SerializeField] private StickyRaycastModel stickyRaycastModel;
+        //[SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
+        //[SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
 
         /* fields */
         private RaycastModel[] models;
@@ -38,14 +41,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             GetModels();
             Async(raycastModel.OnInitialize());
-            //var rTask2 = Async(upRaycastModel.OnInitialize());
-            //var rTask3 = Async(rightRaycastModel.OnInitialize());
-            //var rTask4 = Async(downRaycastModel.OnInitialize());
-            //var rTask5 = Async(leftRaycastModel.OnInitialize());
-            //var rTask6 = Async(stickyRaycastModel.OnInitialize());
-            //var rTask7 = Async(leftStickyRaycastModel.OnInitalize());
-            //var rTask8 = Async(rightStickyRaycastModel.OnInitialize());
-            //var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6, rTask7, rTask8);
         }
 
         private void GetModels()
@@ -58,11 +53,12 @@ namespace VFEngine.Platformer.Event.Raycast
             if (!distanceToGroundRaycastModel)
                 distanceToGroundRaycastModel =
                     LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
+            /*
             if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
             if (!rightStickyRaycastModel)
                 rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
             if (!leftStickyRaycastModel)
-                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
+                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);*/
         }
 
         /* properties: methods */
@@ -190,19 +186,19 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTaskVoid SetDownRaycastFromLeft()
         {
-            downRaycastModel.OnSetVerticalRaycastFromLeft();
+            downRaycastModel.OnSetDownRaycastFromLeft();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetDownRaycastToRight()
         {
-            downRaycastModel.OnSetVerticalRaycastToRight();
+            downRaycastModel.OnSetDownRaycastToRight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeSmallestDistanceToDownHit()
         {
-            downRaycastModel.OnInitializeSmallestDistance();
+            downRaycastModel.OnInitializeSmallestDistanceToDownHit();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -212,9 +208,9 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetDistanceBetweenDownRaycastAndPointOfDownHitWithSmallestDistance()
+        public void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
         {
-            downRaycastModel.OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
+            downRaycastModel.OnSetDistanceBetweenDownRaycastsAndSmallestDistancePoint();
         }
 
         public void SetCurrentDownRaycastOriginPoint()
@@ -258,6 +254,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #endregion
 
+
         #region distance to ground raycast model
 
         public void SetDistanceToGroundRaycastOrigin()
@@ -278,7 +275,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
-
+        /*
         #region sticky raycast model
 
         public void SetStickyRaycastLength()
@@ -440,5 +437,6 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
+        */
     }
 }

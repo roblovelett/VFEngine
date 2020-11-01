@@ -14,26 +14,30 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         menuName = "VFEngine/Platformer/Event/Raycast/UpRaycast/Up Raycast Model", order = 0)]
     public class UpRaycastModel : ScriptableObject, IModel
     {
-        /* fields: dependencies */
-        [LabelText("Up Raycast Data")] [SerializeField]
-        private UpRaycastData upRc;
+        #region fields
+        
+        #region dependencies
 
-        /* fields: methods */
+        [LabelText("Up Raycast Data")] [SerializeField]
+        private UpRaycastData u;
+
+        #endregion
+
+        #region private methods
+
         private void InitializeUpRaycastLength()
         {
-            upRc.UpRayLength = upRc.IsGrounded ? upRc.RayOffset : upRc.NewPosition.y;
+            u.UpRayLength = u.IsGrounded ? u.RayOffset : u.NewPosition.y;
         }
 
         private void InitializeUpRaycastStart()
         {
-            upRc.UpRaycastStart = SetPoint(upRc.BoundsBottomLeftCorner, upRc.BoundsTopLeftCorner, upRc.Transform,
-                upRc.NewPosition.x);
+            u.UpRaycastStart = SetPoint(u.BoundsBottomLeftCorner, u.BoundsTopLeftCorner, u.Transform, u.NewPosition.x);
         }
 
         private void InitializeUpRaycastEnd()
         {
-            upRc.UpRaycastEnd = SetPoint(upRc.BoundsBottomRightCorner, upRc.BoundsTopRightCorner, upRc.Transform,
-                upRc.NewPosition.y);
+            u.UpRaycastEnd = SetPoint(u.BoundsBottomRightCorner, u.BoundsTopRightCorner, u.Transform, u.NewPosition.y);
         }
 
         private static Vector2 SetPoint(Vector2 bounds1, Vector2 bounds2, Transform t, float axis)
@@ -43,28 +47,34 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeUpRaycastSmallestDistance()
         {
-            upRc.UpRaycastSmallestDistance = MaxValue;
+            u.UpRaycastSmallestDistance = MaxValue;
         }
 
         private void SetCurrentUpRaycastOrigin()
         {
-            upRc.CurrentUpRaycastOrigin = OnSetCurrentRaycastOrigin(upRc.UpRaycastStart, upRc.UpRaycastEnd,
-                upRc.CurrentUpHitsStorageIndex, upRc.NumberOfVerticalRaysPerSide);
+            u.CurrentUpRaycastOrigin = OnSetCurrentRaycastOrigin(u.UpRaycastStart, u.UpRaycastEnd,
+                u.CurrentUpHitsStorageIndex, u.NumberOfVerticalRaysPerSide);
         }
 
         private void SetCurrentUpRaycast()
         {
-            upRc.CurrentUpRaycast = Raycast(upRc.CurrentUpRaycastOrigin, upRc.Transform.up, upRc.UpRayLength,
-                upRc.PlatformMask & ~ upRc.OneWayPlatformMask & ~ upRc.MovingOneWayPlatformMask, cyan,
-                upRc.DrawRaycastGizmos);
+            u.CurrentUpRaycast = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.UpRayLength,
+                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan, u.DrawRaycastGizmos);
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
-            upRc.UpRaycastSmallestDistance = upRc.RaycastUpHitAt.distance;
+            u.UpRaycastSmallestDistance = u.RaycastUpHitAt.distance;
         }
 
-        /* properties: methods */
+        #endregion
+        
+        #endregion
+        
+        #region properties
+        
+        #region public methods
+
         public void OnInitializeUpRaycastLength()
         {
             InitializeUpRaycastLength();
@@ -99,5 +109,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         {
             SetUpRaycastSmallestDistanceToRaycastUpHitAt();
         }
+
+        #endregion
+        
+        #endregion
     }
 }
