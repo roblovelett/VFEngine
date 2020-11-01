@@ -381,7 +381,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             rhc.RaycastDownHitAt = rhc.DownHitsStorage[rhc.DownHitsStorageSmallestDistanceIndex];
         }
-
+        
         private void SetRaycastUpHitAt()
         {
             rhc.RaycastUpHitAt = rhc.UpHitsStorage[rhc.CurrentUpHitsStorageIndex];
@@ -817,7 +817,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             SetCurrentUpHitsStorage();
         }
-
+        
         public void OnSetRaycastUpHitAt()
         {
             SetRaycastUpHitAt();

@@ -38,7 +38,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
         
         /* properties */
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
         public readonly SafetyBoxcastState state = new SafetyBoxcastState();
 
         public float SafetyBoxcastDistanceRef

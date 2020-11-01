@@ -1,27 +1,34 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
+using VFEngine.Platformer.Event.Boxcast;
+using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Event.Raycast
 {
-    using static Debug;
     using static RaycastData;
+    using static UpRaycastData;
     using static ScriptableObjectExtensions;
-    using static RaycastDirection;
     using static UniTaskExtensions;
 
-    [RequireComponent(typeof(StickyRaycastController))]
-    [RequireComponent(typeof(SafetyBoxcastController))]
+    [RequireComponent(typeof(BoxcastController))]
     public class RaycastController : MonoBehaviour
     {
         /* fields: dependencies */
-        [SerializeField] private RaycastModel upRaycastModel;
-        [SerializeField] private RaycastModel rightRaycastModel;
-        [SerializeField] private RaycastModel downRaycastModel;
-        [SerializeField] private RaycastModel leftRaycastModel;
+        [SerializeField] private RaycastModel raycastModel;
+        [SerializeField] private UpRaycastModel upRaycastModel;
+        [SerializeField] private RightRaycastModel rightRaycastModel;
+        [SerializeField] private DownRaycastModel downRaycastModel;
+        [SerializeField] private LeftRaycastModel leftRaycastModel;
+        [SerializeField] private DistanceToGroundRaycastModel distanceToGroundRaycastModel;
+        [SerializeField] private StickyRaycastModel stickyRaycastModel;
+        [SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
+        [SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
 
         /* fields */
         private RaycastModel[] models;
@@ -30,127 +37,54 @@ namespace VFEngine.Platformer.Event.Raycast
         private async void Awake()
         {
             GetModels();
-            var rTask1 = Async(upRaycastModel.Initialize(Up));
-            var rTask2 = Async(rightRaycastModel.Initialize(Right));
-            var rTask3 = Async(downRaycastModel.Initialize(Down));
-            var rTask4 = Async(leftRaycastModel.Initialize(Left));
-            var rTask = await (rTask1, rTask2, rTask3, rTask4);
+            Async(raycastModel.OnInitialize());
+            //var rTask2 = Async(upRaycastModel.OnInitialize());
+            //var rTask3 = Async(rightRaycastModel.OnInitialize());
+            //var rTask4 = Async(downRaycastModel.OnInitialize());
+            //var rTask5 = Async(leftRaycastModel.OnInitialize());
+            //var rTask6 = Async(stickyRaycastModel.OnInitialize());
+            //var rTask7 = Async(leftStickyRaycastModel.OnInitalize());
+            //var rTask8 = Async(rightStickyRaycastModel.OnInitialize());
+            //var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6, rTask7, rTask8);
         }
 
         private void GetModels()
         {
-            models = new[] {upRaycastModel, rightRaycastModel, downRaycastModel, leftRaycastModel};
-            var names = new[] {"upRaycastModel", "rightRaycastModel", "downRaycastModel", "leftRaycastModel"};
-            for (var i = 0; i < models.Length; i++)
-            {
-                if (models[i]) continue;
-                models[i] = LoadData(ModelPath) as RaycastModel;
-                switch (i)
-                {
-                    case 0:
-                        upRaycastModel = models[i];
-                        break;
-                    case 1:
-                        rightRaycastModel = models[i];
-                        break;
-                    case 2:
-                        downRaycastModel = models[i];
-                        break;
-                    case 3:
-                        leftRaycastModel = models[i];
-                        break;
-                }
-
-                Assert(models[i] != null, names[i] + " != null");
-            }
+            if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
+            if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
+            if (!rightRaycastModel) rightRaycastModel = LoadModel<RightRaycastModel>(RightRaycastModelPath);
+            if (!downRaycastModel) downRaycastModel = LoadModel<DownRaycastModel>(DownRaycastModelPath);
+            if (!leftRaycastModel) leftRaycastModel = LoadModel<LeftRaycastModel>(LeftRaycastModelPath);
+            if (!distanceToGroundRaycastModel)
+                distanceToGroundRaycastModel =
+                    LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
+            if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
+            if (!rightStickyRaycastModel)
+                rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
+            if (!leftStickyRaycastModel)
+                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
         }
-        
+
         /* properties: methods */
+
+        #region raycast model
+
         public async UniTaskVoid SetRaysParameters()
         {
-            var rTask1 = Async(upRaycastModel.OnSetRaysParameters());
-            var rTask2 = Async(rightRaycastModel.OnSetRaysParameters());
-            var rTask3 = Async(downRaycastModel.OnSetRaysParameters());
-            var rTask4 = Async(leftRaycastModel.OnSetRaysParameters());
-            var rTask = await (rTask1, rTask2, rTask3, rTask4);
+            raycastModel.OnSetRaysParameters();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        /*public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        public async UniTaskVoid ResetRaycastState()
         {
-            rightRaycastModel.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
-        }
-
-        public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
-        {
-            leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
-        }*/
-
-        public void SetCurrentDownRaycastToIgnoreOneWayPlatform()
-        {
-            downRaycastModel.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
-        }
-
-        /*public void SetCurrentRightRaycast()
-        {
-            rightRaycastModel.OnSetCurrentRightRaycast();
-        }
-
-        public void SetCurrentLeftRaycast()
-        {
-            leftRaycastModel.OnSetCurrentLeftRaycast();
-        }*/
-
-        public void SetCurrentDownRaycast()
-        {
-            downRaycastModel.OnSetCurrentDownRaycast();
-        }
-
-        public async UniTaskVoid InitializeDownRayLength()
-        {
-            downRaycastModel.OnInitializeDownRayLength();
+            raycastModel.OnResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void DoubleDownRayLength()
-        {
-            downRaycastModel.OnDoubleDownRayLength();
-        }
+        #endregion
 
-        public void SetDownRayLengthToVerticalNewPosition()
-        {
-            downRaycastModel.OnSetDownRayLengthToVerticalNewPosition();
-        }
+        #region up raycast model
 
-        public async UniTaskVoid SetVerticalRaycastFromLeft()
-        {
-            downRaycastModel.OnSetVerticalRaycastFromLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetVerticalRaycastToRight()
-        {
-            downRaycastModel.OnSetVerticalRaycastToRight();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid InitializeSmallestDistance()
-        {
-            downRaycastModel.OnInitializeSmallestDistance();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetSmallestDistanceToDownHitDistance()
-        {
-            downRaycastModel.OnSetSmallestDistanceToDownHitDistance();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint()
-        {
-            downRaycastModel.OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
-        }
-        
         public async UniTaskVoid InitializeUpRaycastLength()
         {
             upRaycastModel.OnInitializeUpRaycastLength();
@@ -189,15 +123,14 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             upRaycastModel.OnSetUpRaycastSmallestDistanceToRaycastUpHitAt();
         }
-        
+
+        #endregion
+
+        #region right raycast model
+
         public void SetRightRaycastFromBottomOrigin()
         {
             rightRaycastModel.OnSetRightRaycastFromBottomOrigin();
-        }
-
-        public void SetLeftRaycastFromBottomOrigin()
-        {
-            leftRaycastModel.OnSetLeftRaycastFromBottomOrigin();
         }
 
         public void SetRightRaycastToTopOrigin()
@@ -205,19 +138,9 @@ namespace VFEngine.Platformer.Event.Raycast
             rightRaycastModel.OnSetRightRaycastToTopOrigin();
         }
 
-        public void SetLeftRaycastToTopOrigin()
-        {
-            leftRaycastModel.OnSetLeftRaycastToTopOrigin();
-        }
-
         public void InitializeRightRaycastLength()
         {
             rightRaycastModel.OnInitializeRightRaycastLength();
-        }
-
-        public void InitializeLeftRaycastLength()
-        {
-            leftRaycastModel.OnInitializeLeftRaycastLength();
         }
 
         public void SetCurrentRightRaycastOrigin()
@@ -225,19 +148,9 @@ namespace VFEngine.Platformer.Event.Raycast
             rightRaycastModel.OnSetCurrentRightRaycastOrigin();
         }
 
-        public void SetCurrentLeftRaycastOrigin()
-        {
-            leftRaycastModel.OnSetCurrentLeftRaycastOrigin();
-        }
-
         public void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
             rightRaycastModel.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
-        }
-
-        public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
-        {
-            leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
         }
 
         public void SetCurrentRightRaycast()
@@ -245,9 +158,63 @@ namespace VFEngine.Platformer.Event.Raycast
             rightRaycastModel.OnSetCurrentRightRaycast();
         }
 
-        public void SetCurrentLeftRaycast()
+        #endregion
+
+        #region down raycast model
+
+        public void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            leftRaycastModel.OnSetCurrentLeftRaycast();
+            downRaycastModel.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentDownRaycast()
+        {
+            downRaycastModel.OnSetCurrentDownRaycast();
+        }
+
+        public async UniTaskVoid InitializeDownRayLength()
+        {
+            downRaycastModel.OnInitializeDownRayLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void DoubleDownRayLength()
+        {
+            downRaycastModel.OnDoubleDownRayLength();
+        }
+
+        public void SetDownRayLengthToVerticalNewPosition()
+        {
+            downRaycastModel.OnSetDownRayLengthToVerticalNewPosition();
+        }
+
+        public async UniTaskVoid SetDownRaycastFromLeft()
+        {
+            downRaycastModel.OnSetVerticalRaycastFromLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetDownRaycastToRight()
+        {
+            downRaycastModel.OnSetVerticalRaycastToRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid InitializeSmallestDistanceToDownHit()
+        {
+            downRaycastModel.OnInitializeSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetSmallestDistanceToDownHitDistance()
+        {
+            downRaycastModel.OnSetSmallestDistanceToDownHitDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetDistanceBetweenDownRaycastAndPointOfDownHitWithSmallestDistance()
+        {
+            downRaycastModel.OnSetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
         }
 
         public void SetCurrentDownRaycastOriginPoint()
@@ -255,27 +222,223 @@ namespace VFEngine.Platformer.Event.Raycast
             downRaycastModel.OnSetCurrentDownRaycastOriginPoint();
         }
 
+        #endregion
+
+        #region left raycast model
+
+        public void SetLeftRaycastFromBottomOrigin()
+        {
+            leftRaycastModel.OnSetLeftRaycastFromBottomOrigin();
+        }
+
+        public void SetLeftRaycastToTopOrigin()
+        {
+            leftRaycastModel.OnSetLeftRaycastToTopOrigin();
+        }
+
+        public void InitializeLeftRaycastLength()
+        {
+            leftRaycastModel.OnInitializeLeftRaycastLength();
+        }
+
+        public void SetCurrentLeftRaycastOrigin()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycastOrigin();
+        }
+
+        public void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
+        }
+
+        public void SetCurrentLeftRaycast()
+        {
+            leftRaycastModel.OnSetCurrentLeftRaycast();
+        }
+
+        #endregion
+
+        #region distance to ground raycast model
+
         public void SetDistanceToGroundRaycastOrigin()
         {
-            downRaycastModel.OnSetDistanceToGroundRaycastOrigin();
+            distanceToGroundRaycastModel.OnSetDistanceToGroundRaycastOrigin();
         }
 
         public async UniTaskVoid SetDistanceToGroundRaycast()
         {
-            downRaycastModel.OnSetDistanceToGroundRaycast();
+            distanceToGroundRaycastModel.OnSetDistanceToGroundRaycast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetHasDistanceToGroundRaycast()
         {
-            downRaycastModel.OnSetHasDistanceToGroundRaycast();
+            distanceToGroundRaycastModel.OnSetHasDistanceToGroundRaycast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ResetState()
+        #endregion
+
+        #region sticky raycast model
+
+        public void SetStickyRaycastLength()
         {
-            downRaycastModel.OnResetState();
+            stickyRaycastModel.OnSetStickyRaycastLength();
+        }
+
+        public void SetStickyRaycastLengthToSelf()
+        {
+            stickyRaycastModel.OnSetStickyRaycastLengthToSelf();
+        }
+
+        public void SetDoNotCastFromLeft()
+        {
+            stickyRaycastModel.OnSetDoNotCastFromLeft();
+        }
+
+        public void InitializeBelowSlopeAngle()
+        {
+            stickyRaycastModel.OnInitializeBelowSlopeAngle();
+        }
+
+        public void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
+        {
+            stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
+        }
+
+        public void SetCastFromLeftWithBelowSlopeAngleLtZero()
+        {
+            stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleLtZero();
+        }
+
+        public void SetBelowSlopeAngleToBelowSlopeAngleLeft()
+        {
+            stickyRaycastModel.OnSetBelowSlopeAngleToBelowSlopeAngleLeft();
+        }
+
+        public void SetCastFromLeftWithBelowSlopeAngleRightLtZero()
+        {
+            stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleRightLtZero();
+        }
+
+        public void SetBelowSlopeAngleToBelowSlopeAngleRight()
+        {
+            stickyRaycastModel.OnSetBelowSlopeAngleToBelowSlopeAngleRight();
+        }
+
+        public void SetCastFromLeftWithBelowSlopeAngleLeftLtZero()
+        {
+            stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleLeftLtZero();
+        }
+
+        public void SetCastFromLeftWithLeftDistanceLtRightDistance()
+        {
+            stickyRaycastModel.OnSetCastFromLeftWithLeftDistanceLtRightDistance();
+        }
+
+        public void ResetStickyRaycastState()
+        {
+            stickyRaycastModel.OnResetState();
+        }
+
+        #endregion
+
+        #region left stickyraycast model
+
+        public void SetLeftStickyRaycastLength()
+        {
+            leftStickyRaycastModel.OnSetLeftStickyRaycastLength();
+        }
+
+        public void SetLeftStickyRaycastLengthToStickyRaycastLength()
+        {
+            leftStickyRaycastModel.OnSetLeftStickyRaycastLengthToStickyRaycastLength();
+        }
+
+        public async UniTaskVoid SetLeftStickyRaycastOriginX()
+        {
+            leftStickyRaycastModel.OnSetLeftStickyRaycastOriginX();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        public async UniTaskVoid SetLeftStickyRaycastOriginY()
+        {
+            leftStickyRaycastModel.OnSetLeftStickyRaycastOriginY();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetLeftStickyRaycast()
+        {
+            leftStickyRaycastModel.OnSetLeftStickyRaycast();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleLeft()
+        {
+            leftStickyRaycastModel.OnSetBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetCrossBelowSlopeAngleLeft()
+        {
+            leftStickyRaycastModel.OnSetCrossBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetBelowSlopeAngleLeftToNegative()
+        {
+            leftStickyRaycastModel.OnSetBelowSlopeAngleLeftToNegative();
+        }
+
+        #endregion
+
+        #region right stickyraycast model
+
+        public void SetRightStickyRaycastLengthToStickyRaycastLength()
+        {
+            rightStickyRaycastModel.OnSetRightStickyRaycastLengthToStickyRaycastLength();
+        }
+
+        public void SetRightStickyRaycastLength()
+        {
+            rightStickyRaycastModel.OnSetRightStickyRaycastLength();
+        }
+
+        public async UniTaskVoid SetRightStickyRaycastOriginY()
+        {
+            rightStickyRaycastModel.OnSetRightStickyRaycastOriginY();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetRightStickyRaycastOriginX()
+        {
+            rightStickyRaycastModel.OnSetRightStickyRaycastOriginX();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetRightStickyRaycast()
+        {
+            rightStickyRaycastModel.OnSetRightStickyRaycast();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleRight()
+        {
+            rightStickyRaycastModel.OnSetBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetCrossBelowSlopeAngleRight()
+        {
+            rightStickyRaycastModel.OnSetCrossBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetBelowSlopeAngleRightToNegative()
+        {
+            rightStickyRaycastModel.OnSetBelowSlopeAngleRightToNegative();
+        }
+
+        #endregion
     }
 }

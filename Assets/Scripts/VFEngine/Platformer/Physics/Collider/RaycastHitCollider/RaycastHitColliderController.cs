@@ -381,7 +381,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             upColliderModel.OnSetCurrentUpHitsStorage();
         }
-
         public void SetRaycastUpHitAt()
         {
             upColliderModel.OnSetRaycastUpHitAt();

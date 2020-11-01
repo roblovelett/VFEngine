@@ -3,6 +3,7 @@ using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
@@ -24,7 +25,7 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastHitColliderController raycastHitCollider;
         [SerializeField] private StickyRaycastController stickyRaycast;
         [SerializeField] private LayerMaskController layerMask;
-        [SerializeField] private SafetyBoxcastController safetyBoxcast;
+        [SerializeField] private BoxcastController boxcast;
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
@@ -120,7 +121,7 @@ namespace VFEngine.Platformer
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
         public StickyRaycastController StickyRaycast => stickyRaycast;
-        public SafetyBoxcastController SafetyBoxcast => safetyBoxcast;
+        public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
         public float FallSlowFactor => fallSlowFactor.Value;

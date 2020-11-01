@@ -102,7 +102,7 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid InitializeFrame()
         {
-            if (p.SafetyBoxcastControl) p.SafetyBoxcast.ResetState();
+            if (p.SafetyBoxcastControl) p.Boxcast.ResetSafetyBoxcastState();
             if (p.StickToSlopesControl) p.StickyRaycast.ResetState();
             var phTask1 = Async(p.Physics.SetNewPosition());
             var phTask2 = Async(p.Physics.ResetState());
@@ -112,7 +112,7 @@ namespace VFEngine.Platformer
             var rhcTask4 = Async(p.RaycastHitCollider.SetWasTouchingCeilingLastFrame());
             var rhcTask5 = Async(p.RaycastHitCollider.SetCurrentWallColliderNull());
             var rhcTask6 = Async(p.RaycastHitCollider.ResetState());
-            var rTask1 = Async(p.Raycast.ResetState());
+            var rTask1 = Async(p.Raycast.ResetRaycastState());
             var rTask2 = Async(p.Raycast.SetRaysParameters());
             var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1,
                 rTask2);
@@ -254,7 +254,7 @@ namespace VFEngine.Platformer
                     var pTask1 = Async(ApplyToRaysBelowLayerMask(midHeightOneWayPlatformMaskContains,
                         p.OnMovingPlatform, p.StairsMask, p.StandingOnLastFrame.layer, p.StandingOnCollider,
                         p.ColliderBottomCenterPosition, p.NewPosition.y));
-                    var rTask3 = Async(p.Raycast.InitializeSmallestDistance());
+                    var rTask3 = Async(p.Raycast.InitializeSmallestDistanceToDownHit());
                     var rhcTask4 = Async(p.RaycastHitCollider.InitializeDownHitsStorageIndex());
                     var rhcTask5 = Async(p.RaycastHitCollider.InitializeDownHitsStorageSmallestDistanceIndex());
                     var rhcTask6 = Async(p.RaycastHitCollider.InitializeDownHitConnected());
@@ -315,7 +315,7 @@ namespace VFEngine.Platformer
                         }
                         else
                         {
-                            p.Raycast.SetDistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint();
+                            p.Raycast.SetDistanceBetweenDownRaycastAndPointOfDownHitWithSmallestDistance();
                             p.Physics.ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
                         }
 
@@ -387,8 +387,8 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetVerticalRaycast()
             {
-                var t1 = Async(p.Raycast.SetVerticalRaycastFromLeft());
-                var t2 = Async(p.Raycast.SetVerticalRaycastToRight());
+                var t1 = Async(p.Raycast.SetDownRaycastFromLeft());
+                var t2 = Async(p.Raycast.SetDownRaycastToRight());
                 var t = await (t1, t2);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
@@ -458,8 +458,8 @@ namespace VFEngine.Platformer
                 var rhcTask1 = Async(p.RaycastHitCollider.SetIsCollidingBelow());
                 if (p.BelowSlopeAngleLeft > 0f && p.BelowSlopeAngleRight < 0f && p.SafetyBoxcastControl)
                 {
-                    var srTask22 = Async(p.SafetyBoxcast.SetSafetyBoxcastForImpassableAngle());
-                    var srTask23 = Async(p.SafetyBoxcast.SetHasSafetyBoxcast());
+                    var srTask22 = Async(p.Boxcast.SetSafetyBoxcastForImpassableAngle());
+                    var srTask23 = Async(p.Boxcast.SetHasSafetyBoxcast());
                     var task8 = await (srTask22, srTask23);
                     if (!p.HasSafetyBoxcast || p.SafetyBoxcastCollider == p.IgnoredCollider) return;
                     var phTask1 = Async(p.Physics.ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition());
@@ -737,8 +737,8 @@ namespace VFEngine.Platformer
         {
             if (p.SafetyBoxcastControl)
             {
-                var sbTask1 = Async(p.SafetyBoxcast.SetSafetyBoxcast());
-                var sbTask2 = Async(p.SafetyBoxcast.SetHasSafetyBoxcast());
+                var sbTask1 = Async(p.Boxcast.SetSafetyBoxcast());
+                var sbTask2 = Async(p.Boxcast.SetHasSafetyBoxcast());
                 var task1 = await (sbTask1, sbTask2);
                 if (p.HasSafetyBoxcast && Abs(p.SafetyBoxcastDistance - p.NewPosition.magnitude) < 0.002f)
                 {

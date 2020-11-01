@@ -1,47 +1,50 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
+namespace VFEngine.Platformer.Event.Boxcast
 {
-    using static Debug;
     using static SafetyBoxcastData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    public class SafetyBoxcastController : MonoBehaviour, IController
+    public class BoxcastController : MonoBehaviour, IController
     {
-        [SerializeField] private SafetyBoxcastModel model;
+        [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
 
         private void Awake()
         {
-            if (!model) model = LoadData(ModelPath) as SafetyBoxcastModel;
-            Assert(model != null, nameof(model) + " != null");
-            model.OnInitialize();
+            if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+            safetyBoxcastModel.OnInitialize();
         }
 
+        #region safety boxcast
+        
         public async UniTaskVoid SetSafetyBoxcastForImpassableAngle()
         {
-            model.OnSetSafetyBoxcastForImpassableAngle();
+            safetyBoxcastModel.OnSetSafetyBoxcastForImpassableAngle();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetHasSafetyBoxcast()
         {
-            model.OnSetHasSafetyBoxcast();
+            safetyBoxcastModel.OnSetHasSafetyBoxcast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetSafetyBoxcast()
         {
-            model.OnSetSafetyBoxcast();
+            safetyBoxcastModel.OnSetSafetyBoxcast();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void ResetState()
+        public void ResetSafetyBoxcastState()
         {
-            model.OnResetState();
+            safetyBoxcastModel.OnResetState();
         }
+        
+        #endregion
     }
 }
