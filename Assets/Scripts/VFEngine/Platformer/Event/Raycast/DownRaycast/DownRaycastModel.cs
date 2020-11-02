@@ -13,7 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static Mathf;
 
     [CreateAssetMenu(fileName = "DownRaycastModel",
-        menuName = "VFEngine/Platformer/Event/Raycast/DownRaycast/Down Raycast Model", order = 0)]
+        menuName = "VFEngine/Platformer/Event/Raycast/Down Raycast/Down Raycast Model", order = 0)]
     public class DownRaycastModel : ScriptableObject, IModel
     {
         #region fields

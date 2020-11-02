@@ -440,7 +440,7 @@ namespace VFEngine.Platformer.Event.Raycast
             return Abs(x * deltaTime) + width / 2 + offset * 2;
         }
 
-        private void SetDistanceToGroundRaycastOrigin()
+        /*private void SetDistanceToGroundRaycastOrigin()
         {
             r.DistanceToGroundRaycastOrigin = new Vector2()
             {
@@ -458,7 +458,7 @@ namespace VFEngine.Platformer.Event.Raycast
         private void SetHasDistanceToGroundRaycast()
         {
             r.state.SetHasDistanceToGroundRaycast(true);
-        }
+        }*/
 
         private void ResetState()
         {
@@ -638,7 +638,7 @@ namespace VFEngine.Platformer.Event.Raycast
             SetCurrentDownRaycastOriginPoint();
         }*/
 
-        public void OnSetDistanceToGroundRaycastOrigin()
+        /*public void OnSetDistanceToGroundRaycastOrigin()
         {
             SetDistanceToGroundRaycastOrigin();
         }
@@ -651,7 +651,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetHasDistanceToGroundRaycast()
         {
             SetHasDistanceToGroundRaycast();
-        }
+        }*/
 
         public void OnResetState()
         {

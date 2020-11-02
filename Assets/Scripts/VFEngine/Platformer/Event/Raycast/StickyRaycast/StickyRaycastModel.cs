@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -15,11 +16,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Model", order = 0)]
     public class StickyRaycastModel : ScriptableObject, IModel
     {
-        [SerializeField] private StickyRaycastData sr;
+        [SerializeField] private StickyRaycastData s;
 
         private void Initialize()
         {
-            /*private void GetWarningMessage()
+            s.StickToSlopesOffsetYRef = s.StickToSlopesOffsetY;
+            
+            /*
+            void GetWarningMessage()
             {
                 if (!DisplayWarnings) return;
                 var warningMessage = "";
@@ -40,51 +44,19 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                     warningMessageCount++;
                     return $"{field} must be set to value greater than zero.@";
                 }
-            }*/
-            sr.StickToSlopesOffsetYRef = sr.StickToSlopesOffsetY;
-            sr.StickyRaycastLengthRef = sr.StickyRaycastLength;
-            sr.LeftStickyRaycastRef = sr.LeftStickyRaycast;
-            sr.RightStickyRaycastRef = sr.RightStickyRaycast;
-            sr.LeftStickyRaycastLengthRef = sr.LeftStickyRaycastLength;
-            sr.RightStickyRaycastLengthRef = sr.RightStickyRaycastLength;
-            sr.CrossBelowSlopeAngleLeftRef = sr.CrossBelowSlopeAngleLeft;
-            sr.CrossBelowSlopeAngleRightRef = sr.CrossBelowSlopeAngleRight;
-            sr.BelowSlopeAngleLeftRef = sr.BelowSlopeAngleLeft;
-            sr.BelowSlopeAngleRightRef = sr.BelowSlopeAngleRight;
-            sr.CastFromLeftRef = sr.state.IsCastingToLeft;
+            }
+            */
         }
 
         private void SetStickyRaycastLength()
         {
-            sr.StickyRaycastLength =
-                SetStickyRaycastLength(sr.BoundsWidth, sr.MaximumSlopeAngle, sr.BoundsHeight, sr.RayOffset);
+            s.StickyRaycastLength =
+                SetStickyRaycastLength(s.BoundsWidth, s.MaximumSlopeAngle, s.BoundsHeight, s.RayOffset);
         }
 
         private void SetStickyRaycastLengthToSelf()
         {
-            sr.StickyRaycastLength = sr.StickyRaycastLength;
-        }
-
-        private void SetLeftStickyRaycastLength()
-        {
-            sr.LeftStickyRaycastLength =
-                SetStickyRaycastLength(sr.BoundsWidth, sr.MaximumSlopeAngle, sr.BoundsHeight, sr.RayOffset);
-        }
-
-        private void SetLeftStickyRaycastLengthToStickyRaycastLength()
-        {
-            sr.LeftStickyRaycastLength = sr.StickyRaycastLength;
-        }
-
-        private void SetRightStickyRaycastLength()
-        {
-            sr.RightStickyRaycastLength =
-                SetStickyRaycastLength(sr.BoundsWidth, sr.MaximumSlopeAngle, sr.BoundsHeight, sr.RayOffset);
-        }
-
-        private void SetRightStickyRaycastLengthToStickyRaycastLength()
-        {
-            sr.RightStickyRaycastLength = sr.StickyRaycastLength;
+            s.StickyRaycastLength = s.StickyRaycastLength;
         }
 
         private static float SetStickyRaycastLength(float boundsWidth, float slopeAngle, float boundsHeight,
@@ -93,184 +65,69 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             return boundsWidth * Abs(Tan(slopeAngle)) * 2 + boundsHeight / 2 * offset;
         }
 
-        private void SetLeftStickyRaycastOriginY()
-        {
-            sr.LeftStickyRaycastOriginY = sr.BoundsCenter.y;
-        }
-
-        private void SetLeftStickyRaycastOriginX()
-        {
-            sr.LeftStickyRaycastOriginX = sr.BoundsBottomLeftCorner.x * 2 + sr.NewPosition.x;
-        }
-
-        private void SetRightStickyRaycastOriginY()
-        {
-            sr.RightStickyRaycastOriginY = sr.BoundsCenter.y;
-        }
-
-        private void SetRightStickyRaycastOriginX()
-        {
-            sr.RightStickyRaycastOriginX = sr.BoundsBottomRightCorner.x * 2 + sr.NewPosition.x;
-        }
-
-        private void SetLeftStickyRaycast()
-        {
-            sr.LeftStickyRaycast = Raycast(sr.LeftStickyRaycastOrigin, -sr.Transform.up, sr.LeftStickyRaycastLength,
-                sr.RaysBelowLayerMaskPlatforms, cyan, sr.DrawRaycastGizmosControl);
-        }
-
-        private void SetRightStickyRaycast()
-        {
-            sr.RightStickyRaycast = Raycast(sr.RightStickyRaycastOrigin, -sr.Transform.up, sr.RightStickyRaycastLength,
-                sr.RaysBelowLayerMaskPlatforms, cyan, sr.DrawRaycastGizmosControl);
-        }
-
         private void SetDoNotCastFromLeft()
         {
-            sr.state.SetCastToLeft(false);
+            s.IsCastingLeft = false;
         }
 
         private void InitializeBelowSlopeAngle()
         {
-            sr.BelowSlopeAngle = 0f;
-        }
-
-        private void SetBelowSlopeAngleLeft()
-        {
-            sr.BelowSlopeAngleLeft = Vector2.Angle(sr.LeftStickyRaycast.normal, sr.Transform.up);
-        }
-
-        private void SetBelowSlopeAngleRight()
-        {
-            sr.BelowSlopeAngleRight = Vector2.Angle(sr.RightStickyRaycast.normal, sr.Transform.up);
-        }
-
-        private void SetCrossBelowSlopeAngleLeft()
-        {
-            sr.CrossBelowSlopeAngleLeft = Cross(sr.Transform.up, sr.LeftStickyRaycast.normal);
-        }
-
-        private void SetCrossBelowSlopeAngleRight()
-        {
-            sr.CrossBelowSlopeAngleRight = Cross(sr.Transform.up, sr.RightStickyRaycast.normal);
-        }
-
-        private void SetBelowSlopeAngleLeftToNegative()
-        {
-            sr.BelowSlopeAngleLeft = -sr.BelowSlopeAngleLeft;
-        }
-
-        private void SetBelowSlopeAngleRightToNegative()
-        {
-            sr.BelowSlopeAngleRight = -sr.BelowSlopeAngleRight;
+            s.BelowSlopeAngle = 0f;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
-            sr.state.SetCastToLeft(Abs(sr.BelowSlopeAngleLeft) > Abs(sr.BelowSlopeAngleRight));
+            s.IsCastingLeft = Abs(s.BelowSlopeAngleLeft) > Abs(s.BelowSlopeAngleRight);
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleLeft()
         {
-            sr.BelowSlopeAngle = sr.BelowSlopeAngleLeft;
+            s.BelowSlopeAngle = s.BelowSlopeAngleLeft;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLtZero()
         {
-            sr.state.SetCastToLeft(sr.BelowSlopeAngle < 0f);
+            s.IsCastingLeft = s.BelowSlopeAngle < 0f;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
-            sr.state.SetCastToLeft(sr.BelowSlopeAngleRight < 0f);
+            s.IsCastingLeft = s.BelowSlopeAngleRight < 0f;
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleRight()
         {
-            sr.BelowSlopeAngle = sr.BelowSlopeAngleRight;
+            s.BelowSlopeAngle = s.BelowSlopeAngleRight;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftLtZero()
         {
-            sr.state.SetCastToLeft(sr.BelowSlopeAngleLeft < 0f);
+            s.IsCastingLeft = s.BelowSlopeAngleLeft < 0f;
         }
 
         private void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
-            sr.state.SetCastToLeft(sr.LeftStickyRaycast.distance < sr.RightStickyRaycast.distance);
+            s.IsCastingLeft = s.LeftStickyRaycast.distance < s.RightStickyRaycast.distance;
         }
 
         private void ResetState()
         {
-            sr.state.Reset();
+            s.IsCastingLeft = false;
         }
 
-        public async UniTaskVoid OnInitialize()
+        public void OnInitialize()
         {
             Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnSetStickyRaycastLength()
+        public void OnSetStickyRaycastLength()
         {
             SetStickyRaycastLength();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnSetStickyRaycastLengthToSelf()
+        public void OnSetStickyRaycastLengthToSelf()
         {
             SetStickyRaycastLengthToSelf();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetLeftStickyRaycastLength()
-        {
-            SetLeftStickyRaycastLength();
-        }
-
-        public void OnSetRightStickyRaycastLength()
-        {
-            SetRightStickyRaycastLength();
-        }
-
-        public void OnSetLeftStickyRaycastLengthToStickyRaycastLength()
-        {
-            SetLeftStickyRaycastLengthToStickyRaycastLength();
-        }
-
-        public void OnSetRightStickyRaycastLengthToStickyRaycastLength()
-        {
-            SetRightStickyRaycastLengthToStickyRaycastLength();
-        }
-
-        public void OnSetLeftStickyRaycastOriginY()
-        {
-            SetLeftStickyRaycastOriginY();
-        }
-
-        public void OnSetLeftStickyRaycastOriginX()
-        {
-            SetLeftStickyRaycastOriginX();
-        }
-
-        public void OnSetRightStickyRaycastOriginY()
-        {
-            SetRightStickyRaycastOriginY();
-        }
-
-        public void OnSetRightStickyRaycastOriginX()
-        {
-            SetRightStickyRaycastOriginX();
-        }
-
-        public void OnSetLeftStickyRaycast()
-        {
-            SetLeftStickyRaycast();
-        }
-
-        public void OnSetRightStickyRaycast()
-        {
-            SetRightStickyRaycast();
         }
 
         public void OnSetDoNotCastFromLeft()
@@ -281,36 +138,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public void OnInitializeBelowSlopeAngle()
         {
             InitializeBelowSlopeAngle();
-        }
-
-        public void OnSetBelowSlopeAngleLeft()
-        {
-            SetBelowSlopeAngleLeft();
-        }
-
-        public void OnSetBelowSlopeAngleRight()
-        {
-            SetBelowSlopeAngleRight();
-        }
-
-        public void OnSetCrossBelowSlopeAngleLeft()
-        {
-            SetCrossBelowSlopeAngleLeft();
-        }
-
-        public void OnSetCrossBelowSlopeAngleRight()
-        {
-            SetCrossBelowSlopeAngleRight();
-        }
-
-        public void OnSetBelowSlopeAngleLeftToNegative()
-        {
-            SetBelowSlopeAngleLeftToNegative();
-        }
-
-        public void OnSetBelowSlopeAngleRightToNegative()
-        {
-            SetBelowSlopeAngleRightToNegative();
         }
 
         public void OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
@@ -354,3 +181,167 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         }
     }
 }
+
+/*private void SetLeftStickyRaycastLength()
+{
+    sr.LeftStickyRaycastLength =
+        SetStickyRaycastLength(sr.BoundsWidth, sr.MaximumSlopeAngle, sr.BoundsHeight, sr.RayOffset);
+}
+
+private void SetLeftStickyRaycastLengthToStickyRaycastLength()
+{
+    sr.LeftStickyRaycastLength = sr.StickyRaycastLength;
+}
+
+private void SetRightStickyRaycastLength()
+{
+    sr.RightStickyRaycastLength =
+        SetStickyRaycastLength(sr.BoundsWidth, sr.MaximumSlopeAngle, sr.BoundsHeight, sr.RayOffset);
+}
+
+private void SetRightStickyRaycastLengthToStickyRaycastLength()
+{
+    sr.RightStickyRaycastLength = sr.StickyRaycastLength;
+}*/
+
+/*
+private void SetLeftStickyRaycastOriginY()
+{
+    sr.LeftStickyRaycastOriginY = sr.BoundsCenter.y;
+}
+
+private void SetLeftStickyRaycastOriginX()
+{
+    sr.LeftStickyRaycastOriginX = sr.BoundsBottomLeftCorner.x * 2 + sr.NewPosition.x;
+}
+
+private void SetRightStickyRaycastOriginY()
+{
+    sr.RightStickyRaycastOriginY = sr.BoundsCenter.y;
+}
+
+private void SetRightStickyRaycastOriginX()
+{
+    sr.RightStickyRaycastOriginX = sr.BoundsBottomRightCorner.x * 2 + sr.NewPosition.x;
+}
+
+private void SetLeftStickyRaycast()
+{
+    sr.LeftStickyRaycast = Raycast(sr.LeftStickyRaycastOrigin, -sr.Transform.up, sr.LeftStickyRaycastLength,
+        sr.RaysBelowLayerMaskPlatforms, cyan, sr.DrawRaycastGizmosControl);
+}
+
+private void SetRightStickyRaycast()
+{
+    sr.RightStickyRaycast = Raycast(sr.RightStickyRaycastOrigin, -sr.Transform.up, sr.RightStickyRaycastLength,
+        sr.RaysBelowLayerMaskPlatforms, cyan, sr.DrawRaycastGizmosControl);
+}*/
+/*
+private void SetBelowSlopeAngleLeft()
+{
+    sr.BelowSlopeAngleLeft = Vector2.Angle(sr.LeftStickyRaycast.normal, sr.Transform.up);
+}
+
+private void SetBelowSlopeAngleRight()
+{
+    sr.BelowSlopeAngleRight = Vector2.Angle(sr.RightStickyRaycast.normal, sr.Transform.up);
+}
+
+private void SetCrossBelowSlopeAngleLeft()
+{
+    sr.CrossBelowSlopeAngleLeft = Cross(sr.Transform.up, sr.LeftStickyRaycast.normal);
+}
+
+private void SetCrossBelowSlopeAngleRight()
+{
+    sr.CrossBelowSlopeAngleRight = Cross(sr.Transform.up, sr.RightStickyRaycast.normal);
+}
+
+private void SetBelowSlopeAngleLeftToNegative()
+{
+    sr.BelowSlopeAngleLeft = -sr.BelowSlopeAngleLeft;
+}
+
+private void SetBelowSlopeAngleRightToNegative()
+{
+    sr.BelowSlopeAngleRight = -sr.BelowSlopeAngleRight;
+}*/
+
+/*public void OnSetLeftStickyRaycastLength()
+{
+    SetLeftStickyRaycastLength();
+}
+
+public void OnSetRightStickyRaycastLength()
+{
+    SetRightStickyRaycastLength();
+}
+
+public void OnSetLeftStickyRaycastLengthToStickyRaycastLength()
+{
+    SetLeftStickyRaycastLengthToStickyRaycastLength();
+}
+
+public void OnSetRightStickyRaycastLengthToStickyRaycastLength()
+{
+    SetRightStickyRaycastLengthToStickyRaycastLength();
+}
+
+public void OnSetLeftStickyRaycastOriginY()
+{
+    SetLeftStickyRaycastOriginY();
+}
+
+public void OnSetLeftStickyRaycastOriginX()
+{
+    SetLeftStickyRaycastOriginX();
+}
+
+public void OnSetRightStickyRaycastOriginY()
+{
+    SetRightStickyRaycastOriginY();
+}
+
+public void OnSetRightStickyRaycastOriginX()
+{
+    SetRightStickyRaycastOriginX();
+}
+
+public void OnSetLeftStickyRaycast()
+{
+    SetLeftStickyRaycast();
+}
+
+public void OnSetRightStickyRaycast()
+{
+    SetRightStickyRaycast();
+}*/
+/*public void OnSetBelowSlopeAngleLeft()
+{
+    SetBelowSlopeAngleLeft();
+}
+
+public void OnSetBelowSlopeAngleRight()
+{
+    SetBelowSlopeAngleRight();
+}
+
+public void OnSetCrossBelowSlopeAngleLeft()
+{
+    SetCrossBelowSlopeAngleLeft();
+}
+
+public void OnSetCrossBelowSlopeAngleRight()
+{
+    SetCrossBelowSlopeAngleRight();
+}
+
+public void OnSetBelowSlopeAngleLeftToNegative()
+{
+    SetBelowSlopeAngleLeftToNegative();
+}
+
+public void OnSetBelowSlopeAngleRightToNegative()
+{
+    SetBelowSlopeAngleRightToNegative();
+}*/

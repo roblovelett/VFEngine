@@ -33,7 +33,7 @@ namespace VFEngine.Platformer.Event.Raycast
         //[SerializeField] private RaycastHit2DReference raycastDownHitAt;
         //[SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
         //[SerializeField] private BoolReference isGrounded;
-        [SerializeField] private FloatReference belowSlopeAngle;
+        //[SerializeField] private FloatReference belowSlopeAngle;
 
         /* fields */
         [SerializeField] private FloatReference rayOffset;
@@ -63,15 +63,15 @@ namespace VFEngine.Platformer.Event.Raycast
         //[SerializeField] private Vector2Reference rightRaycastToTopOrigin;
         //[SerializeField] private Vector2Reference leftRaycastToTopOrigin;
         [SerializeField] private Vector2Reference bounds;
-        [SerializeField] private Vector2Reference boundsCenter;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference boundsBottomRightCorner;
+        //[SerializeField] private Vector2Reference boundsCenter;
+        //[SerializeField] private Vector2Reference boundsBottomLeftCorner;
+        //[SerializeField] private Vector2Reference boundsBottomRightCorner;
         //[SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         //[SerializeField] private FloatReference upRaycastSmallestDistance;
     //    [SerializeField] private RaycastHit2DReference raycastUpHitAt;
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
-        [SerializeField] private BoolReference hasDistanceToGroundRaycast;
+       // [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
+        //[SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
+        //[SerializeField] private BoolReference hasDistanceToGroundRaycast;
         public const string RaycastPath = "Event/Raycast/";
         private static readonly string ModelAssetPath = $"{RaycastPath}DefaultRaycastModel.asset";
 
@@ -156,8 +156,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         /* properties */
         public readonly RaycastState state = new RaycastState();
-        public Vector2 DistanceToGroundRaycastOrigin { get; set; }
-        public RaycastHit2D DistanceToGroundRaycast { get; set; }
+        //public Vector2 DistanceToGroundRaycastOrigin { get; set; }
+        //public RaycastHit2D DistanceToGroundRaycast { get; set; }
 
         /*public RaycastHit2D DistanceToGroundRaycastRef
         {

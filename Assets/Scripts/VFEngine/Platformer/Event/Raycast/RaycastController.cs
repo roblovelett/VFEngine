@@ -5,6 +5,8 @@ using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -16,6 +18,8 @@ namespace VFEngine.Platformer.Event.Raycast
     using static RightRaycastData;
     using static DownRaycastData;
     using static LeftRaycastData;
+    using static DistanceToGroundRaycastData;
+    using static StickyRaycastData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
@@ -29,8 +33,8 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private DownRaycastModel downRaycastModel;
         [SerializeField] private LeftRaycastModel leftRaycastModel;
         [SerializeField] private DistanceToGroundRaycastModel distanceToGroundRaycastModel;
-        //[SerializeField] private StickyRaycastModel stickyRaycastModel;
-        //[SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
+        [SerializeField] private StickyRaycastModel stickyRaycastModel;
+        [SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
         //[SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
 
         /* fields */
@@ -53,12 +57,11 @@ namespace VFEngine.Platformer.Event.Raycast
             if (!distanceToGroundRaycastModel)
                 distanceToGroundRaycastModel =
                     LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
-            /*
             if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
-            if (!rightStickyRaycastModel)
-                rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
+            /*if (!rightStickyRaycastModel)
+                rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);*/
             if (!leftStickyRaycastModel)
-                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);*/
+                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
         }
 
         /* properties: methods */
@@ -253,8 +256,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
-
-
+        
         #region distance to ground raycast model
 
         public void SetDistanceToGroundRaycastOrigin()
@@ -275,7 +277,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
-        /*
+        
         #region sticky raycast model
 
         public void SetStickyRaycastLength()
@@ -339,7 +341,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
-
+        
         #region left stickyraycast model
 
         public void SetLeftStickyRaycastLength()
@@ -388,7 +390,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         #endregion
-
+        /*
         #region right stickyraycast model
 
         public void SetRightStickyRaycastLengthToStickyRaycastLength()
