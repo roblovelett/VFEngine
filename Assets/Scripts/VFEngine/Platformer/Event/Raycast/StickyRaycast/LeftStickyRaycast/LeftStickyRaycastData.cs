@@ -16,8 +16,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         #region fields
 
         #region dependencies
-        
-        [SerializeField] private BoolReference displayWarningsControl;
+
         [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private FloatReference stickyRaycastLength;
         [SerializeField] private FloatReference boundsWidth;
@@ -29,9 +28,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         [SerializeField] private Vector2Reference boundsCenter;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
         [SerializeField] private new TransformReference transform;
-        
-        
+
         #endregion
+
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
         [SerializeField] private FloatReference belowSlopeAngleLeft;
         [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft;
@@ -43,8 +42,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         #region properties
 
         #region dependencies
-        
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
+
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public float StickyRaycastLength => stickyRaycastLength.Value;
         public float BoundsWidth => boundsWidth.Value;
@@ -56,9 +54,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public Vector2 BoundsCenter => boundsCenter.Value;
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
         public Transform Transform => transform.Value;
-        
+
         #endregion
-        
+
         public float LeftStickyRaycastLength { get; set; }
 
         public float LeftStickyRaycastOriginX
@@ -89,6 +87,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         {
             set => value = crossBelowSlopeAngleLeft.Value;
         }
+
         public static readonly string LeftStickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

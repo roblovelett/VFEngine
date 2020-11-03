@@ -23,51 +23,41 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region private methods
 
-        private void Initialize()
-        {
-            if (l.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            // foobar
-        }
-
         private void SetLeftRaycastFromBottomOrigin()
         {
             l.LeftRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(l.BoundsBottomRightCorner,
                 l.BoundsBottomLeftCorner, l.Transform, l.ObstacleHeightTolerance);
         }
-        
+
         private void SetLeftRaycastToTopOrigin()
         {
-            l.LeftRaycastToTopOrigin = OnSetRaycastToTopOrigin(l.BoundsTopLeftCorner, l.BoundsTopRightCorner, l.Transform,
-                l.ObstacleHeightTolerance);
+            l.LeftRaycastToTopOrigin = OnSetRaycastToTopOrigin(l.BoundsTopLeftCorner, l.BoundsTopRightCorner,
+                l.Transform, l.ObstacleHeightTolerance);
         }
-        
+
         private void SetCurrentLeftRaycastOrigin()
         {
             l.CurrentLeftRaycastOrigin = OnSetCurrentRaycastOrigin(l.LeftRaycastFromBottomOrigin,
                 l.LeftRaycastToTopOrigin, l.CurrentLeftHitsStorageIndex, l.NumberOfHorizontalRaysPerSide);
         }
-        
+
         private void InitializeLeftRaycastLength()
         {
             l.LeftRayLength = OnSetHorizontalRayLength(l.Speed.x, l.BoundsWidth, l.RayOffset);
         }
-        
+
         private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
             l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
                 l.PlatformMask, red, l.DrawRaycastGizmosControl);
         }
-        
+
         private void SetCurrentLeftRaycast()
         {
             l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
                 l.PlatformMask & ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask, red, l.DrawRaycastGizmosControl);
         }
-        
+
         #endregion
 
         #endregion
@@ -104,11 +94,6 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public void OnSetCurrentLeftRaycast()
         {
             SetCurrentLeftRaycast();
-        }
-
-        public void OnInitialize()
-        {
-            Initialize();
         }
 
         #endregion

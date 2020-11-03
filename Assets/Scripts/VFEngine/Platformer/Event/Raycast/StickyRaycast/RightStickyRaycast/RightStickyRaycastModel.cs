@@ -25,16 +25,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region private methods
 
-        private void Initialize()
-        {
-            if (r.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            //foobar
-        }
-
         private void SetRightStickyRaycastLengthToStickyRaycastLength()
         {
             r.RightStickyRaycastLength = r.StickyRaycastLength;

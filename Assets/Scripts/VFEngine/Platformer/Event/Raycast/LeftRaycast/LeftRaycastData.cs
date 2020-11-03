@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private IntReference currentLeftHitsStorageIndex;
@@ -33,7 +32,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         [SerializeField] private LayerMaskReference platformMask;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
-        
+
         #endregion
 
         [SerializeField] private FloatReference leftRayLength;
@@ -49,7 +48,6 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region dependencies
 
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public int CurrentLeftHitsStorageIndex => currentLeftHitsStorageIndex.Value;

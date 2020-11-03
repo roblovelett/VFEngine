@@ -3,6 +3,7 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static ScriptableObjectExtensions;
@@ -10,8 +11,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
     public class StickyRaycastData : MonoBehaviour
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private BoolReference displayWarningsControl;
+        [SerializeField] private BoolReference stickToSlopesControl;
         [SerializeField] private StickyRaycastSettings settings;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference maximumSlopeAngle;
@@ -22,13 +27,21 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         [SerializeField] private FloatReference belowSlopeAngleLeft;
         [SerializeField] private FloatReference belowSlopeAngleRight;
 
-        /* fields */
+        #endregion
+
         [SerializeField] private FloatReference stickToSlopesOffsetY;
         [SerializeField] private BoolReference isCastingLeft;
         [SerializeField] private FloatReference stickyRaycastLength;
         private const string ModelAssetPath = "DefaultStickyRaycastModel.asset";
 
-        /* properties: dependencies */
+        #endregion
+
+        #region properties
+
+        #region dependencies
+
+        public bool HasSettings => settings;
+        public bool StickToSlopesControl => stickToSlopesControl.Value;
         public bool DisplayWarningsControl => displayWarningsControl.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
@@ -39,7 +52,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
         public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
 
-        /* properties */
+        #endregion
+
         public float StickToSlopesOffsetY
         {
             set => value = stickToSlopesOffsetY.Value;
@@ -49,7 +63,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         public bool IsCastingLeft
         {
-            get => isCastingLeft.Value;
             set => value = isCastingLeft.Value;
         }
 
@@ -64,5 +77,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         public static readonly string StickyRaycastModelPath =
             $"{PlatformerScriptableObjectsPath}{StickyRaycastPath}{ModelAssetPath}";
+
+        #endregion
     }
 }

@@ -27,16 +27,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region private methods
 
-        private void Initialize()
-        {
-            if (d.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            // foo
-        }
-
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
             d.CurrentDownRaycast = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
@@ -160,11 +150,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public void OnSetCurrentDownRaycastOriginPoint()
         {
             SetCurrentDownRaycastOriginPoint();
-        }
-
-        public void OnInitialize()
-        {
-            Initialize();
         }
 
         #endregion

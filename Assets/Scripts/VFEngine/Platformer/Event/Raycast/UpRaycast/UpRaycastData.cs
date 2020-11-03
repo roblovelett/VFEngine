@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private BoolReference isGrounded;
         [SerializeField] private BoolReference drawRaycastGizmos;
         [SerializeField] private FloatReference rayOffset;
@@ -48,7 +47,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
         public bool IsGrounded => isGrounded.Value;
         public bool DrawRaycastGizmos => drawRaycastGizmos.Value;
         public int CurrentUpHitsStorageIndex => currentUpHitsStorageIndex.Value;

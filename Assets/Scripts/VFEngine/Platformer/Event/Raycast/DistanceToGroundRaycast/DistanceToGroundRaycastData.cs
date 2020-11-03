@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private FloatReference belowSlopeAngle;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
@@ -49,7 +48,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
         public Transform Transform => transform.Value;
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-        public bool DisplayWarnings => displayWarningsControl.Value;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
 
         #endregion

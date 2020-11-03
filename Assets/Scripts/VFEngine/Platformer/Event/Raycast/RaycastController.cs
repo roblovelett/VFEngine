@@ -12,6 +12,7 @@ using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static RaycastData;
@@ -29,6 +30,10 @@ namespace VFEngine.Platformer.Event.Raycast
     [RequireComponent(typeof(BoxcastController))]
     public class RaycastController : MonoBehaviour
     {
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private RaycastModel raycastModel;
         [SerializeField] private UpRaycastModel upRaycastModel;
         [SerializeField] private RightRaycastModel rightRaycastModel;
@@ -39,10 +44,14 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
         [SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
 
+        #endregion
+
+        #region private methods
+
         private void Awake()
         {
             GetModels();
-            InitializeModels();
+            Async(InitializeModels());
         }
 
         private void GetModels()
@@ -62,10 +71,21 @@ namespace VFEngine.Platformer.Event.Raycast
                 leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
         }
 
-        private void InitializeModels()
+        private async UniTaskVoid InitializeModels()
         {
-            raycastModel.OnInitialize();
+            var rTask1 = Async(raycastModel.OnInitialize());
+            var rTask2 = Async(stickyRaycastModel.OnInitialize());
+            var task1 = await (rTask1, rTask2);
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
 
         #region raycast model
 
@@ -271,6 +291,12 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        public async UniTaskVoid ResetDistanceToGroundRaycastState()
+        {
+            distanceToGroundRaycastModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         #endregion
 
         #region sticky raycast model
@@ -441,6 +467,10 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             rightStickyRaycastModel.OnSetBelowSlopeAngleRightToNegative();
         }
+
+        #endregion
+
+        #endregion
 
         #endregion
     }

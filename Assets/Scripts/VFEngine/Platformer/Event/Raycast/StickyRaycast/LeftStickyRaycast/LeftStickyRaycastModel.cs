@@ -8,7 +8,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static DebugExtensions;
     using static Color;
     using static Vector3;
-    
+
     [CreateAssetMenu(fileName = "LeftStickyRaycastModel",
         menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Left Sticky Raycast/Left Sticky Raycast Model",
         order = 0)]
@@ -24,16 +24,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         #endregion
 
         #region private methods
-
-        private void Initialize()
-        {
-            if (l.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            //foobar
-        }
 
         private void SetLeftStickyRaycastLength()
         {

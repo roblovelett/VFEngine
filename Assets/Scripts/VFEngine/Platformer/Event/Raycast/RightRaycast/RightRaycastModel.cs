@@ -23,16 +23,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region private methods
 
-        private void Initialize()
-        {
-            if (r.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            //foobar
-        }
-
         private void SetRightRaycastFromBottomOrigin()
         {
             r.RightRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(r.BoundsBottomRightCorner,
@@ -104,11 +94,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
-        }
-
-        public void OnInitialize()
-        {
-            Initialize();
         }
 
         #endregion

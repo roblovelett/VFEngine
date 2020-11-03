@@ -112,8 +112,9 @@ namespace VFEngine.Platformer
             var rhcTask4 = Async(p.RaycastHitCollider.SetWasTouchingCeilingLastFrame());
             var rhcTask5 = Async(p.RaycastHitCollider.SetCurrentWallColliderNull());
             var rhcTask6 = Async(p.RaycastHitCollider.ResetState());
-            var rTask1 = Async(p.Raycast.SetRaysParameters());
-            var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1);
+            var rTask1 = Async(p.Raycast.ResetDistanceToGroundRaycastState());
+            var rTask2 = Async(p.Raycast.SetRaysParameters());
+            var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1, rTask2);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

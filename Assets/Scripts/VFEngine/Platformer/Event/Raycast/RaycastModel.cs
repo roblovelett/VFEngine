@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+// ReSharper disable UnusedVariable
 
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -17,8 +18,16 @@ namespace VFEngine.Platformer.Event.Raycast
         order = 0)]
     public class RaycastModel : ScriptableObject, IModel
     {
+        #region fields
+
+        #region dependencies
+
         [LabelText("Raycast Data")] [SerializeField]
         private RaycastData r;
+
+        #endregion
+
+        #region private methods
 
         private async UniTaskVoid Initialize()
         {
@@ -125,7 +134,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsCenter = r.BoxColliderBoundsCenter;
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
-            r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
+            r.bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
         }
 
         private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
@@ -189,6 +198,14 @@ namespace VFEngine.Platformer.Event.Raycast
             return Abs(x * deltaTime) + width / 2 + offset * 2;
         }
 
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
+
         public static Vector2 OnSetCurrentRaycastOrigin(Vector2 origin1, Vector2 origin2, int index, int rays)
         {
             return SetCurrentRaycastOrigin(origin1, origin2, index, rays);
@@ -221,14 +238,19 @@ namespace VFEngine.Platformer.Event.Raycast
             return SetVerticalRaycast(bounds1, bounds2, t, offset, x);
         }
 
-        public void OnInitialize()
+        public async UniTaskVoid OnInitialize()
         {
-            Initialize();
+            await Async(Initialize());
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetRaysParameters()
         {
             SetRaysParameters();
         }
+
+        #endregion
+
+        #endregion
     }
 }

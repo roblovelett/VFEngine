@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
         [SerializeField] private IntReference currentRightHitsStorageIndex;
@@ -49,7 +48,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public int CurrentRightHitsStorageIndex => currentRightHitsStorageIndex.Value;

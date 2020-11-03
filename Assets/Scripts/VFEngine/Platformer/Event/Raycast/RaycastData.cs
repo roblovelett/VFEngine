@@ -1,6 +1,7 @@
 ﻿using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast
@@ -119,7 +120,7 @@ namespace VFEngine.Platformer.Event.Raycast
             set => value = boundsHeight.Value;
         }
 
-        public Vector2 Bounds { get; set; } = zero;
+        public Vector2 bounds = zero;
 
         public Vector2 BoundsCenter
         {

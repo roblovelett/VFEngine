@@ -25,16 +25,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region private methods
 
-        private void Initialize()
-        {
-            if (u.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void GetWarningMessages()
-        {
-            // foobar
-        }
-
         private void InitializeUpRaycastLength()
         {
             u.UpRayLength = u.IsGrounded ? u.RayOffset : u.NewPosition.y;

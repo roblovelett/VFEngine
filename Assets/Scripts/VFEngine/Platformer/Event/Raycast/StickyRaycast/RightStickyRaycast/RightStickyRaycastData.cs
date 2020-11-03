@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private FloatReference stickyRaycastLength;
         [SerializeField] private FloatReference boundsWidth;
@@ -44,7 +43,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public float StickyRaycastLength => stickyRaycastLength.Value;
         public float BoundsWidth => boundsWidth.Value;
