@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     public class UpRaycastModel : ScriptableObject, IModel
     {
         #region fields
-        
+
         #region dependencies
 
         [LabelText("Up Raycast Data")] [SerializeField]
@@ -24,6 +24,16 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         #endregion
 
         #region private methods
+
+        private void Initialize()
+        {
+            if (u.DisplayWarningsControl) GetWarningMessages();
+        }
+
+        private void GetWarningMessages()
+        {
+            // foobar
+        }
 
         private void InitializeUpRaycastLength()
         {
@@ -68,11 +78,11 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         }
 
         #endregion
-        
+
         #endregion
-        
+
         #region properties
-        
+
         #region public methods
 
         public void OnInitializeUpRaycastLength()
@@ -111,7 +121,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         }
 
         #endregion
-        
+
         #endregion
     }
 }

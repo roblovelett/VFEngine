@@ -17,7 +17,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmos;
+        [SerializeField] private BoolReference displayWarningsControl;
+        [SerializeField] private BoolReference drawRaycastGizmosControl;
         [SerializeField] private IntReference currentDownHitsStorageIndex;
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
         [SerializeField] private FloatReference rayOffset;
@@ -51,7 +52,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        public bool DrawRaycastGizmos => drawRaycastGizmos.Value;
+        public bool DisplayWarningsControl => displayWarningsControl.Value;
+        public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public int CurrentDownHitsStorageIndex => currentDownHitsStorageIndex.Value;
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
         public float RayOffset => rayOffset.Value;

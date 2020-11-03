@@ -1,16 +1,8 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Serialization;
-using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+﻿using UnityEngine;
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static Mathf;
-    using static UniTaskExtensions;
-    using static DebugExtensions;
-    using static Color;
-    using static Vector3;
 
     [CreateAssetMenu(fileName = "StickyRaycastModel",
         menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Model", order = 0)]
@@ -20,30 +12,30 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void Initialize()
         {
-            s.StickToSlopesOffsetYRef = s.StickToSlopesOffsetY;
-            
+            if (s.DisplayWarningsControl) GetWarningMessages();
+            s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
+        }
+
+        private void GetWarningMessages()
+        {
             /*
-            void GetWarningMessage()
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!settings) warningMessage += FieldMessage("Settings", "Raycast Settings");
+            if (!stickyRaycastControl) warningMessage += FieldMessage("Sticky Raycast Control", "Bool Reference");
+            if (StickyRaycastLength <= 0) warningMessage += GtZeroMessage("Sticky Raycast Length");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldMessage(string field, string scriptableObject)
             {
-                if (!DisplayWarnings) return;
-                var warningMessage = "";
-                var warningMessageCount = 0;
-                if (!settings) warningMessage += FieldMessage("Settings", "Raycast Settings");
-                if (!stickyRaycastControl) warningMessage += FieldMessage("Sticky Raycast Control", "Bool Reference");
-                if (StickyRaycastLength <= 0) warningMessage += GtZeroMessage("Sticky Raycast Length");
-                DebugLogWarning(warningMessageCount, warningMessage);
+                warningMessageCount++;
+                return $"{field} field not set to {scriptableObject} ScriptableObject.@";
+            }
 
-                string FieldMessage(string field, string scriptableObject)
-                {
-                    warningMessageCount++;
-                    return $"{field} field not set to {scriptableObject} ScriptableObject.@";
-                }
-
-                string GtZeroMessage(string field)
-                {
-                    warningMessageCount++;
-                    return $"{field} must be set to value greater than zero.@";
-                }
+            string GtZeroMessage(string field)
+            {
+                warningMessageCount++;
+                return $"{field} must be set to value greater than zero.@";
             }
             */
         }
@@ -174,6 +166,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         {
             SetCastFromLeftWithLeftDistanceLtRightDistance();
         }
+        
+        public static float OnSetStickyRaycastLength(float boundsWidth, float slopeAngle, float boundsHeight,
+            float offset)
+        {
+            return SetStickyRaycastLength(boundsWidth, slopeAngle, boundsHeight, offset);
+        }
 
         public void OnResetState()
         {
@@ -203,7 +201,6 @@ private void SetRightStickyRaycastLengthToStickyRaycastLength()
 {
     sr.RightStickyRaycastLength = sr.StickyRaycastLength;
 }*/
-
 /*
 private void SetLeftStickyRaycastOriginY()
 {
@@ -266,7 +263,6 @@ private void SetBelowSlopeAngleRightToNegative()
 {
     sr.BelowSlopeAngleRight = -sr.BelowSlopeAngleRight;
 }*/
-
 /*public void OnSetLeftStickyRaycastLength()
 {
     SetLeftStickyRaycastLength();

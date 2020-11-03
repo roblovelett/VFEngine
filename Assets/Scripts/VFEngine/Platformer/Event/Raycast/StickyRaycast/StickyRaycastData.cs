@@ -1,6 +1,4 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -13,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     public class StickyRaycastData : MonoBehaviour
     {
         /* fields: dependencies */
+        [SerializeField] private BoolReference displayWarningsControl;
         [SerializeField] private StickyRaycastSettings settings;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference maximumSlopeAngle;
@@ -22,15 +21,15 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private FloatReference belowSlopeAngleLeft;
         [SerializeField] private FloatReference belowSlopeAngleRight;
-        
+
         /* fields */
         [SerializeField] private FloatReference stickToSlopesOffsetY;
         [SerializeField] private BoolReference isCastingLeft;
         [SerializeField] private FloatReference stickyRaycastLength;
-        private static readonly string StickyRaycastPath = $"{RaycastPath}StickyRaycast/";
-        private static readonly string ModelAssetPath = $"{StickyRaycastPath}DefaultStickyRaycastModel.asset";
+        private const string ModelAssetPath = "DefaultStickyRaycastModel.asset";
 
         /* properties: dependencies */
+        public bool DisplayWarningsControl => displayWarningsControl.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
         public float BoundsWidth => boundsWidth.Value;
@@ -39,14 +38,15 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public float RayOffset => rayOffset.Value;
         public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
         public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
-        public float StickToSlopesOffsetY => settings.stickToSlopesOffsetY;
-        
+
         /* properties */
-        public float StickToSlopesOffsetYRef
+        public float StickToSlopesOffsetY
         {
-            get => stickToSlopesOffsetY.Value;
             set => value = stickToSlopesOffsetY.Value;
         }
+
+        public float StickToSlopesOffsetYSetting => settings.stickToSlopesOffsetY;
+
         public bool IsCastingLeft
         {
             get => isCastingLeft.Value;
@@ -58,64 +58,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             get => stickyRaycastLength.Value;
             set => value = stickyRaycastLength.Value;
         }
+
         public float BelowSlopeAngle { get; set; }
-        public static readonly string StickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public static string StickyRaycastPath { get; } = $"{RaycastPath}StickyRaycast/";
+
+        public static readonly string StickyRaycastModelPath =
+            $"{PlatformerScriptableObjectsPath}{StickyRaycastPath}{ModelAssetPath}";
     }
 }
-
-// dependencies
-//[SerializeField] private FloatReference stickToSlopesOffsetY;
-//[SerializeField] private FloatReference stickyRaycastLength;
-//[SerializeField] private FloatReference leftStickyRaycastLength;
-//[SerializeField] private FloatReference rightStickyRaycastLength;
-//[SerializeField] private Vector2Reference boundsCenter;
-//[SerializeField] private Vector2Reference boundsBottomLeftCorner;
-//[SerializeField] private Vector2Reference newPosition;
-//[SerializeField] private Vector2Reference boundsBottomRightCorner;
-//[SerializeField] private new TransformReference transform;
-//[SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-//[SerializeField] private Vector3Reference crossBelowSlopeAngleLeft;
-//[SerializeField] private Vector3Reference crossBelowSlopeAngleRight;
-//[SerializeField] private FloatReference belowSlopeAngleLeft;
-//[SerializeField] private FloatReference belowSlopeAngleRight;
-// fields
-//[SerializeField] private RaycastHit2DReference leftStickyRaycast;
-//[SerializeField] private RaycastHit2DReference rightStickyRaycast;
-//[SerializeField] private BoolReference castFromLeft;
-// properties: dependencies
-//public float StickToSlopesOffsetY => settings.stickToSlopesOffsetY;
-//public Vector2 BoundsCenter => boundsCenter.Value;
-//public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
-//public Vector2 NewPosition => newPosition.Value;
-//public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
-//public Transform Transform => transform.Value;
-//public bool DrawRaycastGizmosControl => settings.drawRaycastGizmosControl;
-//public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
-// properties
-//public float LeftStickyRaycastLength { get; set; }
-//public float RightStickyRaycastLength { get; set; }
-/*
-public float LeftStickyRaycastOriginY
-{
-    set => value = LeftStickyRaycastOrigin.y;
-}
-
-public float LeftStickyRaycastOriginX
-{
-    set => value = LeftStickyRaycastOrigin.x;
-}
-
-public float RightStickyRaycastOriginY
-{
-    set => value = RightStickyRaycastOrigin.y;
-}
-
-public float RightStickyRaycastOriginX
-{
-    set => value = RightStickyRaycastOrigin.x;
-}*/
-
-//public Vector2 LeftStickyRaycastOrigin { get; } = new Vector2(0, 0);
-//public Vector2 RightStickyRaycastOrigin { get; } = new Vector2(0, 0);
-//public Vector3 CrossBelowSlopeAngleLeft { get; set; }
-//public Vector3 CrossBelowSlopeAngleRight { get; set; }

@@ -1,11 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
-    using static UniTaskExtensions;
     using static DebugExtensions;
     using static Vector2;
     using static Color;
@@ -14,26 +12,15 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         menuName = "VFEngine/Platformer/Event/Boxcast/Safety Boxcast Model", order = 0)]
     public class SafetyBoxcastModel : ScriptableObject, IModel
     {
-        [SerializeField] private SafetyBoxcastData sb;
+        [LabelText("Safety Boxcast Data")] [SerializeField]
+        private SafetyBoxcastData s;
 
-        private async UniTaskVoid Initialize()
+        private void Initialize()
         {
-            var sbTask1 = Async(InitializeData());
-            var sbTask2 = Async(GetWarningMessages());
-            var task1 = await (sbTask1, sbTask2);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (s.DisplayWarningsControl) GetWarningMessages();
         }
 
-        private async UniTaskVoid InitializeData()
-        {
-            sb.HasSafetyBoxcastRef = sb.state.HasSafetyBoxcast;
-            sb.SafetyBoxcastColliderRef = sb.SafetyBoxcastCollider;
-            sb.SafetyBoxcastRef = sb.SafetyBoxcast;
-            sb.SafetyBoxcastDistanceRef = sb.SafetyBoxcastDistance;
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid GetWarningMessages()
+        private void GetWarningMessages()
         {
             /* fields: methods */
             /*
@@ -52,36 +39,36 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
                 return $"{field} field not set to {scriptableObject} ScriptableObject.";
             }
             }
-            */
-            await SetYieldOrSwitchToThreadPoolAsync();
+            */    
         }
 
         private void SetSafetyBoxcastForImpassableAngle()
         {
-            var transformUp = sb.Transform.up;
-            sb.SafetyBoxcast = Boxcast(sb.BoundsCenter, sb.Bounds, Angle(transformUp, up),
-                -transformUp, sb.StickyRaycastLength, sb.RaysBelowLayerMaskPlatforms, red, true);
+            var transformUp = s.Transform.up;
+            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp,
+                s.StickyRaycastLength, s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
         }
 
         private void SetHasSafetyBoxcast()
         {
-            sb.state.SetHasSafetyBoxcast(true);
+            s.HasSafetyBoxcast = true;
         }
-        
+
         private void SetSafetyBoxcast()
         {
-            var transformUp = sb.Transform.up;
-            sb.SafetyBoxcast = Boxcast(sb.BoundsCenter, sb.Bounds, Angle(transformUp, up),
-                sb.NewPosition.normalized, sb.NewPosition.magnitude, sb.PlatformMask, red, true);
+            var transformUp = s.Transform.up;
+            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
+                s.NewPosition.magnitude, s.PlatformMask, red, s.DrawBoxcastGizmosControl);
         }
 
         private void ResetState()
         {
-            sb.state.Reset();
+            s.HasSafetyBoxcast = false;
         }
+
         public void OnInitialize()
         {
-            Async(Initialize());
+            Initialize();
         }
 
         public void OnSetSafetyBoxcastForImpassableAngle()

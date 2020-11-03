@@ -13,9 +13,9 @@ namespace VFEngine.Platformer
     using static PhysicsExtensions;
     using static TimeExtensions;
     using static Mathf;
-    using static RaycastDirection;
     using static LayerMaskExtensions;
     using static Time;
+    using static RaycastDirection;
 
     [CreateAssetMenu(fileName = "PlatformerModel", menuName = "VFEngine/Platformer/Platformer Model", order = 0)]
     public class PlatformerModel : ScriptableObject, IModel
@@ -102,8 +102,8 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid InitializeFrame()
         {
-            if (p.SafetyBoxcastControl) p.Boxcast.ResetSafetyBoxcastState();
-            if (p.StickToSlopesControl) p.StickyRaycast.ResetState();
+            if (p.PerformSafetyBoxcast) p.Boxcast.ResetSafetyBoxcastState();
+            if (p.StickToSlopesControl) p.Raycast.ResetStickyRaycastState();
             var phTask1 = Async(p.Physics.SetNewPosition());
             var phTask2 = Async(p.Physics.ResetState());
             var rhcTask1 = Async(p.RaycastHitCollider.ClearContactList());
@@ -112,10 +112,8 @@ namespace VFEngine.Platformer
             var rhcTask4 = Async(p.RaycastHitCollider.SetWasTouchingCeilingLastFrame());
             var rhcTask5 = Async(p.RaycastHitCollider.SetCurrentWallColliderNull());
             var rhcTask6 = Async(p.RaycastHitCollider.ResetState());
-            var rTask1 = Async(p.Raycast.ResetRaycastState());
-            var rTask2 = Async(p.Raycast.SetRaysParameters());
-            var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1,
-                rTask2);
+            var rTask1 = Async(p.Raycast.SetRaysParameters());
+            var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -315,7 +313,7 @@ namespace VFEngine.Platformer
                         }
                         else
                         {
-                            p.Raycast.SetDistanceBetweenDownRaycastAndPointOfDownHitWithSmallestDistance();
+                            p.Raycast.SetDistanceBetweenDownRaycastsAndSmallestDistancePoint();
                             p.Physics.ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
                         }
 
@@ -405,58 +403,58 @@ namespace VFEngine.Platformer
             if (stickToSlope)
             {
                 Async(p.StickyRaycastLength == 0
-                    ? p.StickyRaycast.SetStickyRaycastLength()
-                    : p.StickyRaycast.SetStickyRaycastLengthToSelf());
+                    ? p.Raycast.SetStickyRaycastLength()
+                    : p.Raycast.SetStickyRaycastLengthToSelf());
                 var srTask1 = Async(SetLeftStickyRaycastLength(p.LeftStickyRaycastLength));
                 var srTask2 = Async(SetRightStickyRaycastLength(p.RightStickyRaycastLength));
-                var srTask3 = Async(p.StickyRaycast.SetLeftStickyRaycastOriginY());
-                var srTask4 = Async(p.StickyRaycast.SetLeftStickyRaycastOriginX());
-                var srTask5 = Async(p.StickyRaycast.SetRightStickyRaycastOriginY());
-                var srTask6 = Async(p.StickyRaycast.SetRightStickyRaycastOriginX());
-                var srTask7 = Async(p.StickyRaycast.SetDoNotCastFromLeft());
-                var srTask8 = Async(p.StickyRaycast.InitializeBelowSlopeAngle());
+                var srTask3 = Async(p.Raycast.SetLeftStickyRaycastOriginY());
+                var srTask4 = Async(p.Raycast.SetLeftStickyRaycastOriginX());
+                var srTask5 = Async(p.Raycast.SetRightStickyRaycastOriginY());
+                var srTask6 = Async(p.Raycast.SetRightStickyRaycastOriginX());
+                var srTask7 = Async(p.Raycast.SetDoNotCastFromLeft());
+                var srTask8 = Async(p.Raycast.InitializeBelowSlopeAngle());
                 var task1 = await (srTask1, srTask2, srTask3, srTask4, srTask5, srTask6, srTask7, srTask8);
-                var srTask9 = Async(p.StickyRaycast.SetLeftStickyRaycast());
-                var srTask10 = Async(p.StickyRaycast.SetRightStickyRaycast());
+                var srTask9 = Async(p.Raycast.SetLeftStickyRaycast());
+                var srTask10 = Async(p.Raycast.SetRightStickyRaycast());
                 var task2 = await (srTask9, srTask10);
-                var srTask11 = Async(p.StickyRaycast.SetBelowSlopeAngleLeft());
-                var srTask12 = Async(p.StickyRaycast.SetCrossBelowSlopeAngleLeft());
-                var srTask13 = Async(p.StickyRaycast.SetBelowSlopeAngleRight());
-                var srTask14 = Async(p.StickyRaycast.SetCrossBelowSlopeAngleRight());
+                var srTask11 = Async(p.Raycast.SetBelowSlopeAngleLeft());
+                var srTask12 = Async(p.Raycast.SetCrossBelowSlopeAngleLeft());
+                var srTask13 = Async(p.Raycast.SetBelowSlopeAngleRight());
+                var srTask14 = Async(p.Raycast.SetCrossBelowSlopeAngleRight());
                 var task3 = await (srTask11, srTask12, srTask13, srTask14);
                 var srTask15 = Async(SetBelowSlopeAngleLeftToNegative(p.CrossBelowSlopeAngleLeft.z));
                 var srTask16 = Async(SetBelowSlopeAngleRightToNegative(p.CrossBelowSlopeAngleRight.z));
                 var task4 = await (srTask15, srTask16);
-                p.StickyRaycast.SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
-                var srTask17 = Async(p.StickyRaycast.SetBelowSlopeAngleToBelowSlopeAngleLeft());
+                p.Raycast.SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
+                var srTask17 = Async(p.Raycast.SetBelowSlopeAngleToBelowSlopeAngleLeft());
                 if (Abs(p.BelowSlopeAngleLeft - p.BelowSlopeAngleRight) < Tolerance)
                 {
-                    var srTask18 = Async(p.StickyRaycast.SetCastFromLeftWithBelowSlopeAngleLtZero());
+                    var srTask18 = Async(p.Raycast.SetCastFromLeftWithBelowSlopeAngleLtZero());
                     var task5 = await (srTask17, srTask18);
                 }
 
                 if (p.BelowSlopeAngleLeft == 0f && p.BelowSlopeAngleRight != 0f)
                 {
-                    var srTask19 = Async(p.StickyRaycast.SetCastFromLeftWithBelowSlopeAngleRightLtZero());
+                    var srTask19 = Async(p.Raycast.SetCastFromLeftWithBelowSlopeAngleRightLtZero());
                     var task6 = await (srTask17, srTask19);
                 }
 
-                var srTask20 = Async(p.StickyRaycast.SetBelowSlopeAngleToBelowSlopeAngleRight());
+                var srTask20 = Async(p.Raycast.SetBelowSlopeAngleToBelowSlopeAngleRight());
                 if (p.BelowSlopeAngleLeft != 0f && p.BelowSlopeAngleRight == 0f)
                 {
-                    var srTask21 = Async(p.StickyRaycast.SetCastFromLeftWithBelowSlopeAngleLeftLtZero());
+                    var srTask21 = Async(p.Raycast.SetCastFromLeftWithBelowSlopeAngleLeftLtZero());
                     var task7 = await (srTask20, srTask21);
                 }
 
                 if (p.BelowSlopeAngleLeft != 0f && p.BelowSlopeAngleRight != 0f)
                 {
-                    p.StickyRaycast.SetCastFromLeftWithLeftDistanceLtRightDistance();
+                    p.Raycast.SetCastFromLeftWithLeftDistanceLtRightDistance();
                     if (p.CastFromLeft) await srTask17;
                     else await srTask20;
                 }
 
                 var rhcTask1 = Async(p.RaycastHitCollider.SetIsCollidingBelow());
-                if (p.BelowSlopeAngleLeft > 0f && p.BelowSlopeAngleRight < 0f && p.SafetyBoxcastControl)
+                if (p.BelowSlopeAngleLeft > 0f && p.BelowSlopeAngleRight < 0f && p.PerformSafetyBoxcast)
                 {
                     var srTask22 = Async(p.Boxcast.SetSafetyBoxcastForImpassableAngle());
                     var srTask23 = Async(p.Boxcast.SetHasSafetyBoxcast());
@@ -485,27 +483,27 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetBelowSlopeAngleLeftToNegative(float crossZ)
             {
-                if (crossZ < 0) p.StickyRaycast.SetBelowSlopeAngleLeftToNegative();
+                if (crossZ < 0) p.Raycast.SetBelowSlopeAngleLeftToNegative();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetBelowSlopeAngleRightToNegative(float crossZ)
             {
-                if (crossZ < 0) p.StickyRaycast.SetBelowSlopeAngleRightToNegative();
+                if (crossZ < 0) p.Raycast.SetBelowSlopeAngleRightToNegative();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetLeftStickyRaycastLength(float leftRaycastLength)
             {
-                if (leftRaycastLength == 0) p.StickyRaycast.SetLeftStickyRaycastLength();
-                else p.StickyRaycast.SetLeftStickyRaycastLengthToStickyRaycastLength();
+                if (leftRaycastLength == 0) p.Raycast.SetLeftStickyRaycastLength();
+                else p.Raycast.SetLeftStickyRaycastLengthToStickyRaycastLength();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetRightStickyRaycastLength(float rightRaycastLength)
             {
-                if (rightRaycastLength == 0) p.StickyRaycast.SetRightStickyRaycastLength();
-                else p.StickyRaycast.SetRightStickyRaycastLengthToStickyRaycastLength();
+                if (rightRaycastLength == 0) p.Raycast.SetRightStickyRaycastLength();
+                else p.Raycast.SetRightStickyRaycastLengthToStickyRaycastLength();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -735,7 +733,7 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid MoveTransform()
         {
-            if (p.SafetyBoxcastControl)
+            if (p.PerformSafetyBoxcast)
             {
                 var sbTask1 = Async(p.Boxcast.SetSafetyBoxcast());
                 var sbTask2 = Async(p.Boxcast.SetHasSafetyBoxcast());

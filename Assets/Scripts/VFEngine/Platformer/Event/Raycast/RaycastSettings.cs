@@ -13,6 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] public float distanceToGroundRayMaximumLength = 100f;
         [SerializeField] public bool castRaysOnBothSides = true;
         [SerializeField] public float rayOffset = 0.05f;
+        [SerializeField] public bool performSafetyBoxcast = true;
 
         [LabelText("Draw Raycast Gizmos")] [SerializeField]
         public bool drawRaycastGizmosControl = true;

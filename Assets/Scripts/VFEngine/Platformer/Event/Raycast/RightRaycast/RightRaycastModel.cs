@@ -23,6 +23,16 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            if (r.DisplayWarningsControl) GetWarningMessages();
+        }
+
+        private void GetWarningMessages()
+        {
+            //foobar
+        }
+
         private void SetRightRaycastFromBottomOrigin()
         {
             r.RightRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(r.BoundsBottomRightCorner,
@@ -49,13 +59,13 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
             r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
-                r.PlatformMask, red, r.DrawRaycastGizmos);
+                r.PlatformMask, red, r.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentRightRaycast()
         {
             r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
-                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmos);
+                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmosControl);
         }
 
         #endregion
@@ -94,6 +104,11 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
+        }
+
+        public void OnInitialize()
+        {
+            Initialize();
         }
 
         #endregion

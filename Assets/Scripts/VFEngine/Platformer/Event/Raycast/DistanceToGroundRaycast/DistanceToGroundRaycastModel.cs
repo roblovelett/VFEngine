@@ -23,6 +23,16 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            if (d.DisplayWarnings) GetWarningMessages();
+        }
+
+        private void GetWarningMessages()
+        {
+            // foo
+        }
+
         private void SetDistanceToGroundRaycastOrigin()
         {
             d.DistanceToGroundRaycastOrigin = new Vector2
@@ -35,7 +45,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         private void SetDistanceToGroundRaycast()
         {
             d.DistanceToGroundRaycast = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
-                d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue);
+                d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
         }
 
         private void SetHasDistanceToGroundRaycast()
@@ -69,6 +79,11 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public void OnSetHasDistanceToGroundRaycast()
         {
             SetHasDistanceToGroundRaycast();
+        }
+
+        public void OnResetState()
+        {
+            Reset();
         }
 
         #endregion

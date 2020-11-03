@@ -23,7 +23,6 @@ namespace VFEngine.Platformer
         [SerializeField] private PhysicsController physics;
         [SerializeField] private RaycastController raycast;
         [SerializeField] private RaycastHitColliderController raycastHitCollider;
-        [SerializeField] private StickyRaycastController stickyRaycast;
         [SerializeField] private LayerMaskController layerMask;
         [SerializeField] private BoxcastController boxcast;
         [SerializeField] private Vector2Reference speed;
@@ -82,7 +81,7 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference belowSlopeAngleLeft;
         [SerializeField] private FloatReference belowSlopeAngleRight;
         [SerializeField] private BoolReference castFromLeft;
-        [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private BoolReference performSafetyBoxcast;
         [SerializeField] private BoolReference hasSafetyBoxcast;
         [SerializeField] private Collider2DReference safetyBoxcastCollider;
         [SerializeField] private RaycastHit2DReference leftStickyRaycast;
@@ -120,7 +119,6 @@ namespace VFEngine.Platformer
         public RaycastController Raycast => raycast;
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
-        public StickyRaycastController StickyRaycast => stickyRaycast;
         public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
@@ -179,7 +177,7 @@ namespace VFEngine.Platformer
         public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
         public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
         public bool CastFromLeft => castFromLeft.Value;
-        public bool SafetyBoxcastControl => safetyBoxcastControl.Value;
+        public bool PerformSafetyBoxcast => performSafetyBoxcast.Value;
         public bool HasSafetyBoxcast => hasSafetyBoxcast.Value;
         public Collider2D SafetyBoxcastCollider => safetyBoxcastCollider.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
