@@ -12,16 +12,42 @@ namespace VFEngine.Platformer.Event.Boxcast
 
     public class BoxcastController : MonoBehaviour, IController
     {
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
+
+        #endregion
+
+        #region private methods
 
         private void Awake()
         {
+            GetModels();
+            InitializeModels();
+        }
+
+        private void GetModels()
+        {
             if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+        }
+
+        private void InitializeModels()
+        {
             safetyBoxcastModel.OnInitialize();
         }
 
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
+
         #region safety boxcast model
-        
+
         public async UniTaskVoid SetSafetyBoxcastForImpassableAngle()
         {
             safetyBoxcastModel.OnSetSafetyBoxcastForImpassableAngle();
@@ -44,7 +70,16 @@ namespace VFEngine.Platformer.Event.Boxcast
         {
             safetyBoxcastModel.OnResetState();
         }
-        
+
+        public void InitializeSafetyBoxcast()
+        {
+            safetyBoxcastModel.OnInitialize();
+        }
+
+        #endregion
+
+        #endregion
+
         #endregion
     }
 }

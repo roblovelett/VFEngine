@@ -12,34 +12,25 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         menuName = "VFEngine/Platformer/Event/Boxcast/Safety Boxcast Model", order = 0)]
     public class SafetyBoxcastModel : ScriptableObject, IModel
     {
+        #region fields
+
+        #region dependencies
+
         [LabelText("Safety Boxcast Data")] [SerializeField]
         private SafetyBoxcastData s;
 
+        #endregion
+
+        #region private methods
+
         private void Initialize()
         {
-            if (s.DisplayWarningsControl) GetWarningMessages();
+            InitializeModel();
         }
 
-        private void GetWarningMessages()
+        private void InitializeModel()
         {
-            /* fields: methods */
-            /*
-            private void GetWarningMessage()
-            {
-            if (!DisplayWarnings) return;
-            var warningMessage = "";
-            var warningMessageCount = 0;
-                if (!settings) warningMessage += FieldMessage("Settings", "Layer Mask Settings");
-                if (!safetyBoxcastControl) warningMessage += FieldMessage("Safety Boxcast Control", "Bool Reference");
-            DebugLogWarning(warningMessageCount, warningMessage);
-
-            string FieldMessage(string field, string scriptableObject)
-            {
-                warningMessageCount++;
-                return $"{field} field not set to {scriptableObject} ScriptableObject.";
-            }
-            }
-            */    
+            s.SafetyBoxcastDistance = s.SafetyBoxcast.distance;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()
@@ -66,10 +57,13 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             s.HasSafetyBoxcast = false;
         }
 
-        public void OnInitialize()
-        {
-            Initialize();
-        }
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
 
         public void OnSetSafetyBoxcastForImpassableAngle()
         {
@@ -90,5 +84,14 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             ResetState();
         }
+
+        public void OnInitialize()
+        {
+            if (s.PerformSafetyBoxcast) Initialize();
+        }
+
+        #endregion
+
+        #endregion
     }
 }

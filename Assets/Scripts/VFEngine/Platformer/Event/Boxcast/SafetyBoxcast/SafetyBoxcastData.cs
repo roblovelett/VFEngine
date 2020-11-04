@@ -11,9 +11,12 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
     public class SafetyBoxcastData : MonoBehaviour
     {
-        /* fields: dependencies */
-        [SerializeField] private BoolReference displayWarningsControl;
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private BoolReference drawRaycastGizmosControl;
+        [SerializeField] private BoolReference performSafetyBoxcast;
         [SerializeField] private Vector2Reference bounds;
         [SerializeField] private Vector2Reference boundsCenter;
         [SerializeField] private new TransformReference transform;
@@ -22,13 +25,21 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private LayerMaskReference platformMask;
 
-        /* fields */
+        #endregion
+
         [SerializeField] private BoolReference hasSafetyBoxcast;
         [SerializeField] private RaycastHit2DReference safetyBoxcast;
+        [SerializeField] private FloatReference safetyBoxcastDistance;
         private const string SbPath = "Event/Boxcast/SafetyBoxcast/";
         private static readonly string ModelAssetPath = $"{SbPath}DefaultSafetyBoxcastModel.asset";
 
-        /* properties: dependencies */
+        #endregion
+
+        #region properties
+
+        #region dependencies
+
+        public bool PerformSafetyBoxcast => performSafetyBoxcast.Value;
         public LayerMask PlatformMask => platformMask.Value;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 Bounds => bounds.Value;
@@ -37,11 +48,15 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public float StickyRaycastLength => stickyRaycastLength.Value;
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
         public bool DrawBoxcastGizmosControl => drawRaycastGizmosControl.Value;
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
 
-        /* properties */
+        #endregion
+
         public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-        public float SafetyBoxcastDistance => SafetyBoxcast.distance;
+
+        public float SafetyBoxcastDistance
+        {
+            set => value = safetyBoxcastDistance.Value;
+        }
 
         public RaycastHit2D SafetyBoxcast
         {
@@ -54,6 +69,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             set => value = hasSafetyBoxcast.Value;
         }
 
-        public Collider2D SafetyBoxcastCollider => SafetyBoxcast.collider;
+        #endregion
     }
 }
