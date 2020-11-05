@@ -9,6 +9,7 @@ using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
@@ -22,7 +23,8 @@ namespace VFEngine.Platformer
         [SerializeField] private PlatformerSettings settings;
         [SerializeField] private PhysicsController physics;
         [SerializeField] private RaycastController raycast;
-        [SerializeField] private RaycastHitColliderController raycastHitCollider;
+        [SerializeField] private new ColliderController collider;
+        //[SerializeField] private RaycastHitColliderController raycastHitCollider;
         [SerializeField] private LayerMaskController layerMask;
         [SerializeField] private BoxcastController boxcast;
         [SerializeField] private Vector2Reference speed;
@@ -54,13 +56,12 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference onMovingPlatform;
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private GameObjectReference standingOnLastFrame;
-        [SerializeField] private BoolReference isStandingOnLastFrame;
+        [SerializeField] private BoolReference hasStandingOnLastFrame;
         [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask;
         [SerializeField] private LayerMaskReference stairsMask;
         [SerializeField] private Collider2DReference standingOnCollider;
         [SerializeField] private Vector2Reference colliderBottomCenterPosition;
         [SerializeField] private FloatReference smallestDistance;
-        [SerializeField] private BoolReference downHitConnected;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
         [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer;
@@ -90,6 +91,9 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastHit2DReference raycastUpHitAt;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private BoolReference upHitConnected;
+        [SerializeField] private BoolReference rightHitConnected;
+        [SerializeField] private BoolReference downHitConnected;
+        [SerializeField] private BoolReference leftHitConnected;
         [SerializeField] private IntReference rightHitsStorageLength;
         [SerializeField] private IntReference leftHitsStorageLength;
         [SerializeField] private FloatReference safetyBoxcastDistance;
@@ -117,7 +121,9 @@ namespace VFEngine.Platformer
         public bool HasSettings => settings;
         public PhysicsController Physics => physics;
         public RaycastController Raycast => raycast;
-        public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
+
+        public ColliderController Collider => collider;
+        //public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;
@@ -149,7 +155,7 @@ namespace VFEngine.Platformer
         public int DownHitsStorageLength => downHitsStorageLength.Value;
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
-        public bool IsStandingOnLastFrame => isStandingOnLastFrame.Value;
+        public bool HasStandingOnLastFrame => hasStandingOnLastFrame.Value;
         public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value;
         public LayerMask StairsMask => stairsMask.Value;
         public Collider2D StandingOnCollider => standingOnCollider.Value;
@@ -186,6 +192,8 @@ namespace VFEngine.Platformer
         public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public bool UpHitConnected => upHitConnected.Value;
+        public bool RightHitConnected => rightHitConnected.Value;
+        public bool LeftHitConnected => leftHitConnected.Value;
         public bool HasDistanceToGroundRaycast => hasDistanceToGroundRaycast.Value;
         public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
 
