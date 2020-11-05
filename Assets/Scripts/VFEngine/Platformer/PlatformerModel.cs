@@ -252,7 +252,7 @@ namespace VFEngine.Platformer
                 {
                     var pTask1 = Async(ApplyToRaysBelowLayerMask(midHeightOneWayPlatformMaskContains,
                         p.OnMovingPlatform, p.StairsMask, p.StandingOnLastFrame.layer, p.StandingOnCollider,
-                        p.ColliderBottomCenterPosition, p.NewPosition.y));
+                        p.BoundsBottomCenterPosition, p.NewPosition.y));
                     var rTask3 = Async(p.Raycast.InitializeSmallestDistanceToDownHit());
                     var rhcTask4 = Async(p.Collider.InitializeDownHitsStorageIndex());
                     var rhcTask5 = Async(p.Collider.InitializeDownHitsStorageSmallestDistanceIndex());

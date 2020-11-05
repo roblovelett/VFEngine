@@ -88,6 +88,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.currentLeftWallCollider = l.CurrentLeftHitCollider.gameObject;
         }
 
+        private void SetCurrentWallColliderNull()
+        {
+            l.currentLeftWallCollider = null;
+        }
+
         private void SetLeftFailedSlopeAngle()
         {
             l.passedLeftSlopeAngle = false;
@@ -158,6 +163,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public void OnSetLeftCurrentWallCollider()
         {
             SetLeftCurrentWallCollider();
+        }
+
+        public void OnSetCurrentWallColliderNull()
+        {
+            SetCurrentWallColliderNull();
         }
 
         public void OnSetLeftFailedSlopeAngle()

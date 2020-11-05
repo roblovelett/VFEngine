@@ -83,6 +83,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.currentRightWallCollider = r.CurrentRightHitCollider.gameObject;
         }
 
+        private void SetCurrentWallColliderNull()
+        {
+            r.currentRightWallCollider = null;
+        }
+
         private void AddToCurrentRightHitsStorageIndex()
         {
             r.CurrentRightHitsStorageIndex++;
@@ -208,6 +213,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public void OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
             SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
+        }
+
+        public void OnSetCurrentWallColliderNull()
+        {
+            SetCurrentWallColliderNull();
         }
 
         public void OnResetState()

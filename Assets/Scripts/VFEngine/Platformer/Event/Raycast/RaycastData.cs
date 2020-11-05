@@ -16,10 +16,8 @@ namespace VFEngine.Platformer.Event.Raycast
         #region dependencies
 
         [SerializeField] private RaycastSettings settings;
-        [SerializeField] private Vector2Reference boxColliderSize;
-        [SerializeField] private Vector2Reference boxColliderOffset;
+        [SerializeField] private BoxCollider2D boxCollider;
         [SerializeField] private new TransformReference transform;
-        [SerializeField] private Vector2Reference boxColliderBoundsCenter;
         private int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
         private int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
 
@@ -35,6 +33,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private Vector2Reference boundsCenter;
         [SerializeField] private Vector2Reference boundsBottomLeftCorner;
         [SerializeField] private Vector2Reference boundsBottomRightCorner;
+        [SerializeField] private Vector2Reference boundsBottomCenterPosition;
         [SerializeField] private Vector2Reference boundsTopLeftCorner;
         [SerializeField] private Vector2Reference boundsTopRightCorner;
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
@@ -50,9 +49,8 @@ namespace VFEngine.Platformer.Event.Raycast
         #region dependencies
 
         public bool HasSettings => settings;
-        public Vector2 BoxColliderSize => boxColliderSize.Value;
-        public Vector2 BoxColliderOffset => boxColliderOffset.Value;
-        public Vector2 BoxColliderBoundsCenter => boxColliderBoundsCenter.Value;
+        public bool HasBoxCollider => boxCollider;
+        public BoxCollider2D BoxCollider => boxCollider;
         public Transform Transform => transform.Value;
         public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
         public bool DrawRaycastGizmosControlSetting => settings.drawRaycastGizmosControl;
@@ -71,7 +69,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public bool DrawRaycastGizmosControl
         {
-            get => drawRaycastGizmosControl.Value;
             set => value = drawRaycastGizmosControl.Value;
         }
 
@@ -83,7 +80,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public bool PerformSafetyBoxcast
         {
-            get => performSafetyBoxcast.Value;
             set => value = performSafetyBoxcast.Value;
         }
 
@@ -98,7 +94,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public float ObstacleHeightTolerance
         {
-            get => obstacleHeightTolerance.Value;
             set => value = obstacleHeightTolerance.Value;
         }
 
@@ -124,7 +119,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public Vector2 BoundsCenter
         {
-            get => boundsCenter.Value;
             set => value = boundsCenter.Value;
         }
 
@@ -148,19 +142,22 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public Vector2 BoundsTopRightCorner
         {
-            get => boundsTopRightCorner.Value;
             set => value = boundsTopRightCorner.Value;
+        }
+        
+        public Vector2 BoundsBottomCenterPosition
+        {
+            get => boundsBottomCenterPosition.Value;
+            set => value = boundsBottomCenterPosition.Value;
         }
 
         public int NumberOfHorizontalRaysPerSide
         {
-            get => numberOfHorizontalRaysPerSide;
             set => value = numberOfHorizontalRaysPerSide.Value;
         }
 
         public int NumberOfVerticalRaysPerSide
         {
-            get => numberOfVerticalRaysPerSide.Value;
             set => value = numberOfVerticalRaysPerSide.Value;
         }
 

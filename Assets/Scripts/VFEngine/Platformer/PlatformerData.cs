@@ -60,7 +60,7 @@ namespace VFEngine.Platformer
         [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask;
         [SerializeField] private LayerMaskReference stairsMask;
         [SerializeField] private Collider2DReference standingOnCollider;
-        [SerializeField] private Vector2Reference colliderBottomCenterPosition;
+        [SerializeField] private Vector2Reference boundsBottomCenterPosition;
         [SerializeField] private FloatReference smallestDistance;
         [SerializeField] private RaycastHit2DReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
@@ -159,7 +159,7 @@ namespace VFEngine.Platformer
         public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value;
         public LayerMask StairsMask => stairsMask.Value;
         public Collider2D StandingOnCollider => standingOnCollider.Value;
-        public Vector2 ColliderBottomCenterPosition => colliderBottomCenterPosition.Value;
+        public Vector2 BoundsBottomCenterPosition => boundsBottomCenterPosition.Value;
         public float SmallestDistance => smallestDistance.Value;
         public bool DownHitConnected => downHitConnected.Value;
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;

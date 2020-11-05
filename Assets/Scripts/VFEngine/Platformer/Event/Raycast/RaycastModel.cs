@@ -3,8 +3,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
-// ReSharper disable UnusedVariable
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static DebugExtensions;
@@ -56,6 +56,8 @@ namespace VFEngine.Platformer.Event.Raycast
                 const string ra = "Rays";
                 const string rc = "Raycasts";
                 const string nuOf = "Number of";
+                const string bc = "Box Collider 2D";
+                const string ch = "Character";
                 const string diGrRa = "Distance To Ground Ray Maximum Length";
                 var settings = $"{rc} Settings";
                 var rcOf = $"{rc} Offset";
@@ -64,6 +66,18 @@ namespace VFEngine.Platformer.Event.Raycast
                 var warningMessage = "";
                 var warningMessageCount = 0;
                 if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+                if (!r.HasBoxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
+                
+                
+                /*
+                if (r.OriginalColliderOffset.x != 0)
+                    warningMessage +=
+                        PropertyNtZeroParentMessage($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
+                DebugLogWarning(warningMessageCount, warningMessage);
+                */
+                
+                
+                
                 if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
                 if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
                 if (r.CastRaysOnBothSides)
@@ -82,6 +96,12 @@ namespace VFEngine.Platformer.Event.Raycast
                 {
                     WarningMessageCountAdd();
                     return FieldMessage(field, scriptableObject);
+                }
+
+                string FieldParentGameObjectString(string field, string gameObject)
+                {
+                    WarningMessageCountAdd();
+                    return FieldParentGameObjectMessage(field, gameObject);
                 }
 
                 string LtZeroString(string field, string scriptableObject)
@@ -115,6 +135,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.ObstacleHeightTolerance = r.RayOffset;
             r.NumberOfVerticalRaysPerSide = r.NumberOfVerticalRays / 2;
+            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             SetRaysParameters();
@@ -123,18 +144,23 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetRaysParameters()
         {
-            var top = SetPositiveBounds(r.BoxColliderOffset.y, r.BoxColliderSize.y);
-            var bottom = SetNegativeBounds(r.BoxColliderOffset.y, r.BoxColliderSize.y);
-            var left = SetNegativeBounds(r.BoxColliderOffset.x, r.BoxColliderSize.x);
-            var right = SetPositiveBounds(r.BoxColliderOffset.x, r.BoxColliderSize.x);
+            var top = SetPositiveBounds(r.BoxCollider.offset.y, r.BoxCollider.size.y);
+            var bottom = SetNegativeBounds(r.BoxCollider.offset.y, r.BoxCollider.size.y);
+            var left = SetNegativeBounds(r.BoxCollider.offset.x, r.BoxCollider.size.x);
+            var right = SetPositiveBounds(r.BoxCollider.offset.x, r.BoxCollider.size.x);
             r.BoundsTopLeftCorner = SetBoundsCorner(left, top);
             r.BoundsTopRightCorner = SetBoundsCorner(right, top);
             r.BoundsBottomLeftCorner = SetBoundsCorner(left, bottom);
             r.BoundsBottomRightCorner = SetBoundsCorner(right, bottom);
-            r.BoundsCenter = r.BoxColliderBoundsCenter;
+            r.BoundsCenter = r.BoxCollider.bounds.center;
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
             r.bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
+        }
+
+        private static Vector2 SetBoundsBottomCenterPosition(Bounds b)
+        {
+            return new Vector2(b.center.x, b.min.y);
         }
 
         private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
