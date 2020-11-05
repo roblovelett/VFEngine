@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             $"{RaycastHitColliderPath}RightRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{RightRaycastHitColliderPath}DefaultUpRaycastHitColliderModel.asset";
+            $"{RightRaycastHitColliderPath}DefaultRightRaycastHitColliderModel.asset";
 
         #endregion
 

@@ -38,16 +38,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
                 d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
         }
 
-        private void SetHasDistanceToGroundRaycast()
-        {
-            d.HasDistanceToGroundRaycast = true;
-        }
-
-        private void ResetState()
-        {
-            d.HasDistanceToGroundRaycast = false;
-        }
-
         #endregion
 
         #endregion
@@ -64,16 +54,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public void OnSetDistanceToGroundRaycast()
         {
             SetDistanceToGroundRaycast();
-        }
-
-        public void OnSetHasDistanceToGroundRaycast()
-        {
-            SetHasDistanceToGroundRaycast();
-        }
-
-        public void OnResetState()
-        {
-            ResetState();
         }
 
         #endregion

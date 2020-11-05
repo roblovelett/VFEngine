@@ -285,18 +285,6 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetHasDistanceToGroundRaycast()
-        {
-            distanceToGroundRaycastModel.OnSetHasDistanceToGroundRaycast();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid ResetDistanceToGroundRaycastState()
-        {
-            distanceToGroundRaycastModel.OnResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         #endregion
 
         #region sticky raycast model

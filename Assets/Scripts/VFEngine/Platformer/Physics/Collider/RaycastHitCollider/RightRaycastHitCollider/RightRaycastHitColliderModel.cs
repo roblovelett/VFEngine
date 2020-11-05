@@ -73,7 +73,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
                 OnSetRaycastHitAngle(r.RightHitsStorage[r.CurrentRightHitsStorageIndex].normal, r.Transform);
         }
 
-        private void SetRightIsCollidingRight()
+        private void SetIsCollidingRight()
         {
             r.IsCollidingRight = true;
         }
@@ -124,7 +124,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.currentRightWallCollider = null;
             r.CurrentRightHitAngle = 0f;
             r.rightLateralSlopeAngle = 0f;
-            r.distanceToRightCollider = 0f;
+            r.distanceToRightCollider = -1f;
         }
 
         #endregion
@@ -165,9 +165,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             SetCurrentRightHitAngle();
         }
 
-        public void OnSetRightIsCollidingRight()
+        public void OnSetIsCollidingRight()
         {
-            SetRightIsCollidingRight();
+            SetIsCollidingRight();
         }
 
         public void OnSetRightDistanceToRightCollider()

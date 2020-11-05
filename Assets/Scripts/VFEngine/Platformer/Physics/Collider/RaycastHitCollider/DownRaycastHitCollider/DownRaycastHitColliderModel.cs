@@ -37,10 +37,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializeModel()
         {
-            d.physicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+            d.standingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
+            d.physicsMaterialClosestToDownHit = d.standingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
             d.HasPhysicsMaterialClosestToDownHit = d.physicsMaterialClosestToDownHit != null;
-            d.pathMovementClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+            d.pathMovementClosestToDownHit = d.standingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PathMovementData>();
             d.HasPathMovementClosestToDownHit = d.pathMovementClosestToDownHit != null;
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
@@ -186,7 +187,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void ResetState()
         {
-            // foobar
+            d.IsCollidingBelow = false;
+            d.groundedEvent = false;
+            d.belowSlopeAngle = 0;
+            d.CrossBelowSlopeAngle = zero;
+            d.standingOn = null;
+            d.OnMovingPlatform = false;
+            d.StandingOnCollider = null;
+            d.DownHitConnected = false;
+            d.movingPlatformCurrentGravity = 0f;
         }
 
         private void SetWasGroundedLastFrame()

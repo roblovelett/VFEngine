@@ -37,57 +37,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeData()
         {
-            /*
-            rhc.BoxColliderSizeRef = rhc.OriginalColliderSize;
-            rhc.BoxColliderOffsetRef = rhc.OriginalColliderOffset;
-            rhc.BoxColliderBoundsCenterRef = rhc.OriginalColliderBoundsCenter;
-            rhc.CurrentRightHitsStorageIndexRef = rhc.CurrentRightHitsStorageIndex;
-            rhc.CurrentLeftHitsStorageIndexRef = rhc.CurrentLeftHitsStorageIndex;
-            */
-            //rhc.CurrentUpHitsStorageIndexRef = rhc.CurrentUpHitsStorageIndex;
-            //rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
-            //rhc.CurrentRightHitDistanceRef = rhc.CurrentRightHitDistance;
-            /*
-            rhc.CurrentLeftHitDistanceRef = rhc.CurrentLeftHitDistance;
-            rhc.CurrentDownHitSmallestDistanceRef = rhc.CurrentDownHitSmallestDistance;
-            rhc.CurrentRightHitColliderRef = rhc.CurrentRightHitCollider;
-            rhc.CurrentLeftHitColliderRef = rhc.CurrentLeftHitCollider;
-            rhc.IgnoredColliderRef = rhc.IgnoredCollider;
-            rhc.CurrentRightHitAngleRef = rhc.CurrentRightHitAngle;
-            rhc.CurrentLeftHitAngleRef = rhc.CurrentLeftHitAngle;
-            rhc.IsGroundedRef = rhc.state.IsGrounded;
-            rhc.RaycastDownHitAtRef = rhc.RaycastDownHitAt;
-            rhc.OnMovingPlatformRef = rhc.state.OnMovingPlatform;
-            rhc.StandingOnLastFrameRef = rhc.state.StandingOnLastFrame;
-            rhc.IsStandingOnLastFrameRef = rhc.IsStandingOnLastFrame;
-            rhc.StandingOnColliderRef = rhc.state.StandingOnCollider;
-            rhc.ColliderBottomCenterPositionRef = rhc.ColliderBottomCenterPosition;
-            rhc.DownHitsStorageSmallestDistanceIndexRef = rhc.DownHitsStorageSmallestDistanceIndex;
-            rhc.DownHitConnectedRef = rhc.DownHitConnected;
-            rhc.CurrentDownHitsStorageIndexRef = rhc.CurrentDownHitsStorageIndex;
-            rhc.CrossBelowSlopeAngleRef = rhc.state.CrossBelowSlopeAngle;
-            rhc.DownHitWithSmallestDistanceRef = rhc.DownHitWithSmallestDistance;
-            rhc.StandingOnWithSmallestDistanceRef = rhc.StandingOnWithSmallestDistance;
-            rhc.StandingOnWithSmallestDistanceColliderRef = rhc.StandingOnWithSmallestDistanceCollider;
-            rhc.StandingOnWithSmallestDistanceLayerRef = rhc.StandingOnWithSmallestDistanceLayer;
-            rhc.StandingOnWithSmallestDistancePointRef = rhc.StandingOnWithSmallestDistancePoint;
-            rhc.HasPhysicsMaterialClosestToDownHitRef = rhc.HasPhysicsMaterialClosestToDownHit;
-            rhc.HasPathMovementClosestToDownHitRef = rhc.HasPathMovementClosestToDownHit;
-            rhc.FrictionRef = rhc.Friction;
-            rhc.HasMovingPlatformRef = rhc.HasMovingPlatform;
-            *//*
-            rhc.UpHitConnectedRef = rhc.UpHitConnected;
-            rhc.UpHitsStorageCollidingIndexRef = rhc.UpHitsStorageCollidingIndex;
-            rhc.RaycastUpHitAtRef = rhc.RaycastUpHitAt;
-            *//*
-            rhc.DistanceBetweenRightHitAndRaycastOriginRef = rhc.DistanceBetweenRightHitAndRaycastOrigin;
-            rhc.DistanceBetweenLeftHitAndRaycastOriginRef = rhc.DistanceBetweenLeftHitAndRaycastOrigin;
-            rhc.BelowSlopeAngleRef = rhc.BelowSlopeAngle;
-            //rhc.IsCollidingAboveRef = rhc.state.IsCollidingAbove;
-            rhc.IsCollidingBelowRef = rhc.state.IsCollidingBelow;
-            rhc.IsCollidingLeftRef = rhc.state.IsCollidingLeft;
-            rhc.IsCollidingRightRef = rhc.state.IsCollidingRight;*/
-            await SetYieldOrSwitchToThreadPoolAsync();
+           await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         private async UniTaskVoid GetWarningMessages()
@@ -129,12 +79,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private async UniTaskVoid InitializeModel()
         {
-            /*rhc.PhysicsMaterialClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PhysicsMaterialData>();
-            rhc.PathMovementClosestToDownHit = rhc.StandingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PathMovementData>();
-            rhc.IsStandingOnLastFrame = rhc.state.StandingOnLastFrame != null;
-            rhc.HasMovingPlatform = rhc.MovingPlatform != null;*/
             ClearContactList();
             rhc.state.SetCurrentWallColliderNull();
             rhc.state.Reset();
@@ -152,7 +96,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             // raycast hit collider model
             //rhc.ContactList.Add(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex]);
         }
+        private void ClearContactList()
+        {
+            rhc.ContactList.Clear();
+        }private void SetCurrentWallColliderNull()
+        {
+            rhc.state.SetCurrentWallColliderNull();
+        }
 
+        private void ResetState()
+        {
+            rhc.state.Reset();
+        }
         // up raycast hit collider model
         /*
         private void InitializeUpHitConnected()
@@ -208,10 +163,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         // right raycast hit collider model
 
 
-        private void ClearContactList()
-        {
-            rhc.ContactList.Clear();
-        }
+        
 
         /*private void SetWasGroundedLastFrame()
         {
@@ -223,20 +175,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.state.SetStandingOnLastFrame(rhc.state.StandingOn);
         }*/
 
-        private void SetWasTouchingCeilingLastFrame()
+        /*private void SetWasTouchingCeilingLastFrame()
         {
             rhc.state.SetWasTouchingCeilingLastFrame(rhc.state.IsCollidingAbove);
-        }
+        }*/
 
-        private void SetCurrentWallColliderNull()
-        {
-            rhc.state.SetCurrentWallColliderNull();
-        }
-
-        private void ResetState()
-        {
-            rhc.state.Reset();
-        }
+        
 
         /*private void SetOnMovingPlatform()
         {
@@ -257,41 +201,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             rhc.RightHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRaysPerSide];
         }*/
-
-        private void InitializeLeftHitsStorage()
-        {
-            rhc.LeftHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRaysPerSide];
-        }
-
         /*private void InitializeCurrentRightHitsStorageIndex()
         {
             rhc.CurrentRightHitsStorageIndex = 0;
         }*/
-
-        private void InitializeCurrentLeftHitsStorageIndex()
-        {
-            rhc.CurrentLeftHitsStorageIndex = 0;
-        }
 
         /*private void SetCurrentRightHitsStorage()
         {
             rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex] = rhc.CurrentRightRaycast;
         }*/
 
-        private void SetCurrentLeftHitsStorage()
-        {
-            rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex] = rhc.CurrentLeftRaycast;
-        }
-
         /*private void SetCurrentRightHitDistance()
         {
             rhc.CurrentRightHitDistance = rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex].distance;
         }*/
-
-        private void SetCurrentLeftHitDistance()
-        {
-            rhc.CurrentLeftHitDistance = rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].distance;
-        }
 
         /*private void SetCurrentDownHitsStorage()
         {
@@ -304,12 +227,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
                 SetHitAngle(rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex].normal, rhc.Transform);
         }*/
 
-        private void SetCurrentLeftHitAngle()
-        {
-            rhc.CurrentLeftHitAngle =
-                SetRaycastHitAngle(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].normal, rhc.Transform);
-        }
-
         private static float SetRaycastHitAngle(Vector2 normal, Transform t)
         {
             return Abs(Angle(normal, t.up));
@@ -320,30 +237,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.CurrentRightHitCollider = rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex].collider;
         }*/
 
-        private void SetCurrentLeftHitCollider()
-        {
-            rhc.CurrentLeftHitCollider = rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].collider;
-        }
-
         /*private void SetCurrentRightLateralSlopeAngle()
         {
             rhc.state.SetRightLateralSlopeAngle(rhc.CurrentRightHitAngle);
         }*/
-
-        private void SetCurrentLeftLateralSlopeAngle()
-        {
-            rhc.state.SetLeftLateralSlopeAngle(rhc.CurrentLeftHitAngle);
-        }
-
-        private void SetLeftIsCollidingLeft()
-        {
-            rhc.state.SetIsCollidingLeft(true);
-        }
-
-        private void SetLeftDistanceToLeftCollider()
-        {
-            rhc.state.SetDistanceToLeftCollider(rhc.CurrentLeftHitAngle);
-        }
 
         /*private void SetRightIsCollidingRight()
         {
@@ -365,29 +262,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rhc.state.SetPassedRightSlopeAngle(false);
         }*/
 
-        private void SetLeftCurrentWallCollider()
-        {
-            rhc.state.SetLeftCurrentWallCollider(rhc.CurrentLeftHitCollider.gameObject);
-        }
-
-        private void SetLeftFailedSlopeAngle()
-        {
-            rhc.state.SetPassedLeftSlopeAngle(false);
-        }
-
         /*private void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
             rhc.DistanceBetweenRightHitAndRaycastOrigin = DistanceBetweenPointAndLine(
                 rhc.RightHitsStorage[rhc.CurrentRightHitsStorageIndex].point, rhc.RightRaycastFromBottomOrigin,
                 rhc.RightRaycastToTopOrigin);
         }*/
-
-        private void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
-        {
-            rhc.DistanceBetweenLeftHitAndRaycastOrigin = DistanceBetweenPointAndLine(
-                rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].point, rhc.LeftRaycastFromBottomOrigin,
-                rhc.LeftRaycastToTopOrigin);
-        }
 
         /*private void AddRightHitToContactList()
         {
@@ -398,11 +278,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             rhc.CurrentRightHitsStorageIndex++;
         }*/
-
-        private void AddToCurrentLeftHitsStorageIndex()
-        {
-            rhc.CurrentLeftHitsStorageIndex++;
-        }
 
         /*private void InitializeFriction()
         {
@@ -565,6 +440,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             ClearContactList();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+        public async UniTaskVoid OnSetCurrentWallColliderNull()
+        {
+            SetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnResetState()
+        {
+            ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public void OnAddRightHitToContactList()
+        {
+            AddRightHitToContactList();
+        }
+        
+        public void OnAddLeftHitToContactList()
+        {
+            AddLeftHitToContactList();
+        }
 /*
         public async UniTaskVoid OnSetWasGroundedLastFrame()
         {
@@ -581,18 +477,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public async UniTaskVoid OnSetWasTouchingCeilingLastFrame()
         {
             SetWasTouchingCeilingLastFrame();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-*/
-        public async UniTaskVoid OnSetCurrentWallColliderNull()
-        {
-            SetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnResetState()
-        {
-            ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 /*
@@ -613,30 +497,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             InitializeRightHitsStorage();
         }*/
 
-        public void OnInitializeLeftHitsStorage()
-        {
-            InitializeLeftHitsStorage();
-        }
-
+        
         /*public void OnInitializeCurrentRightHitsStorageIndex()
         {
             InitializeCurrentRightHitsStorageIndex();
         }*/
-
-        public void OnInitializeCurrentLeftHitsStorageIndex()
-        {
-            InitializeCurrentLeftHitsStorageIndex();
-        }
-
+        
         /*public void OnSetCurrentRightHitsStorage()
         {
             SetCurrentRightHitsStorage();
         }*/
-
-        public void OnSetCurrentLeftHitsStorage()
-        {
-            SetCurrentLeftHitsStorage();
-        }
 /*
         public void OnSetCurrentDownHitsStorage()
         {
@@ -647,21 +517,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             SetCurrentRightHitAngle();
         }*/
-
-        public void OnSetCurrentLeftHitAngle()
-        {
-            SetCurrentLeftHitAngle();
-        }
-
-        public void OnSetLeftIsCollidingLeft()
-        {
-            SetLeftIsCollidingLeft();
-        }
-
-        public void OnSetLeftDistanceToLeftCollider()
-        {
-            SetLeftDistanceToLeftCollider();
-        }
 
         /*public void OnSetRightIsCollidingRight()
         {
@@ -683,35 +538,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetRightFailedSlopeAngle();
         }*/
 
-        public void OnSetLeftCurrentWallCollider()
-        {
-            SetLeftCurrentWallCollider();
-        }
-
-        public void OnSetLeftFailedSlopeAngle()
-        {
-            SetLeftFailedSlopeAngle();
-        }
-
-        /*public void OnAddRightHitToContactList()
-        {
-            AddRightHitToContactList();
-        }*/
-
-        public void OnAddLeftHitToContactList()
-        {
-            AddLeftHitToContactList();
-        }
-
         /*public void OnAddToCurrentRightHitsStorageIndex()
         {
             AddToCurrentRightHitsStorageIndex();
         }*/
-
-        public void OnAddToCurrentLeftHitsStorageIndex()
-        {
-            AddToCurrentLeftHitsStorageIndex();
-        }
 /*
         public void OnInitializeFriction()
         {
@@ -864,40 +694,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             SetCurrentRightHitDistance();
         }*/
 
-        public void OnSetCurrentLeftHitDistance()
-        {
-            SetCurrentLeftHitDistance();
-        }
-
         /*public void OnSetCurrentRightHitCollider()
         {
             SetCurrentRightHitCollider();
         }*/
-
-        public void OnSetCurrentLeftHitCollider()
-        {
-            SetCurrentLeftHitCollider();
-        }
-
         /*public void OnSetCurrentRightLateralSlopeAngle()
         {
             SetCurrentRightLateralSlopeAngle();
         }*/
 
-        public void OnSetCurrentLeftLateralSlopeAngle()
-        {
-            SetCurrentLeftLateralSlopeAngle();
-        }
-
         /*public void OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
             SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }*/
-
-        public void OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
-        {
-            SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
-        }
 /*
         public void OnSetCurrentDownHitSmallestDistance()
         {
@@ -948,10 +757,140 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             SetNotOnMovingPlatform();
         }
-  */      
+  */      /*
+        public void OnInitializeLeftHitsStorage()
+        {
+            InitializeLeftHitsStorage();
+        }
+
+        public void OnInitializeCurrentLeftHitsStorageIndex()
+        {
+            InitializeCurrentLeftHitsStorageIndex();
+        }
+
+        public void OnSetCurrentLeftHitsStorage()
+        {
+            SetCurrentLeftHitsStorage();
+        }
+        public void OnSetCurrentLeftHitAngle()
+        {
+            SetCurrentLeftHitAngle();
+        }
+
+        public void OnSetLeftIsCollidingLeft()
+        {
+            SetLeftIsCollidingLeft();
+        }
+
+        public void OnSetLeftDistanceToLeftCollider()
+        {
+            SetLeftDistanceToLeftCollider();
+        }
+        public void OnSetLeftCurrentWallCollider()
+        {
+            SetLeftCurrentWallCollider();
+        }
+
+        public void OnSetLeftFailedSlopeAngle()
+        {
+            SetLeftFailedSlopeAngle();
+        }*/
+/*
+        public void OnAddToCurrentLeftHitsStorageIndex()
+        {
+            AddToCurrentLeftHitsStorageIndex();
+        }
+
+        public void OnSetCurrentLeftHitDistance()
+        {
+            SetCurrentLeftHitDistance();
+        }
+
+        public void OnSetCurrentLeftHitCollider()
+        {
+            SetCurrentLeftHitCollider();
+        }
+
+        public void OnSetCurrentLeftLateralSlopeAngle()
+        {
+            SetCurrentLeftLateralSlopeAngle();
+        }
+        public void OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
+        {
+            SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+        }*/
+
         public static float OnSetRaycastHitAngle(Vector2 normal, Transform t)
         {
             return SetRaycastHitAngle(normal, t);
         }
+        
+         /*       private void InitializeLeftHitsStorage()
+        {
+            rhc.LeftHitsStorage = new RaycastHit2D[rhc.NumberOfHorizontalRaysPerSide];
+        }
+
+        private void InitializeCurrentLeftHitsStorageIndex()
+        {
+            rhc.CurrentLeftHitsStorageIndex = 0;
+        }
+
+        private void SetCurrentLeftHitsStorage()
+        {
+            rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex] = rhc.CurrentLeftRaycast;
+        }
+
+        private void SetCurrentLeftHitDistance()
+        {
+            rhc.CurrentLeftHitDistance = rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].distance;
+        }
+
+        private void SetCurrentLeftHitAngle()
+        {
+            rhc.CurrentLeftHitAngle =
+                SetRaycastHitAngle(rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].normal, rhc.Transform);
+        }
+
+        private void SetCurrentLeftHitCollider()
+        {
+            rhc.CurrentLeftHitCollider = rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].collider;
+        }
+
+        private void SetCurrentLeftLateralSlopeAngle()
+        {
+            rhc.state.SetLeftLateralSlopeAngle(rhc.CurrentLeftHitAngle);
+        }
+
+        private void SetLeftIsCollidingLeft()
+        {
+            rhc.state.SetIsCollidingLeft(true);
+        }
+
+        private void SetLeftDistanceToLeftCollider()
+        {
+            rhc.state.SetDistanceToLeftCollider(rhc.CurrentLeftHitAngle);
+        }
+
+        private void SetLeftCurrentWallCollider()
+        {
+            rhc.state.SetLeftCurrentWallCollider(rhc.CurrentLeftHitCollider.gameObject);
+        }
+
+        private void SetLeftFailedSlopeAngle()
+        {
+            rhc.state.SetPassedLeftSlopeAngle(false);
+        }
+
+        private void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
+        {
+            rhc.DistanceBetweenLeftHitAndRaycastOrigin = DistanceBetweenPointAndLine(
+                rhc.LeftHitsStorage[rhc.CurrentLeftHitsStorageIndex].point, rhc.LeftRaycastFromBottomOrigin,
+                rhc.LeftRaycastToTopOrigin);
+        }
+
+        private void AddToCurrentLeftHitsStorageIndex()
+        {
+            rhc.CurrentLeftHitsStorageIndex++;
+        }*/
     }
 }

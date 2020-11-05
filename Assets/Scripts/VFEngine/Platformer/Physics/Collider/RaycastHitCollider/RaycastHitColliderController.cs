@@ -71,18 +71,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             */
         }
 
-        public async UniTaskVoid SetWasGroundedLastFrame()
-        {
+        //public async UniTaskVoid SetWasGroundedLastFrame()
+        //{
             //var rhcTask1 = Async(upColliderModel.OnSetWasGroundedLastFrame());
             //var rhcTask2 = Async(rightColliderModel.OnSetWasGroundedLastFrame());
             //var rhcTask3 = Async(downColliderModel.OnSetWasGroundedLastFrame());
             //var rhcTask4 = Async(leftColliderModel.OnSetWasGroundedLastFrame());
             //var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
             //await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        //}
 
-        public async UniTaskVoid SetStandingOnLastFrame()
-        {
+        //public async UniTaskVoid SetStandingOnLastFrame()
+        //{
             /*
             var rhcTask1 = Async(upColliderModel.OnSetStandingOnLastFrame());
             var rhcTask2 = Async(rightColliderModel.OnSetStandingOnLastFrame());
@@ -91,10 +91,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
             */
-        }
+        //}
 
-        public async UniTaskVoid SetWasTouchingCeilingLastFrame()
-        {
+        //public async UniTaskVoid SetWasTouchingCeilingLastFrame()
+        //{
             /*
             var rhcTask1 = Async(upColliderModel.OnSetWasTouchingCeilingLastFrame());
             var rhcTask2 = Async(rightColliderModel.OnSetWasTouchingCeilingLastFrame());
@@ -103,7 +103,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
             */
-        }
+        //}
 
         public async UniTaskVoid SetCurrentWallColliderNull()
         {
@@ -128,9 +128,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
             */
         }
-
-        public async UniTaskVoid SetOnMovingPlatform()
+        
+        public void AddLeftHitToContactList()
         {
+            //raycast hit collider model
+            //.OnAddLeftHitToContactList();
+        }
+        
+        public void AddRightHitToContactList()
+        {
+            //raycast hit collider model
+            //.OnAddRightHitToContactList();
+        }
+
+        //public async UniTaskVoid SetOnMovingPlatform()
+        //{
             /*
             var rchTask1 = Async(upColliderModel.OnSetOnMovingPlatform());
             var rchTask2 = Async(rightColliderModel.OnSetOnMovingPlatform());
@@ -139,17 +151,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             var rhcTask = await (rchTask1, rchTask2, rchTask3, rchTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
             */
-        }
+        //}
 
-        public async UniTaskVoid SetMovingPlatformCurrentGravity()
-        {
+        //public async UniTaskVoid SetMovingPlatformCurrentGravity()
+        //{
             //var rchTask1 = Async(upColliderModel.OnSetMovingPlatformCurrentGravity());
             //var rchTask2 = Async(rightColliderModel.OnSetMovingPlatformCurrentGravity());
             //var rchTask3 = Async(downColliderModel.OnSetMovingPlatformCurrentGravity());
             //var rchTask4 = Async(leftColliderModel.OnSetMovingPlatformCurrentGravity());
             //var rhcTask = await (rchTask1, rchTask2, rchTask3, rchTask4);
             //await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        //}
 
         /*
         public async UniTaskVoid InitializeUpHitConnected()
@@ -279,7 +291,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             rightColliderModel.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }*/
-
+/*
         public async UniTaskVoid SetCurrentDownHitsStorage()
         {
             downColliderModel.OnSetCurrentDownHitsStorage();
@@ -405,24 +417,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downColliderModel.OnSetGroundedEvent();
         }
+        */
 
-        public async UniTaskVoid InitializeDistanceToGround()
-        {
-            downColliderModel.OnInitializeDistanceToGround();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void DecreaseDistanceToGround()
-        {
-            downColliderModel.OnDecreaseDistanceToGround();
-        }
-
-        public void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
-        {
-            downColliderModel.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
-        }
-
-        public void SetStandingOnLastFrameLayerToPlatforms()
+        /*public void SetStandingOnLastFrameLayerToPlatforms()
         {
             downColliderModel.OnSetStandingOnLastFrameLayerToPlatforms();
         }
@@ -448,8 +445,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downColliderModel.OnSetNotOnMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
-        
+        }*/
+        /*
         public void InitializeLeftHitsStorage()
         {
             leftColliderModel.OnInitializeLeftHitsStorage();
@@ -480,19 +477,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnSetLeftDistanceToLeftCollider();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
-        public void SetLeftCurrentWallCollider()
+        /*public void SetLeftCurrentWallCollider()
         {
             leftColliderModel.OnSetLeftCurrentWallCollider();
-        }
+        }*/
 
-        public void AddLeftHitToContactList()
-        {
-            leftColliderModel.OnAddLeftHitToContactList();
-        }
-
-        public void AddToCurrentLeftHitsStorageIndex()
+        /*public void AddToCurrentLeftHitsStorageIndex()
         {
             leftColliderModel.OnAddToCurrentLeftHitsStorageIndex();
         }
@@ -511,15 +503,29 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             leftColliderModel.OnSetCurrentLeftLateralSlopeAngle();
         }
-
-        public void SetLeftFailedSlopeAngle()
+*/
+        /*public void SetLeftFailedSlopeAngle()
         {
             leftColliderModel.OnSetLeftFailedSlopeAngle();
-        }
-
-        public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
+        }public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
             leftColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+        }*/
+        
+        public async UniTaskVoid InitializeDistanceToGround()
+        {
+            //distanceToGroundRaycastCollider.OnInitializeDistanceToGround();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void DecreaseDistanceToGround()
+        {
+            //distanceToGroundRaycastCollider.OnDecreaseDistanceToGround();
+        }
+
+        public void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
+        {
+            //distanceToGroundRaycastCollider.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
@@ -14,6 +16,8 @@ namespace VFEngine.Platformer.Physics.Collider
     using static UpRaycastHitColliderData;
     using static RightRaycastHitColliderData;
     using static DownRaycastHitColliderData;
+    using static LeftRaycastHitColliderData;
+    using static DistanceToGroundRaycastData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
     
@@ -28,7 +32,8 @@ namespace VFEngine.Platformer.Physics.Collider
         [SerializeField] private UpRaycastHitColliderModel upRaycastHitColliderModel;
         [SerializeField] private RightRaycastHitColliderModel rightRaycastHitColliderModel;
         [SerializeField] private DownRaycastHitColliderModel downRaycastHitColliderModel;
-        //[SerializeField] private LeftRaycastHitColliderModel leftRaycastHitColliderModel;
+        [SerializeField] private LeftRaycastHitColliderModel leftRaycastHitColliderModel;
+        [SerializeField] private DistanceToGroundRaycastModel distanceToGroundRaycastModel;
 
         #endregion
 
@@ -51,6 +56,11 @@ namespace VFEngine.Platformer.Physics.Collider
                 rightRaycastHitColliderModel = LoadModel<RightRaycastHitColliderModel>(RightRaycastHitColliderModelPath);
             if (!downRaycastHitColliderModel)
                 downRaycastHitColliderModel = LoadModel<DownRaycastHitColliderModel>(DownRaycastHitColliderModelPath);
+            if (!leftRaycastHitColliderModel)
+                leftRaycastHitColliderModel = LoadModel<LeftRaycastHitColliderModel>(LeftRaycastHitColliderModelPath);
+            if (!distanceToGroundRaycastModel)
+                distanceToGroundRaycastModel =
+                    LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
         }
 
         /*
@@ -71,9 +81,8 @@ namespace VFEngine.Platformer.Physics.Collider
 
         #region public methods
 
-        #region raycast model
-        
-        
+        #region raycast hit collider model
+
         public void AddRightHitToContactList()
         {
             //raycastHitColliderModel.OnAddRightHitToContactList();
@@ -170,7 +179,7 @@ namespace VFEngine.Platformer.Physics.Collider
 
         public async UniTaskVoid SetRightIsCollidingRight()
         {
-            rightRaycastHitColliderModel.OnSetRightIsCollidingRight();
+            rightRaycastHitColliderModel.OnSetIsCollidingRight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -374,85 +383,81 @@ namespace VFEngine.Platformer.Physics.Collider
         }
 
         #endregion
-/*
+
         #region left raycast hit collider model
         
         public void InitializeLeftHitsStorage()
         {
-            leftColliderModel.OnInitializeLeftHitsStorage();
+            leftRaycastHitColliderModel.OnInitializeLeftHitsStorage();
         }
 
         public void InitializeCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnInitializeCurrentLeftHitsStorageIndex();
+            leftRaycastHitColliderModel.OnInitializeCurrentLeftHitsStorageIndex();
         }
 
         public void SetCurrentLeftHitsStorage()
         {
-            leftColliderModel.OnSetCurrentLeftHitsStorage();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitsStorage();
         }
 
         public void SetCurrentLeftHitAngle()
         {
-            leftColliderModel.OnSetCurrentLeftHitAngle();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitAngle();
         }
 
         public async UniTaskVoid SetLeftIsCollidingLeft()
         {
-            leftColliderModel.OnSetLeftIsCollidingLeft();
+            leftRaycastHitColliderModel.OnSetIsCollidingLeft();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetLeftDistanceToLeftCollider()
         {
-            leftColliderModel.OnSetLeftDistanceToLeftCollider();
+            leftRaycastHitColliderModel.OnSetLeftDistanceToLeftCollider();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetLeftCurrentWallCollider()
         {
-            leftColliderModel.OnSetLeftCurrentWallCollider();
-        }
-
-        public void AddLeftHitToContactList()
-        {
-            leftColliderModel.OnAddLeftHitToContactList();
+            leftRaycastHitColliderModel.OnSetLeftCurrentWallCollider();
         }
 
         public void AddToCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnAddToCurrentLeftHitsStorageIndex();
+            leftRaycastHitColliderModel.OnAddToCurrentLeftHitsStorageIndex();
         }
 
         public void SetCurrentLeftHitDistance()
         {
-            leftColliderModel.OnSetCurrentLeftHitDistance();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitDistance();
         }
 
         public void SetCurrentLeftHitCollider()
         {
-            leftColliderModel.OnSetCurrentLeftHitCollider();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitCollider();
         }
 
         public void SetCurrentLeftLateralSlopeAngle()
         {
-            leftColliderModel.OnSetCurrentLeftLateralSlopeAngle();
+            leftRaycastHitColliderModel.OnSetCurrentLeftLateralSlopeAngle();
         }
 
         public void SetLeftFailedSlopeAngle()
         {
-            leftColliderModel.OnSetLeftFailedSlopeAngle();
+            leftRaycastHitColliderModel.OnSetLeftFailedSlopeAngle();
         }
 
         public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
-            leftColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+            leftRaycastHitColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
         }
 
         #endregion
  
         #region distance to ground raycast hit collider model
         
+        /*
         public async UniTaskVoid InitializeDistanceToGround()
         {
             distanceToGroundRaycastHitColliderModel.OnInitializeDistanceToGround();
@@ -469,6 +474,8 @@ namespace VFEngine.Platformer.Physics.Collider
             distanceToGroundRaycastHitColliderModel.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
         }
         */
+        
+        #endregion
         
         #endregion
         

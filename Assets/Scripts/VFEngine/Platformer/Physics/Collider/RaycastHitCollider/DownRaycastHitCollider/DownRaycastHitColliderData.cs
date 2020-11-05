@@ -43,7 +43,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         [SerializeField] private GameObjectReference standingOnLastFrame;
         [SerializeField] private BoolReference hasStandingOnLastFrame;
         [SerializeField] private BoolReference wasGroundedLastFrame;
-        private static readonly string DownRaycastHitColliderPath = $"{RaycastHitColliderPath}RightRaycastHitCollider/";
+        private static readonly string DownRaycastHitColliderPath = $"{RaycastHitColliderPath}DownRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
             $"{DownRaycastHitColliderPath}DefaultDownRaycastHitColliderModel.asset";
@@ -156,7 +156,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             set => value = wasGroundedLastFrame.Value;
         }
 
-        public GameObject StandingOnWithSmallestDistance => DownHitWithSmallestDistance.collider.gameObject;
+        public GameObject standingOnWithSmallestDistance;
 
         public static readonly string DownRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
