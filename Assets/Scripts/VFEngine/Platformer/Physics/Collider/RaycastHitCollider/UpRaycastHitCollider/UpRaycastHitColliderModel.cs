@@ -1,8 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
+    using static UniTaskExtensions;
+
     [CreateAssetMenu(fileName = "UpRaycastHitColliderModel",
         menuName =
             "VFEngine/Platformer/Physics/Raycast Hit Collider/Up Raycast Hit Collider/Up Raycast Hit Collider Model",
@@ -19,6 +23,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #endregion
 
         #region private methods
+
+        private void Initialize()
+        {
+            InitializeModel();
+        }
+
+        private void InitializeModel()
+        {
+            u.WasTouchingCeilingLastFrame = false;
+            InitializeUpHitsStorageCollidingIndex();
+            InitializeUpHitsStorageCurrentIndex();
+            InitializeUpHitsStorage();
+            ResetState();
+        }
 
         private void InitializeUpHitConnected()
         {
@@ -69,7 +87,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         {
             u.IsCollidingAbove = true;
         }
-        
+
         private void SetWasTouchingCeilingLastFrame()
         {
             u.WasTouchingCeilingLastFrame = u.IsCollidingAbove;
@@ -77,7 +95,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void ResetState()
         {
-            u.UpHitConnected = false;
+            InitializeUpHitConnected();
             u.IsCollidingAbove = false;
         }
 
@@ -98,17 +116,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         {
             InitializeUpHitsStorageCollidingIndex();
         }
-
-        public void OnInitializeUpHitsStorage()
-        {
-            InitializeUpHitsStorage();
-        }
-
         public void OnInitializeUpHitsStorageCurrentIndex()
         {
             InitializeUpHitsStorageCurrentIndex();
         }
-
+        public void OnInitializeUpHitsStorage()
+        {
+            InitializeUpHitsStorage();
+        }
         public void OnAddToUpHitsStorageCurrentIndex()
         {
             AddToUpHitsStorageCurrentIndex();
@@ -147,6 +162,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public void OnResetState()
         {
             ResetState();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

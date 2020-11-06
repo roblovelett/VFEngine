@@ -1,8 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
+    using static UniTaskExtensions;
+    
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderModel",
         menuName =
             "VFEngine/Platformer/Physics/Raycast Hit Collider/Distance To Ground Raycast Hit Collider/Distance To Ground Raycast Hit Collider Model",
@@ -20,6 +24,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeModel();
+        }
+
+        private void InitializeModel()
+        {
+            ResetState();
+        }
         private void SetHasDistanceToGroundRaycast()
         {
             d.HasDistanceToGroundRaycast = true;
@@ -75,6 +88,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         public void OnResetState()
         {
             ResetState();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

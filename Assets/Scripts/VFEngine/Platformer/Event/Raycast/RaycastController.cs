@@ -307,12 +307,6 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid InitializeBelowSlopeAngle()
-        {
-            stickyRaycastModel.OnInitializeBelowSlopeAngle();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         public void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
             stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
@@ -324,21 +318,9 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetBelowSlopeAngleToBelowSlopeAngleLeft()
-        {
-            stickyRaycastModel.OnSetBelowSlopeAngleToBelowSlopeAngleLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         public async UniTaskVoid SetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
             stickyRaycastModel.OnSetCastFromLeftWithBelowSlopeAngleRightLtZero();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetBelowSlopeAngleToBelowSlopeAngleRight()
-        {
-            stickyRaycastModel.OnSetBelowSlopeAngleToBelowSlopeAngleRight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -390,23 +372,6 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetBelowSlopeAngleLeft()
-        {
-            leftStickyRaycastModel.OnSetBelowSlopeAngleLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetCrossBelowSlopeAngleLeft()
-        {
-            leftStickyRaycastModel.OnSetCrossBelowSlopeAngleLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void SetBelowSlopeAngleLeftToNegative()
-        {
-            leftStickyRaycastModel.OnSetBelowSlopeAngleLeftToNegative();
-        }
-
         #endregion
 
         #region right stickyraycast model
@@ -437,23 +402,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             rightStickyRaycastModel.OnSetRightStickyRaycast();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetBelowSlopeAngleRight()
-        {
-            rightStickyRaycastModel.OnSetBelowSlopeAngleRight();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetCrossBelowSlopeAngleRight()
-        {
-            rightStickyRaycastModel.OnSetCrossBelowSlopeAngleRight();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void SetBelowSlopeAngleRightToNegative()
-        {
-            rightStickyRaycastModel.OnSetBelowSlopeAngleRightToNegative();
         }
 
         #endregion

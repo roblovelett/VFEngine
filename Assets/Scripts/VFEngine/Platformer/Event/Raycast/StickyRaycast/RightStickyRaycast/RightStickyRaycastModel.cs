@@ -52,6 +52,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
                 r.RaysBelowLayerMaskPlatforms, cyan, r.DrawRaycastGizmosControl);
         }
 
+        /*
         private void SetBelowSlopeAngleRight()
         {
             r.BelowSlopeAngleRight = Vector2.Angle(r.RightStickyRaycast.normal, r.Transform.up);
@@ -66,6 +67,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         {
             r.BelowSlopeAngleRight = -r.BelowSlopeAngleRight;
         }
+        */
 
         #endregion
 
@@ -100,6 +102,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
             SetRightStickyRaycast();
         }
 
+        /*
         public void OnSetBelowSlopeAngleRight()
         {
             SetBelowSlopeAngleRight();
@@ -114,6 +117,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         {
             SetBelowSlopeAngleRightToNegative();
         }
+        */
 
         #endregion
 

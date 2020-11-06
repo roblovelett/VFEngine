@@ -26,6 +26,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         [SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private FloatReference belowSlopeAngleLeft;
         [SerializeField] private FloatReference belowSlopeAngleRight;
+        [SerializeField] private FloatReference belowSlopeAngle;
 
         #endregion
 
@@ -45,6 +46,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public bool DisplayWarningsControl => displayWarningsControl.Value;
         public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
         public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        public float BelowSlopeAngle => belowSlopeAngle.Value;
         public float BoundsWidth => boundsWidth.Value;
         public float MaximumSlopeAngle => maximumSlopeAngle.Value;
         public float BoundsHeight => boundsHeight.Value;
@@ -72,7 +74,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             set => value = stickyRaycastLength.Value;
         }
 
-        public float BelowSlopeAngle { get; set; }
         public static string StickyRaycastPath { get; } = $"{RaycastPath}StickyRaycast/";
 
         public static readonly string StickyRaycastModelPath =

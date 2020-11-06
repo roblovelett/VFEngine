@@ -35,6 +35,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private void InitializeModel()
         {
             r.RightHitsStorageLength = r.RightHitsStorage.Length;
+            InitializeRightHitsStorage();
+            InitializeCurrentRightHitsStorageIndex();
+            ResetState();
         }
 
         private void InitializeRightHitsStorage()
@@ -122,11 +125,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void ResetState()
         {
-            r.RightHitConnected = false;
-            r.passedRightSlopeAngle = false;
+            SetRightRaycastHitMissed();
+            SetRightFailedSlopeAngle();
+            SetCurrentWallColliderNull();
             r.IsCollidingRight = false;
             r.CurrentRightHitCollider = null;
-            r.currentRightWallCollider = null;
             r.CurrentRightHitAngle = 0f;
             r.rightLateralSlopeAngle = 0f;
             r.distanceToRightCollider = -1f;

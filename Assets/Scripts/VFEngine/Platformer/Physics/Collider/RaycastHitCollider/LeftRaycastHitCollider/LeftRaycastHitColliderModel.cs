@@ -35,6 +35,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void InitializeModel()
         {
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
+            InitializeLeftHitsStorage();
+            InitializeCurrentLeftHitsStorageIndex();
+            ResetState();
         }
 
         private void InitializeLeftHitsStorage()

@@ -49,6 +49,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             r.ContactList.Clear();
         }
 
+        private void ResetState()
+        {
+            ClearContactList();
+        }
+
         private static float SetRaycastHitAngle(Vector2 normal, Transform t)
         {
             return Abs(Angle(normal, t.up));
@@ -62,10 +67,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region public methods
 
-        public async UniTaskVoid OnClearContactList()
+        public void OnClearContactList()
         {
             ClearContactList();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnAddRightHitToContactList()
@@ -87,6 +91,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             Initialize();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void OnResetState()
+        {
+            ResetState();
         }
 
         #endregion

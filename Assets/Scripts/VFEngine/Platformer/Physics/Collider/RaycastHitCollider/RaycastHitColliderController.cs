@@ -1,531 +1,651 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
+    using static RaycastHitColliderData;
+    using static UpRaycastHitColliderData;
+    using static RightRaycastHitColliderData;
+    using static DownRaycastHitColliderData;
+    using static LeftRaycastHitColliderData;
+    using static DistanceToGroundRaycastHitColliderData;
+    using static StickyRaycastHitColliderData;
+    using static LeftStickyRaycastHitColliderData;
+    using static RightStickyRaycastHitColliderData;
+    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
-    public class RaycastHitColliderController : MonoBehaviour, IController
+
+    public class RaycastHitColliderController : MonoBehaviour
     {
-        /* fields: dependencies */
-        [SerializeField] private RaycastHitColliderModel upColliderModel;
-        [SerializeField] private RaycastHitColliderModel rightColliderModel;
-        [SerializeField] private RaycastHitColliderModel downColliderModel;
-        [SerializeField] private RaycastHitColliderModel leftColliderModel;
+        #region fields
 
-        /* fields */
-        private RaycastHitColliderModel[] models;
+        #region dependencies
 
-        /* fields: methods */
-        private async void Awake()
+        [SerializeField] private RaycastHitColliderModel raycastHitColliderModel;
+        [SerializeField] private UpRaycastHitColliderModel upRaycastHitColliderModel;
+        [SerializeField] private RightRaycastHitColliderModel rightRaycastHitColliderModel;
+        [SerializeField] private DownRaycastHitColliderModel downRaycastHitColliderModel;
+        [SerializeField] private LeftRaycastHitColliderModel leftRaycastHitColliderModel;
+        [SerializeField] private DistanceToGroundRaycastHitColliderModel distanceToGroundRaycastHitColliderModel;
+        [SerializeField] private StickyRaycastHitColliderModel stickyRaycastHitColliderModel;
+        [SerializeField] private RightStickyRaycastHitColliderModel rightStickyRaycastHitColliderModel;
+        [SerializeField] private LeftStickyRaycastHitColliderModel leftStickyRaycastHitColliderModel;
+
+        #endregion
+
+        #region private methods
+
+        private void Awake()
         {
-            /*
             GetModels();
-            var rTask1 = Async(upColliderModel.Initialize());
-            var rTask2 = Async(rightColliderModel.Initialize());
-            var rTask3 = Async(downColliderModel.Initialize());
-            var rTask4 = Async(leftColliderModel.Initialize());
-            var rTask = await (rTask1, rTask2, rTask3, rTask4);
-            */
+            Async(InitializeModels());
         }
 
         private void GetModels()
         {
-            /*
-            models = new[] {upColliderModel, rightColliderModel, downColliderModel, leftColliderModel};
-            var names = new[] {"upColliderModel", "rightColliderModel", "downColliderModel", "leftColliderModel"};
-            for (var i = 0; i < models.Length; i++)
-            {
-                if (models[i]) continue;
-                models[i] = LoadData(ModelPath) as RaycastHitColliderModel;
-                switch (i)
-                {
-                    case 0:
-                        upColliderModel = models[i];
-                        break;
-                    case 1:
-                        rightColliderModel = models[i];
-                        break;
-                    case 2:
-                        downColliderModel = models[i];
-                        break;
-                    case 3:
-                        leftColliderModel = models[i];
-                        break;
-                }
-
-                Assert(models[i] != null, names[i] + " != null");
-            }
-            */
+            if (!raycastHitColliderModel)
+                raycastHitColliderModel = LoadModel<RaycastHitColliderModel>(RaycastHitColliderModelPath);
+            if (!upRaycastHitColliderModel)
+                upRaycastHitColliderModel = LoadModel<UpRaycastHitColliderModel>(UpRaycastHitColliderModelPath);
+            if (!rightRaycastHitColliderModel)
+                rightRaycastHitColliderModel =
+                    LoadModel<RightRaycastHitColliderModel>(RightRaycastHitColliderModelPath);
+            if (!downRaycastHitColliderModel)
+                downRaycastHitColliderModel = LoadModel<DownRaycastHitColliderModel>(DownRaycastHitColliderModelPath);
+            if (!leftRaycastHitColliderModel)
+                leftRaycastHitColliderModel = LoadModel<LeftRaycastHitColliderModel>(LeftRaycastHitColliderModelPath);
+            if (!distanceToGroundRaycastHitColliderModel)
+                distanceToGroundRaycastHitColliderModel =
+                    LoadModel<DistanceToGroundRaycastHitColliderModel>(DistanceToGroundRaycastHitColliderModelPath);
+            if (!stickyRaycastHitColliderModel)
+                stickyRaycastHitColliderModel =
+                    LoadModel<StickyRaycastHitColliderModel>(StickyRaycastHitColliderModelPath);
+            if (!rightStickyRaycastHitColliderModel)
+                rightStickyRaycastHitColliderModel =
+                    LoadModel<RightStickyRaycastHitColliderModel>(RightStickyRaycastHitColliderModelPath);
+            if (!leftStickyRaycastHitColliderModel)
+                leftStickyRaycastHitColliderModel =
+                    LoadModel<LeftStickyRaycastHitColliderModel>(LeftStickyRaycastHitColliderModelPath);
         }
 
-        public async UniTaskVoid ClearContactList()
+        private async UniTaskVoid InitializeModels()
         {
-            /*
-            var rhcTask1 = Async(upColliderModel.OnClearContactList());
-            var rhcTask2 = Async(rightColliderModel.OnClearContactList());
-            var rhcTask3 = Async(downColliderModel.OnClearContactList());
-            var rhcTask4 = Async(leftColliderModel.OnClearContactList());
-            var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
+            var rTask1 = Async(raycastHitColliderModel.OnInitialize());
+            var rTask2 = Async(upRaycastHitColliderModel.OnInitialize());
+            var rTask3 = Async(rightRaycastHitColliderModel.OnInitialize());
+            var rTask4 = Async(downRaycastHitColliderModel.OnInitialize());
+            var rTask5 = Async(leftRaycastHitColliderModel.OnInitialize());
+            var rTask6 = Async(distanceToGroundRaycastHitColliderModel.OnInitialize());
+            var rTask7 = Async(stickyRaycastHitColliderModel.OnInitialize());
+            var rTask8 = Async(leftStickyRaycastHitColliderModel.OnInitialize());
+            var rTask9 = Async(rightStickyRaycastHitColliderModel.OnInitialize());
+            var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6, rTask7, rTask8, rTask9);
             await SetYieldOrSwitchToThreadPoolAsync();
-            */
         }
 
-        //public async UniTaskVoid SetWasGroundedLastFrame()
-        //{
-            //var rhcTask1 = Async(upColliderModel.OnSetWasGroundedLastFrame());
-            //var rhcTask2 = Async(rightColliderModel.OnSetWasGroundedLastFrame());
-            //var rhcTask3 = Async(downColliderModel.OnSetWasGroundedLastFrame());
-            //var rhcTask4 = Async(leftColliderModel.OnSetWasGroundedLastFrame());
-            //var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
-            //await SetYieldOrSwitchToThreadPoolAsync();
-        //}
+        #endregion
 
-        //public async UniTaskVoid SetStandingOnLastFrame()
-        //{
-            /*
-            var rhcTask1 = Async(upColliderModel.OnSetStandingOnLastFrame());
-            var rhcTask2 = Async(rightColliderModel.OnSetStandingOnLastFrame());
-            var rhcTask3 = Async(downColliderModel.OnSetStandingOnLastFrame());
-            var rhcTask4 = Async(leftColliderModel.OnSetStandingOnLastFrame());
-            var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
-            await SetYieldOrSwitchToThreadPoolAsync();
-            */
-        //}
+        #endregion
 
-        //public async UniTaskVoid SetWasTouchingCeilingLastFrame()
-        //{
-            /*
-            var rhcTask1 = Async(upColliderModel.OnSetWasTouchingCeilingLastFrame());
-            var rhcTask2 = Async(rightColliderModel.OnSetWasTouchingCeilingLastFrame());
-            var rhcTask3 = Async(downColliderModel.OnSetWasTouchingCeilingLastFrame());
-            var rhcTask4 = Async(leftColliderModel.OnSetWasTouchingCeilingLastFrame());
-            var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
-            await SetYieldOrSwitchToThreadPoolAsync();
-            */
-        //}
+        #region properties
 
-        public async UniTaskVoid SetCurrentWallColliderNull()
-        {
-            /*
-            var rhcTask1 = Async(upColliderModel.OnSetCurrentWallColliderNull());
-            var rhcTask2 = Async(rightColliderModel.OnSetCurrentWallColliderNull());
-            var rhcTask3 = Async(downColliderModel.OnSetCurrentWallColliderNull());
-            var rhcTask4 = Async(leftColliderModel.OnSetCurrentWallColliderNull());
-            var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
-            await SetYieldOrSwitchToThreadPoolAsync();
-            */
-        }
-
-        public async UniTaskVoid ResetState()
-        {
-            /*
-            var rhcTask1 = Async(upColliderModel.OnResetState());
-            var rhcTask2 = Async(rightColliderModel.OnResetState());
-            var rhcTask3 = Async(downColliderModel.OnResetState());
-            var rhcTask4 = Async(leftColliderModel.OnResetState());
-            var rhcTask = await (rhcTask1, rhcTask2, rhcTask3, rhcTask4);
-            await SetYieldOrSwitchToThreadPoolAsync();
-            */
-        }
+        #region public methods
         
-        public void AddLeftHitToContactList()
-        {
-            //raycast hit collider model
-            //.OnAddLeftHitToContactList();
-        }
+        #region platformer model
         
+        // foobar
+        
+        #endregion
+
+        #region raycast hit collider model
+
+        public void ResetRaycastHitColliderState()
+        {
+            raycastHitColliderModel.OnResetState();
+        }
+
+        public async UniTaskVoid OnClearContactList()
+        {
+            raycastHitColliderModel.OnClearContactList();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void AddRightHitToContactList()
         {
-            //raycast hit collider model
-            //.OnAddRightHitToContactList();
+            raycastHitColliderModel.OnAddRightHitToContactList();
         }
 
-        //public async UniTaskVoid SetOnMovingPlatform()
-        //{
-            /*
-            var rchTask1 = Async(upColliderModel.OnSetOnMovingPlatform());
-            var rchTask2 = Async(rightColliderModel.OnSetOnMovingPlatform());
-            var rchTask3 = Async(downColliderModel.OnSetOnMovingPlatform());
-            var rchTask4 = Async(leftColliderModel.OnSetOnMovingPlatform());
-            var rhcTask = await (rchTask1, rchTask2, rchTask3, rchTask4);
-            await SetYieldOrSwitchToThreadPoolAsync();
-            */
-        //}
+        public void AddLeftHitToContactList()
+        {
+            raycastHitColliderModel.OnAddLeftHitToContactList();
+        }
 
-        //public async UniTaskVoid SetMovingPlatformCurrentGravity()
-        //{
-            //var rchTask1 = Async(upColliderModel.OnSetMovingPlatformCurrentGravity());
-            //var rchTask2 = Async(rightColliderModel.OnSetMovingPlatformCurrentGravity());
-            //var rchTask3 = Async(downColliderModel.OnSetMovingPlatformCurrentGravity());
-            //var rchTask4 = Async(leftColliderModel.OnSetMovingPlatformCurrentGravity());
-            //var rhcTask = await (rchTask1, rchTask2, rchTask3, rchTask4);
-            //await SetYieldOrSwitchToThreadPoolAsync();
-        //}
+        #endregion
 
-        /*
+        #region up raycast hit collider model
+
+        public void ResetUpRaycastHitColliderState()
+        {
+            upRaycastHitColliderModel.OnResetState();
+        }
+
         public async UniTaskVoid InitializeUpHitConnected()
         {
-            upColliderModel.OnInitializeUpHitConnected();
+            upRaycastHitColliderModel.OnInitializeUpHitConnected();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeUpHitsStorageCollidingIndex()
         {
-            upColliderModel.OnInitializeUpHitsStorageCollidingIndex();
+            upRaycastHitColliderModel.OnInitializeUpHitsStorageCollidingIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeUpHitsStorageCurrentIndex()
         {
-            upColliderModel.OnInitializeUpHitsStorageCurrentIndex();
+            upRaycastHitColliderModel.OnInitializeUpHitsStorageCurrentIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void InitializeUpHitsStorage()
         {
-            upColliderModel.OnInitializeUpHitsStorage();
+            upRaycastHitColliderModel.OnInitializeUpHitsStorage();
         }
 
         public void AddToUpHitsStorageCurrentIndex()
         {
-            upColliderModel.OnAddToUpHitsStorageCurrentIndex();
+            upRaycastHitColliderModel.OnAddToUpHitsStorageCurrentIndex();
         }
 
         public void SetCurrentUpHitsStorage()
         {
-            upColliderModel.OnSetCurrentUpHitsStorage();
+            upRaycastHitColliderModel.OnSetCurrentUpHitsStorage();
         }
 
         public void SetRaycastUpHitAt()
         {
-            upColliderModel.OnSetRaycastUpHitAt();
+            upRaycastHitColliderModel.OnSetRaycastUpHitAt();
         }
 
         public async UniTaskVoid SetUpHitConnected()
         {
-            upColliderModel.OnSetUpHitConnected();
+            upRaycastHitColliderModel.OnSetUpHitConnected();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetUpHitsStorageCollidingIndexAt()
         {
-            upColliderModel.OnSetUpHitsStorageCollidingIndexAt();
+            upRaycastHitColliderModel.OnSetUpHitsStorageCollidingIndexAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetIsCollidingAbove()
         {
-            upColliderModel.OnSetIsCollidingAbove();
+            upRaycastHitColliderModel.OnSetIsCollidingAbove();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }*//*
+        }
+
+        public void SetWasTouchingCeilingLastFrame()
+        {
+            upRaycastHitColliderModel.OnSetWasTouchingCeilingLastFrame();
+        }
+
+        #endregion
+
+        #region right raycast hit collider model
+
+        public void ResetRightRaycastHitColliderState()
+        {
+            rightRaycastHitColliderModel.OnResetState();
+        }
 
         public void InitializeRightHitsStorage()
         {
-            rightColliderModel.OnInitializeRightHitsStorage();
+            rightRaycastHitColliderModel.OnInitializeRightHitsStorage();
         }
 
         public void InitializeCurrentRightHitsStorageIndex()
         {
-            rightColliderModel.OnInitializeCurrentRightHitsStorageIndex();
+            rightRaycastHitColliderModel.OnInitializeCurrentRightHitsStorageIndex();
         }
 
         public void SetCurrentRightHitsStorage()
         {
-            rightColliderModel.OnSetCurrentRightHitsStorage();
+            rightRaycastHitColliderModel.OnSetCurrentRightHitsStorage();
+        }
+
+        public void SetRightRaycastHitConnected()
+        {
+            rightRaycastHitColliderModel.OnSetRightRaycastHitConnected();
+        }
+
+        public void SetRightRaycastHitMissed()
+        {
+            rightRaycastHitColliderModel.OnSetRightRaycastHitMissed();
         }
 
         public void SetCurrentRightHitAngle()
         {
-            rightColliderModel.OnSetCurrentRightHitAngle();
+            rightRaycastHitColliderModel.OnSetCurrentRightHitAngle();
         }
 
         public async UniTaskVoid SetRightIsCollidingRight()
         {
-            rightColliderModel.OnSetRightIsCollidingRight();
+            rightRaycastHitColliderModel.OnSetIsCollidingRight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetRightDistanceToRightCollider()
         {
-            rightColliderModel.OnSetRightDistanceToRightCollider();
+            rightRaycastHitColliderModel.OnSetRightDistanceToRightCollider();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetRightCurrentWallCollider()
         {
-            rightColliderModel.OnSetRightCurrentWallCollider();
+            rightRaycastHitColliderModel.OnSetRightCurrentWallCollider();
         }
 
-        /*public void AddRightHitToContactList()
-        {
-            rightColliderModel.OnAddRightHitToContactList();
-        }*/
-        /*
         public void AddToCurrentRightHitsStorageIndex()
         {
-            rightColliderModel.OnAddToCurrentRightHitsStorageIndex();
+            rightRaycastHitColliderModel.OnAddToCurrentRightHitsStorageIndex();
         }
 
         public void SetCurrentRightHitDistance()
         {
-            rightColliderModel.OnSetCurrentRightHitDistance();
+            rightRaycastHitColliderModel.OnSetCurrentRightHitDistance();
         }
 
         public void SetCurrentRightHitCollider()
         {
-            rightColliderModel.OnSetCurrentRightHitCollider();
+            rightRaycastHitColliderModel.OnSetCurrentRightHitCollider();
         }
 
         public void SetCurrentRightLateralSlopeAngle()
         {
-            rightColliderModel.OnSetCurrentRightLateralSlopeAngle();
+            rightRaycastHitColliderModel.OnSetCurrentRightLateralSlopeAngle();
         }
 
         public void SetRightFailedSlopeAngle()
         {
-            rightColliderModel.OnSetRightFailedSlopeAngle();
+            rightRaycastHitColliderModel.OnSetRightFailedSlopeAngle();
         }
 
         public void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
-            rightColliderModel.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
-        }*/
-/*
+            rightRaycastHitColliderModel.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
+        }
+
+        public async UniTaskVoid SetCurrentRightWallColliderNull()
+        {
+            rightRaycastHitColliderModel.OnSetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        #endregion
+
+        #region down raycast model
+
+        public void ResetDownRaycastHitColliderState()
+        {
+            downRaycastHitColliderModel.OnResetState();
+        }
+
         public async UniTaskVoid SetCurrentDownHitsStorage()
         {
-            downColliderModel.OnSetCurrentDownHitsStorage();
+            downRaycastHitColliderModel.OnSetCurrentDownHitsStorage();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeFriction()
         {
-            downColliderModel.OnInitializeFriction();
+            downRaycastHitColliderModel.OnInitializeFriction();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void InitializeDownHitsStorage()
         {
-            downColliderModel.OnInitializeDownHitsStorage();
+            downRaycastHitColliderModel.OnInitializeDownHitsStorage();
         }
 
         public async UniTaskVoid InitializeDownHitsStorageSmallestDistanceIndex()
         {
-            downColliderModel.OnInitializeDownHitsStorageSmallestDistanceIndex();
+            downRaycastHitColliderModel.OnInitializeDownHitsStorageSmallestDistanceIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeDownHitConnected()
         {
-            downColliderModel.OnInitializeDownHitConnected();
+            downRaycastHitColliderModel.OnInitializeDownHitConnected();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeDownHitsStorageIndex()
         {
-            downColliderModel.OnInitializeDownHitsStorageIndex();
+            downRaycastHitColliderModel.OnInitializeDownHitsStorageIndex();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void AddDownHitsStorageIndex()
         {
-            downColliderModel.OnAddDownHitsStorageIndex();
+            downRaycastHitColliderModel.OnAddDownHitsStorageIndex();
         }
 
         public async UniTaskVoid SetRaycastDownHitAt()
         {
-            downColliderModel.OnSetRaycastDownHitAt();
+            downRaycastHitColliderModel.OnSetRaycastDownHitAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetDownHitConnected()
         {
-            downColliderModel.OnSetDownHitConnected();
+            downRaycastHitColliderModel.OnSetDownHitConnected();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetBelowSlopeAngleAt()
         {
-            downColliderModel.OnSetBelowSlopeAngleAt();
+            downRaycastHitColliderModel.OnSetBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetCrossBelowSlopeAngleAt()
         {
-            downColliderModel.OnSetCrossBelowSlopeAngleAt();
+            downRaycastHitColliderModel.OnSetCrossBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetSmallestDistanceIndexAt()
         {
-            downColliderModel.OnSetSmallestDistanceIndexAt();
+            downRaycastHitColliderModel.OnSetSmallestDistanceIndexAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetNegativeBelowSlopeAngle()
         {
-            downColliderModel.OnSetNegativeBelowSlopeAngle();
+            downRaycastHitColliderModel.OnSetNegativeBelowSlopeAngle();
         }
 
         public async UniTaskVoid SetDownHitWithSmallestDistance()
         {
-            downColliderModel.OnSetDownHitWithSmallestDistance();
+            downRaycastHitColliderModel.OnSetDownHitWithSmallestDistance();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetIsCollidingBelow()
         {
-            downColliderModel.OnSetIsCollidingBelow();
+            downRaycastHitColliderModel.OnSetIsCollidingBelow();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetIsNotCollidingBelow()
         {
-            downColliderModel.OnSetIsNotCollidingBelow();
+            downRaycastHitColliderModel.OnSetIsNotCollidingBelow();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetFrictionToDownHitWithSmallestDistancesFriction()
         {
-            downColliderModel.OnSetFrictionToDownHitWithSmallestDistancesFriction();
+            downRaycastHitColliderModel.OnSetFrictionToDownHitWithSmallestDistancesFriction();
         }
 
         public void SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
         {
-            downColliderModel.OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
+            downRaycastHitColliderModel.OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
         }
 
         public async UniTaskVoid SetMovingPlatformToNull()
         {
-            downColliderModel.OnSetMovingPlatformToNull();
+            downRaycastHitColliderModel.OnSetMovingPlatformToNull();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid StopMovingPlatformCurrentGravity()
         {
-            downColliderModel.OnStopMovingPlatformCurrentGravity();
+            downRaycastHitColliderModel.OnStopMovingPlatformCurrentGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetCurrentDownHitSmallestDistance()
         {
-            downColliderModel.OnSetCurrentDownHitSmallestDistance();
+            downRaycastHitColliderModel.OnSetCurrentDownHitSmallestDistance();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetGroundedEvent()
         {
-            downColliderModel.OnSetGroundedEvent();
+            downRaycastHitColliderModel.OnSetGroundedEvent();
         }
-        */
 
-        /*public void SetStandingOnLastFrameLayerToPlatforms()
+        public void SetStandingOnLastFrameLayerToPlatforms()
         {
-            downColliderModel.OnSetStandingOnLastFrameLayerToPlatforms();
+            downRaycastHitColliderModel.OnSetStandingOnLastFrameLayerToPlatform();
         }
 
         public void SetStandingOnLastFrameLayerToSavedBelowLayer()
         {
-            downColliderModel.OnSetStandingOnLastFrameLayerToSavedBelowLayer();
+            downRaycastHitColliderModel.OnSetStandingOnLastFrameLayerToSavedBelowLayer();
         }
 
         public async UniTaskVoid SetStandingOn()
         {
-            downColliderModel.OnSetStandingOn();
+            downRaycastHitColliderModel.OnSetStandingOn();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetStandingOnCollider()
         {
-            downColliderModel.OnSetStandingOnCollider();
+            downRaycastHitColliderModel.OnSetStandingOnCollider();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetNotOnMovingPlatform()
         {
-            downColliderModel.OnSetNotOnMovingPlatform();
+            downRaycastHitColliderModel.OnSetNotOnMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
-        /*
+        }
+
+        #endregion
+
+        #region left raycast hit collider model
+
+        public void ResetLeftRaycastHitColliderState()
+        {
+            leftRaycastHitColliderModel.OnResetState();
+        }
+
         public void InitializeLeftHitsStorage()
         {
-            leftColliderModel.OnInitializeLeftHitsStorage();
+            leftRaycastHitColliderModel.OnInitializeLeftHitsStorage();
         }
 
         public void InitializeCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnInitializeCurrentLeftHitsStorageIndex();
+            leftRaycastHitColliderModel.OnInitializeCurrentLeftHitsStorageIndex();
         }
 
         public void SetCurrentLeftHitsStorage()
         {
-            leftColliderModel.OnSetCurrentLeftHitsStorage();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitsStorage();
         }
 
         public void SetCurrentLeftHitAngle()
         {
-            leftColliderModel.OnSetCurrentLeftHitAngle();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitAngle();
         }
 
         public async UniTaskVoid SetLeftIsCollidingLeft()
         {
-            leftColliderModel.OnSetLeftIsCollidingLeft();
+            leftRaycastHitColliderModel.OnSetIsCollidingLeft();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetLeftDistanceToLeftCollider()
         {
-            leftColliderModel.OnSetLeftDistanceToLeftCollider();
+            leftRaycastHitColliderModel.OnSetLeftDistanceToLeftCollider();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
+        }
 
-        /*public void SetLeftCurrentWallCollider()
+        public void SetLeftCurrentWallCollider()
         {
-            leftColliderModel.OnSetLeftCurrentWallCollider();
-        }*/
+            leftRaycastHitColliderModel.OnSetLeftCurrentWallCollider();
+        }
 
-        /*public void AddToCurrentLeftHitsStorageIndex()
+        public void AddToCurrentLeftHitsStorageIndex()
         {
-            leftColliderModel.OnAddToCurrentLeftHitsStorageIndex();
+            leftRaycastHitColliderModel.OnAddToCurrentLeftHitsStorageIndex();
         }
 
         public void SetCurrentLeftHitDistance()
         {
-            leftColliderModel.OnSetCurrentLeftHitDistance();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitDistance();
         }
 
         public void SetCurrentLeftHitCollider()
         {
-            leftColliderModel.OnSetCurrentLeftHitCollider();
+            leftRaycastHitColliderModel.OnSetCurrentLeftHitCollider();
         }
 
         public void SetCurrentLeftLateralSlopeAngle()
         {
-            leftColliderModel.OnSetCurrentLeftLateralSlopeAngle();
+            leftRaycastHitColliderModel.OnSetCurrentLeftLateralSlopeAngle();
         }
-*/
-        /*public void SetLeftFailedSlopeAngle()
+
+        public void SetLeftFailedSlopeAngle()
         {
-            leftColliderModel.OnSetLeftFailedSlopeAngle();
-        }public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
+            leftRaycastHitColliderModel.OnSetLeftFailedSlopeAngle();
+        }
+
+        public void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
-            leftColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
-        }*/
-        
+            leftRaycastHitColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+        }
+
+        public async UniTaskVoid SetCurrentLeftWallColliderNull()
+        {
+            leftRaycastHitColliderModel.OnSetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        #endregion
+
+        #region distance to ground raycast hit collider model
+
+        public void ResetDistanceToGroundRaycastHitColliderState()
+        {
+            distanceToGroundRaycastHitColliderModel.OnResetState();
+        }
+
         public async UniTaskVoid InitializeDistanceToGround()
         {
-            //distanceToGroundRaycastCollider.OnInitializeDistanceToGround();
+            distanceToGroundRaycastHitColliderModel.OnInitializeDistanceToGround();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void DecreaseDistanceToGround()
         {
-            //distanceToGroundRaycastCollider.OnDecreaseDistanceToGround();
+            distanceToGroundRaycastHitColliderModel.OnDecreaseDistanceToGround();
         }
 
         public void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
         {
-            //distanceToGroundRaycastCollider.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
+            distanceToGroundRaycastHitColliderModel.OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
         }
+
+        #endregion
+
+        #region sticky raycast hit collider model
+
+        public void ResetStickyRaycastHitColliderState()
+        {
+            stickyRaycastHitColliderModel.OnResetState();
+        }
+
+        public async UniTaskVoid InitializeBelowSlopeAngle()
+        {
+            stickyRaycastHitColliderModel.OnInitializeBelowSlopeAngle();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleToBelowSlopeAngleLeft()
+        {
+            stickyRaycastHitColliderModel.OnSetBelowSlopeAngleToBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleToBelowSlopeAngleRight()
+        {
+            stickyRaycastHitColliderModel.OnSetBelowSlopeAngleToBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        #endregion
+
+        #region right sticky raycast hit collider model
+
+        public void ResetRightStickyRaycastHitColliderState()
+        {
+            rightStickyRaycastHitColliderModel.OnResetState();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleRight()
+        {
+            rightStickyRaycastHitColliderModel.OnSetBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetCrossBelowSlopeAngleRight()
+        {
+            rightStickyRaycastHitColliderModel.OnSetCrossBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetBelowSlopeAngleRightToNegative()
+        {
+            rightStickyRaycastHitColliderModel.OnSetBelowSlopeAngleRightToNegative();
+        }
+
+        #endregion
+
+        #region left sticky raycast hit collider model
+
+        public void ResetLeftStickyRaycastHitColliderState()
+        {
+            leftStickyRaycastHitColliderModel.OnResetState();
+        }
+
+        public async UniTaskVoid SetBelowSlopeAngleLeft()
+        {
+            leftStickyRaycastHitColliderModel.OnSetBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetCrossBelowSlopeAngleLeft()
+        {
+            leftStickyRaycastHitColliderModel.OnSetCrossBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetBelowSlopeAngleLeftToNegative()
+        {
+            leftStickyRaycastHitColliderModel.OnSetBelowSlopeAngleLeftToNegative();
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
     }
 }

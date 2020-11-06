@@ -80,19 +80,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             s.IsCastingLeft = false;
         }
 
-        private void InitializeBelowSlopeAngle()
-        {
-            s.BelowSlopeAngle = 0f;
-        }
-
         private void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
             s.IsCastingLeft = Abs(s.BelowSlopeAngleLeft) > Abs(s.BelowSlopeAngleRight);
-        }
-
-        private void SetBelowSlopeAngleToBelowSlopeAngleLeft()
-        {
-            s.BelowSlopeAngle = s.BelowSlopeAngleLeft;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLtZero()
@@ -103,11 +93,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private void SetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
             s.IsCastingLeft = s.BelowSlopeAngleRight < 0f;
-        }
-
-        private void SetBelowSlopeAngleToBelowSlopeAngleRight()
-        {
-            s.BelowSlopeAngle = s.BelowSlopeAngleRight;
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftLtZero()
@@ -154,19 +139,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             SetDoNotCastFromLeft();
         }
 
-        public void OnInitializeBelowSlopeAngle()
-        {
-            InitializeBelowSlopeAngle();
-        }
-
         public void OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
             SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
-        }
-
-        public void OnSetBelowSlopeAngleToBelowSlopeAngleLeft()
-        {
-            SetBelowSlopeAngleToBelowSlopeAngleLeft();
         }
 
         public void OnSetCastFromLeftWithBelowSlopeAngleLtZero()
@@ -177,11 +152,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public void OnSetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
             SetCastFromLeftWithBelowSlopeAngleRightLtZero();
-        }
-
-        public void OnSetBelowSlopeAngleToBelowSlopeAngleRight()
-        {
-            SetBelowSlopeAngleToBelowSlopeAngleRight();
         }
 
         public void OnSetCastFromLeftWithBelowSlopeAngleLeftLtZero()

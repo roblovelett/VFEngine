@@ -2,14 +2,10 @@
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Platformer.Event.Boxcast;
-using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
@@ -23,8 +19,7 @@ namespace VFEngine.Platformer
         [SerializeField] private PlatformerSettings settings;
         [SerializeField] private PhysicsController physics;
         [SerializeField] private RaycastController raycast;
-        [SerializeField] private new ColliderController collider;
-        //[SerializeField] private RaycastHitColliderController raycastHitCollider;
+        [SerializeField] private RaycastHitColliderController raycastHitCollider;
         [SerializeField] private LayerMaskController layerMask;
         [SerializeField] private BoxcastController boxcast;
         [SerializeField] private Vector2Reference speed;
@@ -121,9 +116,7 @@ namespace VFEngine.Platformer
         public bool HasSettings => settings;
         public PhysicsController Physics => physics;
         public RaycastController Raycast => raycast;
-
-        public ColliderController Collider => collider;
-        //public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
+        public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
         public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;

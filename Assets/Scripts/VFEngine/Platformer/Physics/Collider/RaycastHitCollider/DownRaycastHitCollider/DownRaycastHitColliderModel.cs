@@ -47,6 +47,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;
             d.DownHitsStorageLength = d.DownHitsStorage.Length;
+            InitializeFriction();
+            InitializeDownHitsStorage();
+            InitializeDownHitsStorageSmallestDistanceIndex();
+            InitializeDownHitsStorageIndex();
+            ResetState();
         }
 
         private void SetCurrentDownHitsStorage()
@@ -189,7 +194,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.IsCollidingBelow = false;
             d.groundedEvent = false;
-            d.belowSlopeAngle = 0;
+            d.belowSlopeAngle = 0f;
             d.CrossBelowSlopeAngle = zero;
             d.standingOn = null;
             d.OnMovingPlatform = false;
