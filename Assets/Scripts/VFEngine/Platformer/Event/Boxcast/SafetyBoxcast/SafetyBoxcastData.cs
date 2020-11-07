@@ -50,7 +50,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public bool DrawBoxcastGizmosControl => drawRaycastGizmosControl.Value;
 
         #endregion
-
+        
         public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         public float SafetyBoxcastDistance

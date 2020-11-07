@@ -6,9 +6,9 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static DebugExtensions;
     using static Color;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel",
-        menuName = "VFEngine/Platformer/Event/Raycast/Distance To Ground Raycast/Distance To Ground Raycast Model",
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel", menuName = PlatformerDistanceToGroundRaycastModelPath,
         order = 0)]
     public class DistanceToGroundRaycastModel : ScriptableObject, IModel
     {

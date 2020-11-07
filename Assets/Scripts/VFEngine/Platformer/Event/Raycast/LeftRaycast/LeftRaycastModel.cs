@@ -7,9 +7,9 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LeftRaycastModel",
-        menuName = "VFEngine/Platformer/Event/Raycast/Left Raycast/Left Raycast Model", order = 0)]
+    [CreateAssetMenu(fileName = "LeftRaycastModel", menuName = PlatformerLeftRaycastModelPath, order = 0)]
     public class LeftRaycastModel : ScriptableObject, IModel
     {
         #region fields

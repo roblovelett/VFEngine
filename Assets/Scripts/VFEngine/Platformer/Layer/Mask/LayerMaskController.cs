@@ -21,7 +21,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             if (!model) model = LoadData(ModelPath) as LayerMaskModel;
             Assert(model != null, nameof(model) + " != null");
-            model.Initialize();
+            model.OnInitialize();
         }
 
         public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()

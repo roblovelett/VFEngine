@@ -9,9 +9,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "UpRaycastModel",
-        menuName = "VFEngine/Platformer/Event/Raycast/UpRaycast/Up Raycast Model", order = 0)]
+    [CreateAssetMenu(fileName = "UpRaycastModel", menuName = PlatformerUpRaycastModelPath, order = 0)]
     public class UpRaycastModel : ScriptableObject, IModel
     {
         #region fields

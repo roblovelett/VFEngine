@@ -7,9 +7,11 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
     using static DebugExtensions;
     using static Vector2;
     using static Color;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "SafetyBoxcastModel",
-        menuName = "VFEngine/Platformer/Event/Boxcast/Safety Boxcast Model", order = 0)]
+    //$"{PlatformerPath}"
+
+    [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
     public class SafetyBoxcastModel : ScriptableObject, IModel
     {
         #region fields

@@ -7,11 +7,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static StickyRaycastModel;
     using static DebugExtensions;
     using static Color;
-    using static Vector3;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RightStickyRaycastModel",
-        menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Right Sticky Raycast/Right Sticky Raycast Model",
-        order = 0)]
+    [CreateAssetMenu(fileName = "RightStickyRaycastModel", menuName = PlatformerRightStickyRaycastModelPath, order = 0)]
     public class RightStickyRaycastModel : ScriptableObject, IModel
     {
         #region fields
@@ -52,23 +50,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
                 r.RaysBelowLayerMaskPlatforms, cyan, r.DrawRaycastGizmosControl);
         }
 
-        /*
-        private void SetBelowSlopeAngleRight()
-        {
-            r.BelowSlopeAngleRight = Vector2.Angle(r.RightStickyRaycast.normal, r.Transform.up);
-        }
-
-        private void SetCrossBelowSlopeAngleRight()
-        {
-            r.CrossBelowSlopeAngleRight = Cross(r.Transform.up, r.RightStickyRaycast.normal);
-        }
-
-        private void SetBelowSlopeAngleRightToNegative()
-        {
-            r.BelowSlopeAngleRight = -r.BelowSlopeAngleRight;
-        }
-        */
-
         #endregion
 
         #endregion
@@ -101,23 +82,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         {
             SetRightStickyRaycast();
         }
-
-        /*
-        public void OnSetBelowSlopeAngleRight()
-        {
-            SetBelowSlopeAngleRight();
-        }
-
-        public void OnSetCrossBelowSlopeAngleRight()
-        {
-            SetCrossBelowSlopeAngleRight();
-        }
-
-        public void OnSetBelowSlopeAngleRightToNegative()
-        {
-            SetBelowSlopeAngleRightToNegative();
-        }
-        */
 
         #endregion
 

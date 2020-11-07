@@ -10,19 +10,22 @@ namespace VFEngine.Platformer.Layer.Mask
     using static LayerMask;
     using static UniTaskExtensions;
     using static DebugExtensions;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LayerMaskModel", menuName = "VFEngine/Platformer/Layer/Mask/Layer Mask Model",
-        order = 0)]
+    [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)]
     public class LayerMaskModel : ScriptableObject, IModel
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [LabelText("Layer Mask Data")] [SerializeField]
-        private LayerMaskData lm;
+        private LayerMaskData l;
 
-        /* fields */
-        private const string Lm = "Layer Mask";
+        #endregion
 
-        /* fields: methods */
+        #region private methods
+
         private async UniTaskVoid InitializeInternal()
         {
             var lTask1 = Async(InitializeData());
@@ -34,21 +37,20 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private async UniTaskVoid InitializeData()
         {
-            lm.PlatformMaskRef = lm.PlatformMask;
-            lm.OneWayPlatformMaskRef = lm.OneWayPlatformMask;
-            lm.MovingOneWayPlatformMaskRef = lm.MovingOneWayPlatformMask;
-            lm.MidHeightOneWayPlatformMaskRef = lm.MidHeightOneWayPlatformMask;
-            lm.StairsMaskRef = lm.StairsMask;
-            lm.RaysBelowLayerMaskPlatformsWithoutOneWayRef = lm.RaysBelowLayerMaskPlatformsWithoutOneWay;
-            lm.RaysBelowLayerMaskPlatformsRef = lm.RaysBelowLayerMaskPlatforms;
-            lm.SavedBelowLayerRef = lm.SavedBelowLayer;
+            l.PlatformMask = l.PlatformMaskSetting;
+            l.MovingPlatformMask = l.MovingPlatformMaskSetting;
+            l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
+            l.MovingOneWayPlatformMask = l.MovingOneWayPlatformMaskSetting;
+            l.MidHeightOneWayPlatformMask = l.MidHeightOneWayPlatformMaskSetting;
+            l.StairsMask = l.StairsMaskSetting;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         private async UniTaskVoid GetWarningMessages()
         {
-            if (lm.DisplayWarnings)
+            if (l.DisplayWarnings)
             {
+                const string lM = "Layer Mask";
                 const string player = "Player";
                 const string platform = "Platform";
                 const string movingPlatform = "MovingPlatform";
@@ -69,13 +71,13 @@ namespace VFEngine.Platformer.Layer.Mask
                 };
                 LayerMask[] layerMasks =
                 {
-                    lm.PlatformMask, lm.MovingPlatformMask, lm.OneWayPlatformMask, lm.MovingOneWayPlatformMask,
-                    lm.MidHeightOneWayPlatformMask, lm.StairsMask
+                    l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask, l.MovingOneWayPlatformMask,
+                    l.MidHeightOneWayPlatformMask, l.StairsMask
                 };
-                var settings = $"{Lm} Settings";
+                var settings = $"{lM} Settings";
                 var warningMessage = "";
                 var warningMessageCount = 0;
-                if (!lm.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+                if (!l.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
                 for (var i = 0; i < layers.Length; i++)
                 {
                     if (layers[i].value == layerMasks[i].value) continue;
@@ -109,53 +111,60 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private async UniTaskVoid InitializeModel()
         {
-            lm.SavedPlatformMask = lm.PlatformMask;
-            lm.PlatformMask |= lm.OneWayPlatformMask;
-            lm.PlatformMask |= lm.MovingPlatformMask;
-            lm.PlatformMask |= lm.MovingOneWayPlatformMask;
-            lm.PlatformMask |= lm.MidHeightOneWayPlatformMask;
+            l.savedPlatformMask = l.PlatformMask;
+            l.PlatformMask |= l.OneWayPlatformMask;
+            l.PlatformMask |= l.MovingPlatformMask;
+            l.PlatformMask |= l.MovingOneWayPlatformMask;
+            l.PlatformMask |= l.MidHeightOneWayPlatformMask;
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         private void SetRaysBelowLayerMaskPlatforms()
         {
-            lm.RaysBelowLayerMaskPlatforms = lm.PlatformMask;
+            l.RaysBelowLayerMaskPlatforms = l.PlatformMask;
         }
 
         private void SetRaysBelowLayerMaskPlatformsWithoutOneWay()
         {
-            lm.RaysBelowLayerMaskPlatformsWithoutOneWay = lm.PlatformMask & ~lm.MidHeightOneWayPlatformMask &
-                                                          ~lm.OneWayPlatformMask & ~lm.MovingOneWayPlatformMask;
+            l.RaysBelowLayerMaskPlatformsWithoutOneWay = l.PlatformMask & ~l.MidHeightOneWayPlatformMask &
+                                                         ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask;
         }
 
         private void SetRaysBelowLayerMaskPlatformsWithoutMidHeight()
         {
-            lm.RaysBelowLayerMaskPlatformsWithoutMidHeight =
-                lm.RaysBelowLayerMaskPlatforms & ~lm.MidHeightOneWayPlatformMask;
+            l.RaysBelowLayerMaskPlatformsWithoutMidHeight =
+                l.RaysBelowLayerMaskPlatforms & ~l.MidHeightOneWayPlatformMask;
         }
 
         private void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
         {
-            lm.RaysBelowLayerMaskPlatforms = lm.RaysBelowLayerMaskPlatformsWithoutMidHeight;
+            l.RaysBelowLayerMaskPlatforms = l.RaysBelowLayerMaskPlatformsWithoutMidHeight;
         }
 
         private void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
         {
-            lm.RaysBelowLayerMaskPlatforms = (lm.RaysBelowLayerMaskPlatforms & ~lm.OneWayPlatformMask) | lm.StairsMask;
+            l.RaysBelowLayerMaskPlatforms = (l.RaysBelowLayerMaskPlatforms & ~l.OneWayPlatformMask) | l.StairsMask;
         }
 
         private void SetRaysBelowLayerMaskPlatformsToOneWay()
         {
-            lm.RaysBelowLayerMaskPlatforms &= ~lm.OneWayPlatformMask;
+            l.RaysBelowLayerMaskPlatforms &= ~l.OneWayPlatformMask;
         }
 
         private void SetSavedBelowLayerToStandingOnLastFrameLayer()
         {
-            lm.SavedBelowLayer = lm.StandingOnLastFrameLayer;
+            l.SavedBelowLayer = l.StandingOnLastFrameLayer;
         }
 
-        /* properties: methods */
-        public void Initialize()
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
+
+        public void OnInitialize()
         {
             Async(InitializeInternal());
         }
@@ -194,5 +203,9 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             SetSavedBelowLayerToStandingOnLastFrameLayer();
         }
+
+        #endregion
+
+        #endregion
     }
 }

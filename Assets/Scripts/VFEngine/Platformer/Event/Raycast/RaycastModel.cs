@@ -13,9 +13,9 @@ namespace VFEngine.Platformer.Event.Raycast
     using static MathsExtensions;
     using static Mathf;
     using static Time;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RaycastModel", menuName = "VFEngine/Platformer/Event/Raycast/Raycast Model",
-        order = 0)]
+    [CreateAssetMenu(fileName = "RaycastModel", menuName = PlatformerRaycastModelPath, order = 0)]
     public class RaycastModel : ScriptableObject, IModel
     {
         #region fields
@@ -59,6 +59,7 @@ namespace VFEngine.Platformer.Event.Raycast
                 const string bc = "Box Collider 2D";
                 const string ch = "Character";
                 const string diGrRa = "Distance To Ground Ray Maximum Length";
+                const string colliderWarning = "This may cause issues near walls on direction change.";
                 var settings = $"{rc} Settings";
                 var rcOf = $"{rc} Offset";
                 var nuOfHoRa = $"{nuOf} Horizontal {ra}";
@@ -67,17 +68,9 @@ namespace VFEngine.Platformer.Event.Raycast
                 var warningMessageCount = 0;
                 if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
                 if (!r.HasBoxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
-                
-                
-                /*
-                if (r.OriginalColliderOffset.x != 0)
+                if (r.BoxCollider.offset.x != 0)
                     warningMessage +=
-                        PropertyNtZeroParentMessage($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
-                DebugLogWarning(warningMessageCount, warningMessage);
-                */
-                
-                
-                
+                        PropertyNtZeroParentString($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
                 if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
                 if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
                 if (r.CastRaysOnBothSides)
@@ -120,6 +113,13 @@ namespace VFEngine.Platformer.Event.Raycast
                 {
                     WarningMessageCountAdd();
                     return IsOddMessage(field, scriptableObject);
+                }
+
+                string PropertyNtZeroParentString(string field, string property, string scriptableObject,
+                    string message)
+                {
+                    WarningMessageCountAdd();
+                    return PropertyNtZeroParentMessage(field, property, scriptableObject, message);
                 }
 
                 void WarningMessageCountAdd()
