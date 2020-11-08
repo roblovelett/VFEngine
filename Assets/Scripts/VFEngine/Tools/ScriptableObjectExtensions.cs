@@ -20,6 +20,7 @@ namespace VFEngine.Tools
         #region properties
 
         public const string PlatformerRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Raycast Model";
+        public const string PlatformerRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/Raycast Settings";
         public const string PlatformerSafetyBoxcastModelPath = "VFEngine/Platformer/Event/Boxcast/Safety Boxcast/Safety Boxcast Model";
         public const string PlatformerDistanceToGroundRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Distance To Ground Raycast/Distance To Ground Raycast Model";
         public const string PlatformerDownRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Down Raycast/Down Raycast Model";
@@ -27,9 +28,12 @@ namespace VFEngine.Tools
         public const string PlatformerRightRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Right Raycast/Right Raycast Model";
         public const string PlatformerUpRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Up Raycast/Up Raycast Model";
         public const string PlatformerStickyRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Model";
+        public const string PlatformerStickyRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Settings";
         public const string PlatformerLeftStickyRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Left Sticky Raycast/Left Sticky Raycast Model";
         public const string PlatformerRightStickyRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Right Sticky Raycast/Right Sticky Raycast Model";
         public const string PlatformerLayerMaskModelPath = "VFEngine/Platformer/Layer/Mask/Layer Mask Model";
+        public const string PlatformerPhysicsModelPath = "VFEngine/Platformer/Physics/Physics Model";
+        public const string PlatformerPhysicsSettingsPath = "VFEngine/Platformer/Physics/Physics Settings";
         public static string PlatformerScriptableObjectsPath { get; } = $"{ScriptableObjectsPath}{PlatformerPath}";
         
         #region public methods

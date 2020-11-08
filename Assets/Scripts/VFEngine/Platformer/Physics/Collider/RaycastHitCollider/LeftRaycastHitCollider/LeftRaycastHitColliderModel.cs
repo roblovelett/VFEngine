@@ -168,9 +168,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetLeftCurrentWallCollider();
         }
 
-        public void OnSetCurrentWallColliderNull()
+        public async UniTaskVoid OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetLeftFailedSlopeAngle()

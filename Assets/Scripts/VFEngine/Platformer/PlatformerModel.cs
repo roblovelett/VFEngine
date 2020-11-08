@@ -103,7 +103,14 @@ namespace VFEngine.Platformer
         private async UniTaskVoid InitializeFrame()
         {
             if (p.PerformSafetyBoxcast) p.Boxcast.ResetSafetyBoxcastState();
-            if (p.StickToSlopesControl) p.Raycast.ResetStickyRaycastState();
+            if (p.StickToSlopesControl)
+            {
+                var srTask1 = Async(p.Raycast.ResetStickyRaycastState());
+                var srhTask1 = Async(p.RaycastHitCollider.ResetStickyRaycastHitColliderState());
+                var srhTask2 = Async(p.RaycastHitCollider.ResetLeftStickyRaycastHitColliderState());
+                var srhTask3 = Async(p.RaycastHitCollider.ResetRightStickyRaycastHitColliderState());
+                var task1 = await (srTask1, srhTask1, srhTask2, srhTask3);
+            }
             var phTask1 = Async(p.Physics.SetNewPosition());
             var phTask2 = Async(p.Physics.ResetState());
             var rhcTask1 = Async(p.RaycastHitCollider.ClearContactList());
@@ -114,7 +121,7 @@ namespace VFEngine.Platformer
             var rhcTask6 = Async(p.RaycastHitCollider.ResetState());
             var rTask1 = Async(p.Raycast.ResetDistanceToGroundRaycastState());
             var rTask2 = Async(p.Raycast.SetRaysParameters());
-            var task1 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1, rTask2);
+            var task2 = await (phTask1, phTask2, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rTask1, rTask2);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

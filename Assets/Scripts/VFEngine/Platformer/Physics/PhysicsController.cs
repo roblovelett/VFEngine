@@ -14,233 +14,252 @@ namespace VFEngine.Platformer.Physics
     [RequireComponent(typeof(GravityController))]
     public class PhysicsController : MonoBehaviour, IController
     {
-        /* fields: dependencies */
-        [SerializeField] private PhysicsModel model;
+        #region fields
 
-        /* fields: methods */
+        #region dependencies
+
+        [SerializeField] private PhysicsModel physicsModel;
+
+        #endregion
+
+        #region private methods
+
         private void Awake()
         {
-            if (!model) model = LoadData(ModelPath) as PhysicsModel;
-            Assert(model != null, nameof(model) + " != null");
-            model.OnInitialize();
+            if (!physicsModel) physicsModel = LoadData(ModelPath) as PhysicsModel;
+            Assert(physicsModel != null, nameof(physicsModel) + " != null");
+            physicsModel.OnInitialize();
         }
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
 
         public void SetCurrentGravity()
         {
-            model.OnSetCurrentCurrentGravity();
+            physicsModel.OnSetCurrentCurrentGravity();
         }
 
         public void ApplyAscentMultiplierToCurrentGravity()
         {
-            model.OnApplyAscentMultiplierToCurrentGravity();
+            physicsModel.OnApplyAscentMultiplierToCurrentGravity();
         }
-        
+
         public void ApplyFallMultiplierToCurrentGravity()
         {
-            model.OnApplyFallMultiplierToCurrentGravity();
+            physicsModel.OnApplyFallMultiplierToCurrentGravity();
         }
-        
+
         public void ApplyGravityToVerticalSpeed()
         {
-            model.OnApplyGravityToVerticalSpeed();
+            physicsModel.OnApplyGravityToVerticalSpeed();
         }
-        
+
         public void ApplyFallSlowFactorToVerticalSpeed()
         {
-            model.OnApplyFallSlowFactorToVerticalSpeed();
+            physicsModel.OnApplyFallSlowFactorToVerticalSpeed();
         }
 
         public async UniTaskVoid SetNewPosition()
         {
-            model.OnSetNewPosition();
+            physicsModel.OnSetNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ResetState()
         {
-            model.OnResetState();
+            physicsModel.OnResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void TranslatePlatformSpeedToTransform()
         {
-            model.OnTranslatePlatformSpeedToTransform();
+            physicsModel.OnTranslatePlatformSpeedToTransform();
         }
 
         public async UniTaskVoid DisableGravity()
         {
-            model.OnDisableGravity();
+            physicsModel.OnDisableGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ApplyMovingPlatformSpeedToNewPosition()
         {
-            model.OnApplyMovingPlatformSpeedToNewPosition();
+            physicsModel.OnApplyMovingPlatformSpeedToNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void StopHorizontalSpeedOnPlatformTest()
         {
-            model.OnStopHorizontalSpeedOnPlatformTest();
+            physicsModel.OnStopHorizontalSpeedOnPlatformTest();
         }
 
         public void SetForcesApplied()
         {
-            model.OnSetForcesApplied();
+            physicsModel.OnSetForcesApplied();
         }
 
         public void SetHorizontalMovementDirectionToStored()
         {
-            model.OnSetHorizontalMovementDirectionToStored();
+            physicsModel.OnSetHorizontalMovementDirectionToStored();
         }
+
         public void SetNegativeHorizontalMovementDirection()
         {
-            model.OnSetNegativeHorizontalMovementDirection();
+            physicsModel.OnSetNegativeHorizontalMovementDirection();
         }
 
         public void SetPositiveHorizontalMovementDirection()
         {
-            model.OnSetPositiveHorizontalMovementDirection();
+            physicsModel.OnSetPositiveHorizontalMovementDirection();
         }
 
         public void ApplyPlatformSpeedToHorizontalMovementDirection()
         {
-            model.OnApplyPlatformSpeedToHorizontalMovementDirection();
+            physicsModel.OnApplyPlatformSpeedToHorizontalMovementDirection();
         }
 
         public void SetStoredHorizontalMovementDirection()
         {
-            model.OnSetStoredHorizontalMovementDirection();
+            physicsModel.OnSetStoredHorizontalMovementDirection();
         }
 
         public void SetNewPositiveHorizontalPosition()
         {
-            model.OnSetNewPositiveHorizontalPosition();
+            physicsModel.OnSetNewPositiveHorizontalPosition();
         }
 
         public void SetNewNegativeHorizontalPosition()
         {
-            model.OnSetNewNegativeHorizontalPosition();
+            physicsModel.OnSetNewNegativeHorizontalPosition();
         }
 
         public async UniTaskVoid StopHorizontalSpeed()
         {
-            model.OnStopHorizontalSpeed();
+            physicsModel.OnStopHorizontalSpeed();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void StopNewHorizontalPosition()
         {
-            model.OnStopNewHorizontalPosition();
+            physicsModel.OnStopNewHorizontalPosition();
         }
 
         public void SetIsFalling()
         {
-            model.OnSetIsFalling();
+            physicsModel.OnSetIsFalling();
         }
 
         public async UniTaskVoid SetIsNotFalling()
         {
-            model.OnSetIsNotFalling();
+            physicsModel.OnSetIsNotFalling();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ApplySpeedToHorizontalNewPosition()
         {
-            model.OnApplySpeedToHorizontalNewPosition();
+            physicsModel.OnApplySpeedToHorizontalNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
         {
-            model.OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
+            physicsModel.OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
         }
 
         public void ApplySpeedToVerticalNewPosition()
         {
-            model.OnApplySpeedToVerticalNewPosition();
+            physicsModel.OnApplySpeedToVerticalNewPosition();
         }
 
         public void StopNewVerticalPosition()
         {
-            model.OnStopNewVerticalPosition();
+            physicsModel.OnStopNewVerticalPosition();
         }
 
         public async UniTaskVoid SetGravityActive()
         {
-            model.OnSetGravityActive();
+            physicsModel.OnSetGravityActive();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            model.OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
+            physicsModel.OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ApplyLeftStickyRaycastToNewVerticalPosition()
         {
-            model.OnApplyLeftStickyRaycastToNewVerticalPosition();
+            physicsModel.OnApplyLeftStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ApplyRightStickyRaycastToNewVerticalPosition()
         {
-            model.OnApplyRightStickyRaycastToNewVerticalPosition();
+            physicsModel.OnApplyRightStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void StopVerticalSpeed()
         {
-            model.OnStopVerticalSpeed();
+            physicsModel.OnStopVerticalSpeed();
         }
 
         public async UniTaskVoid SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
         {
-            model.OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
+            physicsModel.OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void StopVerticalForce()
         {
-            model.OnStopVerticalForce();
+            physicsModel.OnStopVerticalForce();
         }
 
         public void StopNewPosition()
         {
-            model.OnStopNewPosition();
+            physicsModel.OnStopNewPosition();
         }
 
         public void SetNewSpeed()
         {
-            model.OnSetNewSpeed();
+            physicsModel.OnSetNewSpeed();
         }
 
         public void ApplySlopeAngleSpeedFactorToHorizontalSpeed()
         {
-            model.OnApplySlopeAngleSpeedFactorToHorizontalSpeed();
+            physicsModel.OnApplySlopeAngleSpeedFactorToHorizontalSpeed();
         }
 
         public void ClampSpeedToMaxVelocity()
         {
-            model.OnClampSpeedToMaxVelocity();
+            physicsModel.OnClampSpeedToMaxVelocity();
         }
 
         public void OnContactListHit()
         {
-            model.OnContactListHit();
+            physicsModel.OnContactListHit();
         }
 
         public async UniTaskVoid StopExternalForce()
         {
-            model.OnStopExternalForce();
+            physicsModel.OnStopExternalForce();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetWorldSpeedToSpeed()
         {
-            model.OnSetWorldSpeedToSpeed();
+            physicsModel.OnSetWorldSpeedToSpeed();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        #endregion
+
+        #endregion
     }
 }

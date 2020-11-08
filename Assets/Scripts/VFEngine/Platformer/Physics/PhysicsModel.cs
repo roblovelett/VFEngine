@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+// ReSharper disable UnusedVariable
 
 namespace VFEngine.Platformer.Physics
 {
@@ -13,56 +14,55 @@ namespace VFEngine.Platformer.Physics
     using static Mathf;
     using static Vector2;
     using static RigidbodyType2D;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PhysicsModel", menuName = "VFEngine/Platformer/Physics/Physics Model", order = 0)]
+    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
     public class PhysicsModel : ScriptableObject, IModel
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [LabelText("Physics Data")] [SerializeField]
         private PhysicsData p;
 
-        /* fields */
+        #endregion
 
-        /* fields: methods */
+        #region private methods
+
         private async UniTaskVoid Initialize()
         {
-            var pTask1 = Async(InitializeData());
-            var pTask2 = Async(GetWarningMessages());
+            InitializeData();
+            var pTask1 = Async(GetWarningMessages());
+            var pTask2 = Async(InitializeModel());
             var pTask = await (pTask1, pTask2);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private async UniTaskVoid InitializeData()
+        private void InitializeData()
         {
-            p.CurrentHitRigidBodyCanBePushed = SetCurrentHitRigidBodyCanBePushed(p.CurrentHitRigidBody);
-            p.TransformRef = p.Transform;
-            p.SpeedRef = p.Speed;
-            p.GravityActiveRef = p.state.GravityActive;
-            p.FallSlowFactorRef = p.FallSlowFactor;
-            p.HorizontalMovementDirectionRef = p.HorizontalMovementDirection;
-            p.MaximumSlopeAngleRef = p.MaximumSlopeAngle;
-            p.NewPositionRef = p.NewPosition;
-            p.SmallValueRef = p.SmallValue;
-            p.GravityRef = p.Gravity;
-            p.StickToSlopesControlRef = p.StickToSlopesControl;
-            p.IsJumpingRef = p.state.IsJumping;
-            p.SafetyBoxcastControlRef = p.SafetyBoxcastControl;
-            p.ExternalForceRef = p.ExternalForce;
-            p.ExternalForceXRef = p.ExternalForceX;
-            p.ExternalForceYRef = p.ExternalForceY;
-            p.state.Reset();
-            if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private static bool SetCurrentHitRigidBodyCanBePushed(Rigidbody2D body)
-        {
-            return body != null && !body.isKinematic && body.bodyType != Static;
+            p.Physics2DPushForce = p.Physics2DPushForceSetting;
+            p.Physics2DInteractionControl = p.Physics2DInteractionControlSetting;
+            p.MaximumVelocity = p.MaximumVelocitySetting;
+            p.SafetyBoxcastControl = p.SafetyBoxcastControlSetting;
+            p.MaximumSlopeAngle = p.MaximumSlopeAngleSetting;
+            p.StickToSlopesControl = p.StickToSlopesControlSetting;
+            p.SafeSetTransformControl = p.SafeSetTransformControlSetting;
+            p.SlopeAngleSpeedFactor = p.SlopeAngleSpeedFactorSetting;
+            p.DisplayWarningsControl = p.DisplayWarningsControlSetting;
+            p.AutomaticGravityControl = p.AutomaticGravityControlSetting;
+            p.AscentMultiplier = p.AscentMultiplierSetting;
+            p.FallMultiplier = p.FallMultiplierSetting;
+            p.IsJumping = false;
+            p.Gravity = p.GravitySetting;
+            p.Transform = p.CharacterTransform;
+            p.FallSlowFactor = 0f;
+            p.SmallValue = 0.0001f;
         }
 
         private async UniTaskVoid GetWarningMessages()
         {
-            if (p.DisplayWarnings)
+            if (p.DisplayWarningsControl)
             {
                 const string ph = "Physics";
                 var settings = $"{ph} Settings";
@@ -91,6 +91,15 @@ namespace VFEngine.Platformer.Physics
                 }
             }
 
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModel()
+        {
+            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
+                                               p.CurrentHitRigidBody.bodyType != Static;
+            if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
+            ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -127,7 +136,7 @@ namespace VFEngine.Platformer.Physics
 
         private void ResetState()
         {
-            p.state.Reset();
+            p.GravityActive = true;
         }
 
         private void TranslatePlatformSpeedToTransform()
@@ -137,7 +146,7 @@ namespace VFEngine.Platformer.Physics
 
         private void DisableGravity()
         {
-            p.state.SetGravityActive(false);
+            p.GravityActive = false;
         }
 
         private void ApplyMovingPlatformSpeedToNewPosition()
@@ -153,7 +162,7 @@ namespace VFEngine.Platformer.Physics
 
         private void SetForcesApplied()
         {
-            p.ForcesApplied = p.Speed;
+            p.forcesApplied = p.Speed;
         }
 
         private void SetHorizontalMovementDirectionToStored()
@@ -183,12 +192,14 @@ namespace VFEngine.Platformer.Physics
 
         private void SetNewPositiveHorizontalPosition()
         {
-            p.NewPositionX = SetNewHorizontalPosition(true, p.DistanceBetweenRightHitAndRaycastOrigin, p.BoundsWidth, p.RayOffset);
+            p.NewPositionX = SetNewHorizontalPosition(true, p.DistanceBetweenRightHitAndRaycastOrigin, p.BoundsWidth,
+                p.RayOffset);
         }
 
         private void SetNewNegativeHorizontalPosition()
         {
-            p.NewPositionX = SetNewHorizontalPosition(false, p.DistanceBetweenLeftHitAndRaycastOrigin, p.BoundsWidth, p.RayOffset);
+            p.NewPositionX = SetNewHorizontalPosition(false, p.DistanceBetweenLeftHitAndRaycastOrigin, p.BoundsWidth,
+                p.RayOffset);
         }
 
         private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)
@@ -210,12 +221,12 @@ namespace VFEngine.Platformer.Physics
 
         private void SetIsFalling()
         {
-            p.state.SetIsFalling(true);
+            p.IsFalling = true;
         }
 
         private void SetIsNotFalling()
         {
-            p.state.SetIsFalling(false);
+            p.IsFalling = false;
         }
 
         private void ApplySpeedToHorizontalNewPosition()
@@ -231,7 +242,7 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplySpeedToVerticalNewPosition()
         {
-            p.NewPositionY += p.SpeedY * deltaTime;
+            p.NewPositionY = p.NewPosition.y + p.Speed.y * deltaTime;
         }
 
         private void StopNewVerticalPosition()
@@ -241,12 +252,13 @@ namespace VFEngine.Platformer.Physics
 
         private void SetGravityActive()
         {
-            p.state.SetGravityActive(true);
+            p.GravityActive = true;
         }
 
         private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y, p.RightStickyRaycastOriginY, p.BoundsHeight);
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private void ApplyLeftStickyRaycastToNewVerticalPosition()
@@ -257,12 +269,12 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplyRightStickyRaycastToNewVerticalPosition()
         {
-            
             p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
                 p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
-        private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY, float boundsHeight)
+        private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY,
+            float boundsHeight)
         {
             return -Abs(pointY - originY) + boundsHeight / 2;
         }
@@ -323,10 +335,22 @@ namespace VFEngine.Platformer.Physics
 
         private void SetWorldSpeedToSpeed()
         {
-            p.WorldSpeed = p.Speed;
+            p.worldSpeed = p.Speed;
         }
 
-        /* properties: methods */
+        private void SlowFall()
+        {
+            p.FallSlowFactor = p.CurrentVerticalSpeedFactor;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
+
         public void OnInitialize()
         {
             Async(Initialize());
@@ -471,7 +495,7 @@ namespace VFEngine.Platformer.Physics
         {
             SetGravityActive();
         }
-        
+
         public void OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
             ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
@@ -536,5 +560,14 @@ namespace VFEngine.Platformer.Physics
         {
             SetWorldSpeedToSpeed();
         }
+
+        public void OnSlowFall()
+        {
+            SlowFall();
+        }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics
 {
-    [CreateAssetMenu(fileName = "PhysicsSettings", menuName = "VFEngine/Platformer/Physics/Physics Settings", order = 0)]
+    using static ScriptableObjectExtensions;
+    
+    [CreateAssetMenu(fileName = "PhysicsSettings", menuName = PlatformerPhysicsSettingsPath, order = 0)]
     [InlineEditor]
     public class PhysicsSettings : ScriptableObject
     {
@@ -11,9 +14,9 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] public float fallMultiplier = 1f;
         [SerializeField] public float ascentMultiplier = 1f;
         [SerializeField] public Vector2 maximumVelocity = new Vector2(100f, 100f);
-        [SerializeField] public float speedAccelerationOnGround = 20f;
+        /*[SerializeField] public float speedAccelerationOnGround = 20f;
         [SerializeField] public float speedAccelerationInAir = 5f;
-        [SerializeField] public float speedFactor = 1f;
+        [SerializeField] public float speedFactor = 1f;*/
         [SerializeField] [Range(0, 90)] public float maximumSlopeAngle = 30f;
 
         [SerializeField] public AnimationCurve slopeAngleSpeedFactor =
@@ -21,7 +24,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] public float physics2DPushForce = 2f;
         [SerializeField] public bool physics2DInteractionControl = true;
-        [SerializeField] public bool safeSetTransformControl = true;
+        [SerializeField] public bool safeSetTransformControl = false;
         [SerializeField] public bool safetyBoxcastControl = true;
         [SerializeField] public bool stickToSlopeControl = true;
         [SerializeField] public bool automaticGravityControl = true;

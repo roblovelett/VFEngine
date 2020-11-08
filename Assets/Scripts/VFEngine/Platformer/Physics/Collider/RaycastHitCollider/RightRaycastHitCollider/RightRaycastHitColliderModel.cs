@@ -218,9 +218,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }
 
-        public void OnSetCurrentWallColliderNull()
+        public async UniTaskVoid OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnResetState()

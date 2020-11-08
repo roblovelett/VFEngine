@@ -12,17 +12,30 @@ namespace VFEngine.Platformer.Layer.Mask
 
     public class LayerMaskController : MonoBehaviour, IController
     {
-        /* fields: dependencies */
-        [SerializeField] private LayerMaskModel model;
-        /* fields */
+        #region fields
 
-        /* fields: methods */
+        #region dependencies
+
+        [SerializeField] private LayerMaskModel model;
+
+        #endregion
+
+        #region private methods
+
         private void Awake()
         {
             if (!model) model = LoadData(ModelPath) as LayerMaskModel;
             Assert(model != null, nameof(model) + " != null");
             model.OnInitialize();
         }
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region public methods
 
         public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()
         {
@@ -60,5 +73,9 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             model.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
         }
+
+        #endregion
+
+        #endregion
     }
 }

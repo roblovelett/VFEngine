@@ -1,13 +1,19 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
-    [CreateAssetMenu(fileName = "StickyRaycastSettings",
-        menuName = "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Settings", order = 0)]
+    using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "StickyRaycastSettings", menuName = PlatformerStickyRaycastSettingsPath, order = 0)]
     [InlineEditor]
     public class StickyRaycastSettings : ScriptableObject
     {
+        #region properties
+
         [SerializeField] public float stickToSlopesOffsetY = 0.2f;
+
+        #endregion
     }
 }

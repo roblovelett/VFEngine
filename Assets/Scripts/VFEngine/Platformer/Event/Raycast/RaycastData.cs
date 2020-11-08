@@ -1,8 +1,8 @@
 ﻿using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Tools;
+// ReSharper disable RedundantAssignment
 
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -144,7 +144,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             set => value = boundsTopRightCorner.Value;
         }
-        
+
         public Vector2 BoundsBottomCenterPosition
         {
             get => boundsBottomCenterPosition.Value;

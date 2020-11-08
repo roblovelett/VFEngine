@@ -1,5 +1,4 @@
-﻿using System;
-using ScriptableObjects.Atoms.LayerMask.References;
+﻿using ScriptableObjects.Atoms.LayerMask.References;
 using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
@@ -11,7 +10,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-    using static Single;
 
     public class DistanceToGroundRaycastData : MonoBehaviour
     {
@@ -29,7 +27,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
 
         #endregion
-        
+
         [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
@@ -49,7 +47,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
         public Transform Transform => transform.Value;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
-
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
 
         #endregion

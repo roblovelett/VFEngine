@@ -7,19 +7,23 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
 
     public class PhysicsData : MonoBehaviour
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private PhysicsSettings settings;
         [SerializeField] private Transform characterTransform;
         [SerializeField] private GravityController gravityController;
         [SerializeField] private FloatReference movingPlatformCurrentGravity;
+        [SerializeField] private FloatReference currentVerticalSpeedFactor;
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
-        [SerializeField] private FloatReference maximumSlopeAngle;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
@@ -35,7 +39,15 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference belowSlopeAngle;
         [SerializeField] private RaycastHitColliderContactList rhcContact;
 
-        /* fields */
+        #endregion
+
+        [SerializeField] private FloatReference physics2DPushForce;
+        [SerializeField] private BoolReference physics2DInteractionControl;
+        [SerializeField] private Vector2Reference maximumVelocity;
+        [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private FloatReference maximumSlopeAngle;
+        [SerializeField] private BoolReference stickToSlopesControl;
+        [SerializeField] private BoolReference safeSetTransformControl;
         [SerializeField] private new TransformReference transform;
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
@@ -44,82 +56,38 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference newPosition;
         [SerializeField] private FloatReference smallValue;
         [SerializeField] private FloatReference gravity;
-        [SerializeField] private BoolReference stickToSlopesControl;
         [SerializeField] private BoolReference isJumping;
-        [SerializeField] private BoolReference safetyBoxcastControl;
+        [SerializeField] private BoolReference isFalling;
         [SerializeField] private Vector2Reference externalForce;
-        [SerializeField] private FloatReference externalForceX;
-        [SerializeField] private FloatReference externalForceY;
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
-        /* properties dependencies */
-        public float Physics2DPushForce => settings.physics2DPushForce;
-        public bool Physics2DInteractionControl => settings.physics2DInteractionControl;
-        public Vector2 MaximumVelocity => settings.maximumVelocity;
-        public float BelowSlopeAngle => belowSlopeAngle.Value;
-        public AnimationCurve SlopeAngleSpeedFactor => settings.slopeAngleSpeedFactor;
-        public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
-        public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;
-        public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
-        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
-        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
-        public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
-        public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
-        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
-        public bool SafetyBoxcastControl => settings.safetyBoxcastControl;
+        #endregion
 
-        public bool SafetyBoxcastControlRef
-        {
-            set => value = safetyBoxcastControl.Value;
-        }
+        #region properties
 
-        public bool IsJumpingRef
-        {
-            set => value = isJumping.Value;
-        }
+        #region dependencies
 
-        public bool StickToSlopesControl => settings.stickToSlopeControl;
-
-        public bool StickToSlopesControlRef
-        {
-            set => value = stickToSlopesControl.Value;
-        }
-
-        public Transform Transform
-        {
-            get => characterTransform;
-            set => value = characterTransform;
-        }
-
-        public Transform TransformRef
-        {
-            set => value = transform.Value;
-        }
-
-        public bool HasSettings => settings;
-        public bool DisplayWarnings => settings.displayWarningsControl;
-        public bool AutomaticGravityControl => settings.automaticGravityControl;
-        public bool HasGravityController => gravityController;
         public bool HasTransform => characterTransform;
-        public float Gravity => settings.gravity;
-
-        public float GravityRef
-        {
-            set => value = gravity.Value;
-        }
-
-        public float AscentMultiplier => settings.ascentMultiplier;
-        public float FallMultiplier => settings.fallMultiplier;
+        public bool HasSettings => settings;
+        public float Physics2DPushForceSetting => settings.physics2DPushForce;
+        public bool Physics2DInteractionControlSetting => settings.physics2DInteractionControl;
+        public Vector2 MaximumVelocitySetting => settings.maximumVelocity;
+        public AnimationCurve SlopeAngleSpeedFactorSetting => settings.slopeAngleSpeedFactor;
+        public bool SafetyBoxcastControlSetting => settings.safetyBoxcastControl;
+        public float MaximumSlopeAngleSetting => settings.maximumSlopeAngle;
+        public bool StickToSlopesControlSetting => settings.stickToSlopeControl;
+        public bool SafeSetTransformControlSetting => settings.safeSetTransformControl;
+        public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
+        public bool AutomaticGravityControlSetting => settings.automaticGravityControl;
+        public float AscentMultiplierSetting => settings.ascentMultiplier;
+        public float FallMultiplierSetting => settings.fallMultiplier;
+        public float GravitySetting => settings.gravity;
+        public Transform CharacterTransform => characterTransform;
+        public float CurrentVerticalSpeedFactor => currentVerticalSpeedFactor.Value;
+        public bool HasGravityController => gravityController;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
-        public float MaximumSlopeAngle => settings.maximumSlopeAngle;
-
-        public float MaximumSlopeAngleRef
-        {
-            set => value = maximumSlopeAngle;
-        }
-
         public float BoundsWidth => boundsWidth.Value;
         public float RayOffset => rayOffset.Value;
 
@@ -127,54 +95,146 @@ namespace VFEngine.Platformer.Physics
             distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
 
         public float BoundsHeight => boundsHeight.Value;
+        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
+        public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
+        public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
+        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
+        public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
+        public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;
+        public float BelowSlopeAngle => belowSlopeAngle.Value;
         public IEnumerable<RaycastHit2D> ContactList => rhcContact.List;
 
-        /* properties */
-        public Vector2 WorldSpeed { get; set; } = Vector2.zero;
-        public Rigidbody2D CurrentHitRigidBody { get; set; }
-        public bool CurrentHitRigidBodyCanBePushed { get; set; }
-        public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-        public readonly PhysicsState state = new PhysicsState();
-        public Vector2 ExternalForce { get; set; } = Vector2.zero;
+        #endregion
 
-        public Vector2 ExternalForceRef
+        public AnimationCurve SlopeAngleSpeedFactor { get; set; }
+
+        public float Physics2DPushForce
         {
+            get => physics2DPushForce.Value;
+            set => value = physics2DPushForce.Value;
+        }
+
+        public bool Physics2DInteractionControl
+        {
+            get => physics2DInteractionControl.Value;
+            set => value = physics2DInteractionControl.Value;
+        }
+
+        public Vector2 MaximumVelocity
+        {
+            get => maximumVelocity.Value;
+            set => value = maximumVelocity.Value;
+        }
+
+        public bool SafetyBoxcastControl
+        {
+            set => value = safetyBoxcastControl.Value;
+        }
+
+        public float MaximumSlopeAngle
+        {
+            set => value = maximumSlopeAngle.Value;
+        }
+
+        public bool StickToSlopesControl
+        {
+            set => value = stickToSlopesControl.Value;
+        }
+
+        public bool SafeSetTransformControl
+        {
+            set => value = safeSetTransformControl.Value;
+        }
+
+        public Transform Transform
+        {
+            get => transform.Value;
+            set => value = transform.Value;
+        }
+
+        public Vector2 Speed
+        {
+            get => speed.Value;
+            set => value = speed.Value;
+        }
+
+        public bool GravityActive
+        {
+            set => value = gravityActive.Value;
+        }
+
+        public float FallSlowFactor
+        {
+            get => fallSlowFactor.Value;
+            set => value = fallSlowFactor.Value;
+        }
+
+        public int HorizontalMovementDirection
+        {
+            get => horizontalMovementDirection.Value;
+            set => value = horizontalMovementDirection.Value;
+        }
+
+        public Vector2 NewPosition
+        {
+            get => newPosition.Value;
+            set => value = newPosition.Value;
+        }
+
+        public float NewPositionX
+        {
+            set => value = NewPosition.x;
+        }
+
+        public float NewPositionY
+        {
+            set => value = NewPosition.y;
+        }
+
+        public float SmallValue
+        {
+            set => value = smallValue.Value;
+        }
+
+        public float Gravity
+        {
+            get => gravity.Value;
+            set => value = gravity.Value;
+        }
+
+        public bool IsJumping
+        {
+            set => value = isJumping.Value;
+        }
+
+        public bool IsFalling
+        {
+            set => value = isFalling.Value;
+        }
+
+        public Vector2 ExternalForce
+        {
+            get => externalForce.Value;
             set => value = externalForce.Value;
-        }
-
-        public float ExternalForceX
-        {
-            get => ExternalForce.x;
-            set => value = ExternalForce.x;
-        }
-
-        public float ExternalForceXRef
-        {
-            set => value = externalForceX.Value;
         }
 
         public float ExternalForceY
         {
-            get => ExternalForce.y;
             set => value = ExternalForce.y;
         }
 
-        public float ExternalForceYRef
-        {
-            set => value = externalForceY.Value;
-        }
-
+        public bool DisplayWarningsControl { get; set; }
+        public bool AutomaticGravityControl { get; set; }
+        public float AscentMultiplier { get; set; }
+        public float FallMultiplier { get; set; }
+        public Vector2 worldSpeed = Vector2.zero;
+        public Vector2 forcesApplied = Vector2.zero;
+        public Rigidbody2D CurrentHitRigidBody { get; set; }
+        public bool CurrentHitRigidBodyCanBePushed { get; set; }
+        public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
         public float CurrentGravity { get; set; }
-        public Vector2 Speed { get; set; } = Vector2.zero;
-        public Vector2 ForcesApplied { get; set; }
-        public int HorizontalMovementDirection { get; set; }
-
-        public int HorizontalMovementDirectionRef
-        {
-            set => value = horizontalMovementDirection.Value;
-        }
-
         public int StoredHorizontalMovementDirection { get; set; }
 
         public float SpeedX
@@ -189,47 +249,8 @@ namespace VFEngine.Platformer.Physics
             set => value = Speed.y;
         }
 
-        public Vector2 SpeedRef
-        {
-            set => value = speed.Value;
-        }
+        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
-        public bool GravityActiveRef
-        {
-            set => value = gravityActive.Value;
-        }
-
-        public float FallSlowFactor { get; set; }
-
-        public float FallSlowFactorRef
-        {
-            set => value = fallSlowFactor.Value;
-        }
-
-        public Vector2 NewPosition { get; set; }
-
-        public Vector2 NewPositionRef
-        {
-            set => value = newPosition.Value;
-        }
-
-        public float NewPositionX
-        {
-            get => NewPosition.x;
-            set => value = NewPosition.x;
-        }
-
-        public float NewPositionY
-        {
-            get => NewPosition.y;
-            set => value = NewPosition.y;
-        }
-
-        public float SmallValue { get; set; } = 0.0001f;
-
-        public float SmallValueRef
-        {
-            set => value = smallValue.Value;
-        }
+        #endregion
     }
 }

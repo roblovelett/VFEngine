@@ -71,11 +71,6 @@ namespace VFEngine.Platformer.Event.Boxcast
             safetyBoxcastModel.OnResetState();
         }
 
-        public void InitializeSafetyBoxcast()
-        {
-            safetyBoxcastModel.OnInitialize();
-        }
-
         #endregion
 
         #endregion

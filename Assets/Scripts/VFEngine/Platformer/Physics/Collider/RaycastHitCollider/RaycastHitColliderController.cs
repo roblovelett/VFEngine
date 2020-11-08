@@ -103,8 +103,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region public methods
         
         #region platformer model
-        
-        // foobar
+
+        public async UniTaskVoid SetCurrentWallColliderNull()
+        {
+            var rTask1 = Async(rightRaycastHitColliderModel.OnSetCurrentWallColliderNull());
+            var rTask2 = Async(leftRaycastHitColliderModel.OnSetCurrentWallColliderNull());
+            var rTask = await (rTask1, rTask2);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid ResetState()
+        {
+            var rTask1 = Async(raycastHitColliderModel.OnResetState());
+            var rTask2 = Async(upRaycastHitColliderModel.OnResetState());
+            var rTask3 = Async(rightRaycastHitColliderModel.OnResetState());
+            var rTask4 = Async(downRaycastHitColliderModel.OnResetState());
+            var rTask5 = Async(leftStickyRaycastHitColliderModel.OnResetState());
+            var rTask6 = Async(distanceToGroundRaycastHitColliderModel.OnResetState());
+            var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
         
         #endregion
 
@@ -115,7 +133,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             raycastHitColliderModel.OnResetState();
         }
 
-        public async UniTaskVoid OnClearContactList()
+        public async UniTaskVoid ClearContactList()
         {
             raycastHitColliderModel.OnClearContactList();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -196,9 +214,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void SetWasTouchingCeilingLastFrame()
+        public async UniTaskVoid SetWasTouchingCeilingLastFrame()
         {
             upRaycastHitColliderModel.OnSetWasTouchingCeilingLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion
@@ -296,6 +315,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #endregion
 
         #region down raycast model
+
+        public async UniTaskVoid SetWasGroundedLastFrame()
+        {
+            downRaycastHitColliderModel.OnSetWasGroundedLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetStandingOnLastFrame()
+        {
+            downRaycastHitColliderModel.OnSetStandingOnLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void ResetDownRaycastHitColliderState()
         {
