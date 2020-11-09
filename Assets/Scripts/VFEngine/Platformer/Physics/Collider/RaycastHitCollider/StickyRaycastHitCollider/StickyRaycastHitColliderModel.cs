@@ -1,15 +1,15 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
     using static UniTaskExtensions;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "StickyRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Sticky Raycast Hit Collider Model",
+    [CreateAssetMenu(fileName = "StickyRaycastHitColliderModel", menuName = PlatformerStickyRaycastHitColliderModelPath,
         order = 0)]
     public class StickyRaycastHitColliderModel : ScriptableObject, IModel
     {

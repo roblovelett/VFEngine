@@ -53,6 +53,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         public RaycastHit2D DistanceToGroundRaycast
         {
+            get => distanceToGroundRaycast.Value;
             set => value = distanceToGroundRaycast.Value;
         }
 

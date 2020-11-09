@@ -45,6 +45,17 @@ namespace VFEngine.Platformer.Event.Boxcast
         #region properties
 
         #region public methods
+        
+        #region platformer model
+
+        /*
+        public void OnInitializeFrameSafetyBoxcast()
+        {
+            ResetSafetyBoxcastState();
+        }
+        */
+        
+        #endregion
 
         #region safety boxcast model
 

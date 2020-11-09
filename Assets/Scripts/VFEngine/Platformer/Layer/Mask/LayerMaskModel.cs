@@ -26,7 +26,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        private async UniTaskVoid InitializeInternal()
+        private async UniTaskVoid Initialize()
         {
             var lTask1 = Async(InitializeData());
             var lTask2 = Async(GetWarningMessages());
@@ -166,7 +166,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public void OnInitialize()
         {
-            Async(InitializeInternal());
+            Async(Initialize());
         }
 
         public void OnSetRaysBelowLayerMaskPlatforms()

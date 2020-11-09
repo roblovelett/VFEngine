@@ -1,5 +1,6 @@
 #if UNITY_2019_1_OR_NEWER
 using ScriptableObjects.Atoms.LayerMask.Variables;
+using UnityAtoms;
 using UnityAtoms.Editor;
 using UnityEditor;
 

@@ -1,17 +1,17 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider
 {
     using static Vector3;
     using static UniTaskExtensions;
+    using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "StickyRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider Model",
-        order = 0)]
+        menuName = PlatformerRightStickyRaycastHitColliderModelPath, order = 0)]
     public class RightStickyRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

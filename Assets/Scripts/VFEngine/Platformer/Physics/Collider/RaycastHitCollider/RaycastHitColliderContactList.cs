@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
-    [CreateAssetMenu(fileName = "RaycastHitColliderContactList",
-        menuName = "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Raycast Hit Collider Contact List",
+    using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "RaycastHitColliderContactList", menuName = PlatformerRaycastHitColliderContactListPath,
         order = 0)]
     public class RaycastHitColliderContactList : ScriptableObject
     {

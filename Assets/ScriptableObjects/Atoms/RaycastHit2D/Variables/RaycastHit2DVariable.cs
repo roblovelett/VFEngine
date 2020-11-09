@@ -1,3 +1,4 @@
+using System;
 using ScriptableObjects.Atoms.RaycastHit2D.Events;
 using ScriptableObjects.Atoms.RaycastHit2D.Functions;
 using ScriptableObjects.Atoms.RaycastHit2D.Pairs;
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace ScriptableObjects.Atoms.RaycastHit2D.Variables
 {
     /// <summary>
-    /// Variable of type `RaycastHit2D`. Inherits from `EquatableAtomVariable&lt;RaycastHit2D, RaycastHit2DPair, RaycastHit2DEvent, RaycastHit2DPairEvent, RaycastHit2DRaycastHit2DFunction&gt;`.
+    /// Variable of type `RaycastHit2D`. Inherits from `AtomVariable&lt;RaycastHit2D, RaycastHit2DPair, RaycastHit2DEvent, RaycastHit2DPairEvent, RaycastHit2DRaycastHit2DFunction&gt;`.
     /// </summary>
     [EditorIcon("atom-icon-lush")]
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/RaycastHit2D", fileName = "RaycastHit2DVariable")]
@@ -15,7 +16,7 @@ namespace ScriptableObjects.Atoms.RaycastHit2D.Variables
     {
         protected override bool ValueEquals(UnityEngine.RaycastHit2D other)
         {
-            throw new System.NotImplementedException();
+            return other;
         }
     }
 }

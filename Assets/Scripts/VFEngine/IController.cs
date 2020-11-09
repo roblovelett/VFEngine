@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace VFEngine
+﻿namespace VFEngine
 {
     public interface IController
     {

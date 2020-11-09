@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -18,7 +17,7 @@ namespace VFEngine.Platformer
     {
         /* fields: dependencies */
         [SerializeField] private PlatformerModel model;
-        
+
         private void Awake()
         {
             if (!model) model = LoadData(ModelPath) as PlatformerModel;

@@ -273,7 +273,7 @@ namespace VFEngine.Platformer.Event.Raycast
         #endregion
 
         #region distance to ground raycast model
-
+        
         public void SetDistanceToGroundRaycastOrigin()
         {
             distanceToGroundRaycastModel.OnSetDistanceToGroundRaycastOrigin();
@@ -335,9 +335,10 @@ namespace VFEngine.Platformer.Event.Raycast
             stickyRaycastModel.OnSetCastFromLeftWithLeftDistanceLtRightDistance();
         }
 
-        public void ResetStickyRaycastState()
+        public async UniTaskVoid ResetStickyRaycastState()
         {
             stickyRaycastModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

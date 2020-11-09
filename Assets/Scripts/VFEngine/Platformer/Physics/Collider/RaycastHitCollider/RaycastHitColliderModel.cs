@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
@@ -8,9 +9,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static UniTaskExtensions;
     using static Vector3;
     using static Mathf;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RaycastHitColliderModel",
-        menuName = "VFEngine/Platformer/Physics/Raycast Hit Collider/Raycast Hit Collider Model", order = 0)]
+    [CreateAssetMenu(fileName = "RaycastHitColliderModel", menuName = PlatformerRaycastHitColliderModelPath, order = 0)]
     public class RaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

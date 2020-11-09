@@ -10,14 +10,15 @@ using UnityAtoms;
 namespace ScriptableObjects.Atoms.LayerMask.References
 {
     /// <summary>
-    ///     Reference of type `LayerMask`. Inherits from `EquatableAtomReference&lt;LayerMask, LayerMaskPair,
-    ///     LayerMaskConstant, LayerMaskVariable, LayerMaskEvent, LayerMaskPairEvent, LayerMaskLayerMaskFunction,
-    ///     LayerMaskVariableInstancer, AtomCollection, AtomList&gt;`.
+    ///     Reference of type `RaycastHit2D`. Inherits from `AtomReference&lt;RaycastHit2D, RaycastHit2DPair,
+    ///     RaycastHit2DConstant, RaycastHit2DVariable, RaycastHit2DEvent, RaycastHit2DPairEvent,
+    ///     RaycastHit2DRaycastHit2DFunction, RaycastHit2DVariableInstancer, AtomCollection, AtomList&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class LayerMaskReference : EquatableAtomReference<
-        UnityEngine.LayerMask, LayerMaskPair, LayerMaskConstant, LayerMaskVariable, LayerMaskEvent, LayerMaskPairEvent,
-        LayerMaskLayerMaskFunction, LayerMaskVariableInstancer>, IEquatable<LayerMaskReference>
+    public sealed class LayerMaskReference : AtomReference<
+            UnityEngine.LayerMask, LayerMaskPair, LayerMaskConstant, LayerMaskVariable, LayerMaskEvent,
+            LayerMaskPairEvent, LayerMaskLayerMaskFunction, LayerMaskVariableInstancer>,
+        IEquatable<LayerMaskReference>
     {
         public LayerMaskReference()
         {
@@ -30,6 +31,11 @@ namespace ScriptableObjects.Atoms.LayerMask.References
         public bool Equals(LayerMaskReference other)
         {
             return base.Equals(other);
+        }
+
+        protected override bool ValueEquals(UnityEngine.LayerMask other)
+        {
+            return true;
         }
     }
 }

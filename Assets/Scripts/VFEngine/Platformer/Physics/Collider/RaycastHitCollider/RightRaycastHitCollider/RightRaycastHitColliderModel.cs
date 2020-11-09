@@ -9,10 +9,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static RaycastHitColliderModel;
     using static UniTaskExtensions;
     using static MathsExtensions;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RightRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Raycast Hit Collider/Right Raycast Hit Collider/Right Raycast Hit Collider Model",
+    [CreateAssetMenu(fileName = "RightRaycastHitColliderModel", menuName = PlatformerRightRaycastHitColliderModelPath,
         order = 0)]
     public class RightRaycastHitColliderModel : ScriptableObject, IModel
     {
@@ -218,10 +217,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }
 
-        public async UniTaskVoid OnSetCurrentWallColliderNull()
+        public void OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnResetState()

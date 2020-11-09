@@ -4,6 +4,7 @@ using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics
 {
     using static Debug;
@@ -38,6 +39,8 @@ namespace VFEngine.Platformer.Physics
         #region properties
 
         #region public methods
+
+        #region physics model
 
         public void SetCurrentGravity()
         {
@@ -257,6 +260,8 @@ namespace VFEngine.Platformer.Physics
             physicsModel.OnSetWorldSpeedToSpeed();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
+        #endregion
 
         #endregion
 

@@ -45,7 +45,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         #region properties
 
         #region public methods
-
+        
         public void OnSetDistanceToGroundRaycastOrigin()
         {
             SetDistanceToGroundRaycastOrigin();

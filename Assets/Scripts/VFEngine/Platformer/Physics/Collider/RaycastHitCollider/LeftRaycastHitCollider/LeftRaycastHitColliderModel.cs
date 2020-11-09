@@ -9,10 +9,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
     using static RaycastHitColliderModel;
     using static UniTaskExtensions;
     using static MathsExtensions;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LeftRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Raycast Hit Collider/Left Raycast Hit Collider/Left Raycast Hit Collider Model",
+    [CreateAssetMenu(fileName = "LeftRaycastHitColliderModel", menuName = PlatformerLeftRaycastHitColliderModelPath,
         order = 0)]
     public class LeftRaycastHitColliderModel : ScriptableObject, IModel
     {
@@ -58,6 +57,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void SetCurrentLeftHitDistance()
         {
             l.CurrentLeftHitDistance = l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex].distance;
+        }
+
+        private void SetLeftRaycastHitConnected()
+        {
+            l.LeftHitConnected = true;
+        }
+
+        private void SetLeftRaycastHitMissed()
+        {
+            l.LeftHitConnected = false;
         }
 
         private void SetCurrentLeftHitAngle()
@@ -168,10 +177,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetLeftCurrentWallCollider();
         }
 
-        public async UniTaskVoid OnSetCurrentWallColliderNull()
+        public void OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetLeftFailedSlopeAngle()
@@ -187,6 +195,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public void OnSetCurrentLeftHitDistance()
         {
             SetCurrentLeftHitDistance();
+        }
+
+        public void OnSetLeftRaycastHitConnected()
+        {
+            SetLeftRaycastHitConnected();
+        }
+
+        public void OnSetLeftRaycastHitMissed()
+        {
+            SetLeftRaycastHitMissed();
         }
 
         public void OnSetCurrentLeftHitCollider()

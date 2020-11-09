@@ -8,17 +8,15 @@ using UnityEngine;
 namespace ScriptableObjects.Atoms.LayerMask.Variables
 {
     /// <summary>
-    ///     Variable of type `LayerMask`. Inherits from `EquatableAtomVariable&lt;LayerMask, LayerMaskPair, LayerMaskEvent,
-    ///     LayerMaskPairEvent, LayerMaskLayerMaskFunction&gt;`.
+    /// Variable of type `LayerMask`. Inherits from `AtomVariable&lt;LayerMask, LayerMaskPair, LayerMaskEvent, LayerMaskPairEvent, LayerMaskLayerMaskFunction&gt;`.
     /// </summary>
     [EditorIcon("atom-icon-lush")]
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/LayerMask", fileName = "LayerMaskVariable")]
-    public sealed class LayerMaskVariable : AtomVariable<UnityEngine.LayerMask, LayerMaskPair, LayerMaskEvent,
-        LayerMaskPairEvent, LayerMaskLayerMaskFunction>
+    public sealed class LayerMaskVariable : AtomVariable<UnityEngine.LayerMask, LayerMaskPair, LayerMaskEvent, LayerMaskPairEvent, LayerMaskLayerMaskFunction>
     {
         protected override bool ValueEquals(UnityEngine.LayerMask other)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

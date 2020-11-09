@@ -15,7 +15,10 @@ namespace VFEngine.Platformer
 
     public class PlatformerData : MonoBehaviour
     {
-        /* fields: dependencies */
+        #region fields
+
+        #region dependencies
+
         [SerializeField] private PlatformerSettings settings;
         [SerializeField] private PhysicsController physics;
         [SerializeField] private RaycastController raycast;
@@ -25,7 +28,6 @@ namespace VFEngine.Platformer
         [SerializeField] private Vector2Reference speed;
         [SerializeField] private BoolReference gravityActive;
         [SerializeField] private FloatReference fallSlowFactor;
-        [SerializeField] private BoolReference isCollidingWithMovingPlatform;
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         [SerializeField] private FloatReference movementDirectionThreshold;
@@ -97,13 +99,19 @@ namespace VFEngine.Platformer
         [SerializeField] private BoolReference isCollidingRight;
         [SerializeField] private BoolReference isCollidingAbove;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        [SerializeField] private BoolReference hasDistanceToGroundRaycast;
+        [SerializeField] private BoolReference distanceToGroundRaycastHit;
         [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
 
-        /* fields */
+        #endregion
+
         private const string ModelAssetPath = "DefaultPlatformerModel.asset";
 
-        /* properties: dependencies */
+        #endregion
+
+        #region properties
+
+        #region dependencies
+
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
         public bool IsCollidingAbove => isCollidingAbove.Value;
         public bool IsCollidingBelow => isCollidingBelow.Value;
@@ -122,7 +130,6 @@ namespace VFEngine.Platformer
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
         public float FallSlowFactor => fallSlowFactor.Value;
-        public bool IsCollidingWithMovingPlatform => isCollidingWithMovingPlatform.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
         public float MovementDirectionThreshold => movementDirectionThreshold.Value;
@@ -187,10 +194,13 @@ namespace VFEngine.Platformer
         public bool UpHitConnected => upHitConnected.Value;
         public bool RightHitConnected => rightHitConnected.Value;
         public bool LeftHitConnected => leftHitConnected.Value;
-        public bool HasDistanceToGroundRaycast => hasDistanceToGroundRaycast.Value;
+        public bool DistanceToGroundRaycastHit => distanceToGroundRaycastHit.Value;
         public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
 
-        /* properties */
+        #endregion
+
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #endregion
     }
 }

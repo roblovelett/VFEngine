@@ -1,16 +1,16 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
     using static UniTaskExtensions;
-    
+    using static ScriptableObjectExtensions;
+
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Raycast Hit Collider/Distance To Ground Raycast Hit Collider/Distance To Ground Raycast Hit Collider Model",
-        order = 0)]
+        menuName = PlatformerDistanceToGroundRaycastHitColliderModelPath, order = 0)]
     public class DistanceToGroundRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields
@@ -33,14 +33,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         {
             ResetState();
         }
-        private void SetHasDistanceToGroundRaycast()
+
+        private void SetDistanceToGroundRaycastHit()
         {
-            d.HasDistanceToGroundRaycast = true;
+            d.DistanceToGroundRaycastHit = true;
         }
 
         private void ResetState()
         {
-            d.HasDistanceToGroundRaycast = false;
+            d.DistanceToGroundRaycastHit = false;
             InitializeDistanceToGround();
         }
 
@@ -65,9 +66,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region public methods
 
-        public void OnSetHasDistanceToGroundRaycast()
+        public void OnSetDistanceToGroundRaycastHit()
         {
-            SetHasDistanceToGroundRaycast();
+            SetDistanceToGroundRaycastHit();
         }
 
         public void OnInitializeDistanceToGround()

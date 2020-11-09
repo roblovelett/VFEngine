@@ -94,6 +94,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        #region right raycast model
+
+        public async UniTaskVoid SetCurrentRightWallColliderNull()
+        {
+            rightRaycastHitColliderModel.OnSetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        #endregion
+
+        #region left raycast model
+
+        public async UniTaskVoid SetCurrentLeftWallColliderNull()
+        {
+            leftRaycastHitColliderModel.OnSetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -101,36 +121,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region properties
 
         #region public methods
-        
-        #region platformer model
-
-        public async UniTaskVoid SetCurrentWallColliderNull()
-        {
-            var rTask1 = Async(rightRaycastHitColliderModel.OnSetCurrentWallColliderNull());
-            var rTask2 = Async(leftRaycastHitColliderModel.OnSetCurrentWallColliderNull());
-            var rTask = await (rTask1, rTask2);
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid ResetState()
-        {
-            var rTask1 = Async(raycastHitColliderModel.OnResetState());
-            var rTask2 = Async(upRaycastHitColliderModel.OnResetState());
-            var rTask3 = Async(rightRaycastHitColliderModel.OnResetState());
-            var rTask4 = Async(downRaycastHitColliderModel.OnResetState());
-            var rTask5 = Async(leftStickyRaycastHitColliderModel.OnResetState());
-            var rTask6 = Async(distanceToGroundRaycastHitColliderModel.OnResetState());
-            var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6);
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-        
-        #endregion
 
         #region raycast hit collider model
 
-        public void ResetRaycastHitColliderState()
+        public async UniTaskVoid ResetRaycastHitColliderState()
         {
             raycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid ClearContactList()
@@ -153,9 +150,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region up raycast hit collider model
 
-        public void ResetUpRaycastHitColliderState()
+        public async UniTaskVoid ResetUpRaycastHitColliderState()
         {
             upRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeUpHitConnected()
@@ -224,9 +222,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region right raycast hit collider model
 
-        public void ResetRightRaycastHitColliderState()
+        public async UniTaskVoid ResetRightRaycastHitColliderState()
         {
             rightRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void InitializeRightHitsStorage()
@@ -306,15 +305,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rightRaycastHitColliderModel.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }
 
-        public async UniTaskVoid SetCurrentRightWallColliderNull()
+        #endregion
+
+        #region down raycast hit collider model
+
+        public async UniTaskVoid SetOnMovingPlatform()
         {
-            rightRaycastHitColliderModel.OnSetCurrentWallColliderNull();
+            downRaycastHitColliderModel.OnSetOnMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        #endregion
-
-        #region down raycast model
+        public async UniTaskVoid SetMovingPlatformCurrentGravity()
+        {
+            downRaycastHitColliderModel.OnSetMovingPlatformCurrentGravity();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public async UniTaskVoid SetWasGroundedLastFrame()
         {
@@ -328,9 +333,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void ResetDownRaycastHitColliderState()
+        public async UniTaskVoid ResetDownRaycastHitColliderState()
         {
             downRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetCurrentDownHitsStorage()
@@ -491,9 +497,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region left raycast hit collider model
 
-        public void ResetLeftRaycastHitColliderState()
+        public async UniTaskVoid ResetLeftRaycastHitColliderState()
         {
             leftRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void InitializeLeftHitsStorage()
@@ -543,6 +550,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftRaycastHitColliderModel.OnSetCurrentLeftHitDistance();
         }
 
+        public void SetLeftRaycastHitConnected()
+        {
+            leftRaycastHitColliderModel.OnSetLeftRaycastHitConnected();
+        }
+
+        public void SetLeftRaycastHitMissed()
+        {
+            leftRaycastHitColliderModel.OnSetLeftRaycastHitMissed();
+        }
+
         public void SetCurrentLeftHitCollider()
         {
             leftRaycastHitColliderModel.OnSetCurrentLeftHitCollider();
@@ -563,19 +580,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftRaycastHitColliderModel.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
         }
 
-        public async UniTaskVoid SetCurrentLeftWallColliderNull()
-        {
-            leftRaycastHitColliderModel.OnSetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         #endregion
 
         #region distance to ground raycast hit collider model
 
-        public void ResetDistanceToGroundRaycastHitColliderState()
+        public async UniTaskVoid ResetDistanceToGroundRaycastHitColliderState()
         {
             distanceToGroundRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetDistanceToGroundRaycastHit()
+        {
+            distanceToGroundRaycastHitColliderModel.OnSetDistanceToGroundRaycastHit();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeDistanceToGround()
@@ -598,9 +616,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region sticky raycast hit collider model
 
-        public void ResetStickyRaycastHitColliderState()
+        public async UniTaskVoid ResetStickyRaycastHitColliderState()
         {
             stickyRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid InitializeBelowSlopeAngle()
@@ -625,9 +644,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region right sticky raycast hit collider model
 
-        public void ResetRightStickyRaycastHitColliderState()
+        public async UniTaskVoid ResetRightStickyRaycastHitColliderState()
         {
             rightStickyRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetBelowSlopeAngleRight()
@@ -651,9 +671,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region left sticky raycast hit collider model
 
-        public void ResetLeftStickyRaycastHitColliderState()
+        public async UniTaskVoid ResetLeftStickyRaycastHitColliderState()
         {
             leftStickyRaycastHitColliderModel.OnResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetBelowSlopeAngleLeft()

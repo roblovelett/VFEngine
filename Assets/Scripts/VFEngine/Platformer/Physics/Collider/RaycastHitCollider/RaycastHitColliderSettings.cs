@@ -1,10 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
-    [CreateAssetMenu(fileName = "RaycastHitColliderSettings",
-        menuName = "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Raycast Hit Collider Settings",
+    using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "RaycastHitColliderSettings", menuName = PlatformerRaycastHitColliderSettingsPath,
         order = 0)]
     [InlineEditor]
     public class RaycastHitColliderSettings : ScriptableObject

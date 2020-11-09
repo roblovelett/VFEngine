@@ -21,7 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #endregion
 
-        [SerializeField] private BoolReference hasDistanceToGroundRaycast;
+        [SerializeField] private BoolReference distanceToGroundRaycastHit;
         private RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =
@@ -42,9 +42,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #endregion
 
-        public bool HasDistanceToGroundRaycast
+        public bool DistanceToGroundRaycastHit
         {
-            set => value = hasDistanceToGroundRaycast.Value;
+            set => value = distanceToGroundRaycastHit.Value;
         }
 
         public float DistanceToGround { get; set; }

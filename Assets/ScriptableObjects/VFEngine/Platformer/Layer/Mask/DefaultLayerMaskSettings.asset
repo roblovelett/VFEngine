@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformMask:
     serializedVersion: 2
-    m_Bits: 16640
+    m_Bits: 768
   movingPlatformMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 1024
   oneWayPlatformMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 2048
   movingOneWayPlatformMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 4096
   midHeightOneWayPlatformMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 8192
   stairsMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 16384
   displayWarningsControl: 1

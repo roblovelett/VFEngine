@@ -34,7 +34,7 @@ namespace ScriptableObjects.Atoms.Transform.References
 
         protected override bool ValueEquals(UnityEngine.Transform other)
         {
-            throw new NotImplementedException();
+            return other;
         }
     }
 }

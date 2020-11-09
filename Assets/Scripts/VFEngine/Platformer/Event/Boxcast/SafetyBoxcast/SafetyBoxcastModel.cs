@@ -9,8 +9,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
     using static Color;
     using static ScriptableObjectExtensions;
 
-    //$"{PlatformerPath}"
-
     [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
     public class SafetyBoxcastModel : ScriptableObject, IModel
     {

@@ -1,35 +1,23 @@
 using System;
 using UnityAtoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ScriptableObjects.Atoms.Transform.Pairs
 {
     /// <summary>
-    ///     IPair of type `&lt;Transform&gt;`. Inherits from `IPair&lt;Transform&gt;`.
+    /// IPair of type `&lt;Transform&gt;`. Inherits from `IPair&lt;Transform&gt;`.
     /// </summary>
     [Serializable]
     public struct TransformPair : IPair<UnityEngine.Transform>
     {
-        public UnityEngine.Transform Item1
-        {
-            get => item1;
-            set => item1 = value;
-        }
+        public UnityEngine.Transform Item1 { get => _item1; set => _item1 = value; }
+        public UnityEngine.Transform Item2 { get => _item2; set => _item2 = value; }
 
-        public UnityEngine.Transform Item2
-        {
-            get => item2;
-            set => item2 = value;
-        }
+        [SerializeField]
+        private UnityEngine.Transform _item1;
+        [SerializeField]
+        private UnityEngine.Transform _item2;
 
-        [FormerlySerializedAs("_item1")] [SerializeField] private UnityEngine.Transform item1;
-        [FormerlySerializedAs("_item2")] [SerializeField] private UnityEngine.Transform item2;
-
-        public void Deconstruct(out UnityEngine.Transform item01, out UnityEngine.Transform item02)
-        {
-            item01 = Item1;
-            item02 = Item2;
-        }
+        public void Deconstruct(out UnityEngine.Transform item1, out UnityEngine.Transform item2) { item1 = Item1; item2 = Item2; }
     }
 }

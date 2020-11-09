@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628c2ac01e7246029b3330d28aa88faa, type: 3}
   m_Name: DefaultLayerMaskModel
   m_EditorClassIdentifier: 
-  lm: {fileID: 0}
+  l: {fileID: 0}

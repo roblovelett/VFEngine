@@ -5,7 +5,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
-    
+
     [CreateAssetMenu(fileName = "PhysicsSettings", menuName = PlatformerPhysicsSettingsPath, order = 0)]
     [InlineEditor]
     public class PhysicsSettings : ScriptableObject
@@ -14,6 +14,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] public float fallMultiplier = 1f;
         [SerializeField] public float ascentMultiplier = 1f;
         [SerializeField] public Vector2 maximumVelocity = new Vector2(100f, 100f);
+
         /*[SerializeField] public float speedAccelerationOnGround = 20f;
         [SerializeField] public float speedAccelerationInAir = 5f;
         [SerializeField] public float speedFactor = 1f;*/
@@ -24,10 +25,12 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] public float physics2DPushForce = 2f;
         [SerializeField] public bool physics2DInteractionControl = true;
-        [SerializeField] public bool safeSetTransformControl = false;
+        [SerializeField] public bool safeSetTransformControl;
         [SerializeField] public bool safetyBoxcastControl = true;
         [SerializeField] public bool stickToSlopeControl = true;
         [SerializeField] public bool automaticGravityControl = true;
-        [LabelText("Display Warnings")] [SerializeField] public bool displayWarningsControl = true;
+
+        [LabelText("Display Warnings")] [SerializeField]
+        public bool displayWarningsControl = true;
     }
 }

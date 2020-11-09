@@ -12,10 +12,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static LayerMask;
     using static Vector3;
     using static UniTaskExtensions;
+    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "DownRaycastHitColliderModel",
-        menuName =
-            "VFEngine/Platformer/Physics/Raycast Hit Collider/Down Raycast Hit Collider/Down Raycast Hit Collider Model",
+    [CreateAssetMenu(fileName = "DownRaycastHitColliderModel", menuName = PlatformerDownRaycastHitColliderModelPath,
         order = 0)]
     public class DownRaycastHitColliderModel : ScriptableObject, IModel
     {
@@ -235,6 +234,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region properties
 
         #region public methods
+
+        public void OnSetOnMovingPlatform()
+        {
+            SetOnMovingPlatform();
+        }
+
+        public void OnSetMovingPlatformCurrentGravity()
+        {
+            SetMovingPlatformCurrentGravity();
+        }
 
         public void OnSetWasGroundedLastFrame()
         {
