@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -28,11 +28,11 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference rayOffset;
         [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
         [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private RaycastHit2DReference safetyBoxcast;
+        //[SerializeField] private RaycastHit2DReference safetyBoxcast;
         [SerializeField] private FloatReference leftStickyRaycastOriginY;
         [SerializeField] private FloatReference rightStickyRaycastOriginY;
-        [SerializeField] private RaycastHit2DReference leftStickyRaycast;
-        [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        //[SerializeField] private RaycastHit2DReference leftStickyRaycast;
+        //[SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
         [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
@@ -95,11 +95,11 @@ namespace VFEngine.Platformer.Physics
             distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
 
         public float BoundsHeight => boundsHeight.Value;
-        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
+        //public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
         public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
         public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
-        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
-        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        //public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
+        //public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
         public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;

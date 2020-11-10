@@ -66,7 +66,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void SetCurrentRightHitsStorage()
         {
-            r.RightHitsStorage[r.CurrentRightHitsStorageIndex] = r.CurrentRightRaycast;
+            //r.RightHitsStorage[r.CurrentRightHitsStorageIndex] = r.CurrentRightRaycast;
         }
 
         private void SetCurrentRightHitAngle()

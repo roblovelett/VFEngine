@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -31,7 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #endregion
 
-        [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        //[SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private FloatReference belowSlopeAngleRight;
         [SerializeField] private Vector3Reference crossBelowSlopeAngleRight;
         private static readonly string RightStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
@@ -71,11 +71,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         public Vector2 rightStickyRaycastOrigin;
 
-        public RaycastHit2D RightStickyRaycast
+        /*public RaycastHit2D RightStickyRaycast
         {
             get => rightStickyRaycast.Value;
             set => value = rightStickyRaycast.Value;
-        }
+        }*/
 
         public float BelowSlopeAngleRight
         {

@@ -46,8 +46,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         private void SetRightStickyRaycast()
         {
-            r.RightStickyRaycast = Raycast(r.rightStickyRaycastOrigin, -r.Transform.up, r.RightStickyRaycastLength,
-                r.RaysBelowLayerMaskPlatforms, cyan, r.DrawRaycastGizmosControl);
+            /*r.RightStickyRaycast = Raycast(r.rightStickyRaycastOrigin, -r.Transform.up, r.RightStickyRaycastLength,
+                r.RaysBelowLayerMaskPlatforms, cyan, r.DrawRaycastGizmosControl);*/
         }
 
         #endregion

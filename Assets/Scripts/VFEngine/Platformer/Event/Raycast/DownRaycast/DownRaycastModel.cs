@@ -29,14 +29,17 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            d.CurrentDownRaycast = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
+            var hit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
                 d.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, d.DrawRaycastGizmosControl);
+            d.CurrentDownRaycast = OnSetRaycast(hit);
         }
 
         private void SetCurrentDownRaycast()
         {
-            d.CurrentDownRaycast = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
+            var hit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
                 d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
+            d.CurrentDownRaycast = OnSetRaycast(hit);
+
         }
 
         private void InitializeDownRayLength()
@@ -73,7 +76,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void SetSmallestDistanceToDownHitDistance()
         {
-            d.SmallestDistanceToDownHit = d.RaycastDownHitAt.distance;
+            d.SmallestDistanceToDownHit = d.RaycastDownHitAtDistance;
         }
 
         private void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()

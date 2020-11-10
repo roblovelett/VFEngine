@@ -51,7 +51,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void SetCurrentLeftHitsStorage()
         {
-            l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex] = l.CurrentLeftRaycast;
+            //l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex] = l.CurrentLeftRaycast;
         }
 
         private void SetCurrentLeftHitDistance()

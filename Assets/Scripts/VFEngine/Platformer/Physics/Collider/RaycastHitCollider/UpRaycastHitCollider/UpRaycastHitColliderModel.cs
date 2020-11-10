@@ -65,12 +65,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void SetCurrentUpHitsStorage()
         {
-            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycast;
+            //u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycast;
         }
 
         private void SetRaycastUpHitAt()
         {
-            u.RaycastUpHitAt = u.UpHitsStorage[u.CurrentUpHitsStorageIndex];
+            //u.RaycastUpHitAt = u.UpHitsStorage[u.CurrentUpHitsStorageIndex];
         }
 
         private void SetUpHitConnected()

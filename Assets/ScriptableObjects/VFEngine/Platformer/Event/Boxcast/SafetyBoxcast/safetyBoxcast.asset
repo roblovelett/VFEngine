@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9a325528be82d3428625b6f34416aad, type: 3}
-  m_Name: RaycastHit2DVariable
+  m_Script: {fileID: 11500000, guid: fa88392bfd3ce924f8c01640b344fdf0, type: 3}
+  m_Name: SafetyBoxcast
   m_EditorClassIdentifier: 
   _developerDescription: 
   _id: 

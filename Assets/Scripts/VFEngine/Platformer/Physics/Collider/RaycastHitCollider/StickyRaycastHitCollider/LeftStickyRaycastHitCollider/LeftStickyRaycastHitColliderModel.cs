@@ -43,12 +43,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void SetBelowSlopeAngleLeft()
         {
-            l.BelowSlopeAngleLeft = Vector2.Angle(l.LeftStickyRaycast.normal, l.Transform.up);
+            //l.BelowSlopeAngleLeft = Vector2.Angle(l.LeftStickyRaycast.normal, l.Transform.up);
         }
 
         private void SetCrossBelowSlopeAngleLeft()
         {
-            l.CrossBelowSlopeAngleLeft = Cross(l.Transform.up, l.LeftStickyRaycast.normal);
+            //l.CrossBelowSlopeAngleLeft = Cross(l.Transform.up, l.LeftStickyRaycast.normal);
         }
 
         private void SetBelowSlopeAngleLeftToNegative()

@@ -25,17 +25,11 @@ namespace VFEngine.Platformer.Event.Boxcast
         private void Awake()
         {
             GetModels();
-            InitializeModels();
         }
 
         private void GetModels()
         {
             if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
-        }
-
-        private void InitializeModels()
-        {
-            safetyBoxcastModel.OnInitialize();
         }
 
         #endregion
@@ -45,41 +39,17 @@ namespace VFEngine.Platformer.Event.Boxcast
         #region properties
 
         #region public methods
-        
-        #region platformer model
-
-        /*
-        public void OnInitializeFrameSafetyBoxcast()
-        {
-            ResetSafetyBoxcastState();
-        }
-        */
-        
-        #endregion
 
         #region safety boxcast model
 
-        public async UniTaskVoid SetSafetyBoxcastForImpassableAngle()
+        public void SetSafetyBoxcastForImpassableAngle()
         {
             safetyBoxcastModel.OnSetSafetyBoxcastForImpassableAngle();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetHasSafetyBoxcast()
-        {
-            safetyBoxcastModel.OnSetHasSafetyBoxcast();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetSafetyBoxcast()
+        public void SetSafetyBoxcast()
         {
             safetyBoxcastModel.OnSetSafetyBoxcast();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void ResetSafetyBoxcastState()
-        {
-            safetyBoxcastModel.OnResetState();
         }
 
         #endregion

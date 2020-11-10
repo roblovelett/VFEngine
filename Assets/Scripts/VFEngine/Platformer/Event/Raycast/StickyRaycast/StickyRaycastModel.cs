@@ -102,7 +102,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
-            s.IsCastingLeft = s.LeftStickyRaycast.distance < s.RightStickyRaycast.distance;
+            //s.IsCastingLeft = s.LeftStickyRaycast.distance < s.RightStickyRaycast.distance;
         }
 
         private void ResetState()

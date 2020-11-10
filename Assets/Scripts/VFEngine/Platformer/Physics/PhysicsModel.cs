@@ -257,20 +257,20 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
-                p.RightStickyRaycastOriginY, p.BoundsHeight);
+            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);*/
         }
 
         private void ApplyLeftStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
-                p.LeftStickyRaycastOriginY, p.BoundsHeight);
+            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
+                p.LeftStickyRaycastOriginY, p.BoundsHeight);*/
         }
 
         private void ApplyRightStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
-                p.RightStickyRaycastOriginY, p.BoundsHeight);
+            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);*/
         }
 
         private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY,

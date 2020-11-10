@@ -20,7 +20,6 @@ namespace VFEngine.Tools
 
         #region properties
 
-        public const string RaycastHit2DPath = "Scriptable Objects/Raycast Hit 2D Variable";
         public const string PlatformerModelPath = "VFEngine/Platformer/Platformer Model";
         
         public const string PlatformerSettingsPath = "VFEngine/Platformer/Platformer Settings";

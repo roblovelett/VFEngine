@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -38,7 +38,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         [SerializeField] private FloatReference rightRayLength;
         [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin;
         [SerializeField] private Vector2Reference rightRaycastToTopOrigin;
-        [SerializeField] private RaycastHit2DReference currentRightRaycast;
+        //[SerializeField] private RaycastHit2DReference currentRightRaycast;
         private static readonly string RightRaycastPath = $"{RaycastPath}RightRaycast/";
         private static readonly string ModelAssetPath = $"{RightRaycastPath}DefaultRightRaycastModel.asset";
 
@@ -86,10 +86,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         public Vector2 CurrentRightRaycastOrigin { get; set; } = Vector2.zero;
 
-        public RaycastHit2D CurrentRightRaycast
+        /*public RaycastHit2D CurrentRightRaycast
         {
             set => value = currentRightRaycast.Value;
-        }
+        }*/
 
         public static readonly string RightRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 

@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -28,7 +28,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #endregion
 
-        [SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
+        [SerializeField] private RaycastReference distanceToGroundRaycast;
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
         private static readonly string ModelAssetPath =
@@ -51,9 +51,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #endregion
 
-        public RaycastHit2D DistanceToGroundRaycast
+        public ScriptableObjects.Atoms.Raycast.Raycast DistanceToGroundRaycast
         {
-            get => distanceToGroundRaycast.Value;
             set => value = distanceToGroundRaycast.Value;
         }
 

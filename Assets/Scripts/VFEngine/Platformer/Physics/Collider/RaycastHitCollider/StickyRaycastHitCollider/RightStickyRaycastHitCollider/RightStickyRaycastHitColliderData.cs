@@ -1,4 +1,4 @@
-﻿using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        //[SerializeField] private RaycastHit2DReference rightStickyRaycast;
         [SerializeField] private new TransformReference transform;
 
         #endregion
@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+        //public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
         public Transform Transform => transform.Value;
 
         #endregion

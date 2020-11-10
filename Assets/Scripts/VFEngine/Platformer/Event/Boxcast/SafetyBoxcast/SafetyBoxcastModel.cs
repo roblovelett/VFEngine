@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
@@ -8,6 +9,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
     using static Vector2;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
     public class SafetyBoxcastModel : ScriptableObject, IModel
@@ -23,38 +25,20 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeModel();
-        }
-
-        private void InitializeModel()
-        {
-            s.SafetyBoxcastDistance = s.SafetyBoxcast.distance;
-        }
-
         private void SetSafetyBoxcastForImpassableAngle()
         {
             var transformUp = s.Transform.up;
-            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp,
-                s.StickyRaycastLength, s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
-        }
-
-        private void SetHasSafetyBoxcast()
-        {
-            s.HasSafetyBoxcast = true;
+            var hit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp, s.StickyRaycastLength,
+                s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
+            s.SafetyBoxcast = OnSetRaycast(hit);
         }
 
         private void SetSafetyBoxcast()
         {
             var transformUp = s.Transform.up;
-            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
+            var hit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
                 s.NewPosition.magnitude, s.PlatformMask, red, s.DrawBoxcastGizmosControl);
-        }
-
-        private void ResetState()
-        {
-            s.HasSafetyBoxcast = false;
+            s.SafetyBoxcast = OnSetRaycast(hit);
         }
 
         #endregion
@@ -70,24 +54,9 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             SetSafetyBoxcastForImpassableAngle();
         }
 
-        public void OnSetHasSafetyBoxcast()
-        {
-            SetHasSafetyBoxcast();
-        }
-
         public void OnSetSafetyBoxcast()
         {
             SetSafetyBoxcast();
-        }
-
-        public void OnResetState()
-        {
-            ResetState();
-        }
-
-        public void OnInitialize()
-        {
-            if (s.PerformSafetyBoxcast) Initialize();
         }
 
         #endregion

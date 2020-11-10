@@ -7,6 +7,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel", menuName = PlatformerDistanceToGroundRaycastModelPath,
         order = 0)]
@@ -34,8 +35,9 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void SetDistanceToGroundRaycast()
         {
-            d.DistanceToGroundRaycast = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
+            var hit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
                 d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
+            d.DistanceToGroundRaycast = OnSetRaycast(hit);
         }
 
         #endregion

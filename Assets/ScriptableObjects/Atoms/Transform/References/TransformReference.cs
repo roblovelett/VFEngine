@@ -34,7 +34,7 @@ namespace ScriptableObjects.Atoms.Transform.References
 
         protected override bool ValueEquals(UnityEngine.Transform other)
         {
-            return other;
+            return Value == null && other == null || Value != null && other != null/* && Value.GetInstanceID() == other.GetInstanceID()*/;
         }
     }
 }

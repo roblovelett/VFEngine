@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -31,13 +31,13 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private LayerMaskReference platformMask;
         [SerializeField] private LayerMaskReference oneWayPlatformMask;
         [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
-        [SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        //[SerializeField] private RaycastHit2DReference raycastUpHitAt;
 
         #endregion
 
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private Vector2Reference currentUpRaycastOrigin;
-        [SerializeField] private RaycastHit2DReference currentUpRaycast;
+        //[SerializeField] private RaycastHit2DReference currentUpRaycast;
         private static readonly string UpRaycastPath = $"{RaycastPath}UpRaycast/";
         private static readonly string ModelAssetPath = $"{UpRaycastPath}DefaultUpRaycastModel.asset";
 
@@ -61,7 +61,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
         public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
         public Transform Transform => transform.Value;
-        public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
+        //public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value;
 
         #endregion
 
@@ -80,10 +80,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             set => value = currentUpRaycastOrigin.Value;
         }
 
-        public RaycastHit2D CurrentUpRaycast
+        /*public RaycastHit2D CurrentUpRaycast
         {
             set => value = currentUpRaycast.Value;
-        }
+        }*/
 
         public static readonly string UpRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 

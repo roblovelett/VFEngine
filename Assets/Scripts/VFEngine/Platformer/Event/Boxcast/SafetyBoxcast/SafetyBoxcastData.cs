@@ -1,10 +1,11 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
@@ -27,9 +28,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #endregion
 
-        [SerializeField] private BoolReference hasSafetyBoxcast;
-        [SerializeField] private RaycastHit2DReference safetyBoxcast;
-        [SerializeField] private FloatReference safetyBoxcastDistance;
+        [SerializeField] private RaycastReference safetyBoxcast;
         private const string SbPath = "Event/Boxcast/SafetyBoxcast/";
         private static readonly string ModelAssetPath = $"{SbPath}DefaultSafetyBoxcastModel.asset";
 
@@ -50,23 +49,12 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public bool DrawBoxcastGizmosControl => drawRaycastGizmosControl.Value;
 
         #endregion
-        
+
         public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
-        public float SafetyBoxcastDistance
+        public ScriptableObjects.Atoms.Raycast.Raycast SafetyBoxcast
         {
-            set => value = safetyBoxcastDistance.Value;
-        }
-
-        public RaycastHit2D SafetyBoxcast
-        {
-            get => safetyBoxcast.Value;
             set => value = safetyBoxcast.Value;
-        }
-
-        public bool HasSafetyBoxcast
-        {
-            set => value = hasSafetyBoxcast.Value;
         }
 
         #endregion

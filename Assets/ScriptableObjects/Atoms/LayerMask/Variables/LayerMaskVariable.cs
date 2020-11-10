@@ -16,7 +16,7 @@ namespace ScriptableObjects.Atoms.LayerMask.Variables
     {
         protected override bool ValueEquals(UnityEngine.LayerMask other)
         {
-            return true;
+            return (_value == null && other == null) || _value != null && other != null/* && _value.GetInstanceID() == other.GetInstanceID()*/;
         }
     }
 }

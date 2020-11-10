@@ -55,7 +55,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetCurrentDownHitsStorage()
         {
-            d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycast;
+            //d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycast;
         }
 
         private void InitializeFriction()
@@ -90,7 +90,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetRaycastDownHitAt()
         {
-            d.RaycastDownHitAt = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
+            //d.RaycastDownHitAt = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
         }
 
         private void SetDownHitConnected()

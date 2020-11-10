@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -31,17 +31,18 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         [SerializeField] private new TransformReference transform;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
         [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-        [SerializeField] private RaycastHit2DReference raycastDownHitAt;
+        [SerializeField] private FloatReference raycastDownHitAtDistance;
 
         #endregion
 
+        [SerializeField] private BoolReference hasRaycastDownHitAt;
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private FloatReference smallestDistanceToDownHit;
         [SerializeField] private FloatReference distanceBetweenDownRaycastsAndSmallestDistancePoint;
         [SerializeField] private Vector2Reference currentDownRaycastOrigin;
         [SerializeField] private Vector2Reference downRaycastFromLeft;
         [SerializeField] private Vector2Reference downRaycastToRight;
-        [SerializeField] private RaycastHit2DReference currentDownRaycast;
+        [SerializeField] private RaycastReference currentDownRaycast;
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
         private static readonly string ModelAssetPath = $"{DownRaycastPath}DefaultDownRaycastModel.asset";
 
@@ -65,7 +66,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public Transform Transform => transform.Value;
         public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value;
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
-        public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value;
+        public float RaycastDownHitAtDistance => raycastDownHitAtDistance.Value;
 
         #endregion
 
@@ -103,7 +104,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             set => value = downRaycastToRight.Value;
         }
 
-        public RaycastHit2D CurrentDownRaycast
+        public ScriptableObjects.Atoms.Raycast.Raycast CurrentDownRaycast
         {
             set => value = currentDownRaycast.Value;
         }

@@ -1,4 +1,4 @@
-﻿using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -15,14 +15,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        [SerializeField] private RaycastHit2DReference currentUpRaycast;
+        //[SerializeField] private RaycastHit2DReference currentUpRaycast;
 
         #endregion
 
+        [SerializeField] private BoolReference hasRaycastUpHitAt;
         [SerializeField] private BoolReference upHitConnected;
         [SerializeField] private IntReference upHitsStorageCollidingIndex;
         [SerializeField] private IntReference currentUpHitsStorageIndex;
-        [SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        //[SerializeField] private RaycastHit2DReference raycastUpHitAt;
         [SerializeField] private BoolReference isCollidingAbove;
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
@@ -37,7 +38,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        public RaycastHit2D CurrentUpRaycast => currentUpRaycast.Value;
+        //public RaycastHit2D CurrentUpRaycast => currentUpRaycast.Value;
 
         #endregion
 
@@ -68,10 +69,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             set => value = currentUpHitsStorageIndex.Value;
         }
 
-        public RaycastHit2D RaycastUpHitAt
+        /*public RaycastHit2D RaycastUpHitAt
         {
             set => value = raycastUpHitAt.Value;
-        }
+        }*/
 
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
 

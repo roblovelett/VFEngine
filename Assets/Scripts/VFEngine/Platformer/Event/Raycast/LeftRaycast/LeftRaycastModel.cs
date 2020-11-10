@@ -48,14 +48,14 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
-            l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
-                l.PlatformMask, red, l.DrawRaycastGizmosControl);
+            /*l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
+                l.PlatformMask, red, l.DrawRaycastGizmosControl);*/
         }
 
         private void SetCurrentLeftRaycast()
         {
-            l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
-                l.PlatformMask & ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask, red, l.DrawRaycastGizmosControl);
+            /*l.CurrentLeftRaycast = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
+                l.PlatformMask & ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask, red, l.DrawRaycastGizmosControl);*/
         }
 
         #endregion
