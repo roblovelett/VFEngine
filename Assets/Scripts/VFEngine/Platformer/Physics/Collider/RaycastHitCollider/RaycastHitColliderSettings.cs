@@ -11,10 +11,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     [InlineEditor]
     public class RaycastHitColliderSettings : ScriptableObject
     {
+        #region properties
+
         [LabelText("Draw Collider Gizmos")] [SerializeField]
         public bool drawColliderGizmosControl = true;
 
         [LabelText("Display Warnings")] [SerializeField]
         public bool displayWarningsControl = true;
+
+        #endregion
     }
 }

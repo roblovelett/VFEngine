@@ -57,7 +57,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
         {
-            //d.DistanceToGround = d.DistanceToGroundRaycastDistance - d.BoundsHeight / 2;
+            d.DistanceToGround = d.DistanceToGroundRaycast.distance - d.BoundsHeight / 2;
         }
 
         #endregion

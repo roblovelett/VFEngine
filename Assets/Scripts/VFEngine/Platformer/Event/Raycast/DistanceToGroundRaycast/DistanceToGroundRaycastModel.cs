@@ -35,8 +35,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void SetDistanceToGroundRaycast()
         {
-            var hit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
-                d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
+            var hit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up, d.DistanceToGroundRayMaximumLength,
+                d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
             d.DistanceToGroundRaycast = OnSetRaycast(hit);
         }
 
@@ -47,7 +47,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         #region properties
 
         #region public methods
-        
+
         public void OnSetDistanceToGroundRaycastOrigin()
         {
             SetDistanceToGroundRaycastOrigin();

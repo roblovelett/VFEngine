@@ -42,20 +42,22 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void SetCurrentRightRaycastOrigin()
         {
-            r.CurrentRightRaycastOrigin = OnSetCurrentRaycastOrigin(r.RightRaycastFromBottomOrigin,
+            r.currentRightRaycastOrigin = OnSetCurrentRaycastOrigin(r.RightRaycastFromBottomOrigin,
                 r.RightRaycastToTopOrigin, r.CurrentRightHitsStorageIndex, r.NumberOfHorizontalRaysPerSide);
         }
 
         private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
-            /*r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
-                r.PlatformMask, red, r.DrawRaycastGizmosControl);*/
+            var hit = Raycast(r.currentRightRaycastOrigin, r.Transform.right, r.RightRayLength, r.PlatformMask, red,
+                r.DrawRaycastGizmosControl);
+            r.CurrentRightRaycast = OnSetRaycast(hit);
         }
 
         private void SetCurrentRightRaycast()
         {
-            /*r.CurrentRightRaycast = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
-                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmosControl);*/
+            var hit = Raycast(r.currentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
+                r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmosControl);
+            r.CurrentRightRaycast = OnSetRaycast(hit);
         }
 
         #endregion

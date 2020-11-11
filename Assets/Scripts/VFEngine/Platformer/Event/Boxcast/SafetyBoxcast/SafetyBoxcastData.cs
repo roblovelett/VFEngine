@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         #region dependencies
 
         [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private BoolReference performSafetyBoxcast;
         [SerializeField] private Vector2Reference bounds;
         [SerializeField] private Vector2Reference boundsCenter;
         [SerializeField] private new TransformReference transform;
@@ -38,7 +37,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public bool PerformSafetyBoxcast => performSafetyBoxcast.Value;
         public LayerMask PlatformMask => platformMask.Value;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 Bounds => bounds.Value;

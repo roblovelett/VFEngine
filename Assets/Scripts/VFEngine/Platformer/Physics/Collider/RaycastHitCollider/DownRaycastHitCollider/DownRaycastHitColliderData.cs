@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using ScriptableObjects.Atoms.LayerMask.References;
-//using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region dependencies
 
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        //[SerializeField] private RaycastHit2DReference currentDownRaycast;
+        [SerializeField] private RaycastReference currentDownRaycast;
         [SerializeField] private new TransformReference transform;
         [SerializeField] private Vector2Reference downRaycastFromLeft;
         [SerializeField] private Vector2Reference downRaycastToRight;
@@ -33,7 +34,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         [SerializeField] private BoolReference hasPathMovementClosestToDownHit;
         [SerializeField] private IntReference downHitsStorageLength;
         [SerializeField] private BoolReference downHitConnected;
-        //[SerializeField] private RaycastHit2DReference raycastDownHitAt;
+        [SerializeField] private RaycastReference raycastDownHitAt;
         [SerializeField] private Vector3Reference crossBelowSlopeAngle;
         [SerializeField] private BoolReference isCollidingBelow;
         [SerializeField] private BoolReference onMovingPlatform;
@@ -55,7 +56,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region dependencies
 
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        //public RaycastHit2D CurrentDownRaycast => currentDownRaycast.Value;
+
+        public RaycastHit2D CurrentDownRaycast
+        {
+            get
+            {
+                var r = currentDownRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
         public Vector2 DownRaycastFromLeft => downRaycastFromLeft.Value;
         public Vector2 DownRaycastToRight => downRaycastToRight.Value;
         public LayerMask SavedBelowLayer => savedBelowLayer.Value;
@@ -92,10 +102,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             set => value = downHitConnected.Value;
         }
 
-        /*public RaycastHit2D RaycastDownHitAt
+        public Raycast RaycastDownHitAt
         {
             set => value = raycastDownHitAt.Value;
-        }*/
+        }
 
         public float belowSlopeAngle;
 

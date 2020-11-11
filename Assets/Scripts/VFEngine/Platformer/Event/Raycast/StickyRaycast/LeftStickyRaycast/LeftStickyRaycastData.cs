@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-//using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -31,9 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #endregion
 
-        //[SerializeField] private RaycastHit2DReference leftStickyRaycast;
-        [SerializeField] private FloatReference belowSlopeAngleLeft;
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft;
+        [SerializeField] private RaycastReference leftStickyRaycast;
         private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}DefaultRightRaycastModel.asset";
 
@@ -57,35 +55,13 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #endregion
 
-        public float LeftStickyRaycastLength { get; set; }
-
-        public float LeftStickyRaycastOriginX
-        {
-            set => value = leftStickyRaycastOrigin.x;
-        }
-
-        public float LeftStickyRaycastOriginY
-        {
-            set => value = leftStickyRaycastOrigin.y;
-        }
-
+        public float leftStickyRaycastLength;
         public Vector2 leftStickyRaycastOrigin;
 
-        /*public RaycastHit2D LeftStickyRaycast
+        public ScriptableObjects.Atoms.Raycast.Raycast LeftStickyRaycast
         {
             get => leftStickyRaycast.Value;
             set => value = leftStickyRaycast.Value;
-        }*/
-
-        public float BelowSlopeAngleLeft
-        {
-            get => belowSlopeAngleLeft.Value;
-            set => value = belowSlopeAngleLeft.Value;
-        }
-
-        public Vector3 CrossBelowSlopeAngleLeft
-        {
-            set => value = crossBelowSlopeAngleLeft.Value;
         }
 
         public static readonly string LeftStickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

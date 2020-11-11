@@ -10,7 +10,11 @@ namespace VFEngine.Platformer
     [InlineEditor]
     public class PlatformerSettings : ScriptableObject
     {
+        #region properties
+
         [LabelText("Display Warnings")] [SerializeField]
         public bool displayWarningsControl = true;
+
+        #endregion
     }
 }

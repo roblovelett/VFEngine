@@ -27,7 +27,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeUpRaycastLength()
         {
-            u.UpRayLength = u.IsGrounded ? u.RayOffset : u.NewPosition.y;
+            u.upRayLength = u.IsGrounded ? u.RayOffset : u.NewPosition.y;
         }
 
         private void InitializeUpRaycastStart()
@@ -58,13 +58,15 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void SetCurrentUpRaycast()
         {
-            /*u.CurrentUpRaycast = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.UpRayLength,
-                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan, u.DrawRaycastGizmos);*/
+            var hit = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.upRayLength,
+                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan, u.DrawRaycastGizmos);
+            u.CurrentUpRaycast = OnSetRaycast(hit);
+
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
-            //u.UpRaycastSmallestDistance = u.RaycastUpHitAt.distance;
+            u.UpRaycastSmallestDistance = u.RaycastUpHitAt.distance;
         }
 
         #endregion

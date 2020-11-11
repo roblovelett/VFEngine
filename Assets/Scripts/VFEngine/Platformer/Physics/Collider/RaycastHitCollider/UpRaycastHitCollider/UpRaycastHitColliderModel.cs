@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -8,6 +9,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 {
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
+    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "UpRaycastHitColliderModel", menuName = PlatformerUpRaycastHitColliderModelPath,
         order = 0)]
@@ -65,12 +67,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void SetCurrentUpHitsStorage()
         {
-            //u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycast;
+            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycast;
         }
 
         private void SetRaycastUpHitAt()
         {
-            //u.RaycastUpHitAt = u.UpHitsStorage[u.CurrentUpHitsStorageIndex];
+            u.RaycastUpHitAt = OnSetRaycast(u.UpHitsStorage[u.CurrentUpHitsStorageIndex]);
         }
 
         private void SetUpHitConnected()

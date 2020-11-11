@@ -1,4 +1,4 @@
-﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -8,23 +8,50 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
     public class RaycastHitColliderData : MonoBehaviour
     {
-        /* fields: dependencies */
-        //[SerializeField] private RaycastHit2DReference currentRightRaycast;
-        //[SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        #region fields
 
-        /* fields */
+        #region dependencies
+
+        [SerializeField] private RaycastReference currentRightRaycast;
+        [SerializeField] private RaycastReference currentLeftRaycast;
+
+        #endregion
+
         [SerializeField] private RaycastHitColliderContactList contactList;
         private static readonly string ModelAssetPath = $"{RaycastHitColliderPath}DefaultRaycastHitColliderModel.asset";
 
-        /* properties: dependencies */
-        //public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value;
-        //public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value;
+        #endregion
 
-        /* properties */
+        #region properties
+
+        #region dependencies
+
+        public RaycastHit2D CurrentRightRaycast
+        {
+            get
+            {
+                var r = currentRightRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
+        public RaycastHit2D CurrentLeftRaycast
+        {
+            get
+            {
+                var r = currentLeftRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
+        #endregion
+
         public RaycastHitColliderContactList ContactList => contactList;
         public const string RaycastHitColliderPath = "Physics/Collider/RaycastHitCollider/";
 
         public static readonly string RaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #endregion
     }
 }

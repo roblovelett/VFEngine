@@ -1,5 +1,5 @@
 ﻿using ScriptableObjects.Atoms.LayerMask.References;
-//using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -31,9 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #endregion
 
-        //[SerializeField] private RaycastHit2DReference rightStickyRaycast;
-        [SerializeField] private FloatReference belowSlopeAngleRight;
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleRight;
+        [SerializeField] private RaycastReference rightStickyRaycast;
         private static readonly string RightStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{RightStickyRaycastPath}DefaultRightRaycastModel.asset";
 
@@ -57,35 +55,13 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #endregion
 
-        public float RightStickyRaycastLength { get; set; }
-
-        public float RightStickyRaycastOriginX
-        {
-            set => value = rightStickyRaycastOrigin.x;
-        }
-
-        public float RightStickyRaycastOriginY
-        {
-            set => value = rightStickyRaycastOrigin.y;
-        }
-
+        public float rightStickyRaycastLength;
         public Vector2 rightStickyRaycastOrigin;
 
-        /*public RaycastHit2D RightStickyRaycast
+        public ScriptableObjects.Atoms.Raycast.Raycast RightStickyRaycast
         {
             get => rightStickyRaycast.Value;
             set => value = rightStickyRaycast.Value;
-        }*/
-
-        public float BelowSlopeAngleRight
-        {
-            get => belowSlopeAngleRight.Value;
-            set => value = belowSlopeAngleRight.Value;
-        }
-
-        public Vector3 CrossBelowSlopeAngleRight
-        {
-            set => value = crossBelowSlopeAngleRight.Value;
         }
 
         public static readonly string RightStickyRaycastModelPath =

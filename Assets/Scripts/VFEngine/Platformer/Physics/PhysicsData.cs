@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-//using ScriptableObjects.Atoms.RaycastHit2D.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -26,13 +26,13 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
         [SerializeField] private FloatReference boundsWidth;
         [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private FloatReference distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint;
+        [SerializeField] private FloatReference distanceBetweenDownRaycastsAndSmallestDistancePoint;
         [SerializeField] private FloatReference boundsHeight;
-        //[SerializeField] private RaycastHit2DReference safetyBoxcast;
+        [SerializeField] private RaycastReference safetyBoxcast;
         [SerializeField] private FloatReference leftStickyRaycastOriginY;
         [SerializeField] private FloatReference rightStickyRaycastOriginY;
-        //[SerializeField] private RaycastHit2DReference leftStickyRaycast;
-        //[SerializeField] private RaycastHit2DReference rightStickyRaycast;
+        [SerializeField] private RaycastReference leftStickyRaycast;
+        [SerializeField] private RaycastReference rightStickyRaycast;
         [SerializeField] private FloatReference upRaycastSmallestDistance;
         [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
         [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
@@ -91,15 +91,41 @@ namespace VFEngine.Platformer.Physics
         public float BoundsWidth => boundsWidth.Value;
         public float RayOffset => rayOffset.Value;
 
-        public float DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint =>
-            distanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint.Value;
+        public float DistanceBetweenDownRaycastsAndSmallestDistancePoint =>
+            distanceBetweenDownRaycastsAndSmallestDistancePoint.Value;
 
         public float BoundsHeight => boundsHeight.Value;
-        //public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value;
+
+        public RaycastHit2D SafetyBoxcast
+        {
+            get
+            {
+                var r = safetyBoxcast.Value;
+                return r.hit2D;
+            }
+        }
+
         public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
         public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
-        //public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value;
-        //public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value;
+
+        public RaycastHit2D LeftStickyRaycast
+        {
+            get
+            {
+                var r = leftStickyRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
+        public RaycastHit2D RightStickyRaycast
+        {
+            get
+            {
+                var r = rightStickyRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
         public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;

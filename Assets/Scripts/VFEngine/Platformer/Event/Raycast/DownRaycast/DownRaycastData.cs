@@ -35,10 +35,9 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #endregion
 
-        [SerializeField] private BoolReference hasRaycastDownHitAt;
         [SerializeField] private FloatReference downRayLength;
         [SerializeField] private FloatReference smallestDistanceToDownHit;
-        [SerializeField] private FloatReference distanceBetweenDownRaycastsAndSmallestDistancePoint;
+        [SerializeField] private FloatReference currentDistanceOfDownRaycastAndSmallestDistancePoint;
         [SerializeField] private Vector2Reference currentDownRaycastOrigin;
         [SerializeField] private Vector2Reference downRaycastFromLeft;
         [SerializeField] private Vector2Reference downRaycastToRight;
@@ -81,9 +80,9 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             set => value = smallestDistanceToDownHit.Value;
         }
 
-        public float DistanceBetweenDownRaycastsAndSmallestDistancePoint
+        public float CurrentDistanceOfDownRaycastAndSmallestDistancePoint
         {
-            set => value = distanceBetweenDownRaycastsAndSmallestDistancePoint.Value;
+            set => value = currentDistanceOfDownRaycastAndSmallestDistancePoint.Value;
         }
 
         public Vector2 CurrentDownRaycastOrigin

@@ -10,6 +10,8 @@ namespace VFEngine.Platformer.Physics
     [InlineEditor]
     public class PhysicsSettings : ScriptableObject
     {
+        #region properties
+
         [SerializeField] public float gravity = -30f;
         [SerializeField] public float fallMultiplier = 1f;
         [SerializeField] public float ascentMultiplier = 1f;
@@ -32,5 +34,7 @@ namespace VFEngine.Platformer.Physics
 
         [LabelText("Display Warnings")] [SerializeField]
         public bool displayWarningsControl = true;
+
+        #endregion
     }
 }

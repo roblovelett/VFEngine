@@ -8,6 +8,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "LeftStickyRaycastModel", menuName = PlatformerLeftStickyRaycastModelPath, order = 0)]
     public class LeftStickyRaycastModel : ScriptableObject, IModel
@@ -25,29 +26,30 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void SetLeftStickyRaycastLength()
         {
-            l.LeftStickyRaycastLength =
+            l.leftStickyRaycastLength =
                 OnSetStickyRaycastLength(l.BoundsWidth, l.MaximumSlopeAngle, l.BoundsHeight, l.RayOffset);
         }
 
         private void SetLeftStickyRaycastLengthToStickyRaycastLength()
         {
-            l.LeftStickyRaycastLength = l.StickyRaycastLength;
+            l.leftStickyRaycastLength = l.StickyRaycastLength;
         }
 
         private void SetLeftStickyRaycastOriginX()
         {
-            l.LeftStickyRaycastOriginX = l.BoundsBottomLeftCorner.x * 2 + l.NewPosition.x;
+            l.leftStickyRaycastOrigin.x = l.BoundsBottomLeftCorner.x * 2 + l.NewPosition.x;
         }
 
         private void SetLeftStickyRaycastOriginY()
         {
-            l.LeftStickyRaycastOriginY = l.BoundsCenter.y;
+            l.leftStickyRaycastOrigin.y = l.BoundsCenter.y;
         }
 
         private void SetLeftStickyRaycast()
         {
-            /*l.LeftStickyRaycast = Raycast(l.leftStickyRaycastOrigin, -l.Transform.up, l.LeftStickyRaycastLength,
-                l.RaysBelowLayerMaskPlatforms, cyan, l.DrawRaycastGizmosControl);*/
+            var hit = Raycast(l.leftStickyRaycastOrigin, -l.Transform.up, l.leftStickyRaycastLength,
+                l.RaysBelowLayerMaskPlatforms, cyan, l.DrawRaycastGizmosControl);
+            l.LeftStickyRaycast = OnSetRaycast(hit);
         }
 
         #endregion

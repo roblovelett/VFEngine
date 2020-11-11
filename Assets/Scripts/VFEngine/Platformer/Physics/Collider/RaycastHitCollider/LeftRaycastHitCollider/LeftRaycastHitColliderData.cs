@@ -1,4 +1,4 @@
-﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         #region dependencies
 
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
-        //[SerializeField] private RaycastHit2DReference currentLeftRaycast;
+        [SerializeField] private RaycastReference currentLeftRaycast;
         [SerializeField] private new TransformReference transform;
         [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin;
         [SerializeField] private Vector2Reference leftRaycastToTopOrigin;
@@ -43,7 +43,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         #region dependencies
 
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-        //public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value;
+
+        public RaycastHit2D CurrentLeftRaycast
+        {
+            get
+            {
+                var r = currentLeftRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
         public Transform Transform => transform.Value;
         public Vector2 LeftRaycastFromBottomOrigin => leftRaycastFromBottomOrigin.Value;
         public Vector2 LeftRaycastToTopOrigin => leftRaycastToTopOrigin.Value;

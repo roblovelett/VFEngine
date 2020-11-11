@@ -1,8 +1,10 @@
-﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿using ScriptableObjects.Atoms.Raycast;
+using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -15,15 +17,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        //[SerializeField] private RaycastHit2DReference currentUpRaycast;
+        [SerializeField] private RaycastReference currentUpRaycast;
 
         #endregion
 
-        [SerializeField] private BoolReference hasRaycastUpHitAt;
         [SerializeField] private BoolReference upHitConnected;
         [SerializeField] private IntReference upHitsStorageCollidingIndex;
         [SerializeField] private IntReference currentUpHitsStorageIndex;
-        //[SerializeField] private RaycastHit2DReference raycastUpHitAt;
+        [SerializeField] private RaycastReference raycastUpHitAt;
         [SerializeField] private BoolReference isCollidingAbove;
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
@@ -38,7 +39,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        //public RaycastHit2D CurrentUpRaycast => currentUpRaycast.Value;
+
+        public RaycastHit2D CurrentUpRaycast
+        {
+            get
+            {
+                var r = currentUpRaycast.Value;
+                return r.hit2D;
+            }
+        }
 
         #endregion
 
@@ -69,10 +78,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             set => value = currentUpHitsStorageIndex.Value;
         }
 
-        /*public RaycastHit2D RaycastUpHitAt
+        public Raycast RaycastUpHitAt
         {
             set => value = raycastUpHitAt.Value;
-        }*/
+        }
 
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
 

@@ -39,7 +39,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             var hit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
                 d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
             d.CurrentDownRaycast = OnSetRaycast(hit);
-
         }
 
         private void InitializeDownRayLength()
@@ -81,7 +80,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
         {
-            d.DistanceBetweenDownRaycastsAndSmallestDistancePoint =
+            d.CurrentDistanceOfDownRaycastAndSmallestDistancePoint =
                 DistanceBetweenPointAndLine(d.StandingOnWithSmallestDistancePoint, d.DownRaycastFromLeft,
                     d.DownRaycastToRight);
         }

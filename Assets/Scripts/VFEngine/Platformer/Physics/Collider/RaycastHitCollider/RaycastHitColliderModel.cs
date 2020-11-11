@@ -37,12 +37,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void AddRightHitToContactList()
         {
-           // r.ContactList.Add(r.CurrentRightRaycast);
+            r.ContactList.Add(r.CurrentRightRaycast);
         }
 
         private void AddLeftHitToContactList()
         {
-           // r.ContactList.Add(r.CurrentLeftRaycast);
+            r.ContactList.Add(r.CurrentLeftRaycast);
         }
 
         private void ClearContactList()

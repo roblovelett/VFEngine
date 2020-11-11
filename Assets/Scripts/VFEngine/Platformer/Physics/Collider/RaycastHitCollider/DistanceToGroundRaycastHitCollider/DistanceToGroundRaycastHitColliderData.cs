@@ -1,4 +1,4 @@
-﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -16,13 +16,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region depenedencies
 
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        //[SerializeField] private RaycastHit2DReference distanceToGroundRaycast;
+        [SerializeField] private RaycastReference distanceToGroundRaycast;
         [SerializeField] private FloatReference boundsHeight;
 
         #endregion
 
         [SerializeField] private BoolReference distanceToGroundRaycastHit;
-        //private RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value;
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =
             $"{RaycastHitColliderPath}DistanceToGroundRaycastHitCollider/";
@@ -37,7 +36,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region depenedencies
 
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-        //public float DistanceToGroundRaycastDistance => DistanceToGroundRaycast.distance;
+
+        public RaycastHit2D DistanceToGroundRaycast
+        {
+            get
+            {
+                var r = distanceToGroundRaycast.Value;
+                return r.hit2D;
+            }
+        }
+
         public float BoundsHeight => boundsHeight.Value;
 
         #endregion

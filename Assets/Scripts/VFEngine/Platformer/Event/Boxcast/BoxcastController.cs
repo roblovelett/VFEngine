@@ -1,14 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static SafetyBoxcastData;
     using static ScriptableObjectExtensions;
-    using static UniTaskExtensions;
 
     public class BoxcastController : MonoBehaviour, IController
     {

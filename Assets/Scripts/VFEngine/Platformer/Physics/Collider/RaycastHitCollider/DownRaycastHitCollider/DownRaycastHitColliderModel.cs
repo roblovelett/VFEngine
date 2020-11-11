@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -13,6 +14,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static Vector3;
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
+    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "DownRaycastHitColliderModel", menuName = PlatformerDownRaycastHitColliderModelPath,
         order = 0)]
@@ -55,7 +57,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetCurrentDownHitsStorage()
         {
-            //d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycast;
+            d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycast;
         }
 
         private void InitializeFriction()
@@ -90,7 +92,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetRaycastDownHitAt()
         {
-            //d.RaycastDownHitAt = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
+            d.RaycastDownHitAt = OnSetRaycast(d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex]);
         }
 
         private void SetDownHitConnected()

@@ -3,8 +3,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
-// ReSharper disable UnusedVariable
 
+// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics
 {
     using static DebugExtensions;
@@ -236,8 +236,7 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
         {
-            p.NewPositionY = -p.DistanceBetweenVerticalRaycastsAndSmallestDistanceDownRaycastPoint +
-                             p.BoundsHeight / 2 + p.RayOffset;
+            p.NewPositionY = -p.DistanceBetweenDownRaycastsAndSmallestDistancePoint + p.BoundsHeight / 2 + p.RayOffset;
         }
 
         private void ApplySpeedToVerticalNewPosition()
@@ -257,20 +256,20 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
-                p.RightStickyRaycastOriginY, p.BoundsHeight);*/
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private void ApplyLeftStickyRaycastToNewVerticalPosition()
         {
-            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
-                p.LeftStickyRaycastOriginY, p.BoundsHeight);*/
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
+                p.LeftStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private void ApplyRightStickyRaycastToNewVerticalPosition()
         {
-            /*p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
-                p.RightStickyRaycastOriginY, p.BoundsHeight);*/
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
+                p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY,
