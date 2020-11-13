@@ -15,13 +15,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region depenedencies
 
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        [SerializeField] private RaycastReference distanceToGroundRaycast;
-        [SerializeField] private FloatReference boundsHeight;
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
+        [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
 
         #endregion
 
-        [SerializeField] private BoolReference distanceToGroundRaycastHit;
+        [SerializeField] private BoolReference distanceToGroundRaycastHit = new BoolReference();
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =
             $"{RaycastHitColliderPath}DistanceToGroundRaycastHitCollider/";

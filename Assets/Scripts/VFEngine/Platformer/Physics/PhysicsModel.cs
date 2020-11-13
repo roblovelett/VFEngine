@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics
 {
@@ -24,7 +25,7 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [LabelText("Physics Data")] [SerializeField]
-        private PhysicsData p;
+        private PhysicsData p = null;
 
         #endregion
 
@@ -58,6 +59,7 @@ namespace VFEngine.Platformer.Physics
             p.Transform = p.CharacterTransform;
             p.FallSlowFactor = 0f;
             p.SmallValue = 0.0001f;
+            p.MovementDirectionThreshold = p.SmallValue;
         }
 
         private async UniTaskVoid GetWarningMessages()
@@ -236,7 +238,7 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
         {
-            p.NewPositionY = -p.DistanceBetweenDownRaycastsAndSmallestDistancePoint + p.BoundsHeight / 2 + p.RayOffset;
+            p.NewPositionY = -p.CurrentDownHitSmallestDistance + p.BoundsHeight / 2 + p.RayOffset;
         }
 
         private void ApplySpeedToVerticalNewPosition()

@@ -3,6 +3,8 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
+
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
@@ -15,24 +17,24 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference displayWarningsControl;
-        [SerializeField] private BoolReference stickToSlopesControl;
-        [SerializeField] private StickyRaycastSettings settings;
-        [SerializeField] private FloatReference boundsWidth;
-        [SerializeField] private FloatReference maximumSlopeAngle;
-        [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private RaycastReference leftStickyRaycast;
-        [SerializeField] private RaycastReference rightStickyRaycast;
-        [SerializeField] private FloatReference belowSlopeAngleLeft;
-        [SerializeField] private FloatReference belowSlopeAngleRight;
-        [SerializeField] private FloatReference belowSlopeAngle;
+        [SerializeField] private StickyRaycastSettings settings = null;
+        [SerializeField] private BoolReference displayWarningsControl = new BoolReference();
+        [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
+        [SerializeField] private FloatReference boundsWidth = new FloatReference();
+        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
+        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
+        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
+        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
 
         #endregion
 
-        [SerializeField] private FloatReference stickToSlopesOffsetY;
-        [SerializeField] private BoolReference isCastingLeft;
-        [SerializeField] private FloatReference stickyRaycastLength;
+        [SerializeField] private FloatReference stickToSlopesOffsetY = new FloatReference();
+        [SerializeField] private BoolReference isCastingLeft = new BoolReference();
+        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
         private const string ModelAssetPath = "DefaultStickyRaycastModel.asset";
 
         #endregion

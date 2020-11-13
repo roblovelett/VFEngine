@@ -16,21 +16,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
-        [SerializeField] private RaycastReference currentLeftRaycast;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin;
-        [SerializeField] private Vector2Reference leftRaycastToTopOrigin;
+        [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
+        [SerializeField] private RaycastReference currentLeftRaycast = new RaycastReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin = new Vector2Reference();
+        [SerializeField] private Vector2Reference leftRaycastToTopOrigin = new Vector2Reference();
 
         #endregion
 
-        [SerializeField] private IntReference leftHitsStorageLength;
-        [SerializeField] private FloatReference currentLeftHitAngle;
-        [SerializeField] private FloatReference currentLeftHitDistance;
-        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
-        [SerializeField] private BoolReference leftHitConnected;
-        [SerializeField] private BoolReference isCollidingLeft;
-        [SerializeField] private Collider2DReference currentLeftHitCollider;
+        [SerializeField] private IntReference leftHitsStorageLength = new IntReference();
+        [SerializeField] private IntReference currentLeftHitsStorageIndex = new IntReference();
+        [SerializeField] private FloatReference currentLeftHitAngle = new FloatReference();
+        [SerializeField] private FloatReference currentLeftHitDistance = new FloatReference();
+        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin = new FloatReference();
+        [SerializeField] private BoolReference leftHitConnected = new BoolReference();
+        [SerializeField] private BoolReference isCollidingLeft = new BoolReference();
+        [SerializeField] private Collider2DReference currentLeftHitCollider = new Collider2DReference();
         private static readonly string LeftRaycastHitColliderPath = $"{RaycastHitColliderPath}LeftRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
@@ -66,7 +67,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             set => value = leftHitsStorageLength.Value;
         }
 
-        public int CurrentLeftHitsStorageIndex { get; set; }
+        public int CurrentLeftHitsStorageIndex
+        {
+            get => currentLeftHitsStorageIndex.Value;
+            set => value = currentLeftHitsStorageIndex.Value;
+        }
 
         public float CurrentLeftHitAngle
         {
@@ -94,7 +99,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             set => value = isCollidingLeft.Value;
         }
 
-        public bool passedLeftSlopeAngle;
+        [HideInInspector] public bool passedLeftSlopeAngle;
 
         public Collider2D CurrentLeftHitCollider
         {
@@ -102,9 +107,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             set => value = currentLeftHitCollider.Value;
         }
 
-        public GameObject currentLeftWallCollider;
-        public float distanceToLeftCollider;
-        public float leftLateralSlopeAngle;
+        [HideInInspector] public GameObject currentLeftWallCollider;
+        [HideInInspector] public float distanceToLeftCollider;
+        [HideInInspector] public float leftLateralSlopeAngle;
 
         public static readonly string LeftRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

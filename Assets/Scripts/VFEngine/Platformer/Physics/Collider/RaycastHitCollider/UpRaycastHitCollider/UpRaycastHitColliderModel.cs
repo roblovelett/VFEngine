@@ -5,6 +5,7 @@ using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
     using static UniTaskExtensions;
@@ -20,7 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         [LabelText("Up Raycast Hit Collider Data")] [SerializeField]
-        private UpRaycastHitColliderData u;
+        private UpRaycastHitColliderData u = null;
 
         #endregion
 
@@ -34,6 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void InitializeModel()
         {
             u.WasTouchingCeilingLastFrame = false;
+            u.UpHitsStorageLength = u.UpHitsStorage.Length;
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
             InitializeUpHitsStorage();

@@ -3,6 +3,7 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static DebugExtensions;
@@ -19,7 +20,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         #region dependencies
 
         [LabelText("Safety Boxcast Data")] [SerializeField]
-        private SafetyBoxcastData s;
+        private SafetyBoxcastData s = null;
 
         #endregion
 

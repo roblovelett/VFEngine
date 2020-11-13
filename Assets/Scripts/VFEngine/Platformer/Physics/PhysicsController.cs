@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -12,7 +11,6 @@ namespace VFEngine.Platformer.Physics
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [RequireComponent(typeof(GravityController))]
     public class PhysicsController : MonoBehaviour, IController
     {
         #region fields

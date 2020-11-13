@@ -7,6 +7,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics
 {
@@ -18,47 +19,48 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private PhysicsSettings settings;
-        [SerializeField] private Transform characterTransform;
-        [SerializeField] private GravityController gravityController;
-        [SerializeField] private FloatReference movingPlatformCurrentGravity;
-        [SerializeField] private FloatReference currentVerticalSpeedFactor;
-        [SerializeField] private Vector2Reference movingPlatformCurrentSpeed;
-        [SerializeField] private FloatReference boundsWidth;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private FloatReference distanceBetweenDownRaycastsAndSmallestDistancePoint;
-        [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private RaycastReference safetyBoxcast;
-        [SerializeField] private FloatReference leftStickyRaycastOriginY;
-        [SerializeField] private FloatReference rightStickyRaycastOriginY;
-        [SerializeField] private RaycastReference leftStickyRaycast;
-        [SerializeField] private RaycastReference rightStickyRaycast;
-        [SerializeField] private FloatReference upRaycastSmallestDistance;
-        [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin;
-        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin;
-        [SerializeField] private FloatReference belowSlopeAngle;
-        [SerializeField] private RaycastHitColliderContactList rhcContact;
+        [SerializeField] private PhysicsSettings settings = null;
+        [SerializeField] private Transform characterTransform = new RectTransform();
+        [SerializeField] private GravityController gravityController = null;
+        [SerializeField] private FloatReference movingPlatformCurrentGravity = new FloatReference();
+        [SerializeField] private FloatReference currentVerticalSpeedFactor = new FloatReference();
+        [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();
+        [SerializeField] private FloatReference boundsWidth = new FloatReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private FloatReference currentDownHitSmallestDistance = new FloatReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private RaycastReference safetyBoxcast = new RaycastReference();
+        [SerializeField] private FloatReference leftStickyRaycastOriginY = new FloatReference();
+        [SerializeField] private FloatReference rightStickyRaycastOriginY = new FloatReference();
+        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
+        [SerializeField] private FloatReference upRaycastSmallestDistance = new FloatReference();
+        [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin = new FloatReference();
+        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin = new FloatReference();
+        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
+        [SerializeField] private RaycastHitColliderContactList rhcContact = null;
 
         #endregion
 
-        [SerializeField] private FloatReference physics2DPushForce;
-        [SerializeField] private BoolReference physics2DInteractionControl;
-        [SerializeField] private Vector2Reference maximumVelocity;
-        [SerializeField] private BoolReference safetyBoxcastControl;
-        [SerializeField] private FloatReference maximumSlopeAngle;
-        [SerializeField] private BoolReference stickToSlopesControl;
-        [SerializeField] private BoolReference safeSetTransformControl;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private Vector2Reference speed;
-        [SerializeField] private BoolReference gravityActive;
-        [SerializeField] private FloatReference fallSlowFactor;
-        [SerializeField] private IntReference horizontalMovementDirection;
-        [SerializeField] private Vector2Reference newPosition;
-        [SerializeField] private FloatReference smallValue;
-        [SerializeField] private FloatReference gravity;
-        [SerializeField] private BoolReference isJumping;
-        [SerializeField] private BoolReference isFalling;
-        [SerializeField] private Vector2Reference externalForce;
+        [SerializeField] private FloatReference physics2DPushForce = new FloatReference();
+        [SerializeField] private BoolReference physics2DInteractionControl = new BoolReference();
+        [SerializeField] private Vector2Reference maximumVelocity = new Vector2Reference();
+        [SerializeField] private BoolReference safetyBoxcastControl = new BoolReference();
+        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
+        [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
+        [SerializeField] private BoolReference safeSetTransformControl = new BoolReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private Vector2Reference speed = new Vector2Reference();
+        [SerializeField] private BoolReference gravityActive = new BoolReference();
+        [SerializeField] private FloatReference fallSlowFactor = new FloatReference();
+        [SerializeField] private IntReference horizontalMovementDirection = new IntReference();
+        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
+        [SerializeField] private FloatReference smallValue = new FloatReference();
+        [SerializeField] private FloatReference gravity = new FloatReference();
+        [SerializeField] private BoolReference isJumping = new BoolReference();
+        [SerializeField] private BoolReference isFalling = new BoolReference();
+        [SerializeField] private Vector2Reference externalForce = new Vector2Reference();
+        [SerializeField] private FloatReference movementDirectionThreshold = new FloatReference();
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
 
@@ -90,10 +92,7 @@ namespace VFEngine.Platformer.Physics
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public float BoundsWidth => boundsWidth.Value;
         public float RayOffset => rayOffset.Value;
-
-        public float DistanceBetweenDownRaycastsAndSmallestDistancePoint =>
-            distanceBetweenDownRaycastsAndSmallestDistancePoint.Value;
-
+        public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
         public float BoundsHeight => boundsHeight.Value;
 
         public RaycastHit2D SafetyBoxcast
@@ -221,6 +220,7 @@ namespace VFEngine.Platformer.Physics
 
         public float SmallValue
         {
+            get => smallValue.Value;
             set => value = smallValue.Value;
         }
 
@@ -255,8 +255,8 @@ namespace VFEngine.Platformer.Physics
         public bool AutomaticGravityControl { get; set; }
         public float AscentMultiplier { get; set; }
         public float FallMultiplier { get; set; }
-        public Vector2 worldSpeed = Vector2.zero;
-        public Vector2 forcesApplied = Vector2.zero;
+        [HideInInspector] public Vector2 worldSpeed = Vector2.zero;
+        [HideInInspector] public Vector2 forcesApplied = Vector2.zero;
         public Rigidbody2D CurrentHitRigidBody { get; set; }
         public bool CurrentHitRigidBodyCanBePushed { get; set; }
         public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
@@ -273,6 +273,12 @@ namespace VFEngine.Platformer.Physics
         {
             get => Speed.y;
             set => value = Speed.y;
+        }
+
+        public float MovementDirectionThreshold
+        {
+            get => movementDirectionThreshold.Value;
+            set => value = movementDirectionThreshold.Value;
         }
 
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

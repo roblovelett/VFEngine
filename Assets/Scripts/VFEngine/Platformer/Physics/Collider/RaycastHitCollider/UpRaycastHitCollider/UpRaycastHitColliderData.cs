@@ -16,17 +16,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        [SerializeField] private RaycastReference currentUpRaycast;
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
+        [SerializeField] private RaycastReference currentUpRaycast = new RaycastReference();
 
         #endregion
 
-        [SerializeField] private BoolReference upHitConnected;
-        [SerializeField] private IntReference upHitsStorageCollidingIndex;
-        [SerializeField] private IntReference currentUpHitsStorageIndex;
-        [SerializeField] private RaycastReference raycastUpHitAt;
-        [SerializeField] private BoolReference isCollidingAbove;
-        [SerializeField] private BoolReference wasTouchingCeilingLastFrame;
+        [SerializeField] private BoolReference upHitConnected = new BoolReference();
+        [SerializeField] private IntReference upHitsStorageLength = new IntReference();
+        [SerializeField] private IntReference upHitsStorageCollidingIndex = new IntReference();
+        [SerializeField] private IntReference currentUpHitsStorageIndex = new IntReference();
+        [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
+        [SerializeField] private BoolReference isCollidingAbove = new BoolReference();
+        [SerializeField] private BoolReference wasTouchingCeilingLastFrame = new BoolReference();
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
@@ -65,6 +66,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public bool WasTouchingCeilingLastFrame
         {
             set => value = wasTouchingCeilingLastFrame.Value;
+        }
+
+        public int UpHitsStorageLength
+        {
+            set => value = upHitsStorageLength.Value;
         }
 
         public int UpHitsStorageCollidingIndex

@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 {
     using static Single;
@@ -19,7 +20,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         #region dependencies
 
         [LabelText("Up Raycast Data")] [SerializeField]
-        private UpRaycastData u;
+        private UpRaycastData u = null;
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeUpRaycastLength()
         {
-            u.upRayLength = u.IsGrounded ? u.RayOffset : u.NewPosition.y;
+            u.upRayLength = u.GroundedEvent ? u.RayOffset : u.NewPosition.y;
         }
 
         private void InitializeUpRaycastStart()
@@ -61,7 +62,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             var hit = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.upRayLength,
                 u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan, u.DrawRaycastGizmos);
             u.CurrentUpRaycast = OnSetRaycast(hit);
-
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()

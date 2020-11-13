@@ -21,29 +21,35 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        [SerializeField] private RaycastReference currentDownRaycast;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private Vector2Reference downRaycastFromLeft;
-        [SerializeField] private Vector2Reference downRaycastToRight;
-        [SerializeField] private LayerMaskReference savedBelowLayer;
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
+        [SerializeField] private RaycastReference currentDownRaycast = new RaycastReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private Vector2Reference downRaycastFromLeft = new Vector2Reference();
+        [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
+        [SerializeField] private IntReference savedBelowLayer = new IntReference();
 
         #endregion
 
-        [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit;
-        [SerializeField] private BoolReference hasPathMovementClosestToDownHit;
-        [SerializeField] private IntReference downHitsStorageLength;
-        [SerializeField] private BoolReference downHitConnected;
-        [SerializeField] private RaycastReference raycastDownHitAt;
-        [SerializeField] private Vector3Reference crossBelowSlopeAngle;
-        [SerializeField] private BoolReference isCollidingBelow;
-        [SerializeField] private BoolReference onMovingPlatform;
-        [SerializeField] private BoolReference hasMovingPlatform;
-        [SerializeField] private FloatReference currentDownHitSmallestDistance;
-        [SerializeField] private Collider2DReference standingOnCollider;
-        [SerializeField] private GameObjectReference standingOnLastFrame;
-        [SerializeField] private BoolReference hasStandingOnLastFrame;
-        [SerializeField] private BoolReference wasGroundedLastFrame;
+        [SerializeField] private FloatReference smallestDistanceToDownHit = new FloatReference();
+        [SerializeField] private FloatReference movingPlatformCurrentGravity = new FloatReference();
+        [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit = new BoolReference();
+        [SerializeField] private BoolReference hasPathMovementClosestToDownHit = new BoolReference();
+        [SerializeField] private IntReference downHitsStorageLength = new IntReference();
+        [SerializeField] private IntReference currentDownHitsStorageIndex = new IntReference();
+        [SerializeField] private BoolReference downHitConnected = new BoolReference();
+        [SerializeField] private RaycastReference raycastDownHitAt = new RaycastReference();
+        [SerializeField] private Vector3Reference crossBelowSlopeAngle = new Vector3Reference();
+        [SerializeField] private BoolReference isCollidingBelow = new BoolReference();
+        [SerializeField] private BoolReference onMovingPlatform = new BoolReference();
+        [SerializeField] private BoolReference hasMovingPlatform = new BoolReference();
+        [SerializeField] private FloatReference currentDownHitSmallestDistance = new FloatReference();
+        [SerializeField] private Collider2DReference standingOnCollider = new Collider2DReference();
+        [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
+        [SerializeField] private BoolReference hasStandingOnLastFrame = new BoolReference();
+        [SerializeField] private BoolReference wasGroundedLastFrame = new BoolReference();
+        [SerializeField] private BoolReference groundedEvent = new BoolReference();
+        [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();
+        [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer = new LayerMaskReference();
         private static readonly string DownRaycastHitColliderPath = $"{RaycastHitColliderPath}DownRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
@@ -68,10 +74,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         public Vector2 DownRaycastFromLeft => downRaycastFromLeft.Value;
         public Vector2 DownRaycastToRight => downRaycastToRight.Value;
-        public LayerMask SavedBelowLayer => savedBelowLayer.Value;
+        public int SavedBelowLayer => savedBelowLayer.Value;
         public Transform Transform => transform.Value;
 
         #endregion
+
+        public float SmallestDistanceToDownHit
+        {
+            set => value = smallestDistanceToDownHit.Value;
+        }
 
         public bool HasPhysicsMaterialClosestToDownHit
         {
@@ -83,8 +94,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             set => value = hasPathMovementClosestToDownHit.Value;
         }
 
-        [CanBeNull] public PhysicsMaterialData physicsMaterialClosestToDownHit;
-        [CanBeNull] public PathMovementData pathMovementClosestToDownHit;
+        [HideInInspector] [CanBeNull] public PhysicsMaterialData physicsMaterialClosestToDownHit;
+        [HideInInspector] [CanBeNull] public PathMovementData pathMovementClosestToDownHit;
+
+        public Vector2 MovingPlatformCurrentSpeed
+        {
+            set => value = movingPlatformCurrentSpeed.Value;
+        }
 
         public int DownHitsStorageLength
         {
@@ -92,8 +108,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         }
 
         public RaycastHit2D[] DownHitsStorage { get; set; } = new RaycastHit2D[0];
-        public int CurrentDownHitsStorageIndex { get; set; }
-        public float friction;
+
+        public int CurrentDownHitsStorageIndex
+        {
+            get => currentDownHitsStorageIndex.Value;
+            set => value = currentDownHitsStorageIndex.Value;
+        }
+
+        [HideInInspector] public float friction;
         public int DownHitsStorageSmallestDistanceIndex { get; set; }
         public RaycastHit2D DownHitWithSmallestDistance { get; set; }
 
@@ -104,10 +126,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         public Raycast RaycastDownHitAt
         {
+            get => raycastDownHitAt.Value;
             set => value = raycastDownHitAt.Value;
         }
 
-        public float belowSlopeAngle;
+        [HideInInspector] public float belowSlopeAngle;
 
         public Vector3 CrossBelowSlopeAngle
         {
@@ -130,18 +153,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         public bool HasMovingPlatform
         {
+            get => hasMovingPlatform.Value;
             set => value = hasMovingPlatform.Value;
         }
 
-        public float movingPlatformCurrentGravity;
-        public float movingPlatformGravity = -500f;
+        public float MovingPlatformCurrentGravity
+        {
+            set => value = movingPlatformCurrentGravity.Value;
+        }
+
+        [HideInInspector] public float movingPlatformGravity = -500f;
 
         public float CurrentDownHitSmallestDistance
         {
             set => value = currentDownHitSmallestDistance.Value;
         }
 
-        public bool groundedEvent;
+        public bool GroundedEvent
+        {
+            set => value = groundedEvent.Value;
+        }
 
         public GameObject StandingOnLastFrame
         {
@@ -154,7 +185,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             set => value = hasStandingOnLastFrame.Value;
         }
 
-        public GameObject standingOn;
+        [HideInInspector] public GameObject standingOn;
 
         public Collider2D StandingOnCollider
         {
@@ -166,7 +197,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             set => value = wasGroundedLastFrame.Value;
         }
 
-        public GameObject standingOnWithSmallestDistance;
+        public LayerMask StandingOnWithSmallestDistanceLayer
+        {
+            set => value = standingOnWithSmallestDistanceLayer.Value;
+        }
+
+        [HideInInspector] public GameObject standingOnWithSmallestDistance;
 
         public static readonly string DownRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

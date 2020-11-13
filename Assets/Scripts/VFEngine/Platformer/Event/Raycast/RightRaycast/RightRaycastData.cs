@@ -17,28 +17,28 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
-        [SerializeField] private IntReference currentRightHitsStorageIndex;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private FloatReference obstacleHeightTolerance;
-        [SerializeField] private FloatReference boundsWidth;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference boundsBottomRightCorner;
-        [SerializeField] private Vector2Reference boundsTopLeftCorner;
-        [SerializeField] private Vector2Reference boundsTopRightCorner;
-        [SerializeField] private Vector2Reference speed;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private LayerMaskReference platformMask;
-        [SerializeField] private LayerMaskReference oneWayPlatformMask;
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask;
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
+        [SerializeField] private IntReference currentRightHitsStorageIndex = new IntReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private FloatReference obstacleHeightTolerance = new FloatReference();
+        [SerializeField] private FloatReference boundsWidth = new FloatReference();
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference speed = new Vector2Reference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
+        [SerializeField] private LayerMaskReference oneWayPlatformMask = new LayerMaskReference();
+        [SerializeField] private LayerMaskReference movingOneWayPlatformMask = new LayerMaskReference();
 
         #endregion
 
-        [SerializeField] private FloatReference rightRayLength;
-        [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin;
-        [SerializeField] private Vector2Reference rightRaycastToTopOrigin;
-        [SerializeField] private RaycastReference currentRightRaycast;
+        [SerializeField] private FloatReference rightRayLength = new FloatReference();
+        [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin = new Vector2Reference();
+        [SerializeField] private Vector2Reference rightRaycastToTopOrigin = new Vector2Reference();
+        [SerializeField] private RaycastReference currentRightRaycast = new RaycastReference();
         private static readonly string RightRaycastPath = $"{RaycastPath}RightRaycast/";
         private static readonly string ModelAssetPath = $"{RightRaycastPath}DefaultRightRaycastModel.asset";
 
@@ -84,7 +84,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             set => value = rightRaycastToTopOrigin.Value;
         }
 
-        public Vector2 currentRightRaycastOrigin;
+        [HideInInspector] public Vector2 currentRightRaycastOrigin;
 
         public ScriptableObjects.Atoms.Raycast.Raycast CurrentRightRaycast
         {

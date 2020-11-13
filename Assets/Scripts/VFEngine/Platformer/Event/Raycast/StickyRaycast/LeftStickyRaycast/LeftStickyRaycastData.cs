@@ -17,21 +17,23 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private FloatReference stickyRaycastLength;
-        [SerializeField] private FloatReference boundsWidth;
-        [SerializeField] private FloatReference maximumSlopeAngle;
-        [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference newPosition;
-        [SerializeField] private Vector2Reference boundsCenter;
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-        [SerializeField] private new TransformReference transform;
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
+        [SerializeField] private FloatReference boundsWidth = new FloatReference();
+        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
 
         #endregion
 
-        [SerializeField] private RaycastReference leftStickyRaycast;
+        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
+        [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
+        [SerializeField] private FloatReference leftStickyRaycastOriginY = new FloatReference();
         private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}DefaultRightRaycastModel.asset";
 
@@ -55,13 +57,23 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #endregion
 
-        public float leftStickyRaycastLength;
-        public Vector2 leftStickyRaycastOrigin;
+        public float LeftStickyRaycastLength
+        {
+            get => leftStickyRaycastLength.Value;
+            set => value = leftStickyRaycastLength.Value;
+        }
+
+        [HideInInspector] public Vector2 leftStickyRaycastOrigin;
 
         public ScriptableObjects.Atoms.Raycast.Raycast LeftStickyRaycast
         {
             get => leftStickyRaycast.Value;
             set => value = leftStickyRaycast.Value;
+        }
+
+        public float LeftStickyRaycastOriginY
+        {
+            set => value = leftStickyRaycastOriginY.Value;
         }
 
         public static readonly string LeftStickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

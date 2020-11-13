@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
     using static UniTaskExtensions;
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region dependencies
 
         [LabelText("Distance To Ground Raycast Hit Collider Data")] [SerializeField]
-        private DistanceToGroundRaycastHitColliderData d;
+        private DistanceToGroundRaycastHitColliderData d = null;
 
         #endregion
 

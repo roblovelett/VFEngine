@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider
 {
     using static RaycastHitColliderModel;
@@ -20,7 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         #region dependencies
 
         [LabelText("Left Raycast Hit Collider Data")] [SerializeField]
-        private LeftRaycastHitColliderData l;
+        private LeftRaycastHitColliderData l = null;
 
         #endregion
 

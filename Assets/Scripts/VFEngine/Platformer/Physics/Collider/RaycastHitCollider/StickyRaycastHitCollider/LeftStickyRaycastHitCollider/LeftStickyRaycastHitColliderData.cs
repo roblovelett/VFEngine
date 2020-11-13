@@ -4,6 +4,7 @@ using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider
 {
     using static StickyRaycastHitColliderData;
@@ -15,13 +16,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private RaycastReference leftStickyRaycast;
-        [SerializeField] private new TransformReference transform;
+        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
 
         #endregion
 
-        [SerializeField] private FloatReference belowSlopeAngleLeft;
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft;
+        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
+        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft = new Vector3Reference();
 
         private static readonly string LeftStickyRaycastHitColliderPath =
             $"{StickyRaycastHitColliderPath}LeftStickyRaycastHitCollider/";

@@ -1,6 +1,9 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+// ReSharper disable RedundantDefaultMemberInitializer
+// ReSharper disable RedundantAssignment
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
@@ -12,12 +15,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        [SerializeField] private RaycastReference currentRightRaycast;
-        [SerializeField] private RaycastReference currentLeftRaycast;
+        [SerializeField] private RaycastReference currentRightRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference currentLeftRaycast = new RaycastReference();
 
         #endregion
 
-        [SerializeField] private RaycastHitColliderContactList contactList;
+        [SerializeField] private RaycastHitColliderContactList contactList = null;
+        [SerializeField] private Collider2DReference ignoredCollider = new Collider2DReference();
         private static readonly string ModelAssetPath = $"{RaycastHitColliderPath}DefaultRaycastHitColliderModel.asset";
 
         #endregion
@@ -47,6 +51,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #endregion
 
         public RaycastHitColliderContactList ContactList => contactList;
+
+        public Collider2D IgnoredCollider
+        {
+            get => ignoredCollider.Value;
+            set => value = ignoredCollider.Value;
+        }
         public const string RaycastHitColliderPath = "Physics/Collider/RaycastHitCollider/";
 
         public static readonly string RaycastHitColliderModelPath =

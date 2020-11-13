@@ -16,18 +16,18 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private Vector2Reference bounds;
-        [SerializeField] private Vector2Reference boundsCenter;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private FloatReference stickyRaycastLength;
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-        [SerializeField] private Vector2Reference newPosition;
-        [SerializeField] private LayerMaskReference platformMask;
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private Vector2Reference bounds = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
+        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
 
         #endregion
 
-        [SerializeField] private RaycastReference safetyBoxcast;
+        [SerializeField] private RaycastReference safetyBoxcast = new RaycastReference();
         private const string SbPath = "Event/Boxcast/SafetyBoxcast/";
         private static readonly string ModelAssetPath = $"{SbPath}DefaultSafetyBoxcastModel.asset";
 

@@ -1,6 +1,4 @@
-﻿//using ScriptableObjects.Atoms.RaycastHit2D.References;
-
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -18,13 +16,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private RaycastReference rightStickyRaycast;
-        [SerializeField] private new TransformReference transform;
+        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
 
         #endregion
 
-        [SerializeField] private FloatReference belowSlopeAngleRight;
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleRight;
+        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
+        [SerializeField] private Vector3Reference crossBelowSlopeAngleRight = new Vector3Reference();
 
         private static readonly string RightStickyRaycastHitColliderPath =
             $"{StickyRaycastHitColliderPath}RightStickyRaycastHitCollider/";

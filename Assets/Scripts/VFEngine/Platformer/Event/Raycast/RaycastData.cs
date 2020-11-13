@@ -2,12 +2,13 @@
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
-// ReSharper disable RedundantAssignment
 
+// ReSharper disable RedundantDefaultMemberInitializer
+
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
-    using static Vector2;
 
     public class RaycastData : MonoBehaviour
     {
@@ -15,31 +16,32 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [SerializeField] private RaycastSettings settings;
-        [SerializeField] private BoxCollider2D boxCollider;
-        [SerializeField] private new TransformReference transform;
+        [SerializeField] private RaycastSettings settings = null;
+        [SerializeField] private BoxCollider2D boxCollider = null;
+        [SerializeField] private new TransformReference transform = new TransformReference();
         private int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
         private int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
 
         #endregion
 
-        [SerializeField] private BoolReference displayWarningsControl;
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private BoolReference castRaysOnBothSides;
-        [SerializeField] private BoolReference performSafetyBoxcast;
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
-        [SerializeField] private FloatReference boundsWidth;
-        [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private Vector2Reference boundsCenter;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference boundsBottomRightCorner;
-        [SerializeField] private Vector2Reference boundsBottomCenterPosition;
-        [SerializeField] private Vector2Reference boundsTopLeftCorner;
-        [SerializeField] private Vector2Reference boundsTopRightCorner;
-        [SerializeField] private IntReference numberOfHorizontalRaysPerSide;
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private FloatReference obstacleHeightTolerance;
+        [SerializeField] private BoolReference displayWarningsControl = new BoolReference();
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private BoolReference castRaysOnBothSides = new BoolReference();
+        [SerializeField] private BoolReference performSafetyBoxcast = new BoolReference();
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
+        [SerializeField] private FloatReference boundsWidth = new FloatReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private Vector2Reference bounds = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomCenterPosition = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
+        [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private FloatReference obstacleHeightTolerance = new FloatReference();
         private static readonly string ModelAssetPath = $"{RaycastPath}DefaultRaycastModel.asset";
 
         #endregion
@@ -115,7 +117,11 @@ namespace VFEngine.Platformer.Event.Raycast
             set => value = boundsHeight.Value;
         }
 
-        public Vector2 bounds = zero;
+        public Vector2 Bounds
+        {
+            get => bounds.Value;
+            set => value = bounds.Value;
+        }
 
         public Vector2 BoundsCenter
         {

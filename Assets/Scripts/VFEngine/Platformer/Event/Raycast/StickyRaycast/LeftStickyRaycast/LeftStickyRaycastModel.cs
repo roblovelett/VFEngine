@@ -1,7 +1,10 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
     using static StickyRaycastModel;
@@ -9,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static Color;
     using static ScriptableObjectExtensions;
     using static RaycastModel;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "LeftStickyRaycastModel", menuName = PlatformerLeftStickyRaycastModelPath, order = 0)]
     public class LeftStickyRaycastModel : ScriptableObject, IModel
@@ -18,21 +22,31 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         #region dependencies
 
         [LabelText("Left Sticky Raycast Data")] [SerializeField]
-        private LeftStickyRaycastData l;
+        private LeftStickyRaycastData l = null;
 
         #endregion
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+        }
+
+        private void InitializeData()
+        {
+            l.LeftStickyRaycastOriginY = l.leftStickyRaycastOrigin.y;
+        }
+
         private void SetLeftStickyRaycastLength()
         {
-            l.leftStickyRaycastLength =
+            l.LeftStickyRaycastLength =
                 OnSetStickyRaycastLength(l.BoundsWidth, l.MaximumSlopeAngle, l.BoundsHeight, l.RayOffset);
         }
 
         private void SetLeftStickyRaycastLengthToStickyRaycastLength()
         {
-            l.leftStickyRaycastLength = l.StickyRaycastLength;
+            l.LeftStickyRaycastLength = l.StickyRaycastLength;
         }
 
         private void SetLeftStickyRaycastOriginX()
@@ -47,7 +61,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void SetLeftStickyRaycast()
         {
-            var hit = Raycast(l.leftStickyRaycastOrigin, -l.Transform.up, l.leftStickyRaycastLength,
+            var hit = Raycast(l.leftStickyRaycastOrigin, -l.Transform.up, l.LeftStickyRaycastLength,
                 l.RaysBelowLayerMaskPlatforms, cyan, l.DrawRaycastGizmosControl);
             l.LeftStickyRaycast = OnSetRaycast(hit);
         }
@@ -83,6 +97,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public void OnSetLeftStickyRaycast()
         {
             SetLeftStickyRaycast();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

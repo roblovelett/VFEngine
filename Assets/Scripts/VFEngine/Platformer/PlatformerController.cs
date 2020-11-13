@@ -1,22 +1,24 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer
 {
     using static PlatformerData;
     using static ScriptableObjectExtensions;
     using static Debug;
 
-    [RequireComponent(typeof(LayerMaskController))]
-    [RequireComponent(typeof(RaycastController))]
-    [RequireComponent(typeof(PhysicsController))]
     public class PlatformerController : MonoBehaviour, IController
     {
-        /* fields: dependencies */
-        [SerializeField] private PlatformerModel model;
+        #region fields
+
+        #region dependencies
+
+        [SerializeField] private PlatformerModel model = null;
+
+        #endregion
+
+        #region private methods
 
         private void Awake()
         {
@@ -29,5 +31,9 @@ namespace VFEngine.Platformer
         {
             model.OnRunPlatformer();
         }
+
+        #endregion
+
+        #endregion
     }
 }

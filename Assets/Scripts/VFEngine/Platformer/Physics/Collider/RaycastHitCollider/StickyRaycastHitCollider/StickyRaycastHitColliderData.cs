@@ -2,25 +2,31 @@
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-    
+
     public class StickyRaycastHitColliderData : MonoBehaviour
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private FloatReference belowSlopeAngleRight;
-        [SerializeField] private FloatReference belowSlopeAngleLeft;
+        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
+        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
 
         #endregion
-        
-        private static readonly string StickyRaycastHitColliderPathInternal = $"{RaycastHitColliderPath}/StickyRaycastHitCollider/";
-        private static readonly string ModelAssetPath = $"{StickyRaycastHitColliderPathInternal}DefaultStickyRaycastHitColliderModel.asset";
-        
+
+        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
+
+        private static readonly string StickyRaycastHitColliderPathInternal =
+            $"{RaycastHitColliderPath}/StickyRaycastHitCollider/";
+
+        private static readonly string ModelAssetPath =
+            $"{StickyRaycastHitColliderPathInternal}DefaultStickyRaycastHitColliderModel.asset";
+
         #endregion
 
         #region properties
@@ -30,12 +36,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public float belowSlopeAngle;
+        public float BelowSlopeAngle
+        {
+            set => value = belowSlopeAngle.Value;
+        }
 
         #endregion
 
         public static readonly string StickyRaycastHitColliderPath = StickyRaycastHitColliderPathInternal;
-        public static readonly string StickyRaycastHitColliderModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        public static readonly string StickyRaycastHitColliderModelPath =
+            $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

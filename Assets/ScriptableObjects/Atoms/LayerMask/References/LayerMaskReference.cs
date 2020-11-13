@@ -5,7 +5,6 @@ using ScriptableObjects.Atoms.LayerMask.Functions;
 using ScriptableObjects.Atoms.LayerMask.Pairs;
 using ScriptableObjects.Atoms.LayerMask.VariableInstancers;
 using ScriptableObjects.Atoms.LayerMask.Variables;
-using UnityAtoms.BaseAtoms;
 using UnityAtoms;
 
 namespace ScriptableObjects.Atoms.LayerMask.References
@@ -33,10 +32,10 @@ namespace ScriptableObjects.Atoms.LayerMask.References
         {
             return base.Equals(other);
         }
-        
+
         protected override bool ValueEquals(UnityEngine.LayerMask other)
         {
-            return Value == null && other == null || Value != null && other != null/* && Value.GetInstanceID() == other.GetInstanceID()*/;
+            return true /* && Value.GetInstanceID() == other.GetInstanceID()*/;
         }
     }
 }

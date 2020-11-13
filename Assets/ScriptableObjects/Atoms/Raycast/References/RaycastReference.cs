@@ -7,10 +7,14 @@ using ScriptableObjects.Atoms.Raycast.VariableInstancers;
 using ScriptableObjects.Atoms.Raycast.Variables;
 using UnityAtoms;
 
+// ReSharper disable RedundantBaseConstructorCall
+
 namespace ScriptableObjects.Atoms.Raycast.References
 {
     /// <summary>
-    /// Reference of type `Raycast`. Inherits from `EquatableAtomReference&lt;Raycast, RaycastPair, RaycastConstant, RaycastVariable, RaycastEvent, RaycastPairEvent, RaycastRaycastFunction, RaycastVariableInstancer, AtomCollection, AtomList&gt;`.
+    ///     Reference of type `Raycast`. Inherits from `EquatableAtomReference&lt;Raycast, RaycastPair, RaycastConstant,
+    ///     RaycastVariable, RaycastEvent, RaycastPairEvent, RaycastRaycastFunction, RaycastVariableInstancer, AtomCollection,
+    ///     AtomList&gt;`.
     /// </summary>
     [Serializable]
     public sealed class RaycastReference : EquatableAtomReference<
@@ -23,8 +27,17 @@ namespace ScriptableObjects.Atoms.Raycast.References
         RaycastRaycastFunction,
         RaycastVariableInstancer>, IEquatable<RaycastReference>
     {
-        public RaycastReference() : base() { }
-        public RaycastReference(Raycast value) : base(value) { }
-        public bool Equals(RaycastReference other) { return base.Equals(other); }
+        public RaycastReference() : base()
+        {
+        }
+
+        public RaycastReference(Raycast value) : base(value)
+        {
+        }
+
+        public bool Equals(RaycastReference other)
+        {
+            return base.Equals(other);
+        }
     }
 }

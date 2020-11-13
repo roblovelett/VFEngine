@@ -2,6 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static DebugExtensions;
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         #region dependencies
 
         [LabelText("Distance To Ground Raycast Data")] [SerializeField]
-        private DistanceToGroundRaycastData d;
+        private DistanceToGroundRaycastData d = null;
 
         #endregion
 

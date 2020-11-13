@@ -402,6 +402,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downRaycastHitColliderModel.OnSetCrossBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+        
+        public async UniTaskVoid InitializeSmallestDistanceToDownHit()
+        {
+            downRaycastHitColliderModel.OnInitializeSmallestDistanceToDownHit();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid SetSmallestDistanceToDownHitDistance()
+        {
+            downRaycastHitColliderModel.OnSetSmallestDistanceToDownHitDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public async UniTaskVoid SetSmallestDistanceIndexAt()
         {
@@ -454,6 +466,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        public async UniTaskVoid StopMovingPlatformCurrentSpeed()
+        {
+            downRaycastHitColliderModel.OnStopMovingPlatformCurrentSpeed();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public async UniTaskVoid SetCurrentDownHitSmallestDistance()
         {
             downRaycastHitColliderModel.OnSetCurrentDownHitSmallestDistance();
@@ -491,6 +509,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             downRaycastHitColliderModel.OnSetNotOnMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void SetMovingPlatformCurrentSpeed()
+        {
+            downRaycastHitColliderModel.OnSetMovingPlatformCurrentSpeed();
         }
 
         #endregion

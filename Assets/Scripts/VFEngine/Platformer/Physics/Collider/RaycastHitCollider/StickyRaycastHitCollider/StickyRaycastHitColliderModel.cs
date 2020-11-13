@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
     using static UniTaskExtensions;
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region dependencies
 
         [LabelText("Sticky Raycast Hit Collider Data")] [SerializeField]
-        private StickyRaycastHitColliderData s;
+        private StickyRaycastHitColliderData s = null;
 
         #endregion
 
@@ -41,17 +42,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeBelowSlopeAngle()
         {
-            s.belowSlopeAngle = 0f;
+            s.BelowSlopeAngle = 0f;
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleLeft()
         {
-            s.belowSlopeAngle = s.BelowSlopeAngleLeft;
+            s.BelowSlopeAngle = s.BelowSlopeAngleLeft;
         }
 
         private void SetBelowSlopeAngleToBelowSlopeAngleRight()
         {
-            s.belowSlopeAngle = s.BelowSlopeAngleRight;
+            s.BelowSlopeAngle = s.BelowSlopeAngleRight;
         }
 
         #endregion

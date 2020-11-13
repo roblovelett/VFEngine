@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
@@ -27,7 +26,6 @@ namespace VFEngine.Platformer.Event.Raycast
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [RequireComponent(typeof(BoxcastController))]
     public class RaycastController : MonoBehaviour
     {
         #region fields
@@ -75,7 +73,9 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             var rTask1 = Async(raycastModel.OnInitialize());
             var rTask2 = Async(stickyRaycastModel.OnInitialize());
-            var task1 = await (rTask1, rTask2);
+            var rTask3 = Async(leftStickyRaycastModel.OnInitialize());
+            var rTask4 = Async(rightStickyRaycastModel.OnInitialize());
+            var task1 = await (rTask1, rTask2, rTask3, rTask4);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -214,7 +214,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid InitializeSmallestDistanceToDownHit()
+        /*public async UniTaskVoid InitializeSmallestDistanceToDownHit()
         {
             downRaycastModel.OnInitializeSmallestDistanceToDownHit();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -224,12 +224,11 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             downRaycastModel.OnSetSmallestDistanceToDownHitDistance();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
+        }*/
+        /*public void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
         {
             downRaycastModel.OnSetDistanceBetweenDownRaycastsAndSmallestDistancePoint();
-        }
+        }*/
 
         public void SetCurrentDownRaycastOriginPoint()
         {
@@ -273,7 +272,7 @@ namespace VFEngine.Platformer.Event.Raycast
         #endregion
 
         #region distance to ground raycast model
-        
+
         public void SetDistanceToGroundRaycastOrigin()
         {
             distanceToGroundRaycastModel.OnSetDistanceToGroundRaycastOrigin();

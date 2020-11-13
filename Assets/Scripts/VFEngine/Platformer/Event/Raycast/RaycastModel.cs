@@ -4,6 +4,8 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
+
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -23,7 +25,7 @@ namespace VFEngine.Platformer.Event.Raycast
         #region dependencies
 
         [LabelText("Raycast Data")] [SerializeField]
-        private RaycastData r;
+        private RaycastData r = null;
 
         #endregion
 
@@ -155,7 +157,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsCenter = r.BoxCollider.bounds.center;
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
-            r.bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
+            r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
         }
 
         private static Vector2 SetBoundsBottomCenterPosition(Bounds b)

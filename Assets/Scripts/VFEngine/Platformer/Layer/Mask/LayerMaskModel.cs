@@ -4,6 +4,8 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
+
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -20,7 +22,7 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [LabelText("Layer Mask Data")] [SerializeField]
-        private LayerMaskData l;
+        private LayerMaskData l = null;
 
         #endregion
 

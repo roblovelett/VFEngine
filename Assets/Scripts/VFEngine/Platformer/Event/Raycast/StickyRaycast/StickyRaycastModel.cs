@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static Mathf;
@@ -19,7 +20,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         #region dependencies
 
         [LabelText("Sticky Raycast Data")] [SerializeField]
-        private StickyRaycastData s;
+        private StickyRaycastData s = null;
 
         #endregion
 

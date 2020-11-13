@@ -29,7 +29,7 @@ namespace ScriptableObjects.Atoms.Raycast
 
         public override bool Equals(object obj)
         {
-            return Equals((Raycast) obj);
+            return obj != null && Equals((Raycast) obj);
         }
 
         public override int GetHashCode()

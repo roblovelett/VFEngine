@@ -17,31 +17,27 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private IntReference currentDownHitsStorageIndex;
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide;
-        [SerializeField] private FloatReference rayOffset;
-        [SerializeField] private FloatReference boundsHeight;
-        [SerializeField] private Vector2Reference newPosition;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference boundsBottomRightCorner;
-        [SerializeField] private Vector2Reference boundsTopLeftCorner;
-        [SerializeField] private Vector2Reference boundsTopRightCorner;
-        [SerializeField] private Vector2Reference standingOnWithSmallestDistancePoint;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay;
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-        [SerializeField] private FloatReference raycastDownHitAtDistance;
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private IntReference currentDownHitsStorageIndex = new IntReference();
+        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
+        [SerializeField] private FloatReference rayOffset = new FloatReference();
+        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new LayerMaskReference();
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
 
         #endregion
 
-        [SerializeField] private FloatReference downRayLength;
-        [SerializeField] private FloatReference smallestDistanceToDownHit;
-        [SerializeField] private FloatReference currentDistanceOfDownRaycastAndSmallestDistancePoint;
-        [SerializeField] private Vector2Reference currentDownRaycastOrigin;
-        [SerializeField] private Vector2Reference downRaycastFromLeft;
-        [SerializeField] private Vector2Reference downRaycastToRight;
-        [SerializeField] private RaycastReference currentDownRaycast;
+        [SerializeField] private FloatReference downRayLength = new FloatReference();
+        [SerializeField] private Vector2Reference currentDownRaycastOrigin = new Vector2Reference();
+        [SerializeField] private Vector2Reference downRaycastFromLeft = new Vector2Reference();
+        [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
+        [SerializeField] private RaycastReference currentDownRaycast = new RaycastReference();
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
         private static readonly string ModelAssetPath = $"{DownRaycastPath}DefaultDownRaycastModel.asset";
 
@@ -61,11 +57,9 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public Vector2 StandingOnWithSmallestDistancePoint => standingOnWithSmallestDistancePoint.Value;
         public Transform Transform => transform.Value;
         public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value;
         public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
-        public float RaycastDownHitAtDistance => raycastDownHitAtDistance.Value;
 
         #endregion
 
@@ -73,16 +67,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         {
             get => downRayLength.Value;
             set => value = downRayLength.Value;
-        }
-
-        public float SmallestDistanceToDownHit
-        {
-            set => value = smallestDistanceToDownHit.Value;
-        }
-
-        public float CurrentDistanceOfDownRaycastAndSmallestDistancePoint
-        {
-            set => value = currentDistanceOfDownRaycastAndSmallestDistancePoint.Value;
         }
 
         public Vector2 CurrentDownRaycastOrigin

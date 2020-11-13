@@ -2,6 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
     using static RaycastModel;
@@ -17,7 +18,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         #region dependencies
 
         [LabelText("Right Raycast Data")] [SerializeField]
-        private RightRaycastData r;
+        private RightRaycastData r = null;
 
         #endregion
 

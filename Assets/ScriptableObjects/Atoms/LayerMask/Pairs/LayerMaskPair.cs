@@ -1,6 +1,7 @@
 using System;
 using UnityAtoms;
 using UnityEngine;
+// ReSharper disable InconsistentNaming
 
 namespace ScriptableObjects.Atoms.LayerMask.Pairs
 {

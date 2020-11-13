@@ -1,15 +1,13 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
-    using static Single;
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
-    using static MathsExtensions;
     using static Mathf;
     using static ScriptableObjectExtensions;
 
@@ -21,7 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         #region dependencies
 
         [LabelText("Down Raycast Data")] [SerializeField]
-        private DownRaycastData d;
+        private DownRaycastData d = null;
 
         #endregion
 
@@ -66,23 +64,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         {
             d.DownRaycastToRight = OnSetVerticalRaycast(d.BoundsBottomRightCorner, d.BoundsTopRightCorner, d.Transform,
                 d.RayOffset, d.NewPosition.x);
-        }
-
-        private void InitializeSmallestDistanceToDownHit()
-        {
-            d.SmallestDistanceToDownHit = MaxValue;
-        }
-
-        private void SetSmallestDistanceToDownHitDistance()
-        {
-            d.SmallestDistanceToDownHit = d.RaycastDownHitAtDistance;
-        }
-
-        private void SetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
-        {
-            d.CurrentDistanceOfDownRaycastAndSmallestDistancePoint =
-                DistanceBetweenPointAndLine(d.StandingOnWithSmallestDistancePoint, d.DownRaycastFromLeft,
-                    d.DownRaycastToRight);
         }
 
         private void SetCurrentDownRaycastOriginPoint()
@@ -132,21 +113,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public void OnSetDownRaycastToRight()
         {
             SetDownRaycastToRight();
-        }
-
-        public void OnInitializeSmallestDistanceToDownHit()
-        {
-            InitializeSmallestDistanceToDownHit();
-        }
-
-        public void OnSetSmallestDistanceToDownHitDistance()
-        {
-            SetSmallestDistanceToDownHitDistance();
-        }
-
-        public void OnSetDistanceBetweenDownRaycastsAndSmallestDistancePoint()
-        {
-            SetDistanceBetweenDownRaycastsAndSmallestDistancePoint();
         }
 
         public void OnSetCurrentDownRaycastOriginPoint()

@@ -17,18 +17,18 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl;
-        [SerializeField] private FloatReference belowSlopeAngle;
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner;
-        [SerializeField] private Vector2Reference boundsBottomRightCorner;
-        [SerializeField] private Vector2Reference boundsCenter;
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms;
-        [SerializeField] private new TransformReference transform;
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength;
+        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
+        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
+        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
+        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
+        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
 
         #endregion
 
-        [SerializeField] private RaycastReference distanceToGroundRaycast;
+        [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
         private static readonly string ModelAssetPath =
