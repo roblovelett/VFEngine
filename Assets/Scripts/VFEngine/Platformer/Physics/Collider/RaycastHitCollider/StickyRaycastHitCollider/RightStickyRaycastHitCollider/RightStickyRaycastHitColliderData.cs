@@ -1,8 +1,9 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider
@@ -17,7 +18,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region dependencies
 
         [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private new Transform transform = null;
 
         #endregion
 
@@ -28,7 +29,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
             $"{StickyRaycastHitColliderPath}RightStickyRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{RightStickyRaycastHitColliderPath}DefaultRightStickyRaycastHitColliderModel.asset";
+            $"{RightStickyRaycastHitColliderPath}RightStickyRaycastHitColliderModel.asset";
 
         #endregion
 
@@ -45,7 +46,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
             }
         }
 
-        public Transform Transform => transform.Value;
+        public Transform Transform => transform;
 
         #endregion
 

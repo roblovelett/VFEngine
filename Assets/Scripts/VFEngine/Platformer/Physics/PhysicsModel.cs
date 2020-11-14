@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics
     using static RigidbodyType2D;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
+    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)][InlineEditor]
     public class PhysicsModel : ScriptableObject, IModel
     {
         #region fields
@@ -56,7 +56,6 @@ namespace VFEngine.Platformer.Physics
             p.FallMultiplier = p.FallMultiplierSetting;
             p.IsJumping = false;
             p.Gravity = p.GravitySetting;
-            p.Transform = p.CharacterTransform;
             p.FallSlowFactor = 0f;
             p.SmallValue = 0.0001f;
             p.MovementDirectionThreshold = p.SmallValue;
@@ -71,7 +70,7 @@ namespace VFEngine.Platformer.Physics
                 var warningMessage = "";
                 var warningMessageCount = 0;
                 if (!p.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
-                if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
+                //if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
                 if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");
                 DebugLogWarning(warningMessageCount, warningMessage);
 
@@ -100,7 +99,7 @@ namespace VFEngine.Platformer.Physics
         {
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
-            if (p.AutomaticGravityControl && !p.HasGravityController) p.Transform.rotation = identity;
+            if (p.AutomaticGravityControl /*&& !p.HasGravityController*/) p.Transform.rotation = identity;
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }

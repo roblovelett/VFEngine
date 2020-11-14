@@ -20,7 +20,7 @@ namespace VFEngine.Platformer
     using static RaycastDirection;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PlatformerModel", menuName = PlatformerModelPath, order = 0)]
+    [CreateAssetMenu(fileName = "PlatformerModel", menuName = PlatformerModelPath, order = 0)][InlineEditor]
     public class PlatformerModel : ScriptableObject, IModel
     {
         #region fields

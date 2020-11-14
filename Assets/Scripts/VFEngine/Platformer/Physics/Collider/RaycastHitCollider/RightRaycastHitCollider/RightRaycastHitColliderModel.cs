@@ -13,7 +13,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "RightRaycastHitColliderModel", menuName = PlatformerRightRaycastHitColliderModelPath,
-        order = 0)]
+        order = 0)][InlineEditor]
     public class RightRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

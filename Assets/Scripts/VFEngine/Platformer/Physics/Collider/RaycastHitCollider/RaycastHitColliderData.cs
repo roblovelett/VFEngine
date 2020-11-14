@@ -22,7 +22,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         [SerializeField] private RaycastHitColliderContactList contactList = null;
         [SerializeField] private Collider2DReference ignoredCollider = new Collider2DReference();
-        private static readonly string ModelAssetPath = $"{RaycastHitColliderPath}DefaultRaycastHitColliderModel.asset";
+        private static readonly string ModelAssetPath = $"{RaycastHitColliderPath}RaycastHitColliderModel.asset";
 
         #endregion
 

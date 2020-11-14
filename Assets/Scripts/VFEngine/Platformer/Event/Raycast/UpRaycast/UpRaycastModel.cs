@@ -12,7 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static Color;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "UpRaycastModel", menuName = PlatformerUpRaycastModelPath, order = 0)]
+    [CreateAssetMenu(fileName = "UpRaycastModel", menuName = PlatformerUpRaycastModelPath, order = 0)][InlineEditor]
     public class UpRaycastModel : ScriptableObject, IModel
     {
         #region fields

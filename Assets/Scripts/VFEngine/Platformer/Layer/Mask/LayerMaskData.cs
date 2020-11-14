@@ -1,7 +1,9 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable NotAccessedField.Global
 
 // ReSharper disable RedundantDefaultMemberInitializer
 
@@ -18,25 +20,22 @@ namespace VFEngine.Platformer.Layer.Mask
 
         [SerializeField] private LayerMaskSettings settings = null;
         [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
-        private GameObject StandingOnLastFrame => standingOnLastFrame.Value;
+        private GameObject StandingOnLastFrame => standingOnLastFrame;
 
         #endregion
 
-        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference movingPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference oneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference stairsMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new LayerMaskReference();
-
-        [SerializeField]
-        private LayerMaskReference raysBelowLayerMaskPlatformsWithoutMidHeight = new LayerMaskReference();
-
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private MaskReference platformMask = new MaskReference();
+        [SerializeField] private MaskReference movingPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference midHeightOneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference stairsMask = new MaskReference();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new MaskReference();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatformsWithoutMidHeight = new MaskReference();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
         [SerializeField] private IntReference savedBelowLayer = new IntReference();
         private const string LmPath = "Layer/Mask/";
-        private static readonly string ModelAssetPath = $"{LmPath}DefaultLayerMaskModel.asset";
+        private static readonly string ModelAssetPath = $"{LmPath}LayerMaskModel.asset";
 
         #endregion
 
@@ -58,61 +57,61 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public LayerMask PlatformMask
         {
-            get => platformMask.Value;
-            set => value = platformMask.Value;
+            get => platformMask.Value.layer;
+            set => value = platformMask.Value.layer;
         }
 
         public LayerMask OneWayPlatformMask
         {
-            get => oneWayPlatformMask.Value;
-            set => value = oneWayPlatformMask.Value;
+            get => oneWayPlatformMask.Value.layer;
+            set => value = oneWayPlatformMask.Value.layer;
         }
 
         public LayerMask MovingPlatformMask
         {
-            get => movingPlatformMask.Value;
-            set => value = movingPlatformMask.Value;
+            get => movingPlatformMask.Value.layer;
+            set => value = movingPlatformMask.Value.layer;
         }
 
         public LayerMask MovingOneWayPlatformMask
         {
-            get => movingOneWayPlatformMask.Value;
-            set => value = movingOneWayPlatformMask.Value;
+            get => movingOneWayPlatformMask.Value.layer;
+            set => value = movingOneWayPlatformMask.Value.layer;
         }
 
         public LayerMask MidHeightOneWayPlatformMask
         {
-            get => midHeightOneWayPlatformMask.Value;
-            set => value = midHeightOneWayPlatformMask.Value;
+            get => midHeightOneWayPlatformMask.Value.layer;
+            set => value = midHeightOneWayPlatformMask.Value.layer;
         }
 
         public LayerMask StairsMask
         {
-            get => stairsMask.Value;
-            set => value = stairsMask.Value;
+            get => stairsMask.Value.layer;
+            set => value = stairsMask.Value.layer;
         }
 
         public LayerMask RaysBelowLayerMaskPlatforms
         {
-            get => raysBelowLayerMaskPlatforms.Value;
-            set => value = raysBelowLayerMaskPlatforms.Value;
+            get => raysBelowLayerMaskPlatforms.Value.layer;
+            set => value = raysBelowLayerMaskPlatforms.Value.layer;
         }
 
         public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay
         {
-            get => raysBelowLayerMaskPlatformsWithoutOneWay.Value;
-            set => value = raysBelowLayerMaskPlatformsWithoutOneWay.Value;
+            get => raysBelowLayerMaskPlatformsWithoutOneWay.Value.layer;
+            set => value = raysBelowLayerMaskPlatformsWithoutOneWay.Value.layer;
         }
 
         public LayerMask RaysBelowLayerMaskPlatformsWithoutMidHeight
         {
-            get => raysBelowLayerMaskPlatformsWithoutMidHeight.Value;
-            set => value = raysBelowLayerMaskPlatformsWithoutMidHeight.Value;
+            get => raysBelowLayerMaskPlatformsWithoutMidHeight.Value.layer;
+            set => value = raysBelowLayerMaskPlatformsWithoutMidHeight.Value.layer;
         }
 
         public int SavedBelowLayer
         {
-            set => value = savedBelowLayer.Value;
+            set => value = savedBelowLayer;
         }
 
         [HideInInspector] public LayerMask savedPlatformMask;

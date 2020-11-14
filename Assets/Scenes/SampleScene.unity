@@ -188,6 +188,8 @@ GameObject:
   m_Component:
   - component: {fileID: 66530726}
   - component: {fileID: 66530737}
+  - component: {fileID: 66530727}
+  - component: {fileID: 66530738}
   - component: {fileID: 66530736}
   - component: {fileID: 66530735}
   - component: {fileID: 66530734}
@@ -197,8 +199,6 @@ GameObject:
   - component: {fileID: 66530730}
   - component: {fileID: 66530729}
   - component: {fileID: 66530728}
-  - component: {fileID: 66530727}
-  - component: {fileID: 66530738}
   m_Layer: 0
   m_Name: LayerMask
   m_TagString: Untagged
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -285,7 +285,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -313,7 +313,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -327,7 +327,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -341,7 +341,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -355,7 +355,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 66530725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -381,73 +381,46 @@ MonoBehaviour:
     _variableInstancer: {fileID: 66530738}
   platformMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530736}
   movingPlatformMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530735}
   oneWayPlatformMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530734}
   movingOneWayPlatformMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530733}
   midHeightOneWayPlatformMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530732}
   stairsMask:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530731}
   raysBelowLayerMaskPlatformsWithoutOneWay:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530730}
   raysBelowLayerMaskPlatformsWithoutMidHeight:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530729}
   raysBelowLayerMaskPlatforms:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 66530728}
@@ -563,19 +536,9 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530728}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+    serializedVersion: 2
+    m_Bits: 0
+  transform: {fileID: 1500110843}
   distanceToGroundRayMaximumLength:
     _usage: 3
     _value: 0
@@ -808,12 +771,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 725540019}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   leftRaycastFromBottomOrigin:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -1197,36 +1155,16 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870618}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   platformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530736}
+    serializedVersion: 2
+    m_Bits: 0
   oneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530734}
+    serializedVersion: 2
+    m_Bits: 0
   movingOneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530733}
+    serializedVersion: 2
+    m_Bits: 0
   raycastUpHitAt:
     _usage: 3
     _constant: {fileID: 0}
@@ -1336,7 +1274,6 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1352,231 +1289,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46458b6be9c24003bf065a69e2970195, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  settings: {fileID: 0}
-  characterTransform: {fileID: 0}
-  gravityController: {fileID: 0}
-  movingPlatformCurrentGravity:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  currentVerticalSpeedFactor:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  movingPlatformCurrentSpeed:
-    _usage: 0
-    _value: {x: 0, y: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  boundsWidth:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  rayOffset:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  currentDownHitSmallestDistance:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  boundsHeight:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  safetyBoxcast:
-    _usage: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  leftStickyRaycastOriginY:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  rightStickyRaycastOriginY:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  leftStickyRaycast:
-    _usage: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  rightStickyRaycast:
-    _usage: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  upRaycastSmallestDistance:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  distanceBetweenRightHitAndRaycastOrigin:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  distanceBetweenLeftHitAndRaycastOrigin:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  belowSlopeAngle:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  rhcContact: {fileID: 0}
-  physics2DPushForce:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  physics2DInteractionControl:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  maximumVelocity:
-    _usage: 0
-    _value: {x: 0, y: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  safetyBoxcastControl:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  maximumSlopeAngle:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  stickToSlopesControl:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  safeSetTransformControl:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  transform:
-    _usage: 0
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  speed:
-    _usage: 0
-    _value: {x: 0, y: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  gravityActive:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  fallSlowFactor:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  horizontalMovementDirection:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  newPosition:
-    _usage: 0
-    _value: {x: 0, y: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  smallValue:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  gravity:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  isJumping:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  isFalling:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  externalForce:
-    _usage: 0
-    _value: {x: 0, y: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  movementDirectionThreshold:
-    _usage: 0
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
-  worldSpeed: {x: 0, y: 0}
-  forcesApplied: {x: 0, y: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1838,12 +1550,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 652553274}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   rightRaycastFromBottomOrigin:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -2091,36 +1798,16 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1129363944}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   platformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530736}
+    serializedVersion: 2
+    m_Bits: 0
   oneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530734}
+    serializedVersion: 2
+    m_Bits: 0
   movingOneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530733}
+    serializedVersion: 2
+    m_Bits: 0
   rightRayLength:
     _usage: 3
     _value: 0
@@ -2219,12 +1906,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1314161037}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   downRaycastFromLeft:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -2358,9 +2040,6 @@ MonoBehaviour:
     _variableInstancer: {fileID: 668677948}
   standingOnWithSmallestDistanceLayer:
     _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 668677949}
@@ -2646,7 +2325,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 668677927}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fe49229025b2a4791083c1cb8385d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 304fe489e50a7994192aadba637e9349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
@@ -2820,36 +2499,16 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1129363944}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   platformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530736}
+    serializedVersion: 2
+    m_Bits: 0
   oneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530734}
+    serializedVersion: 2
+    m_Bits: 0
   movingOneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530733}
+    serializedVersion: 2
+    m_Bits: 0
   leftRayLength:
     _usage: 3
     _value: 0
@@ -3134,7 +2793,6 @@ Transform:
   - {fileID: 195680201}
   - {fileID: 1654388796}
   - {fileID: 537511473}
-  - {fileID: 1972610943}
   m_Father: {fileID: 1500110843}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3156,7 +2814,6 @@ GameObject:
   - component: {fileID: 1129363948}
   - component: {fileID: 1129363947}
   - component: {fileID: 1129363946}
-  - component: {fileID: 1129363945}
   - component: {fileID: 1129363944}
   - component: {fileID: 1129363943}
   - component: {fileID: 1129363942}
@@ -3202,8 +2859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 1497321e2445d4049b01e4f84ee8461b, type: 2}
-  characterTransform: {fileID: 1500110843}
-  gravityController: {fileID: 1972610942}
+  transform: {fileID: 1500110843}
   movingPlatformCurrentGravity:
     _usage: 3
     _value: 0
@@ -3340,12 +2996,6 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1129363946}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
   speed:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -3554,20 +3204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
   _base: {fileID: 11400000, guid: e1ce69a84b164304fbfb8ae2fd78d00b, type: 2}
---- !u!114 &1129363945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1129363932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd13fb47bf58791488d987cc9b9aff1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _inMemoryCopy: {fileID: 0}
-  _base: {fileID: 11400000, guid: 3349711c459a922459aadac18a4b7c05, type: 2}
 --- !u!114 &1129363946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3887,28 +3523,13 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870618}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   raysBelowLayerMaskPlatformsWithoutOneWay:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530730}
+    serializedVersion: 2
+    m_Bits: 0
   raysBelowLayerMaskPlatforms:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530728}
+    serializedVersion: 2
+    m_Bits: 0
   downRayLength:
     _usage: 3
     _value: 0
@@ -4162,21 +3783,11 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 668677931}
   midHeightOneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530732}
+    serializedVersion: 2
+    m_Bits: 0
   stairsMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530731}
+    serializedVersion: 2
+    m_Bits: 0
   standingOnCollider:
     _usage: 3
     _value: {fileID: 0}
@@ -4207,13 +3818,8 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 668677938}
   standingOnWithSmallestDistanceLayer:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 668677949}
+    serializedVersion: 2
+    m_Bits: 0
   boundsHeight:
     _usage: 3
     _value: 0
@@ -4221,21 +3827,11 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870624}
   oneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530734}
+    serializedVersion: 2
+    m_Bits: 0
   movingOneWayPlatformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530733}
+    serializedVersion: 2
+    m_Bits: 0
   hasPhysicsMaterialClosestToDownHit:
     _usage: 3
     _value: 0
@@ -4550,19 +4146,9 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530728}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+    serializedVersion: 2
+    m_Bits: 0
+  transform: {fileID: 1500110843}
   rightStickyRaycast:
     _usage: 3
     _constant: {fileID: 0}
@@ -4685,12 +4271,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   stickyRaycastLength:
     _usage: 3
     _value: 0
@@ -4698,13 +4279,8 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 982777883}
   raysBelowLayerMaskPlatforms:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530728}
+    serializedVersion: 2
+    m_Bits: 0
   newPosition:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -4712,13 +4288,8 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1129363940}
   platformMask:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530736}
+    serializedVersion: 2
+    m_Bits: 0
   safetyBoxcast:
     _usage: 3
     _constant: {fileID: 0}
@@ -4930,12 +4501,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1923749686}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   belowSlopeAngleLeft:
     _usage: 3
     _value: 0
@@ -5351,19 +4917,9 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    _usage: 3
-    _value:
-      serializedVersion: 2
-      m_Bits: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530728}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+    serializedVersion: 2
+    m_Bits: 0
+  transform: {fileID: 1500110843}
   leftStickyRaycast:
     _usage: 3
     _constant: {fileID: 0}
@@ -5410,49 +4966,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inMemoryCopy: {fileID: 0}
   _base: {fileID: 11400000, guid: afa4937c0b9f1e743bce97d8ea64b162, type: 2}
---- !u!1 &1972610941
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1972610943}
-  - component: {fileID: 1972610942}
-  m_Layer: 0
-  m_Name: Gravity
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1972610942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1972610941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71e3bc798eab4ac1a07689c4b7727f14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1972610943
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1972610941}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1026259248}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2106106933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5531,12 +5044,7 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1372182837}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   belowSlopeAngleRight:
     _usage: 3
     _value: 0
@@ -5612,12 +5120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 1957c09b345423545b886bc1425e50d4, type: 2}
   boxCollider: {fileID: 3373687}
-  transform:
-    _usage: 3
-    _value: {fileID: 0}
-    _constant: {fileID: 0}
-    _variable: {fileID: 0}
-    _variableInstancer: {fileID: 1129363945}
+  transform: {fileID: 1500110843}
   displayWarningsControl:
     _usage: 3
     _value: 0

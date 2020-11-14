@@ -1,9 +1,9 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
@@ -19,17 +19,17 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
         [SerializeField] private Vector2Reference bounds = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private new Transform transform = null;
         [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
         [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
+        [SerializeField] private LayerMask platformMask = new LayerMask();
 
         #endregion
 
         [SerializeField] private RaycastReference safetyBoxcast = new RaycastReference();
         private const string SbPath = "Event/Boxcast/SafetyBoxcast/";
-        private static readonly string ModelAssetPath = $"{SbPath}DefaultSafetyBoxcastModel.asset";
+        private static readonly string ModelAssetPath = $"{SbPath}SafetyBoxcastModel.asset";
 
         #endregion
 
@@ -37,13 +37,13 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public LayerMask PlatformMask => platformMask.Value;
+        public LayerMask PlatformMask => platformMask;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 Bounds => bounds.Value;
         public Vector2 BoundsCenter => boundsCenter.Value;
-        public Transform Transform => transform.Value;
+        public Transform Transform => transform;
         public float StickyRaycastLength => stickyRaycastLength.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
         public bool DrawBoxcastGizmosControl => drawRaycastGizmosControl.Value;
 
         #endregion

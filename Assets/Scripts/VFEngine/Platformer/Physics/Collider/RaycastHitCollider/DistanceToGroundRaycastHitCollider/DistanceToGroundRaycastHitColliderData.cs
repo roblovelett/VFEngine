@@ -27,7 +27,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
             $"{RaycastHitColliderPath}DistanceToGroundRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{DistanceToGroundRaycastHitColliderPath}DefaultDownRaycastHitColliderModel.asset";
+            $"{DistanceToGroundRaycastHitColliderPath}DownRaycastHitColliderModel.asset";
 
         #endregion
 

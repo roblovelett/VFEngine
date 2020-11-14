@@ -1,8 +1,9 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
         [SerializeField] private RaycastReference currentLeftRaycast = new RaycastReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private new Transform transform = null;
         [SerializeField] private Vector2Reference leftRaycastFromBottomOrigin = new Vector2Reference();
         [SerializeField] private Vector2Reference leftRaycastToTopOrigin = new Vector2Reference();
 
@@ -35,7 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private static readonly string LeftRaycastHitColliderPath = $"{RaycastHitColliderPath}LeftRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{LeftRaycastHitColliderPath}DefaultLeftRaycastHitColliderModel.asset";
+            $"{LeftRaycastHitColliderPath}LeftRaycastHitColliderModel.asset";
 
         #endregion
 
@@ -54,7 +55,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             }
         }
 
-        public Transform Transform => transform.Value;
+        public Transform Transform => transform;
         public Vector2 LeftRaycastFromBottomOrigin => leftRaycastFromBottomOrigin.Value;
         public Vector2 LeftRaycastToTopOrigin => leftRaycastToTopOrigin.Value;
 

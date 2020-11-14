@@ -1,9 +1,9 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
@@ -27,10 +27,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
-        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference oneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask = new LayerMaskReference();
+        [SerializeField] private new Transform transform = null;
+        [SerializeField] private LayerMask platformMask = new LayerMask();
+        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
+        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
         [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
 
         #endregion
@@ -39,7 +39,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private Vector2Reference currentUpRaycastOrigin = new Vector2Reference();
         [SerializeField] private RaycastReference currentUpRaycast = new RaycastReference();
         private static readonly string UpRaycastPath = $"{RaycastPath}UpRaycast/";
-        private static readonly string ModelAssetPath = $"{UpRaycastPath}DefaultUpRaycastModel.asset";
+        private static readonly string ModelAssetPath = $"{UpRaycastPath}UpRaycastModel.asset";
 
         #endregion
 
@@ -57,10 +57,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public LayerMask PlatformMask => platformMask.Value;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
-        public Transform Transform => transform.Value;
+        public LayerMask PlatformMask => platformMask;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
+        public Transform Transform => transform;
 
         public RaycastHit2D RaycastUpHitAt
         {

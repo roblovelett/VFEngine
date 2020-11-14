@@ -11,7 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
     using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderModel",
-        menuName = PlatformerDistanceToGroundRaycastHitColliderModelPath, order = 0)]
+        menuName = PlatformerDistanceToGroundRaycastHitColliderModelPath, order = 0)][InlineEditor]
     public class DistanceToGroundRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

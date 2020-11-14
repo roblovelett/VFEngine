@@ -1,9 +1,10 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
+﻿
 using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
@@ -28,10 +29,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference speed = new Vector2Reference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
-        [SerializeField] private LayerMaskReference platformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference oneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask = new LayerMaskReference();
+        [SerializeField] private new Transform transform = null;
+        [SerializeField] private LayerMask platformMask = new LayerMask();
+        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
+        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
 
         #endregion
 
@@ -40,7 +41,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         [SerializeField] private Vector2Reference rightRaycastToTopOrigin = new Vector2Reference();
         [SerializeField] private RaycastReference currentRightRaycast = new RaycastReference();
         private static readonly string RightRaycastPath = $"{RaycastPath}RightRaycast/";
-        private static readonly string ModelAssetPath = $"{RightRaycastPath}DefaultRightRaycastModel.asset";
+        private static readonly string ModelAssetPath = $"{RightRaycastPath}RightRaycastModel.asset";
 
         #endregion
 
@@ -59,10 +60,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
         public Vector2 Speed => speed.Value;
-        public Transform Transform => transform.Value;
-        public LayerMask PlatformMask => platformMask.Value;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
+        public Transform Transform => transform;
+        public LayerMask PlatformMask => platformMask;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
 
         #endregion
 

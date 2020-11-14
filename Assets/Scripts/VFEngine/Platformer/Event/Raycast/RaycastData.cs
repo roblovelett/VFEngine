@@ -1,5 +1,4 @@
-﻿using ScriptableObjects.Atoms.Transform.References;
-using UnityAtoms.BaseAtoms;
+﻿using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -18,7 +17,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] private RaycastSettings settings = null;
         [SerializeField] private BoxCollider2D boxCollider = null;
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private new Transform transform = null;
         private int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
         private int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
 
@@ -42,7 +41,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
         [SerializeField] private FloatReference rayOffset = new FloatReference();
         [SerializeField] private FloatReference obstacleHeightTolerance = new FloatReference();
-        private static readonly string ModelAssetPath = $"{RaycastPath}DefaultRaycastModel.asset";
+        private static readonly string ModelAssetPath = $"{RaycastPath}RaycastModel.asset";
 
         #endregion
 
@@ -53,7 +52,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public bool HasSettings => settings;
         public bool HasBoxCollider => boxCollider;
         public BoxCollider2D BoxCollider => boxCollider;
-        public Transform Transform => transform.Value;
+        public Transform Transform => transform;
         public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
         public bool DrawRaycastGizmosControlSetting => settings.drawRaycastGizmosControl;
         public bool CastRaysOnBothSidesSetting => settings.castRaysOnBothSides;

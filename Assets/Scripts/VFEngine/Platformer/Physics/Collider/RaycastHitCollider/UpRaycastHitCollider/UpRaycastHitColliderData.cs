@@ -31,7 +31,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{UpRaycastHitColliderPath}DefaultUpRaycastHitColliderModel.asset";
+            $"{UpRaycastHitColliderPath}UpRaycastHitColliderModel.asset";
 
         #endregion
 

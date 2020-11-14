@@ -14,7 +14,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static RaycastModel;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "LeftStickyRaycastModel", menuName = PlatformerLeftStickyRaycastModelPath, order = 0)]
+    [CreateAssetMenu(fileName = "LeftStickyRaycastModel", menuName = PlatformerLeftStickyRaycastModelPath, order = 0)][InlineEditor]
     public class LeftStickyRaycastModel : ScriptableObject, IModel
     {
         #region fields

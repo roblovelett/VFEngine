@@ -5,6 +5,8 @@ using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 
+// ReSharper disable RedundantMemberInitializer
+
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
@@ -35,7 +37,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         [SerializeField] private FloatReference stickToSlopesOffsetY = new FloatReference();
         [SerializeField] private BoolReference isCastingLeft = new BoolReference();
         [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        private const string ModelAssetPath = "DefaultStickyRaycastModel.asset";
+        private const string ModelAssetPath = "StickyRaycastModel.asset";
 
         #endregion
 

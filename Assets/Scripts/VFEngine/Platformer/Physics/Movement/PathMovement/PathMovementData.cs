@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Physics.Movement.PathMovement
         #endregion
 
         [SerializeField] private Vector2Reference currentSpeed = new Vector2Reference();
-        private static readonly string ModelAssetPath = $"{PathMovementPath}DefaultPathMovementModel.asset";
+        private static readonly string ModelAssetPath = $"{PathMovementPath}PathMovementModel.asset";
 
         #endregion
 

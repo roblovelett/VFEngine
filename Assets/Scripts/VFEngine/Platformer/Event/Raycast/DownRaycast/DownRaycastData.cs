@@ -1,9 +1,8 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
@@ -27,9 +26,9 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
+        [SerializeField] private new Transform transform = null;
+        [SerializeField] private LayerMask raysBelowLayerMaskPlatformsWithoutOneWay = new LayerMask();
+        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
 
         #endregion
 
@@ -39,7 +38,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
         [SerializeField] private RaycastReference currentDownRaycast = new RaycastReference();
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
-        private static readonly string ModelAssetPath = $"{DownRaycastPath}DefaultDownRaycastModel.asset";
+        private static readonly string ModelAssetPath = $"{DownRaycastPath}DownRaycastModel.asset";
 
         #endregion
 
@@ -57,9 +56,9 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public Transform Transform => transform.Value;
-        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
+        public Transform Transform => transform;
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
 
         #endregion
 

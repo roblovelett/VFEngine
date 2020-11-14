@@ -9,22 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4d399f50fc44ab45a3f1a2f96a670ac, type: 3}
+  m_Script: {fileID: 11500000, guid: 1320b48224975ff4fa105b954c007d85, type: 3}
   m_Name: RaysBelowLayerMaskPlatformsWithoutMidHeight
   m_EditorClassIdentifier: 
   _developerDescription: 
   _id: 
-  _value:
-    serializedVersion: 2
-    m_Bits: 0
   _changed: {fileID: 0}
   _changedWithHistory: {fileID: 0}
   _triggerChangedOnOnEnable: 0
   _triggerChangedWithHistoryOnOnEnable: 0
-  _oldValue:
-    serializedVersion: 2
-    m_Bits: 0
-  _initialValue:
-    serializedVersion: 2
-    m_Bits: 0
   _preChangeTransformers: []

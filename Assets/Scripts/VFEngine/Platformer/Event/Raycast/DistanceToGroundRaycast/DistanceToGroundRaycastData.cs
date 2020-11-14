@@ -1,9 +1,8 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
@@ -22,8 +21,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
+        [SerializeField] private new Transform transform = null;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
 
         #endregion
@@ -32,7 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
         private static readonly string ModelAssetPath =
-            $"{DistanceToGroundRaycastPath}DefaultDistanceToGroundRaycastModel.asset";
+            $"{DistanceToGroundRaycastPath}DistanceToGroundRaycastModel.asset";
 
         #endregion
 
@@ -44,8 +43,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
-        public Transform Transform => transform.Value;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
+        public Transform Transform => transform;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
 

@@ -1,9 +1,9 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
@@ -26,8 +26,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private LayerMaskReference raysBelowLayerMaskPlatforms = new LayerMaskReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
+        [SerializeField] private new Transform transform = null;
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
         [SerializeField] private FloatReference leftStickyRaycastOriginY = new FloatReference();
         private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
-        private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}DefaultRightRaycastModel.asset";
+        private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}RightRaycastModel.asset";
 
         #endregion
 
@@ -52,8 +52,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value;
-        public Transform Transform => transform.Value;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
+        public Transform Transform => transform;
 
         #endregion
 

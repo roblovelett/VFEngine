@@ -1,13 +1,14 @@
 ﻿using JetBrains.Annotations;
-using ScriptableObjects.Atoms.LayerMask.References;
+using ScriptableObjects.Atoms.Mask.References;
 using ScriptableObjects.Atoms.Raycast;
 using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
+
+// ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
@@ -23,7 +24,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
         [SerializeField] private RaycastReference currentDownRaycast = new RaycastReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
+        [SerializeField] private new Transform transform = null;
         [SerializeField] private Vector2Reference downRaycastFromLeft = new Vector2Reference();
         [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
         [SerializeField] private IntReference savedBelowLayer = new IntReference();
@@ -49,11 +50,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         [SerializeField] private BoolReference wasGroundedLastFrame = new BoolReference();
         [SerializeField] private BoolReference groundedEvent = new BoolReference();
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();
-        [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer = new LayerMaskReference();
+        [SerializeField] private MaskReference standingOnWithSmallestDistanceLayer = new MaskReference();
         private static readonly string DownRaycastHitColliderPath = $"{RaycastHitColliderPath}DownRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{DownRaycastHitColliderPath}DefaultDownRaycastHitColliderModel.asset";
+            $"{DownRaycastHitColliderPath}DownRaycastHitColliderModel.asset";
 
         #endregion
 
@@ -62,20 +63,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region dependencies
 
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-
-        public RaycastHit2D CurrentDownRaycast
-        {
-            get
-            {
-                var r = currentDownRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D CurrentDownRaycast => currentDownRaycast.Value.hit2D;
         public Vector2 DownRaycastFromLeft => downRaycastFromLeft.Value;
         public Vector2 DownRaycastToRight => downRaycastToRight.Value;
         public int SavedBelowLayer => savedBelowLayer.Value;
-        public Transform Transform => transform.Value;
+        public Transform Transform => transform;
 
         #endregion
 
@@ -199,7 +191,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         public LayerMask StandingOnWithSmallestDistanceLayer
         {
-            set => value = standingOnWithSmallestDistanceLayer.Value;
+            set => value = standingOnWithSmallestDistanceLayer.Value.layer;
         }
 
         [HideInInspector] public GameObject standingOnWithSmallestDistance;

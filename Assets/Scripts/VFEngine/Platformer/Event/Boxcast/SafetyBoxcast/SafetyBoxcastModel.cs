@@ -13,6 +13,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
     using static RaycastModel;
 
     [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
+    [InlineEditor]
     public class SafetyBoxcastModel : ScriptableObject, IModel
     {
         #region fields

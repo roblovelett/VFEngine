@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using ScriptableObjects.Atoms.Raycast.References;
-using ScriptableObjects.Atoms.Transform.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
-using VFEngine.Platformer.Physics.Gravity;
+//using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -20,8 +19,8 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [SerializeField] private PhysicsSettings settings = null;
-        [SerializeField] private Transform characterTransform = new RectTransform();
-        [SerializeField] private GravityController gravityController = null;
+        [SerializeField] private new Transform transform = null;
+        //[SerializeField] private GravityController gravityController = null;
         [SerializeField] private FloatReference movingPlatformCurrentGravity = new FloatReference();
         [SerializeField] private FloatReference currentVerticalSpeedFactor = new FloatReference();
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();
@@ -49,7 +48,6 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
         [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
         [SerializeField] private BoolReference safeSetTransformControl = new BoolReference();
-        [SerializeField] private new TransformReference transform = new TransformReference();
         [SerializeField] private Vector2Reference speed = new Vector2Reference();
         [SerializeField] private BoolReference gravityActive = new BoolReference();
         [SerializeField] private FloatReference fallSlowFactor = new FloatReference();
@@ -62,7 +60,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private Vector2Reference externalForce = new Vector2Reference();
         [SerializeField] private FloatReference movementDirectionThreshold = new FloatReference();
         private const string PhPath = "Physics/";
-        private static readonly string ModelAssetPath = $"{PhPath}DefaultPhysicsModel.asset";
+        private static readonly string ModelAssetPath = $"{PhPath}PhysicsModel.asset";
 
         #endregion
 
@@ -70,7 +68,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public bool HasTransform => characterTransform;
+        public bool HasTransform => transform;
         public bool HasSettings => settings;
         public float Physics2DPushForceSetting => settings.physics2DPushForce;
         public bool Physics2DInteractionControlSetting => settings.physics2DInteractionControl;
@@ -85,9 +83,8 @@ namespace VFEngine.Platformer.Physics
         public float AscentMultiplierSetting => settings.ascentMultiplier;
         public float FallMultiplierSetting => settings.fallMultiplier;
         public float GravitySetting => settings.gravity;
-        public Transform CharacterTransform => characterTransform;
         public float CurrentVerticalSpeedFactor => currentVerticalSpeedFactor.Value;
-        public bool HasGravityController => gravityController;
+        //public bool HasGravityController => gravityController;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public float BoundsWidth => boundsWidth.Value;
@@ -175,8 +172,8 @@ namespace VFEngine.Platformer.Physics
 
         public Transform Transform
         {
-            get => transform.Value;
-            set => value = transform.Value;
+            get => transform;
+            set => value = transform;
         }
 
         public Vector2 Speed

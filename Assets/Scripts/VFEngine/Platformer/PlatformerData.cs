@@ -1,5 +1,4 @@
-﻿using ScriptableObjects.Atoms.LayerMask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
@@ -55,17 +54,17 @@ namespace VFEngine.Platformer
         [SerializeField] private IntReference downHitsStorageLength = new IntReference();
         [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
         [SerializeField] private BoolReference hasStandingOnLastFrame = new BoolReference();
-        [SerializeField] private LayerMaskReference midHeightOneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference stairsMask = new LayerMaskReference();
+        [SerializeField] private LayerMask midHeightOneWayPlatformMask = new LayerMask();
+        [SerializeField] private LayerMask stairsMask = new LayerMask();
         [SerializeField] private Collider2DReference standingOnCollider = new Collider2DReference();
         [SerializeField] private Vector2Reference boundsBottomCenterPosition = new Vector2Reference();
         [SerializeField] private FloatReference smallestDistanceToDownHit = new FloatReference();
         [SerializeField] private RaycastReference raycastDownHitAt = new RaycastReference();
         [SerializeField] private Vector3Reference crossBelowSlopeAngle = new Vector3Reference();
-        [SerializeField] private LayerMaskReference standingOnWithSmallestDistanceLayer = new LayerMaskReference();
+        [SerializeField] private LayerMask standingOnWithSmallestDistanceLayer = new LayerMask();
         [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private LayerMaskReference oneWayPlatformMask = new LayerMaskReference();
-        [SerializeField] private LayerMaskReference movingOneWayPlatformMask = new LayerMaskReference();
+        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
+        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
         [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit = new BoolReference();
         [SerializeField] private BoolReference hasPathMovementClosestToDownHit = new BoolReference();
         [SerializeField] private BoolReference hasMovingPlatform = new BoolReference();
@@ -103,7 +102,7 @@ namespace VFEngine.Platformer
 
         #endregion
 
-        private const string ModelAssetPath = "DefaultPlatformerModel.asset";
+        private const string ModelAssetPath = "PlatformerModel.asset";
 
         #endregion
 
@@ -154,8 +153,8 @@ namespace VFEngine.Platformer
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
         public bool HasStandingOnLastFrame => hasStandingOnLastFrame.Value;
-        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value;
-        public LayerMask StairsMask => stairsMask.Value;
+        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask;
+        public LayerMask StairsMask => stairsMask;
         public Collider2D StandingOnCollider => standingOnCollider.Value;
         public Vector2 BoundsBottomCenterPosition => boundsBottomCenterPosition.Value;
         public float SmallestDistanceToDownHit => smallestDistanceToDownHit.Value;
@@ -172,10 +171,10 @@ namespace VFEngine.Platformer
         }
 
         public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
-        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer.Value;
+        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer;
         public float BoundsHeight => boundsHeight.Value;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
         public bool HasPhysicsMaterialDataClosestToDownHit => hasPhysicsMaterialClosestToDownHit.Value;
         public bool HasPathMovementControllerClosestToDownHit => hasPathMovementClosestToDownHit.Value;
         public bool HasMovingPlatform => hasMovingPlatform.Value;

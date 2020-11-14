@@ -25,7 +25,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
             $"{RaycastHitColliderPath}/StickyRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{StickyRaycastHitColliderPathInternal}DefaultStickyRaycastHitColliderModel.asset";
+            $"{StickyRaycastHitColliderPathInternal}StickyRaycastHitColliderModel.asset";
 
         #endregion
 
