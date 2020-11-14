@@ -10,7 +10,8 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
     using static Color;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LeftRaycastModel", menuName = PlatformerLeftRaycastModelPath, order = 0)][InlineEditor]
+    [CreateAssetMenu(fileName = "LeftRaycastModel", menuName = PlatformerLeftRaycastModelPath, order = 0)]
+    [InlineEditor]
     public class LeftRaycastModel : ScriptableObject, IModel
     {
         #region fields

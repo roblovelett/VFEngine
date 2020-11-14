@@ -1,9 +1,9 @@
-﻿
-using ScriptableObjects.Atoms.Raycast.References;
-
+﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
 // ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
@@ -11,8 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-
-    public class RightRaycastData : MonoBehaviour
+    [InlineEditor]
+    public class RightRaycastData : SerializedMonoBehaviour
     {
         #region fields
 

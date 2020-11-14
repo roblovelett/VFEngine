@@ -1,9 +1,9 @@
-﻿
-using ScriptableObjects.Atoms.Raycast.References;
-
+﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
 // ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
@@ -11,8 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
-
-    public class RightStickyRaycastData : MonoBehaviour
+    [InlineEditor]
+    public class RightStickyRaycastData : SerializedMonoBehaviour
     {
         #region fields
 
@@ -63,6 +63,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
             get => rightStickyRaycastLength.Value;
             set => value = rightStickyRaycastLength.Value;
         }
+
         [HideInInspector] public Vector2 rightStickyRaycastOrigin;
 
         public float RightStickyRaycastOriginY

@@ -1,15 +1,16 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
-
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
-
-    public class RaycastHitColliderData : MonoBehaviour
+    [InlineEditor]
+    public class RaycastHitColliderData : SerializedMonoBehaviour
     {
         #region fields
 
@@ -57,6 +58,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             get => ignoredCollider.Value;
             set => value = ignoredCollider.Value;
         }
+
         public const string RaycastHitColliderPath = "Physics/Collider/RaycastHitCollider/";
 
         public static readonly string RaycastHitColliderModelPath =

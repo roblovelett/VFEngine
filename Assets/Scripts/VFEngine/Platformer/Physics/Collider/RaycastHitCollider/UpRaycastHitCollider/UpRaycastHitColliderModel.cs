@@ -13,7 +13,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
     using static RaycastModel;
 
     [CreateAssetMenu(fileName = "UpRaycastHitColliderModel", menuName = PlatformerUpRaycastHitColliderModelPath,
-        order = 0)][InlineEditor]
+        order = 0)]
+    [InlineEditor]
     public class UpRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

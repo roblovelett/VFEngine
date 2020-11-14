@@ -17,7 +17,8 @@ namespace VFEngine.Platformer.Physics
     using static RigidbodyType2D;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)][InlineEditor]
+    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
+    [InlineEditor]
     public class PhysicsModel : ScriptableObject, IModel
     {
         #region fields

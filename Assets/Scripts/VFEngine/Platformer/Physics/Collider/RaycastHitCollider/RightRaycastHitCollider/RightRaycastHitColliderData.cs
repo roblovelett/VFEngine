@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -9,8 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-
-    public class RightRaycastHitColliderData : MonoBehaviour
+    [InlineEditor]
+    public class RightRaycastHitColliderData : SerializedMonoBehaviour
     {
         #region fields
 

@@ -372,6 +372,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45cbbe9b8a4c48939909d3a30afbec71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   settings: {fileID: 11400000, guid: 758b579fdd6b98b48ac3404d39492892, type: 2}
   standingOnLastFrame:
     _usage: 3
@@ -383,7 +392,7 @@ MonoBehaviour:
     _usage: 3
     _constant: {fileID: 0}
     _variable: {fileID: 0}
-    _variableInstancer: {fileID: 66530736}
+    _variableInstancer: {fileID: 0}
   movingPlatformMask:
     _usage: 3
     _constant: {fileID: 0}

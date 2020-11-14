@@ -17,7 +17,8 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Time;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RaycastModel", menuName = PlatformerRaycastModelPath, order = 0)][InlineEditor]
+    [CreateAssetMenu(fileName = "RaycastModel", menuName = PlatformerRaycastModelPath, order = 0)]
+    [InlineEditor]
     public class RaycastModel : ScriptableObject, IModel
     {
         #region fields

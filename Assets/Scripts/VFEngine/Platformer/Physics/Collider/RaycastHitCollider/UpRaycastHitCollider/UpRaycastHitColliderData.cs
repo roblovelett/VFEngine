@@ -1,5 +1,6 @@
 ﻿using ScriptableObjects.Atoms.Raycast;
 using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -9,8 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-
-    public class UpRaycastHitColliderData : MonoBehaviour
+    [InlineEditor]
+    public class UpRaycastHitColliderData : SerializedMonoBehaviour
     {
         #region fields
 
@@ -29,9 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         [SerializeField] private BoolReference isCollidingAbove = new BoolReference();
         [SerializeField] private BoolReference wasTouchingCeilingLastFrame = new BoolReference();
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
-
-        private static readonly string ModelAssetPath =
-            $"{UpRaycastHitColliderPath}UpRaycastHitColliderModel.asset";
+        private static readonly string ModelAssetPath = $"{UpRaycastHitColliderPath}UpRaycastHitColliderModel.asset";
 
         #endregion
 

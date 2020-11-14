@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
@@ -12,8 +13,8 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
-
-    public class PlatformerData : MonoBehaviour
+    [InlineEditor]
+    public class PlatformerData : SerializedMonoBehaviour
     {
         #region fields
 

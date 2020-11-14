@@ -11,7 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     using static RaycastModel;
 
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel", menuName = PlatformerDistanceToGroundRaycastModelPath,
-        order = 0)][InlineEditor]
+        order = 0)]
+    [InlineEditor]
     public class DistanceToGroundRaycastModel : ScriptableObject, IModel
     {
         #region fields

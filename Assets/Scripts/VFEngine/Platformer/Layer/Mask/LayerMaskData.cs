@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Mask.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -12,7 +13,8 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
 
-    public class LayerMaskData : MonoBehaviour
+    [InlineEditor]
+    public class LayerMaskData : SerializedMonoBehaviour
     {
         #region fields
 

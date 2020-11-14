@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -9,8 +10,8 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
-
-    public class SafetyBoxcastData : MonoBehaviour
+    [InlineEditor]
+    public class SafetyBoxcastData : SerializedMonoBehaviour
     {
         #region fields
 

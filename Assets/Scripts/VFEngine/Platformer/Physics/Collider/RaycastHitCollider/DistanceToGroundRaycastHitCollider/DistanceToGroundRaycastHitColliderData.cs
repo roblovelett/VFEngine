@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -8,8 +9,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-
-    public class DistanceToGroundRaycastHitColliderData : MonoBehaviour
+    [InlineEditor]
+    public class DistanceToGroundRaycastHitColliderData : SerializedMonoBehaviour
     {
         #region fields
 

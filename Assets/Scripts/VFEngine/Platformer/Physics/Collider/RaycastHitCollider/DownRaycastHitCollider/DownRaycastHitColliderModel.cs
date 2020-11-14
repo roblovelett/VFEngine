@@ -20,7 +20,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static Single;
 
     [CreateAssetMenu(fileName = "DownRaycastHitColliderModel", menuName = PlatformerDownRaycastHitColliderModelPath,
-        order = 0)][InlineEditor]
+        order = 0)]
+    [InlineEditor]
     public class DownRaycastHitColliderModel : ScriptableObject, IModel
     {
         #region fields

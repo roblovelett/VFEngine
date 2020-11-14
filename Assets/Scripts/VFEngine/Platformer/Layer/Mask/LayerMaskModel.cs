@@ -14,7 +14,8 @@ namespace VFEngine.Platformer.Layer.Mask
     using static DebugExtensions;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)][InlineEditor]
+    [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)]
+    [InlineEditor]
     public class LayerMaskModel : ScriptableObject, IModel
     {
         #region fields

@@ -2,6 +2,7 @@
 using ScriptableObjects.Atoms.Mask.References;
 using ScriptableObjects.Atoms.Raycast;
 using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
@@ -15,8 +16,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-
-    public class DownRaycastHitColliderData : MonoBehaviour
+    [InlineEditor]
+    public class DownRaycastHitColliderData : SerializedMonoBehaviour
     {
         #region fields
 

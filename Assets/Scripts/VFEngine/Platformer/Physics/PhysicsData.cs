@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
-//using VFEngine.Platformer.Physics.Gravity;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -11,8 +11,8 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
-
-    public class PhysicsData : MonoBehaviour
+    [InlineEditor]
+    public class PhysicsData : SerializedMonoBehaviour
     {
         #region fields
 
@@ -20,6 +20,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings = null;
         [SerializeField] private new Transform transform = null;
+
         //[SerializeField] private GravityController gravityController = null;
         [SerializeField] private FloatReference movingPlatformCurrentGravity = new FloatReference();
         [SerializeField] private FloatReference currentVerticalSpeedFactor = new FloatReference();
@@ -84,6 +85,7 @@ namespace VFEngine.Platformer.Physics
         public float FallMultiplierSetting => settings.fallMultiplier;
         public float GravitySetting => settings.gravity;
         public float CurrentVerticalSpeedFactor => currentVerticalSpeedFactor.Value;
+
         //public bool HasGravityController => gravityController;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;

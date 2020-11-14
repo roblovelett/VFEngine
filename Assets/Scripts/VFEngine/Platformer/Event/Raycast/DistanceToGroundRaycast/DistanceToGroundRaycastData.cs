@@ -1,7 +1,9 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+
 // ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable RedundantAssignment
@@ -9,8 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-
-    public class DistanceToGroundRaycastData : MonoBehaviour
+    [InlineEditor]
+    public class DistanceToGroundRaycastData : SerializedMonoBehaviour
     {
         #region fields
 

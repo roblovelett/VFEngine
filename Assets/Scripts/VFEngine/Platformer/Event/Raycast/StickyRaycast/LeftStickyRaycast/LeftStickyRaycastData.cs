@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects.Atoms.Raycast.References;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
@@ -10,8 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
-
-    public class LeftStickyRaycastData : MonoBehaviour
+    [InlineEditor]
+    public class LeftStickyRaycastData : SerializedMonoBehaviour
     {
         #region fields
 

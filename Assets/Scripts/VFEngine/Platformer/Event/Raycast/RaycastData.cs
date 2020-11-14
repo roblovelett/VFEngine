@@ -1,4 +1,5 @@
-﻿using UnityAtoms.BaseAtoms;
+﻿using Sirenix.OdinInspector;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -8,8 +9,8 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
-
-    public class RaycastData : MonoBehaviour
+    [InlineEditor]
+    public class RaycastData : SerializedMonoBehaviour
     {
         #region fields
 

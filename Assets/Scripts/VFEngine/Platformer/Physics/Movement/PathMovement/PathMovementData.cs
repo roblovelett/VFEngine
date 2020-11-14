@@ -1,12 +1,13 @@
-﻿using UnityAtoms.BaseAtoms;
+﻿using Sirenix.OdinInspector;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Movement.PathMovement
 {
     using static ScriptableObjectExtensions;
-
-    public class PathMovementData : MonoBehaviour
+    [InlineEditor]
+    public class PathMovementData : SerializedMonoBehaviour
     {
         #region fields
 
