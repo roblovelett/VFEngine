@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -13,6 +14,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class PlatformerData : SerializedMonoBehaviour
     {
@@ -55,17 +57,12 @@ namespace VFEngine.Platformer
         [SerializeField] private IntReference downHitsStorageLength = new IntReference();
         [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
         [SerializeField] private BoolReference hasStandingOnLastFrame = new BoolReference();
-        [SerializeField] private LayerMask midHeightOneWayPlatformMask = new LayerMask();
-        [SerializeField] private LayerMask stairsMask = new LayerMask();
         [SerializeField] private Collider2DReference standingOnCollider = new Collider2DReference();
         [SerializeField] private Vector2Reference boundsBottomCenterPosition = new Vector2Reference();
         [SerializeField] private FloatReference smallestDistanceToDownHit = new FloatReference();
         [SerializeField] private RaycastReference raycastDownHitAt = new RaycastReference();
         [SerializeField] private Vector3Reference crossBelowSlopeAngle = new Vector3Reference();
-        [SerializeField] private LayerMask standingOnWithSmallestDistanceLayer = new LayerMask();
         [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
-        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
         [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit = new BoolReference();
         [SerializeField] private BoolReference hasPathMovementClosestToDownHit = new BoolReference();
         [SerializeField] private BoolReference hasMovingPlatform = new BoolReference();
@@ -100,6 +97,11 @@ namespace VFEngine.Platformer
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
         [SerializeField] private BoolReference distanceToGroundRaycastHit = new BoolReference();
         [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
+        [SerializeField] private MaskReference midHeightOneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference stairsMask = new MaskReference();
+        [SerializeField] private MaskReference standingOnWithSmallestDistanceLayer = new MaskReference();
+        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
 
         #endregion
 
@@ -154,28 +156,18 @@ namespace VFEngine.Platformer
         public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
         public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
         public bool HasStandingOnLastFrame => hasStandingOnLastFrame.Value;
-        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask;
-        public LayerMask StairsMask => stairsMask;
         public Collider2D StandingOnCollider => standingOnCollider.Value;
         public Vector2 BoundsBottomCenterPosition => boundsBottomCenterPosition.Value;
         public float SmallestDistanceToDownHit => smallestDistanceToDownHit.Value;
         public bool DownHitConnected => downHitConnected.Value;
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
-
-        public RaycastHit2D RaycastDownHitAt
-        {
-            get
-            {
-                var r = raycastDownHitAt.Value;
-                return r.hit2D;
-            }
-        }
-
         public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
-        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer;
         public float BoundsHeight => boundsHeight.Value;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
+        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value.layer;
+        public LayerMask StairsMask => stairsMask.Value.layer;
+        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer.Value.layer;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value.layer;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value.layer;
         public bool HasPhysicsMaterialDataClosestToDownHit => hasPhysicsMaterialClosestToDownHit.Value;
         public bool HasPathMovementControllerClosestToDownHit => hasPathMovementClosestToDownHit.Value;
         public bool HasMovingPlatform => hasMovingPlatform.Value;
@@ -191,59 +183,18 @@ namespace VFEngine.Platformer
         public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
         public bool IsCastingLeft => isCastingLeft.Value;
         public bool PerformSafetyBoxcast => performSafetyBoxcast.Value;
-
-        public RaycastHit2D SafetyBoxcast
-        {
-            get
-            {
-                var r = safetyBoxcast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public RaycastHit2D LeftStickyRaycast
-        {
-            get
-            {
-                var r = leftStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public RaycastHit2D RightStickyRaycast
-        {
-            get
-            {
-                var r = rightStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value.hit2D;
+        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value.hit2D;
+        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value.hit2D;
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value.hit2D;
+        public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value.hit2D;
+        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value.hit2D;
         public int UpHitsStorageLength => upHitsStorageLength.Value;
-
-        public RaycastHit2D RaycastUpHitAt
-        {
-            get
-            {
-                var r = raycastUpHitAt.Value;
-                return r.hit2D;
-            }
-        }
-
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public bool UpHitConnected => upHitConnected.Value;
         public bool RightHitConnected => rightHitConnected.Value;
         public bool LeftHitConnected => leftHitConnected.Value;
         public bool DistanceToGroundRaycastHit => distanceToGroundRaycastHit.Value;
-
-        public RaycastHit2D DistanceToGroundRaycast
-        {
-            get
-            {
-                var r = distanceToGroundRaycast.Value;
-                return r.hit2D;
-            }
-        }
 
         #endregion
 

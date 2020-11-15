@@ -20,8 +20,6 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings = null;
         [SerializeField] private new Transform transform = null;
-
-        //[SerializeField] private GravityController gravityController = null;
         [SerializeField] private FloatReference movingPlatformCurrentGravity = new FloatReference();
         [SerializeField] private FloatReference currentVerticalSpeedFactor = new FloatReference();
         [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();

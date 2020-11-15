@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -10,6 +11,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class SafetyBoxcastData : SerializedMonoBehaviour
     {
@@ -22,9 +24,9 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
         [SerializeField] private new Transform transform = null;
         [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
         [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private LayerMask platformMask = new LayerMask();
+        [SerializeField] private MaskReference platformMask = new MaskReference();
 
         #endregion
 
@@ -38,13 +40,13 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public LayerMask PlatformMask => platformMask;
+        public LayerMask PlatformMask => platformMask.Value.layer;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 Bounds => bounds.Value;
         public Vector2 BoundsCenter => boundsCenter.Value;
         public Transform Transform => transform;
         public float StickyRaycastLength => stickyRaycastLength.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
         public bool DrawBoxcastGizmosControl => drawRaycastGizmosControl.Value;
 
         #endregion

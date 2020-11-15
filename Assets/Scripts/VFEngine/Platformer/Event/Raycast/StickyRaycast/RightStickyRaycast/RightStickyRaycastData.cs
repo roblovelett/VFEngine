@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
         [SerializeField] private new Transform transform = null;
 
         #endregion
@@ -53,7 +54,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 NewPosition => newPosition.Value;
         public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
         public Transform Transform => transform;
 
         #endregion

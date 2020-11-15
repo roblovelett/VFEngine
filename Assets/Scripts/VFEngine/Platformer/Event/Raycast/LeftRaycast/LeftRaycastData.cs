@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -30,9 +31,9 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference speed = new Vector2Reference();
         [SerializeField] private new Transform transform = null;
-        [SerializeField] private LayerMask platformMask = new LayerMask();
-        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
-        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
+        [SerializeField] private MaskReference platformMask = new MaskReference();
+        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
 
         #endregion
 
@@ -61,9 +62,9 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
         public Vector2 Speed => speed.Value;
         public Transform Transform => transform;
-        public LayerMask PlatformMask => platformMask;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
+        public LayerMask PlatformMask => platformMask.Value.layer;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value.layer;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value.layer;
 
         #endregion
 

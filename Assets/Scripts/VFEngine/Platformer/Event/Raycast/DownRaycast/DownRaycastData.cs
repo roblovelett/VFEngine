@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -29,8 +30,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
         [SerializeField] private new Transform transform = null;
-        [SerializeField] private LayerMask raysBelowLayerMaskPlatformsWithoutOneWay = new LayerMask();
-        [SerializeField] private LayerMask raysBelowLayerMaskPlatforms = new LayerMask();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new MaskReference();
+        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
 
         #endregion
 
@@ -59,8 +60,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
         public Transform Transform => transform;
-        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms;
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value.layer;
+        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
 
         #endregion
 

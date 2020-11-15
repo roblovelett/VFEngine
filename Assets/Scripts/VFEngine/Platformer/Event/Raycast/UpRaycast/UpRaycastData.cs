@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Mask.References;
+using ScriptableObjects.Atoms.Raycast.References;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -29,9 +30,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
         [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
         [SerializeField] private new Transform transform = null;
-        [SerializeField] private LayerMask platformMask = new LayerMask();
-        [SerializeField] private LayerMask oneWayPlatformMask = new LayerMask();
-        [SerializeField] private LayerMask movingOneWayPlatformMask = new LayerMask();
+        [SerializeField] private MaskReference platformMask = new MaskReference();
+        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
+        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
         [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
 
         #endregion
@@ -58,9 +59,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
         public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
         public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public LayerMask PlatformMask => platformMask;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask;
+        public LayerMask PlatformMask => platformMask.Value.layer;
+        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value.layer;
+        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value.layer;
         public Transform Transform => transform;
 
         public RaycastHit2D RaycastUpHitAt
