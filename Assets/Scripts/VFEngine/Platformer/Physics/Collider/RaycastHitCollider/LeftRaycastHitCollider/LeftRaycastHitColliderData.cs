@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class LeftRaycastHitColliderData : SerializedMonoBehaviour
     {
@@ -46,16 +47,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         #region dependencies
 
         public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-
-        public RaycastHit2D CurrentLeftRaycast
-        {
-            get
-            {
-                var r = currentLeftRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value.hit2D;
         public Transform Transform => transform;
         public Vector2 LeftRaycastFromBottomOrigin => leftRaycastFromBottomOrigin.Value;
         public Vector2 LeftRaycastToTopOrigin => leftRaycastToTopOrigin.Value;

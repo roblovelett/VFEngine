@@ -11,6 +11,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class PhysicsData : SerializedMonoBehaviour
     {
@@ -83,45 +84,17 @@ namespace VFEngine.Platformer.Physics
         public float FallMultiplierSetting => settings.fallMultiplier;
         public float GravitySetting => settings.gravity;
         public float CurrentVerticalSpeedFactor => currentVerticalSpeedFactor.Value;
-
-        //public bool HasGravityController => gravityController;
         public float MovingPlatformCurrentGravity => movingPlatformCurrentGravity.Value;
         public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
         public float BoundsWidth => boundsWidth.Value;
         public float RayOffset => rayOffset.Value;
         public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
         public float BoundsHeight => boundsHeight.Value;
-
-        public RaycastHit2D SafetyBoxcast
-        {
-            get
-            {
-                var r = safetyBoxcast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value.hit2D;
         public float LeftStickyRaycastOriginY => leftStickyRaycastOriginY.Value;
         public float RightStickyRaycastOriginY => rightStickyRaycastOriginY.Value;
-
-        public RaycastHit2D LeftStickyRaycast
-        {
-            get
-            {
-                var r = leftStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public RaycastHit2D RightStickyRaycast
-        {
-            get
-            {
-                var r = rightStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value.hit2D;
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value.hit2D;
         public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
         public float DistanceBetweenRightHitAndRaycastOrigin => distanceBetweenRightHitAndRaycastOrigin.Value;
         public float DistanceBetweenLeftHitAndRaycastOrigin => distanceBetweenLeftHitAndRaycastOrigin.Value;
@@ -170,11 +143,7 @@ namespace VFEngine.Platformer.Physics
             set => value = safeSetTransformControl.Value;
         }
 
-        public Transform Transform
-        {
-            get => transform;
-            set => value = transform;
-        }
+        public Transform Transform => transform;
 
         public Vector2 Speed
         {
@@ -274,7 +243,6 @@ namespace VFEngine.Platformer.Physics
 
         public float MovementDirectionThreshold
         {
-            get => movementDirectionThreshold.Value;
             set => value = movementDirectionThreshold.Value;
         }
 

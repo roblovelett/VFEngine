@@ -38,14 +38,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
 
-        public RaycastHit2D DistanceToGroundRaycast
-        {
-            get
-            {
-                var r = distanceToGroundRaycast.Value;
-                return r.hit2D;
-            }
-        }
+        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value.hit2D;
 
         public float BoundsHeight => boundsHeight.Value;
 

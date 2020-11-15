@@ -146,7 +146,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         public bool HasMovingPlatform
         {
-            get => hasMovingPlatform.Value;
             set => value = hasMovingPlatform.Value;
         }
 

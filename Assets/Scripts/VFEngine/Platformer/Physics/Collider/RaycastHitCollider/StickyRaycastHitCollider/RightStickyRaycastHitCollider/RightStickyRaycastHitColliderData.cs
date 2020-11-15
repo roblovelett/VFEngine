@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 {
     using static StickyRaycastHitColliderData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class RightStickyRaycastHitColliderData : SerializedMonoBehaviour
     {
@@ -38,15 +39,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public RaycastHit2D RightStickyRaycast
-        {
-            get
-            {
-                var r = rightStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
+        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value.hit2D;
         public Transform Transform => transform;
 
         #endregion

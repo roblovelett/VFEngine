@@ -10,6 +10,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class UpRaycastHitColliderData : SerializedMonoBehaviour
     {
@@ -39,15 +40,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-
-        public RaycastHit2D CurrentUpRaycast
-        {
-            get
-            {
-                var r = currentUpRaycast.Value;
-                return r.hit2D;
-            }
-        }
+        public RaycastHit2D CurrentUpRaycast => currentUpRaycast.Value.hit2D;
 
         #endregion
 

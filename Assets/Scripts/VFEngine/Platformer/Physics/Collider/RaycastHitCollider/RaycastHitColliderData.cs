@@ -9,6 +9,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class RaycastHitColliderData : SerializedMonoBehaviour
     {
@@ -31,23 +32,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        public RaycastHit2D CurrentRightRaycast
-        {
-            get
-            {
-                var r = currentRightRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public RaycastHit2D CurrentLeftRaycast
-        {
-            get
-            {
-                var r = currentLeftRaycast.Value;
-                return r.hit2D;
-            }
-        }
+        public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value.hit2D;
+        public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value.hit2D;
 
         #endregion
 
