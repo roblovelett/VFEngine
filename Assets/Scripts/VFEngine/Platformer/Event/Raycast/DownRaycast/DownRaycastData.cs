@@ -89,7 +89,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             set => value = downRaycastToRight.Value;
         }
 
-        public ScriptableObjects.Atoms.Raycast.Raycast CurrentDownRaycast
+        public ScriptableObjects.Variables.Raycast CurrentDownRaycast
         {
             set => value = currentDownRaycast.Value;
         }

@@ -90,7 +90,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             set => value = currentUpRaycastOrigin.Value;
         }
 
-        public ScriptableObjects.Atoms.Raycast.Raycast CurrentUpRaycast
+        public ScriptableObjects.Variables.Raycast CurrentUpRaycast
         {
             set => value = currentUpRaycast.Value;
         }

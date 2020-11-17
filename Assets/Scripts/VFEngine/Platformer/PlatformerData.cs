@@ -125,7 +125,7 @@ namespace VFEngine.Platformer
         public PhysicsController Physics => physics;
         public RaycastController Raycast => raycast;
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
-        public LayerMaskController LayerMask => layerMask;
+        //public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;
         public bool GravityActive => gravityActive.Value;
@@ -197,7 +197,7 @@ namespace VFEngine.Platformer
         public bool DistanceToGroundRaycastHit => distanceToGroundRaycastHit.Value;
 
         #endregion
-
+        
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

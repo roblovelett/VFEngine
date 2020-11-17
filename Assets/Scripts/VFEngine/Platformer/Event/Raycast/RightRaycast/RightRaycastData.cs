@@ -88,7 +88,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         [HideInInspector] public Vector2 currentRightRaycastOrigin;
 
-        public ScriptableObjects.Atoms.Raycast.Raycast CurrentRightRaycast
+        public ScriptableObjects.Variables.Raycast CurrentRightRaycast
         {
             set => value = currentRightRaycast.Value;
         }

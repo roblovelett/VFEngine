@@ -7,6 +7,7 @@ using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 // ReSharper disable RedundantDefaultMemberInitializer
 
 // ReSharper disable UnusedVariable
+/*
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static LayerMask;
@@ -15,15 +16,13 @@ namespace VFEngine.Platformer.Layer.Mask
     using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)]
-    [InlineEditor]
     public class LayerMaskModel : ScriptableObject, IModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Layer Mask Data")] [SerializeField]
-        private LayerMaskData l = null;
+        [LabelText("Layer Mask Data")] [SerializeField] public LayerMaskData l;
 
         #endregion
 
@@ -212,3 +211,4 @@ namespace VFEngine.Platformer.Layer.Mask
         #endregion
     }
 }
+*/

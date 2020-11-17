@@ -29,18 +29,22 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void SetSafetyBoxcastForImpassableAngle()
         {
+            /*
             var transformUp = s.Transform.up;
             var hit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp, s.StickyRaycastLength,
                 s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
             s.SafetyBoxcast = OnSetRaycast(hit);
+            */
         }
 
         private void SetSafetyBoxcast()
         {
+            /*
             var transformUp = s.Transform.up;
             var hit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
                 s.NewPosition.magnitude, s.PlatformMask, red, s.DrawBoxcastGizmosControl);
             s.SafetyBoxcast = OnSetRaycast(hit);
+            */
         }
 
         #endregion

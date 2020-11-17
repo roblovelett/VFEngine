@@ -72,7 +72,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
             set => value = rightStickyRaycastOriginY.Value;
         }
 
-        public ScriptableObjects.Atoms.Raycast.Raycast RightStickyRaycast
+        public ScriptableObjects.Variables.Raycast RightStickyRaycast
         {
             get => rightStickyRaycast.Value;
             set => value = rightStickyRaycast.Value;

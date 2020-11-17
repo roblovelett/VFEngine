@@ -3,6 +3,7 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;

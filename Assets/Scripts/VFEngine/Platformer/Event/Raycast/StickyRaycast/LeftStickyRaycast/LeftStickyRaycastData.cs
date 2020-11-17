@@ -67,7 +67,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         [HideInInspector] public Vector2 leftStickyRaycastOrigin;
 
-        public ScriptableObjects.Atoms.Raycast.Raycast LeftStickyRaycast
+        public ScriptableObjects.Variables.Raycast LeftStickyRaycast
         {
             get => leftStickyRaycast.Value;
             set => value = leftStickyRaycast.Value;

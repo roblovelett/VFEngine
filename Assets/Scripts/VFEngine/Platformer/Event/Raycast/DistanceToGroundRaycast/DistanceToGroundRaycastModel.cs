@@ -39,7 +39,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         {
             var hit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up, d.DistanceToGroundRayMaximumLength,
                 d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
-            d.DistanceToGroundRaycast = OnSetRaycast(hit);
+            d.DistanceToGroundRaycast = hit;
         }
 
         #endregion

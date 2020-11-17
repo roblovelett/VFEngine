@@ -57,7 +57,7 @@ namespace VFEngine.Platformer
             if (!p.Physics) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
             if (!p.Raycast) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
             if (!p.RaycastHitCollider) warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
-            if (!p.LayerMask) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
+            //if (!p.LayerMask) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldString(string field, string scriptableObject)
@@ -265,7 +265,7 @@ namespace VFEngine.Platformer
                     LayerMaskContains(p.MidHeightOneWayPlatformMask, p.StandingOnLastFrame.layer);
                 if (p.HasStandingOnLastFrame)
                 {
-                    p.LayerMask.SetSavedBelowLayerToStandingOnLastFrameLayer();
+                    //p.LayerMask.SetSavedBelowLayerToStandingOnLastFrameLayer();
                     if (midHeightOneWayPlatformMaskContains)
                         p.RaycastHitCollider.SetStandingOnLastFrameLayerToPlatforms();
                 }
@@ -383,13 +383,13 @@ namespace VFEngine.Platformer
                 Vector2 colliderBottomCenterPosition, float newPositionY)
             {
                 if (!midHeightOneWayPlatformContains)
-                    p.LayerMask.SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
-                var stairsContains = LayerMaskContains(stairsMask, standingOnLastFrame);
-                var colliderBoundsContains = standingOnCollider.bounds.Contains(colliderBottomCenterPosition);
-                if (stairsContains && colliderBoundsContains)
-                    p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
-                var newPositionYGtZero = newPositionY > 0;
-                if (onMovingPlatform && newPositionYGtZero) p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
+                    //p.LayerMask.SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+                //var stairsContains = LayerMaskContains(stairsMask, standingOnLastFrame);
+                //var colliderBoundsContains = standingOnCollider.bounds.Contains(colliderBottomCenterPosition);
+                //if (stairsContains && colliderBoundsContains)
+                    //p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+                //var newPositionYGtZero = newPositionY > 0;
+                //if (onMovingPlatform && newPositionYGtZero) p.LayerMask.SetRaysBelowLayerMaskPlatformsToOneWay();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -402,10 +402,10 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetRaysBelowLayerMask()
             {
-                var t1 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatforms());
-                var t2 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutOneWay());
-                var t = await (t1, t2);
-                p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
+                //var t1 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatforms());
+                //var t2 = Async(p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutOneWay());
+                //var t = await (t1, t2);
+                //p.LayerMask.SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 

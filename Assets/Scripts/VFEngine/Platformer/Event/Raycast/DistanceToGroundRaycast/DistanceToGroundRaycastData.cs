@@ -1,7 +1,5 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,14 +10,16 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-
+    
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastData", menuName = PlatformerDistanceToGroundRaycastDataPath, order = 0)]
     [InlineEditor]
-    public class DistanceToGroundRaycastData : SerializedMonoBehaviour
+    public class DistanceToGroundRaycastData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
+        /*
         [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
         [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
         [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
@@ -28,7 +28,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
         [SerializeField] private new Transform transform = null;
         [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
-
+        */
+        
         #endregion
 
         [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
@@ -43,6 +44,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
+        /*
         public float BelowSlopeAngle => belowSlopeAngle.Value;
         public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
         public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
@@ -51,14 +53,15 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public Transform Transform => transform;
         public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-
+        */
+        
         #endregion
 
-        public ScriptableObjects.Atoms.Raycast.Raycast DistanceToGroundRaycast
+        public RaycastHit2D DistanceToGroundRaycast
         {
-            set => value = distanceToGroundRaycast.Value;
+            set => distanceToGroundRaycast.Value = new ScriptableObjects.Variables.Raycast(value);
         }
-
+        
         public Vector2 DistanceToGroundRaycastOrigin { get; set; } = Vector2.zero;
 
         public static readonly string DistanceToGroundRaycastModelPath =

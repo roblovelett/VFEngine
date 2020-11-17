@@ -1,5 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Atoms.Raycast.References;
+using ScriptableObjects.Variables;
 using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;

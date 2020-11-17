@@ -227,10 +227,10 @@ namespace VFEngine.Platformer.Event.Raycast
             return Abs(x * deltaTime) + width / 2 + offset * 2;
         }
 
-        private static ScriptableObjects.Atoms.Raycast.Raycast SetRaycast(RaycastHit2D hit)
+        /*private static ScriptableObjects.Variables.Raycast SetRaycast(RaycastHit2D hit)
         {
-            return new ScriptableObjects.Atoms.Raycast.Raycast(hit);
-        }
+            return new ScriptableObjects.Variables.Raycast(hit);
+        }*/
 
         #endregion
 
@@ -272,10 +272,10 @@ namespace VFEngine.Platformer.Event.Raycast
             return SetVerticalRaycast(bounds1, bounds2, t, offset, x);
         }
 
-        public static ScriptableObjects.Atoms.Raycast.Raycast OnSetRaycast(RaycastHit2D hit)
+        /*public static ScriptableObjects.Variables.Raycast OnSetRaycast(RaycastHit2D hit)
         {
             return SetRaycast(hit);
-        }
+        }*/
 
         public async UniTaskVoid OnInitialize()
         {

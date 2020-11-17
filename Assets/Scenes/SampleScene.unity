@@ -392,7 +392,7 @@ MonoBehaviour:
     _usage: 3
     _constant: {fileID: 0}
     _variable: {fileID: 0}
-    _variableInstancer: {fileID: 0}
+    _variableInstancer: {fileID: 66530736}
   movingPlatformMask:
     _usage: 3
     _constant: {fileID: 0}
@@ -514,6 +514,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d350ccae306457f89c9a247aeb24bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -545,8 +554,10 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   transform: {fileID: 1500110843}
   distanceToGroundRayMaximumLength:
     _usage: 3
@@ -769,6 +780,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a3361d9d504dfa97ff4f6d71e1f160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   numberOfHorizontalRaysPerSide:
     _usage: 3
     _value: 0
@@ -903,6 +923,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fea019caccc84c85a2f589884d29ab7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   belowSlopeAngleRight:
     _usage: 3
     _value: 0
@@ -993,6 +1022,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0621605fe4624d7396311a69b6b574b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   distanceToGroundRayMaximumLength:
     _usage: 3
     _value: 0
@@ -1104,6 +1142,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b0c70b1cf8d47b18c94568d981ed485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   groundedEvent:
     _usage: 3
     _value: 0
@@ -1166,14 +1213,20 @@ MonoBehaviour:
     _variableInstancer: {fileID: 2122870618}
   transform: {fileID: 1500110843}
   platformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   oneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   movingOneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   raycastUpHitAt:
     _usage: 3
     _constant: {fileID: 0}
@@ -1241,6 +1294,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0883b1aa16804b698d5d699bdceb457f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   currentRightRaycast:
     _usage: 3
     _constant: {fileID: 0}
@@ -1548,6 +1610,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b307b4796a9471eadce472318ae0070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   numberOfHorizontalRaysPerSide:
     _usage: 3
     _value: 0
@@ -1741,6 +1812,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55aa697bf0c54623aed4b7fb4daa7c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -1809,14 +1889,20 @@ MonoBehaviour:
     _variableInstancer: {fileID: 1129363944}
   transform: {fileID: 1500110843}
   platformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   oneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   movingOneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   rightRayLength:
     _usage: 3
     _value: 0
@@ -1904,6 +1990,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7649974ceeec4fac8844d200839324f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   numberOfVerticalRaysPerSide:
     _usage: 3
     _value: 0
@@ -2442,6 +2537,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942e9f6c21d94429bb21334e7fcfdd3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -2510,14 +2614,20 @@ MonoBehaviour:
     _variableInstancer: {fileID: 1129363944}
   transform: {fileID: 1500110843}
   platformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   oneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   movingOneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   leftRayLength:
     _usage: 3
     _value: 0
@@ -2685,6 +2795,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bd3b9caa7c453493b5cd1ffdbfe598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   settings: {fileID: 11400000, guid: 34af127971f151f45909772db4bc0767, type: 2}
   displayWarningsControl:
     _usage: 3
@@ -2867,6 +2986,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46458b6be9c24003bf065a69e2970195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   settings: {fileID: 11400000, guid: 1497321e2445d4049b01e4f84ee8461b, type: 2}
   transform: {fileID: 1500110843}
   movingPlatformCurrentGravity:
@@ -3472,6 +3600,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14ceb0f9bd4459697c1100262b1fa87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -3534,11 +3671,15 @@ MonoBehaviour:
     _variableInstancer: {fileID: 2122870618}
   transform: {fileID: 1500110843}
   raysBelowLayerMaskPlatformsWithoutOneWay:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   raysBelowLayerMaskPlatforms:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   downRayLength:
     _usage: 3
     _value: 0
@@ -3611,6 +3752,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f56307325ace45679f5130d43fbbd0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   settings: {fileID: 11400000, guid: 0c9c0e470a228bd41a04a1e8529aeb94, type: 2}
   physics: {fileID: 1654388797}
   raycast: {fileID: 925051006}
@@ -3791,12 +3941,6 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 668677931}
-  midHeightOneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
-  stairsMask:
-    serializedVersion: 2
-    m_Bits: 0
   standingOnCollider:
     _usage: 3
     _value: {fileID: 0}
@@ -3826,21 +3970,12 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 668677938}
-  standingOnWithSmallestDistanceLayer:
-    serializedVersion: 2
-    m_Bits: 0
   boundsHeight:
     _usage: 3
     _value: 0
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870624}
-  oneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
-  movingOneWayPlatformMask:
-    serializedVersion: 2
-    m_Bits: 0
   hasPhysicsMaterialClosestToDownHit:
     _usage: 3
     _value: 0
@@ -4040,6 +4175,31 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 68962334}
+  midHeightOneWayPlatformMask:
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
+  stairsMask:
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
+  standingOnWithSmallestDistanceLayer:
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
+  oneWayPlatformMask:
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
+  movingOneWayPlatformMask:
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
 --- !u!1 &1372182835
 GameObject:
   m_ObjectHideFlags: 0
@@ -4100,6 +4260,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcd11226975f48fabf1937ff2e217e9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -4155,8 +4324,10 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   transform: {fileID: 1500110843}
   rightStickyRaycast:
     _usage: 3
@@ -4262,6 +4433,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65eb84635abf458b93262b66b5b839cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -4288,8 +4468,10 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 982777883}
   raysBelowLayerMaskPlatforms:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   newPosition:
     _usage: 3
     _value: {x: 0, y: 0}
@@ -4297,8 +4479,10 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 1129363940}
   platformMask:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   safetyBoxcast:
     _usage: 3
     _constant: {fileID: 0}
@@ -4505,6 +4689,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed1debb5faf4a76bf40c754e39fc9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   leftStickyRaycast:
     _usage: 3
     _constant: {fileID: 0}
@@ -4657,6 +4850,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4915effd8c8a4d3faec46652b9d17db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   numberOfVerticalRaysPerSide:
     _usage: 3
     _value: 0
@@ -4871,6 +5073,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46fcaed50eca40f9b47c3db066e497fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   drawRaycastGizmosControl:
     _usage: 3
     _value: 0
@@ -4926,8 +5137,10 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 2122870623}
   raysBelowLayerMaskPlatforms:
-    serializedVersion: 2
-    m_Bits: 0
+    _usage: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   transform: {fileID: 1500110843}
   leftStickyRaycast:
     _usage: 3
@@ -5048,6 +5261,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c783d2eb449a089ef8209b885ef01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   rightStickyRaycast:
     _usage: 3
     _constant: {fileID: 0}
@@ -5127,6 +5349,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e05867e94334ef7807ae2a909ab7052, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   settings: {fileID: 11400000, guid: 1957c09b345423545b886bc1425e50d4, type: 2}
   boxCollider: {fileID: 3373687}
   transform: {fileID: 1500110843}

@@ -1,6 +1,4 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,18 +10,20 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
-
+    [CreateAssetMenu(fileName = "LayerMaskSettings", menuName = "VFEngine/Platformer/Layer/Mask/Layer Mask Data",
+        order = 0)]
     [InlineEditor]
-    public class LayerMaskData : SerializedMonoBehaviour
+    public class LayerMaskData : ScriptableObject //SerializedMonoBehaviour
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private LayerMaskSettings settings = null;
-        [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
-        private GameObject StandingOnLastFrame => standingOnLastFrame;
-
+        [SerializeField] private LayerMaskSettings settings = CreateInstance<LayerMaskSettings>();
+        //[SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
+        //private GameObject StandingOnLastFrame => standingOnLastFrame;
+        
+        
         #endregion
 
         [SerializeField] private MaskReference platformMask = new MaskReference();
@@ -45,6 +45,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
+        /*
         public int StandingOnLastFrameLayer => StandingOnLastFrame.layer;
         public bool DisplayWarnings => settings.displayWarningsControl;
         public bool HasSettings => settings;
@@ -54,10 +55,10 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask MovingOneWayPlatformMaskSetting => settings.movingOneWayPlatformMask;
         public LayerMask MidHeightOneWayPlatformMaskSetting => settings.midHeightOneWayPlatformMask;
         public LayerMask StairsMaskSetting => settings.stairsMask;
-
+        */
         #endregion
-
-        public LayerMask PlatformMask
+        
+        /*public LayerMask PlatformMask
         {
             get => platformMask.Value.layer;
             set => value = platformMask.Value.layer;
@@ -114,10 +115,10 @@ namespace VFEngine.Platformer.Layer.Mask
         public int SavedBelowLayer
         {
             set => value = savedBelowLayer;
-        }
+        }*/
 
-        [HideInInspector] public LayerMask savedPlatformMask;
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        //[HideInInspector] public LayerMask savedPlatformMask;
+        //public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

@@ -21,7 +21,7 @@ namespace VFEngine.Tools
         #region properties
 
         public const string PlatformerModelPath = "VFEngine/Platformer/Platformer Model";
-        
+
         public const string PlatformerSettingsPath = "VFEngine/Platformer/Platformer Settings";
 
         public const string PlatformerRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Raycast Model";
@@ -30,8 +30,14 @@ namespace VFEngine.Tools
         public const string PlatformerSafetyBoxcastModelPath =
             "VFEngine/Platformer/Event/Boxcast/Safety Boxcast/Safety Boxcast Model";
 
+        public const string PlatformerSafetyBoxcastDataPath =
+            "VFEngine/Platformer/Event/Boxcast/Safety Boxcast/Safety Boxcast Data";
+
         public const string PlatformerDistanceToGroundRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Distance To Ground Raycast/Distance To Ground Raycast Model";
+
+        public const string PlatformerDistanceToGroundRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Distance To Ground Raycast/Distance To Ground Raycast Data";
 
         public const string PlatformerDownRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Down Raycast/Down Raycast Model";
