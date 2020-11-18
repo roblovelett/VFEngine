@@ -39,7 +39,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         public Vector2 BoundsCenter { get; set; }
         public LayerMask PlatformMask { get; set; }
         public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
-        
 
         #endregion
 

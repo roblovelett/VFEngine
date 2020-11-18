@@ -13,26 +13,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static StickyRaycastData;
 
     [InlineEditor]
-    public class RightStickyRaycastData : SerializedMonoBehaviour
+    [CreateAssetMenu(fileName = "RightStickyRaycastData", menuName = PlatformerRightStickyRaycastDataPath, order = 0)]
+    public class RightStickyRaycastData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
         [SerializeField] private GameObject character;
-/*
-        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
-        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference boundsWidth = new FloatReference();
-        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private FloatReference rayOffset = new FloatReference();
-        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
-        [SerializeField] private new Transform transform = null;
-*/
 
         #endregion
 

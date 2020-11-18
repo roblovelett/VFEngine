@@ -3,14 +3,16 @@ using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
-// ReSharper disable RedundantAssignment
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
-    public class LeftRaycastData : SerializedMonoBehaviour
+    [CreateAssetMenu(fileName = "LeftRaycastData", menuName = PlatformerLeftRaycastDataPath, order = 0)]
+    public class LeftRaycastData : ScriptableObject
     {
         #region fields
 

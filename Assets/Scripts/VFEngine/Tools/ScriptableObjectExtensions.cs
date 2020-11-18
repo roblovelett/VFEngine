@@ -21,10 +21,9 @@ namespace VFEngine.Tools
         #region properties
 
         public const string PlatformerModelPath = "VFEngine/Platformer/Platformer Model";
-
         public const string PlatformerSettingsPath = "VFEngine/Platformer/Platformer Settings";
-
         public const string PlatformerRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Raycast Model";
+        public const string PlatformerRaycastDataPath = "VFEngine/Platformer/Event/Raycast/Raycast Data";
         public const string PlatformerRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/Raycast Settings";
 
         public const string PlatformerSafetyBoxcastModelPath =
@@ -42,17 +41,32 @@ namespace VFEngine.Tools
         public const string PlatformerDownRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Down Raycast/Down Raycast Model";
 
+        public const string PlatformerDownRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Down Raycast/Down Raycast Data";
+
         public const string PlatformerLeftRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Left Raycast/Left Raycast Model";
+
+        public const string PlatformerLeftRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Left Raycast/Left Raycast Data";
 
         public const string PlatformerRightRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Right Raycast/Right Raycast Model";
 
+        public const string PlatformerRightRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Right Raycast/Right Raycast Data";
+
         public const string PlatformerUpRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Up Raycast/Up Raycast Model";
 
+        public const string PlatformerUpRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Up Raycast/Up Raycast Data";
+
         public const string PlatformerStickyRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Model";
+
+        public const string PlatformerStickyRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Data";
 
         public const string PlatformerStickyRaycastSettingsPath =
             "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Sticky Raycast Settings";
@@ -60,8 +74,14 @@ namespace VFEngine.Tools
         public const string PlatformerLeftStickyRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Left Sticky Raycast/Left Sticky Raycast Model";
 
+        public const string PlatformerLeftStickyRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Left Sticky Raycast/Left Sticky Raycast Data";
+
         public const string PlatformerRightStickyRaycastModelPath =
             "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Right Sticky Raycast/Right Sticky Raycast Model";
+
+        public const string PlatformerRightStickyRaycastDataPath =
+            "VFEngine/Platformer/Event/Raycast/Sticky Raycast/Right Sticky Raycast/Right Sticky Raycast Data";
 
         public const string PlatformerLayerMaskModelPath = "VFEngine/Platformer/Layer/Mask/Layer Mask Model";
         public const string PlatformerPhysicsModelPath = "VFEngine/Platformer/Physics/Physics Model";

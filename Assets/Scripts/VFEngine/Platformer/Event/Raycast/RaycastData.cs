@@ -11,7 +11,8 @@ namespace VFEngine.Platformer.Event.Raycast
     using static ScriptableObjectExtensions;
 
     [InlineEditor]
-    public class RaycastData : SerializedMonoBehaviour
+    [CreateAssetMenu(fileName = "RaycastData", menuName = PlatformerRaycastDataPath, order = 0)]
+    public class RaycastData : ScriptableObject
     {
         #region fields
 

@@ -1,6 +1,4 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
@@ -27,6 +25,7 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastController raycast = null;
         [SerializeField] private RaycastHitColliderController raycastHitCollider = null;
         [SerializeField] private LayerMaskController layerMask = null;
+
         [SerializeField] private BoxcastController boxcast = null;
         /*
         [SerializeField] private Vector2Reference speed = new Vector2Reference();
@@ -104,6 +103,7 @@ namespace VFEngine.Platformer
         [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
         [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
         */
+
         #endregion
 
         private const string ModelAssetPath = "PlatformerModel.asset";
@@ -129,6 +129,7 @@ namespace VFEngine.Platformer
         public PhysicsController Physics => physics;
         public RaycastController Raycast => raycast;
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
+
         //public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
         public Vector2 Speed => speed.Value;
@@ -201,7 +202,7 @@ namespace VFEngine.Platformer
         public bool DistanceToGroundRaycastHit => distanceToGroundRaycastHit.Value;
 
         #endregion
-        
+
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

@@ -13,7 +13,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static ScriptableObjectExtensions;
 
     [InlineEditor]
-    public class DownRaycastData : SerializedMonoBehaviour
+    [CreateAssetMenu(fileName = "DownRaycastData", menuName = PlatformerDownRaycastDataPath, order = 0)]
+    public class DownRaycastData : ScriptableObject
     {
         #region fields
 
