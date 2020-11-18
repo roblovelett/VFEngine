@@ -34,115 +34,113 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private async UniTaskVoid Initialize()
         {
-            var rTask1 = Async(InitializeData());
-            var rTask2 = Async(GetWarningMessages());
-            var rTask3 = Async(InitializeModel());
-            var rTask = await (rTask1, rTask2, rTask3);
+            InitializeData();
+            InitializeModel();
+            if (r.DisplayWarningsControl) GetWarningMessages();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private async UniTaskVoid InitializeData()
+        private void InitializeData()
         {
+            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.Transform = r.RuntimeData.platformer.Transform;
             r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
             r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
             r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
             r.PerformSafetyBoxcast = r.PerformSafetyBoxcastSetting;
             r.RayOffset = r.RayOffsetSetting;
             r.DistanceToGroundRayMaximumLength = r.DistanceToGroundRayMaximumLengthSetting;
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid GetWarningMessages()
-        {
-            if (r.DisplayWarningsControl)
-            {
-                const string ra = "Rays";
-                const string rc = "Raycasts";
-                const string nuOf = "Number of";
-                const string bc = "Box Collider 2D";
-                const string ch = "Character";
-                const string diGrRa = "Distance To Ground Ray Maximum Length";
-                const string colliderWarning = "This may cause issues near walls on direction change.";
-                var settings = $"{rc} Settings";
-                var rcOf = $"{rc} Offset";
-                var nuOfHoRa = $"{nuOf} Horizontal {ra}";
-                var nuOfVeRa = $"{nuOf} Vertical {ra}";
-                var warningMessage = "";
-                var warningMessageCount = 0;
-                if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
-                if (!r.HasBoxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
-                if (r.BoxCollider.offset.x != 0)
-                    warningMessage +=
-                        PropertyNtZeroParentString($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
-                if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
-                if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
-                if (r.CastRaysOnBothSides)
-                {
-                    if (!IsEven(r.NumberOfHorizontalRays)) warningMessage += IsOddString($"{nuOfHoRa}", $"{settings}");
-                    else if (!IsEven(r.NumberOfVerticalRays))
-                        warningMessage += IsOddString($"{nuOfVeRa}", $"{settings}");
-                }
-
-                if (r.DistanceToGroundRayMaximumLength <= 0)
-                    warningMessage += LtEqZeroString($"{diGrRa}", $"{settings}");
-                if (r.RayOffset <= 0) warningMessage += LtEqZeroString($"{rcOf}", $"{settings}");
-                DebugLogWarning(warningMessageCount, warningMessage);
-
-                string FieldString(string field, string scriptableObject)
-                {
-                    WarningMessageCountAdd();
-                    return FieldMessage(field, scriptableObject);
-                }
-
-                string FieldParentGameObjectString(string field, string gameObject)
-                {
-                    WarningMessageCountAdd();
-                    return FieldParentGameObjectMessage(field, gameObject);
-                }
-
-                string LtZeroString(string field, string scriptableObject)
-                {
-                    WarningMessageCountAdd();
-                    return LtZeroMessage(field, scriptableObject);
-                }
-
-                string LtEqZeroString(string field, string scriptableObject)
-                {
-                    WarningMessageCountAdd();
-                    return LtEqZeroMessage(field, scriptableObject);
-                }
-
-                string IsOddString(string field, string scriptableObject)
-                {
-                    WarningMessageCountAdd();
-                    return IsOddMessage(field, scriptableObject);
-                }
-
-                string PropertyNtZeroParentString(string field, string property, string scriptableObject,
-                    string message)
-                {
-                    WarningMessageCountAdd();
-                    return PropertyNtZeroParentMessage(field, property, scriptableObject, message);
-                }
-
-                void WarningMessageCountAdd()
-                {
-                    warningMessageCount++;
-                }
-            }
-
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid InitializeModel()
-        {
+            r.NumberOfHorizontalRays = r.NumberOfHorizontalRaysSetting;
+            r.NumberOfVerticalRays = r.NumberOfVerticalRaysSetting;
             r.ObstacleHeightTolerance = r.RayOffset;
             r.NumberOfVerticalRaysPerSide = r.NumberOfVerticalRays / 2;
             r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
+            r.RuntimeData.SetBoxCollider(r.BoxCollider);
+            r.RuntimeData.SetRaycast(r.DisplayWarningsControl, r.DrawRaycastGizmosControl, r.CastRaysOnBothSides,
+                r.PerformSafetyBoxcast, r.NumberOfHorizontalRaysPerSide, r.NumberOfVerticalRaysPerSide,
+                r.DistanceToGroundRayMaximumLength, r.BoundsWidth, r.BoundsHeight, r.RayOffset,
+                r.ObstacleHeightTolerance, r.Bounds, r.BoundsCenter, r.BoundsBottomLeftCorner,
+                r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition, r.BoundsTopLeftCorner, r.BoundsTopRightCorner);
+        }
+
+        private void InitializeModel()
+        {
             SetRaysParameters();
-            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void GetWarningMessages()
+        {
+            const string ra = "Rays";
+            const string rc = "Raycasts";
+            const string nuOf = "Number of";
+            const string bc = "Box Collider 2D";
+            const string ch = "Character";
+            const string diGrRa = "Distance To Ground Ray Maximum Length";
+            const string colliderWarning = "This may cause issues near walls on direction change.";
+            var settings = $"{rc} Settings";
+            var rcOf = $"{rc} Offset";
+            var nuOfHoRa = $"{nuOf} Horizontal {ra}";
+            var nuOfVeRa = $"{nuOf} Vertical {ra}";
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!r.HasBoxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
+            if (r.BoxCollider.offset.x != 0)
+                warningMessage += PropertyNtZeroParentString($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
+            if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
+            if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
+            if (r.CastRaysOnBothSides)
+            {
+                if (!IsEven(r.NumberOfHorizontalRays)) warningMessage += IsOddString($"{nuOfHoRa}", $"{settings}");
+                else if (!IsEven(r.NumberOfVerticalRays)) warningMessage += IsOddString($"{nuOfVeRa}", $"{settings}");
+            }
+
+            if (r.DistanceToGroundRayMaximumLength <= 0) warningMessage += LtEqZeroString($"{diGrRa}", $"{settings}");
+            if (r.RayOffset <= 0) warningMessage += LtEqZeroString($"{rcOf}", $"{settings}");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldString(string field, string scriptableObject)
+            {
+                WarningMessageCountAdd();
+                return FieldMessage(field, scriptableObject);
+            }
+
+            string FieldParentGameObjectString(string field, string gameObject)
+            {
+                WarningMessageCountAdd();
+                return FieldParentGameObjectMessage(field, gameObject);
+            }
+
+            string LtZeroString(string field, string scriptableObject)
+            {
+                WarningMessageCountAdd();
+                return LtZeroMessage(field, scriptableObject);
+            }
+
+            string LtEqZeroString(string field, string scriptableObject)
+            {
+                WarningMessageCountAdd();
+                return LtEqZeroMessage(field, scriptableObject);
+            }
+
+            string IsOddString(string field, string scriptableObject)
+            {
+                WarningMessageCountAdd();
+                return IsOddMessage(field, scriptableObject);
+            }
+
+            string PropertyNtZeroParentString(string field, string property, string scriptableObject, string message)
+            {
+                WarningMessageCountAdd();
+                return PropertyNtZeroParentMessage(field, property, scriptableObject, message);
+            }
+
+            void WarningMessageCountAdd()
+            {
+                warningMessageCount++;
+            }
         }
 
         private void SetRaysParameters()
@@ -227,11 +225,6 @@ namespace VFEngine.Platformer.Event.Raycast
             return Abs(x * deltaTime) + width / 2 + offset * 2;
         }
 
-        /*private static ScriptableObjects.Variables.Raycast SetRaycast(RaycastHit2D hit)
-        {
-            return new ScriptableObjects.Variables.Raycast(hit);
-        }*/
-
         #endregion
 
         #endregion
@@ -271,11 +264,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return SetVerticalRaycast(bounds1, bounds2, t, offset, x);
         }
-
-        /*public static ScriptableObjects.Variables.Raycast OnSetRaycast(RaycastHit2D hit)
-        {
-            return SetRaycast(hit);
-        }*/
 
         public async UniTaskVoid OnInitialize()
         {

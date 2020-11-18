@@ -39,8 +39,21 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid Initialize()
         {
+            InitializeData();
+            InitializeModel();
             GetWarningMessages();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void InitializeData()
+        {
+            p.RuntimeData = p.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            p.RuntimeData.SetPlatformer(p.Transform);
+        }
+
+        private void InitializeModel()
+        {
+            
         }
 
         private void GetWarningMessages()
@@ -840,7 +853,7 @@ namespace VFEngine.Platformer
 
         public void OnInitialize()
         {
-            Async(Initialize());
+            Initialize();
         }
 
         public void OnRunPlatformer()

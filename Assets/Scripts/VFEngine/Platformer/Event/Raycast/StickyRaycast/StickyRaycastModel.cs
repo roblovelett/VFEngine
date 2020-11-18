@@ -29,8 +29,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void Initialize()
         {
-            if (s.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
             InitializeModel();
+            if (s.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void GetWarningMessages()
@@ -55,9 +56,26 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             }
         }
 
+        private void InitializeData()
+        {
+            s.RuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
+            s.DisplayWarningsControl = s.DisplayWarningsControlSetting;
+            s.RuntimeData.SetStickyRaycast(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);
+        }
+
         private void InitializeModel()
         {
-            s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
+            s.StickToSlopesControl = s.RuntimeData.physics.StickToSlopesControl;
+            s.BelowSlopeAngle = s.RuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            s.BoundsWidth = s.RuntimeData.raycast.BoundsWidth;
+            s.MaximumSlopeAngle = s.RuntimeData.physics.MaximumSlopeAngle;
+            s.BoundsHeight = s.RuntimeData.raycast.BoundsHeight;
+            s.RayOffset = s.RuntimeData.raycast.RayOffset;
+            s.BelowSlopeAngleLeft = s.RuntimeData.leftStickyRaycastHitCollider.BelowSlopeAngleLeft;
+            s.BelowSlopeAngleRight = s.RuntimeData.rightStickyRaycastHitCollider.BelowSlopeAngleRight;
+            s.LeftStickyRaycastHit = s.RuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
+            s.RightStickyRaycastHit = s.RuntimeData.rightStickyRaycast.RightStickyRaycastHit;
         }
 
         private void SetStickyRaycastLength()
@@ -104,7 +122,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
-            s.IsCastingLeft = s.LeftStickyRaycast.distance < s.RightStickyRaycast.distance;
+            s.IsCastingLeft = s.LeftStickyRaycastHit.distance < s.RightStickyRaycastHit.distance;
         }
 
         private void ResetState()

@@ -1,6 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
@@ -10,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static Color;
     using static Mathf;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "DownRaycastModel", menuName = PlatformerDownRaycastModelPath, order = 0)]
     [InlineEditor]
@@ -26,18 +29,47 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RuntimeData.SetDownRaycast(d.DownRayLength, d.CurrentDownRaycastOrigin, d.DownRaycastFromLeft,
+                d.DownRaycastToRight, d.CurrentDownRaycastHit);
+        }
+
+        private void InitializeModel()
+        {
+            d.Transform = d.RuntimeData.platformer.Transform;
+            d.DrawRaycastGizmosControl = d.RuntimeData.raycast.DrawRaycastGizmosControl;
+            d.CurrentDownHitsStorageIndex = d.RuntimeData.downRaycastHitCollider.CurrentDownHitsStorageIndex;
+            d.NumberOfVerticalRaysPerSide = d.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            d.RayOffset = d.RuntimeData.raycast.RayOffset;
+            d.BoundsHeight = d.RuntimeData.raycast.BoundsHeight;
+            d.NewPosition = d.RuntimeData.physics.NewPosition;
+            d.BoundsBottomLeftCorner = d.RuntimeData.raycast.BoundsBottomLeftCorner;
+            d.BoundsBottomRightCorner = d.RuntimeData.raycast.BoundsBottomRightCorner;
+            d.BoundsTopLeftCorner = d.RuntimeData.raycast.BoundsTopLeftCorner;
+            d.BoundsTopRightCorner = d.RuntimeData.raycast.BoundsTopRightCorner;
+            d.RaysBelowLayerMaskPlatformsWithoutOneWay =
+                d.RuntimeData.layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay;
+            d.RaysBelowLayerMaskPlatforms = d.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+        }
+
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            var hit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
+            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
                 d.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, d.DrawRaycastGizmosControl);
-            d.CurrentDownRaycast = OnSetRaycast(hit);
         }
 
         private void SetCurrentDownRaycast()
         {
-            var hit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
+            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -d.Transform.up, d.DownRayLength,
                 d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
-            d.CurrentDownRaycast = OnSetRaycast(hit);
         }
 
         private void InitializeDownRayLength()
@@ -119,6 +151,12 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public void OnSetCurrentDownRaycastOriginPoint()
         {
             SetCurrentDownRaycastOriginPoint();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

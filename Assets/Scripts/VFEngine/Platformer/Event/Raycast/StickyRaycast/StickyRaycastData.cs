@@ -1,6 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -13,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static RaycastData;
+
     [InlineEditor]
     public class StickyRaycastData : SerializedMonoBehaviour
     {
@@ -20,18 +20,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private StickyRaycastSettings settings = null;
-        [SerializeField] private BoolReference displayWarningsControl = new BoolReference();
-        [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
-        [SerializeField] private FloatReference boundsWidth = new FloatReference();
-        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private FloatReference rayOffset = new FloatReference();
-        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
-        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
-        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
-        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
-        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
 
         #endregion
 
@@ -46,47 +36,35 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
         public bool HasSettings => settings;
-        public bool StickToSlopesControl => stickToSlopesControl.Value;
-        public bool DisplayWarningsControl => displayWarningsControl.Value;
-
-        public RaycastHit2D LeftStickyRaycast
-        {
-            get
-            {
-                var r = leftStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public RaycastHit2D RightStickyRaycast
-        {
-            get
-            {
-                var r = rightStickyRaycast.Value;
-                return r.hit2D;
-            }
-        }
-
-        public float BelowSlopeAngle => belowSlopeAngle.Value;
-        public float BoundsWidth => boundsWidth.Value;
-        public float MaximumSlopeAngle => maximumSlopeAngle.Value;
-        public float BoundsHeight => boundsHeight.Value;
-        public float RayOffset => rayOffset.Value;
-        public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
-        public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
+        public bool StickToSlopesControl { get; set; }
+        public bool DisplayWarningsControl { get; set; }
+        public float BelowSlopeAngle { get; set; }
+        public float BoundsWidth { get; set; }
+        public float MaximumSlopeAngle { get; set; }
+        public float BoundsHeight { get; set; }
+        public float RayOffset { get; set; }
+        public float BelowSlopeAngleLeft { get; set; }
+        public float BelowSlopeAngleRight { get; set; }
+        public RaycastHit2D LeftStickyRaycastHit { get; set; }
+        public RaycastHit2D RightStickyRaycastHit { get; set; }
 
         #endregion
 
         public float StickToSlopesOffsetY
         {
+            get => stickToSlopesOffsetY.Value;
             set => value = stickToSlopesOffsetY.Value;
         }
 
         public float StickToSlopesOffsetYSetting => settings.stickToSlopesOffsetY;
+        public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
 
         public bool IsCastingLeft
         {
+            get => isCastingLeft.Value;
             set => value = isCastingLeft.Value;
         }
 

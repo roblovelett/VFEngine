@@ -1,6 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
@@ -9,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "RightRaycastModel", menuName = PlatformerRightRaycastModelPath, order = 0)]
     [InlineEditor]
@@ -24,6 +27,38 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         #endregion
 
         #region private methods
+
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RuntimeData.SetRightRaycast(r.RightRayLength, r.RightRaycastFromBottomOrigin, r.RightRaycastToTopOrigin,
+                r.CurrentRightRaycastHit);
+        }
+
+        private void InitializeModel()
+        {
+            r.Transform = r.RuntimeData.platformer.Transform;
+            r.DrawRaycastGizmosControl = r.RuntimeData.raycast.DrawRaycastGizmosControl;
+            r.NumberOfHorizontalRaysPerSide = r.RuntimeData.raycast.NumberOfHorizontalRaysPerSide;
+            r.CurrentRightHitsStorageIndex = r.RuntimeData.rightRaycastHitCollider.CurrentRightHitsStorageIndex;
+            r.RayOffset = r.RuntimeData.raycast.RayOffset;
+            r.ObstacleHeightTolerance = r.RuntimeData.raycast.ObstacleHeightTolerance;
+            r.BoundsWidth = r.RuntimeData.raycast.BoundsWidth;
+            r.BoundsBottomLeftCorner = r.RuntimeData.raycast.BoundsBottomLeftCorner;
+            r.BoundsBottomRightCorner = r.RuntimeData.raycast.BoundsBottomRightCorner;
+            r.BoundsTopLeftCorner = r.RuntimeData.raycast.BoundsTopLeftCorner;
+            r.BoundsTopRightCorner = r.RuntimeData.raycast.BoundsTopRightCorner;
+            r.Speed = r.RuntimeData.physics.Speed;
+            r.PlatformMask = r.RuntimeData.layerMask.PlatformMask;
+            r.OneWayPlatformMask = r.RuntimeData.layerMask.OneWayPlatformMask;
+            r.MovingOneWayPlatformMask = r.RuntimeData.layerMask.MovingOneWayPlatformMask;
+        }
 
         private void SetRightRaycastFromBottomOrigin()
         {
@@ -44,22 +79,21 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void SetCurrentRightRaycastOrigin()
         {
-            r.currentRightRaycastOrigin = OnSetCurrentRaycastOrigin(r.RightRaycastFromBottomOrigin,
+            r.CurrentRightRaycastOrigin = OnSetCurrentRaycastOrigin(r.RightRaycastFromBottomOrigin,
                 r.RightRaycastToTopOrigin, r.CurrentRightHitsStorageIndex, r.NumberOfHorizontalRaysPerSide);
         }
 
         private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
         {
-            var hit = Raycast(r.currentRightRaycastOrigin, r.Transform.right, r.RightRayLength, r.PlatformMask, red,
+            r.CurrentRightRaycastHit = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
+                r.PlatformMask, red,
                 r.DrawRaycastGizmosControl);
-            r.CurrentRightRaycast = OnSetRaycast(hit);
         }
 
         private void SetCurrentRightRaycast()
         {
-            var hit = Raycast(r.currentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
+            r.CurrentRightRaycastHit = Raycast(r.CurrentRightRaycastOrigin, r.Transform.right, r.RightRayLength,
                 r.PlatformMask & ~r.OneWayPlatformMask & ~r.MovingOneWayPlatformMask, red, r.DrawRaycastGizmosControl);
-            r.CurrentRightRaycast = OnSetRaycast(hit);
         }
 
         #endregion
@@ -98,6 +132,12 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

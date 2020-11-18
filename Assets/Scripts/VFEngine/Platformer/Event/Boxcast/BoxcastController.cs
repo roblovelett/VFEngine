@@ -22,11 +22,17 @@ namespace VFEngine.Platformer.Event.Boxcast
         private void Awake()
         {
             GetModels();
+            InitializeModels();
         }
 
         private void GetModels()
         {
             if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+        }
+
+        private void InitializeModels()
+        {
+            safetyBoxcastModel.OnInitialize();
         }
 
         #endregion

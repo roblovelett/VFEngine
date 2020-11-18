@@ -1,7 +1,6 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class UpRaycastData : SerializedMonoBehaviour
     {
@@ -19,27 +19,13 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference groundedEvent = new BoolReference();
-        [SerializeField] private BoolReference drawRaycastGizmos = new BoolReference();
-        [SerializeField] private FloatReference rayOffset = new FloatReference();
-        [SerializeField] private IntReference currentUpHitsStorageIndex = new IntReference();
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
-        [SerializeField] private new Transform transform = null;
-        [SerializeField] private MaskReference platformMask = new MaskReference();
-        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
-        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
-        [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
         [SerializeField] private FloatReference upRaycastSmallestDistance = new FloatReference();
         [SerializeField] private Vector2Reference currentUpRaycastOrigin = new Vector2Reference();
-        [SerializeField] private RaycastReference currentUpRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference currentUpRaycastHit = new RaycastReference();
         private static readonly string UpRaycastPath = $"{RaycastPath}UpRaycast/";
         private static readonly string ModelAssetPath = $"{UpRaycastPath}UpRaycastModel.asset";
 
@@ -49,38 +35,33 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        public bool GroundedEvent => groundedEvent.Value;
-        public bool DrawRaycastGizmos => drawRaycastGizmos.Value;
-        public int CurrentUpHitsStorageIndex => currentUpHitsStorageIndex.Value;
-        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        public float RayOffset => rayOffset.Value;
-        public Vector2 NewPosition => newPosition.Value;
-        public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
-        public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
-        public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
-        public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public LayerMask PlatformMask => platformMask.Value.layer;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value.layer;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value.layer;
-        public Transform Transform => transform;
-
-        public RaycastHit2D RaycastUpHitAt
-        {
-            get
-            {
-                var r = raycastUpHitAt.Value;
-                return r.hit2D;
-            }
-        }
+        public GameObject Character => character;
+        public Transform Transform => character.transform;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public bool GroundedEvent { get; set; }
+        public bool DrawRaycastGizmosControl { get; set; }
+        public int CurrentUpHitsStorageIndex { get; set; }
+        public int NumberOfVerticalRaysPerSide { get; set; }
+        public float RayOffset { get; set; }
+        public Vector2 NewPosition { get; set; }
+        public Vector2 BoundsBottomLeftCorner { get; set; }
+        public Vector2 BoundsBottomRightCorner { get; set; }
+        public Vector2 BoundsTopLeftCorner { get; set; }
+        public Vector2 BoundsTopRightCorner { get; set; }
+        public LayerMask PlatformMask { get; set; }
+        public LayerMask OneWayPlatformMask { get; set; }
+        public LayerMask MovingOneWayPlatformMask { get; set; }
+        public RaycastHit2D RaycastUpHitAt { get; set; }
 
         #endregion
 
-        [HideInInspector] public float upRayLength;
+        public float UpRayLength { get; set; }
         public Vector2 UpRaycastStart { get; set; } = Vector2.zero;
         public Vector2 UpRaycastEnd { get; set; } = Vector2.zero;
 
         public float UpRaycastSmallestDistance
         {
+            get => upRaycastSmallestDistance.Value;
             set => value = upRaycastSmallestDistance.Value;
         }
 
@@ -90,9 +71,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             set => value = currentUpRaycastOrigin.Value;
         }
 
-        public ScriptableObjects.Variables.Raycast CurrentUpRaycast
+        public RaycastHit2D CurrentUpRaycastHit
         {
-            set => value = currentUpRaycast.Value;
+            get => currentUpRaycastHit.Value.hit2D;
+            set => value = currentUpRaycastHit.Value.hit2D;
         }
 
         public static readonly string UpRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

@@ -1,7 +1,6 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
+
     [InlineEditor]
     public class LeftStickyRaycastData : SerializedMonoBehaviour
     {
@@ -19,23 +19,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
-        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference boundsWidth = new FloatReference();
-        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private FloatReference rayOffset = new FloatReference();
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
-        [SerializeField] private new Transform transform = null;
+        [SerializeField] private GameObject character;
 
         #endregion
 
-        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference leftStickyRaycastHit = new RaycastReference();
         [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference leftStickyRaycastOriginY = new FloatReference();
         private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}RightRaycastModel.asset";
 
@@ -45,17 +34,19 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
-        public float StickyRaycastLength => stickyRaycastLength.Value;
-        public float BoundsWidth => boundsWidth.Value;
-        public float MaximumSlopeAngle => maximumSlopeAngle.Value;
-        public float BoundsHeight => boundsHeight.Value;
-        public float RayOffset => rayOffset.Value;
-        public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
-        public Vector2 NewPosition => newPosition.Value;
-        public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
-        public Transform Transform => transform;
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public Transform Transform { get; set; }
+        public bool DrawRaycastGizmosControl { get; set; }
+        public float StickyRaycastLength { get; set; }
+        public float BoundsWidth { get; set; }
+        public float MaximumSlopeAngle { get; set; }
+        public float BoundsHeight { get; set; }
+        public float RayOffset { get; set; }
+        public Vector2 BoundsBottomLeftCorner { get; set; }
+        public Vector2 NewPosition { get; set; }
+        public Vector2 BoundsCenter { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
 
         #endregion
 
@@ -65,17 +56,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             set => value = leftStickyRaycastLength.Value;
         }
 
-        [HideInInspector] public Vector2 leftStickyRaycastOrigin;
+        public Vector2 LeftStickyRaycastOrigin { get; } = Vector2.zero;
 
-        public ScriptableObjects.Variables.Raycast LeftStickyRaycast
+        public float LeftStickyRaycastOriginX
         {
-            get => leftStickyRaycast.Value;
-            set => value = leftStickyRaycast.Value;
+            set => value = LeftStickyRaycastOrigin.x;
         }
 
         public float LeftStickyRaycastOriginY
         {
-            set => value = leftStickyRaycastOriginY.Value;
+            set => value = LeftStickyRaycastOrigin.y;
+        }
+
+        public RaycastHit2D LeftStickyRaycastHit
+        {
+            get => leftStickyRaycastHit.Value.hit2D;
+            set => leftStickyRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
         }
 
         public static readonly string LeftStickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

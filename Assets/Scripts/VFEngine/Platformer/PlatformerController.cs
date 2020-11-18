@@ -7,6 +7,7 @@ namespace VFEngine.Platformer
     using static PlatformerData;
     using static ScriptableObjectExtensions;
     using static Debug;
+    using static ScriptableObject;
 
     public class PlatformerController : MonoBehaviour, IController
     {
@@ -25,6 +26,9 @@ namespace VFEngine.Platformer
             if (!model) model = LoadData(ModelPath) as PlatformerModel;
             Assert(model != null, nameof(model) + " != null");
             model.OnInitialize();
+            
+            RuntimeData = CreateInstance<PlatformerRuntimeData>();
+            model.OnInitialize();
         }
 
         private void FixedUpdate()
@@ -33,6 +37,12 @@ namespace VFEngine.Platformer
         }
 
         #endregion
+
+        #endregion
+        
+        #region properties
+
+        public PlatformerRuntimeData RuntimeData { get; private set; }
 
         #endregion
     }

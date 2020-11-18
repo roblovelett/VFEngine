@@ -1,5 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
+﻿using ScriptableObjectArchitecture;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -9,6 +9,7 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class RaycastData : SerializedMonoBehaviour
     {
@@ -16,11 +17,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastSettings settings = null;
         [SerializeField] private BoxCollider2D boxCollider = null;
-        [SerializeField] private new Transform transform = null;
-        private int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
-        private int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
 
         #endregion
 
@@ -50,14 +49,18 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
+        public GameObject Character => character;
+        public Transform Transform { get; set; }
+        public BoxCollider2D BoxCollider => boxCollider;
+        public PlatformerRuntimeData RuntimeData { get; set; }
         public bool HasSettings => settings;
         public bool HasBoxCollider => boxCollider;
-        public BoxCollider2D BoxCollider => boxCollider;
-        public Transform Transform => transform;
         public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
         public bool DrawRaycastGizmosControlSetting => settings.drawRaycastGizmosControl;
         public bool CastRaysOnBothSidesSetting => settings.castRaysOnBothSides;
         public bool PerformSafetyBoxcastSetting => settings.performSafetyBoxcast;
+        public int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
+        public int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
         public float RayOffsetSetting => settings.rayOffset;
         public float DistanceToGroundRayMaximumLengthSetting => settings.distanceToGroundRayMaximumLength;
 
@@ -71,6 +74,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public bool DrawRaycastGizmosControl
         {
+            get => drawRaycastGizmosControl.Value;
             set => value = drawRaycastGizmosControl.Value;
         }
 
@@ -82,6 +86,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public bool PerformSafetyBoxcast
         {
+            get => performSafetyBoxcast.Value;
             set => value = performSafetyBoxcast.Value;
         }
 
@@ -91,11 +96,12 @@ namespace VFEngine.Platformer.Event.Raycast
             set => value = distanceToGroundRayMaximumLength.Value;
         }
 
-        public int NumberOfHorizontalRays => NumberOfHorizontalRaysSetting;
-        public int NumberOfVerticalRays => NumberOfVerticalRaysSetting;
+        public int NumberOfHorizontalRays { get; set; }
+        public int NumberOfVerticalRays { get; set; }
 
         public float ObstacleHeightTolerance
         {
+            get => obstacleHeightTolerance.Value;
             set => value = obstacleHeightTolerance.Value;
         }
 
@@ -125,6 +131,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public Vector2 BoundsCenter
         {
+            get => boundsCenter.Value;
             set => value = boundsCenter.Value;
         }
 
@@ -148,6 +155,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public Vector2 BoundsTopRightCorner
         {
+            get => boundsTopRightCorner.Value;
             set => value = boundsTopRightCorner.Value;
         }
 
@@ -159,11 +167,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public int NumberOfHorizontalRaysPerSide
         {
+            get => numberOfHorizontalRaysPerSide.Value;
             set => value = numberOfHorizontalRaysPerSide.Value;
         }
 
         public int NumberOfVerticalRaysPerSide
         {
+            get => numberOfVerticalRaysPerSide.Value;
             set => value = numberOfVerticalRaysPerSide.Value;
         }
 

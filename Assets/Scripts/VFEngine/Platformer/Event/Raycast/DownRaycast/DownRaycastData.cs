@@ -1,7 +1,6 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     [InlineEditor]
     public class DownRaycastData : SerializedMonoBehaviour
     {
@@ -19,19 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
-        [SerializeField] private IntReference currentDownHitsStorageIndex = new IntReference();
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
-        [SerializeField] private FloatReference rayOffset = new FloatReference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsTopLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsTopRightCorner = new Vector2Reference();
-        [SerializeField] private new Transform transform = null;
-        [SerializeField] private MaskReference raysBelowLayerMaskPlatformsWithoutOneWay = new MaskReference();
-        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -39,7 +27,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         [SerializeField] private Vector2Reference currentDownRaycastOrigin = new Vector2Reference();
         [SerializeField] private Vector2Reference downRaycastFromLeft = new Vector2Reference();
         [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
-        [SerializeField] private RaycastReference currentDownRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference currentDownRaycastHit = new RaycastReference();
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
         private static readonly string ModelAssetPath = $"{DownRaycastPath}DownRaycastModel.asset";
 
@@ -49,19 +37,21 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
-        public int CurrentDownHitsStorageIndex => currentDownHitsStorageIndex.Value;
-        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        public float RayOffset => rayOffset.Value;
-        public float BoundsHeight => boundsHeight.Value;
-        public Vector2 NewPosition => newPosition.Value;
-        public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
-        public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
-        public Vector2 BoundsTopLeftCorner => boundsTopLeftCorner.Value;
-        public Vector2 BoundsTopRightCorner => boundsTopRightCorner.Value;
-        public Transform Transform => transform;
-        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay => raysBelowLayerMaskPlatformsWithoutOneWay.Value.layer;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
+        public GameObject Character => character;
+        public Transform Transform { get; set; }
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public bool DrawRaycastGizmosControl { get; set; }
+        public int CurrentDownHitsStorageIndex { get; set; }
+        public int NumberOfVerticalRaysPerSide { get; set; }
+        public float RayOffset { get; set; }
+        public float BoundsHeight { get; set; }
+        public Vector2 NewPosition { get; set; }
+        public Vector2 BoundsBottomLeftCorner { get; set; }
+        public Vector2 BoundsBottomRightCorner { get; set; }
+        public Vector2 BoundsTopLeftCorner { get; set; }
+        public Vector2 BoundsTopRightCorner { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
 
         #endregion
 
@@ -89,9 +79,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             set => value = downRaycastToRight.Value;
         }
 
-        public ScriptableObjects.Variables.Raycast CurrentDownRaycast
+        public RaycastHit2D CurrentDownRaycastHit
         {
-            set => value = currentDownRaycast.Value;
+            get => currentDownRaycastHit.Value.hit2D;
+            set => currentDownRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
         }
 
         public static readonly string DownRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

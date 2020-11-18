@@ -1,6 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
@@ -8,7 +10,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
-    using static RaycastModel;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel", menuName = PlatformerDistanceToGroundRaycastModelPath,
         order = 0)]
@@ -26,6 +28,30 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RuntimeData.SetDistanceToGroundRaycast(d.DistanceToGroundRaycast);
+        }
+
+        private void InitializeModel()
+        {
+            d.Transform = d.RuntimeData.platformer.Transform;
+            d.DrawRaycastGizmosControl = d.RuntimeData.raycast.DrawRaycastGizmosControl;
+            d.BelowSlopeAngle = d.RuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            d.DistanceToGroundRayMaximumLength = d.RuntimeData.raycast.DistanceToGroundRayMaximumLength;
+            d.BoundsBottomLeftCorner = d.RuntimeData.raycast.BoundsBottomLeftCorner;
+            d.BoundsBottomRightCorner = d.RuntimeData.raycast.BoundsBottomRightCorner;
+            d.BoundsCenter = d.RuntimeData.raycast.BoundsCenter;
+            d.RaysBelowLayerMaskPlatforms = d.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+        }
+
         private void SetDistanceToGroundRaycastOrigin()
         {
             d.DistanceToGroundRaycastOrigin = new Vector2
@@ -37,9 +63,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void SetDistanceToGroundRaycast()
         {
-            var hit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up, d.DistanceToGroundRayMaximumLength,
-                d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
-            d.DistanceToGroundRaycast = hit;
+            d.DistanceToGroundRaycast = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
+                d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
         }
 
         #endregion
@@ -58,6 +83,12 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public void OnSetDistanceToGroundRaycast()
         {
             SetDistanceToGroundRaycast();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

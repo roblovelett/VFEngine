@@ -72,10 +72,15 @@ namespace VFEngine.Platformer.Event.Raycast
         private async UniTaskVoid InitializeModels()
         {
             var rTask1 = Async(raycastModel.OnInitialize());
-            var rTask2 = Async(stickyRaycastModel.OnInitialize());
-            var rTask3 = Async(leftStickyRaycastModel.OnInitialize());
-            var rTask4 = Async(rightStickyRaycastModel.OnInitialize());
-            var task1 = await (rTask1, rTask2, rTask3, rTask4);
+            var rTask2 = Async(distanceToGroundRaycastModel.OnInitialize());
+            var rTask3 = Async(upRaycastModel.OnInitialize());
+            var rTask4 = Async(rightRaycastModel.OnInitialize());
+            var rTask5 = Async(downRaycastModel.OnInitialize());
+            var rTask6 = Async(leftRaycastModel.OnInitialize());
+            var rTask7 = Async(stickyRaycastModel.OnInitialize());
+            var rTask8 = Async(leftStickyRaycastModel.OnInitialize());
+            var rTask9 = Async(rightStickyRaycastModel.OnInitialize());
+            var task1 = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6, rTask7, rTask8, rTask9);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

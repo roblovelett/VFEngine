@@ -1,6 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
@@ -9,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "LeftRaycastModel", menuName = PlatformerLeftRaycastModelPath, order = 0)]
     [InlineEditor]
@@ -25,6 +28,36 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            l.RuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.RuntimeData.SetLeftRaycast(l.LeftRayLength, l.LeftRaycastFromBottomOrigin, l.LeftRaycastToTopOrigin, l.CurrentLeftRaycastHit);
+        }
+
+        private void InitializeModel()
+        {
+            l.Transform = l.RuntimeData.platformer.Transform;
+            l.DrawRaycastGizmosControl = l.RuntimeData.raycast.DrawRaycastGizmosControl;
+            l.NumberOfHorizontalRaysPerSide = l.RuntimeData.raycast.NumberOfHorizontalRaysPerSide;
+            l.CurrentLeftHitsStorageIndex = l.RuntimeData.leftRaycastHitCollider.CurrentLeftHitsStorageIndex;
+            l.RayOffset = l.RuntimeData.raycast.RayOffset;
+            l.ObstacleHeightTolerance = l.RuntimeData.raycast.ObstacleHeightTolerance;
+            l.BoundsWidth = l.RuntimeData.raycast.BoundsWidth;
+            l.BoundsBottomLeftCorner = l.RuntimeData.raycast.BoundsBottomLeftCorner;
+            l.BoundsBottomRightCorner = l.RuntimeData.raycast.BoundsBottomRightCorner;
+            l.BoundsTopLeftCorner = l.RuntimeData.raycast.BoundsTopLeftCorner;
+            l.BoundsTopRightCorner = l.RuntimeData.raycast.BoundsTopRightCorner;
+            l.Speed = l.RuntimeData.physics.Speed;
+            l.PlatformMask = l.RuntimeData.layerMask.PlatformMask;
+            l.OneWayPlatformMask = l.RuntimeData.layerMask.OneWayPlatformMask;
+            l.MovingOneWayPlatformMask = l.RuntimeData.layerMask.MovingOneWayPlatformMask;
+        }
         private void SetLeftRaycastFromBottomOrigin()
         {
             l.LeftRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(l.BoundsBottomRightCorner,
@@ -39,7 +72,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void SetCurrentLeftRaycastOrigin()
         {
-            l.currentLeftRaycastOrigin = OnSetCurrentRaycastOrigin(l.LeftRaycastFromBottomOrigin,
+            l.CurrentLeftRaycastOrigin = OnSetCurrentRaycastOrigin(l.LeftRaycastFromBottomOrigin,
                 l.LeftRaycastToTopOrigin, l.CurrentLeftHitsStorageIndex, l.NumberOfHorizontalRaysPerSide);
         }
 
@@ -50,16 +83,14 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
-            var hit = Raycast(l.currentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength, l.PlatformMask, red,
+            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength, l.PlatformMask, red,
                 l.DrawRaycastGizmosControl);
-            l.CurrentLeftRaycast = OnSetRaycast(hit);
         }
 
         private void SetCurrentLeftRaycast()
         {
-            var hit = Raycast(l.currentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
+            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
                 l.PlatformMask & ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask, red, l.DrawRaycastGizmosControl);
-            l.CurrentLeftRaycast = OnSetRaycast(hit);
         }
 
         #endregion
@@ -98,6 +129,12 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public void OnSetCurrentLeftRaycast()
         {
             SetCurrentLeftRaycast();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

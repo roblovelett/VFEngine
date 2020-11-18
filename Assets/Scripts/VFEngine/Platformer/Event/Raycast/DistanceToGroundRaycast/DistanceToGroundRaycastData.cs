@@ -3,15 +3,13 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-    
-    [CreateAssetMenu(fileName = "DistanceToGroundRaycastData", menuName = PlatformerDistanceToGroundRaycastDataPath, order = 0)]
+
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastData", menuName = PlatformerDistanceToGroundRaycastDataPath,
+        order = 0)]
     [InlineEditor]
     public class DistanceToGroundRaycastData : ScriptableObject
     {
@@ -19,17 +17,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        /*
-        [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
-        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
-        [SerializeField] private Vector2Reference boundsBottomLeftCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsBottomRightCorner = new Vector2Reference();
-        [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
-        [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
-        [SerializeField] private new Transform transform = null;
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
-        */
-        
+        [SerializeField] private GameObject character;
+
         #endregion
 
         [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
@@ -44,24 +33,25 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        /*
-        public float BelowSlopeAngle => belowSlopeAngle.Value;
-        public Vector2 BoundsBottomLeftCorner => boundsBottomLeftCorner.Value;
-        public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
-        public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
-        public Transform Transform => transform;
-        public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
-        public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-        */
-        
+        public GameObject Character => character;
+        public Transform Transform { get; set; }
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public bool DrawRaycastGizmosControl { get; set; }
+        public float BelowSlopeAngle { get; set; }
+        public float DistanceToGroundRayMaximumLength { get; set; }
+        public Vector2 BoundsBottomLeftCorner { get; set; }
+        public Vector2 BoundsBottomRightCorner { get; set; }
+        public Vector2 BoundsCenter { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
+
         #endregion
 
         public RaycastHit2D DistanceToGroundRaycast
         {
+            get => distanceToGroundRaycast.Value.hit2D;
             set => distanceToGroundRaycast.Value = new ScriptableObjects.Variables.Raycast(value);
         }
-        
+
         public Vector2 DistanceToGroundRaycastOrigin { get; set; } = Vector2.zero;
 
         public static readonly string DistanceToGroundRaycastModelPath =

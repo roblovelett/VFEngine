@@ -12,6 +12,7 @@ namespace VFEngine.Platformer
     {
         #region properties
 
+        public Platformer platformer;
         public Boxcast boxcast;
         public SafetyBoxcast safetyBoxcast;
         public DistanceToGroundRaycast distanceToGroundRaycast;
@@ -257,12 +258,21 @@ namespace VFEngine.Platformer
             public Vector2 MaximumVelocity { get; set; }
             public Vector2 NewPosition { get; set; }
             public Vector2 ExternalForce { get; set; }
+        }
+
+        public struct Platformer
+        {
             public Transform Transform { get; set; }
         }
 
         #endregion
 
         #region public methods
+
+        public void SetPlatformer(Transform transform)
+        {
+            platformer.Transform = transform;
+        }
 
         public void SetBoxcastController(BoxcastController controller)
         {
@@ -532,7 +542,6 @@ namespace VFEngine.Platformer
             physics.MaximumVelocity = maximumVelocity;
             physics.NewPosition = newPosition;
             physics.ExternalForce = externalForce;
-            physics.Transform = transform;
         }
 
         #endregion

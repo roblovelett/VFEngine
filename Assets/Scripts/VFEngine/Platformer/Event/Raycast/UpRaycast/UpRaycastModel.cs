@@ -1,7 +1,9 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
@@ -11,6 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "UpRaycastModel", menuName = PlatformerUpRaycastModelPath, order = 0)]
     [InlineEditor]
@@ -27,9 +30,39 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            u.RuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            u.RuntimeData.SetUpRaycast(u.UpRaycastSmallestDistance, u.CurrentUpRaycastOrigin, u.CurrentUpRaycastHit);
+        }
+
+        private void InitializeModel()
+        {
+            u.DrawRaycastGizmosControl = u.RuntimeData.raycast.DrawRaycastGizmosControl;
+            u.GroundedEvent = u.RuntimeData.downRaycastHitCollider.GroundedEvent;
+            u.CurrentUpHitsStorageIndex = u.RuntimeData.upRaycastHitCollider.CurrentUpHitsStorageIndex;
+            u.NumberOfVerticalRaysPerSide = u.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            u.RayOffset = u.RuntimeData.raycast.RayOffset;
+            u.NewPosition = u.RuntimeData.physics.NewPosition;
+            u.BoundsBottomLeftCorner = u.RuntimeData.raycast.BoundsBottomLeftCorner;
+            u.BoundsBottomRightCorner = u.RuntimeData.raycast.BoundsBottomRightCorner;
+            u.BoundsTopLeftCorner = u.RuntimeData.raycast.BoundsTopLeftCorner;
+            u.BoundsTopRightCorner = u.RuntimeData.raycast.BoundsTopRightCorner;
+            u.PlatformMask = u.RuntimeData.layerMask.PlatformMask;
+            u.OneWayPlatformMask = u.RuntimeData.layerMask.OneWayPlatformMask;
+            u.MovingOneWayPlatformMask = u.RuntimeData.layerMask.MovingOneWayPlatformMask;
+            u.RaycastUpHitAt = u.RuntimeData.upRaycastHitCollider.RaycastUpHitAt;
+        }
+
         private void InitializeUpRaycastLength()
         {
-            u.upRayLength = u.GroundedEvent ? u.RayOffset : u.NewPosition.y;
+            u.UpRayLength = u.GroundedEvent ? u.RayOffset : u.NewPosition.y;
         }
 
         private void InitializeUpRaycastStart()
@@ -60,9 +93,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void SetCurrentUpRaycast()
         {
-            var hit = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.upRayLength,
-                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan, u.DrawRaycastGizmos);
-            u.CurrentUpRaycast = OnSetRaycast(hit);
+            u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.UpRayLength,
+                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan,
+                u.DrawRaycastGizmosControl);
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
@@ -111,6 +144,12 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         public void OnSetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
             SetUpRaycastSmallestDistanceToRaycastUpHitAt();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

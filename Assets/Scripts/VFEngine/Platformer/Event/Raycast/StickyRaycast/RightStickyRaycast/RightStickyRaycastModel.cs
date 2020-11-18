@@ -11,7 +11,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static DebugExtensions;
     using static Color;
     using static ScriptableObjectExtensions;
-    using static RaycastModel;
     using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "RightStickyRaycastModel", menuName = PlatformerRightStickyRaycastModelPath, order = 0)]
@@ -32,11 +31,29 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         private void Initialize()
         {
             InitializeData();
+            InitializeModel();
         }
 
         private void InitializeData()
         {
-            r.RightStickyRaycastOriginY = r.rightStickyRaycastOrigin.y;
+            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RuntimeData.SetRightStickyRaycast(r.RightStickyRaycastLength, r.RightStickyRaycastOrigin.y,
+                r.RightStickyRaycastHit);
+        }
+
+        private void InitializeModel()
+        {
+            r.Transform = r.RuntimeData.platformer.Transform;
+            r.DrawRaycastGizmosControl = r.RuntimeData.raycast.DrawRaycastGizmosControl;
+            r.StickyRaycastLength = r.RuntimeData.stickyRaycast.StickyRaycastLength;
+            r.BoundsWidth = r.RuntimeData.raycast.BoundsWidth;
+            r.MaximumSlopeAngle = r.RuntimeData.physics.MaximumSlopeAngle;
+            r.BoundsHeight = r.RuntimeData.raycast.BoundsHeight;
+            r.RayOffset = r.RuntimeData.raycast.RayOffset;
+            r.BoundsBottomRightCorner = r.RuntimeData.raycast.BoundsBottomRightCorner;
+            r.NewPosition = r.RuntimeData.physics.NewPosition;
+            r.BoundsCenter = r.RuntimeData.raycast.BoundsCenter;
+            r.RaysBelowLayerMaskPlatforms = r.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetRightStickyRaycastLengthToStickyRaycastLength()
@@ -52,19 +69,18 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         private void SetRightStickyRaycastOriginX()
         {
-            r.rightStickyRaycastOrigin.x = r.BoundsBottomRightCorner.x * 2 + r.NewPosition.x;
+            r.RightStickyRaycastOriginX = r.BoundsBottomRightCorner.x * 2 + r.NewPosition.x;
         }
 
         private void SetRightStickyRaycastOriginY()
         {
-            r.rightStickyRaycastOrigin.y = r.BoundsCenter.y;
+            r.RightStickyRaycastOriginY = r.BoundsCenter.y;
         }
 
         private void SetRightStickyRaycast()
         {
-            var hit = Raycast(r.rightStickyRaycastOrigin, -r.Transform.up, r.RightStickyRaycastLength,
+            r.RightStickyRaycastHit = Raycast(r.RightStickyRaycastOrigin, -r.Transform.up, r.RightStickyRaycastLength,
                 r.RaysBelowLayerMaskPlatforms, cyan, r.DrawRaycastGizmosControl);
-            r.RightStickyRaycast = OnSetRaycast(hit);
         }
 
         #endregion

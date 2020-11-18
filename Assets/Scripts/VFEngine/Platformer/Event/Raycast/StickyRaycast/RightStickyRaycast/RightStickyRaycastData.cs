@@ -1,7 +1,6 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -12,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
+
     [InlineEditor]
     public class RightStickyRaycastData : SerializedMonoBehaviour
     {
@@ -19,6 +19,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
+/*
         [SerializeField] private BoolReference drawRaycastGizmosControl = new BoolReference();
         [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
         [SerializeField] private FloatReference boundsWidth = new FloatReference();
@@ -30,12 +32,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         [SerializeField] private Vector2Reference boundsCenter = new Vector2Reference();
         [SerializeField] private MaskReference raysBelowLayerMaskPlatforms = new MaskReference();
         [SerializeField] private new Transform transform = null;
+*/
 
         #endregion
 
-        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
+        [SerializeField] private RaycastReference rightStickyRaycastHit = new RaycastReference();
         [SerializeField] private FloatReference rightStickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference rightStickyRaycastOriginY = new FloatReference();
         private static readonly string RightStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{RightStickyRaycastPath}RightRaycastModel.asset";
 
@@ -45,19 +47,33 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        public bool DrawRaycastGizmosControl => drawRaycastGizmosControl.Value;
-        public float StickyRaycastLength => stickyRaycastLength.Value;
-        public float BoundsWidth => boundsWidth.Value;
-        public float MaximumSlopeAngle => maximumSlopeAngle.Value;
-        public float BoundsHeight => boundsHeight.Value;
-        public float RayOffset => rayOffset.Value;
-        public Vector2 BoundsBottomRightCorner => boundsBottomRightCorner.Value;
-        public Vector2 NewPosition => newPosition.Value;
-        public Vector2 BoundsCenter => boundsCenter.Value;
-        public LayerMask RaysBelowLayerMaskPlatforms => raysBelowLayerMaskPlatforms.Value.layer;
-        public Transform Transform => transform;
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public Transform Transform { get; set; }
+        public bool DrawRaycastGizmosControl { get; set; }
+        public float StickyRaycastLength { get; set; }
+        public float BoundsWidth { get; set; }
+        public float MaximumSlopeAngle { get; set; }
+        public float BoundsHeight { get; set; }
+        public float RayOffset { get; set; }
+        public Vector2 BoundsBottomRightCorner { get; set; }
+        public Vector2 NewPosition { get; set; }
+        public Vector2 BoundsCenter { get; set; }
+        public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
 
         #endregion
+
+        public Vector2 RightStickyRaycastOrigin { get; } = Vector2.zero;
+
+        public float RightStickyRaycastOriginX
+        {
+            set => value = RightStickyRaycastOrigin.x;
+        }
+
+        public float RightStickyRaycastOriginY
+        {
+            set => value = RightStickyRaycastOrigin.y;
+        }
 
         public float RightStickyRaycastLength
         {
@@ -65,17 +81,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
             set => value = rightStickyRaycastLength.Value;
         }
 
-        [HideInInspector] public Vector2 rightStickyRaycastOrigin;
-
-        public float RightStickyRaycastOriginY
+        public RaycastHit2D RightStickyRaycastHit
         {
-            set => value = rightStickyRaycastOriginY.Value;
-        }
-
-        public ScriptableObjects.Variables.Raycast RightStickyRaycast
-        {
-            get => rightStickyRaycast.Value;
-            set => value = rightStickyRaycast.Value;
+            get => rightStickyRaycastHit.Value.hit2D;
+            set => rightStickyRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
         }
 
         public static readonly string RightStickyRaycastModelPath =

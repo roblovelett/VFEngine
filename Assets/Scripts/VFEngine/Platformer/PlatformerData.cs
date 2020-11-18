@@ -1,7 +1,6 @@
-﻿using ScriptableObjects.Atoms.Mask.References;
-using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
@@ -22,12 +21,14 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private PlatformerSettings settings = null;
         [SerializeField] private PhysicsController physics = null;
         [SerializeField] private RaycastController raycast = null;
         [SerializeField] private RaycastHitColliderController raycastHitCollider = null;
         [SerializeField] private LayerMaskController layerMask = null;
         [SerializeField] private BoxcastController boxcast = null;
+        /*
         [SerializeField] private Vector2Reference speed = new Vector2Reference();
         [SerializeField] private BoolReference gravityActive = new BoolReference();
         [SerializeField] private FloatReference fallSlowFactor = new FloatReference();
@@ -102,7 +103,7 @@ namespace VFEngine.Platformer
         [SerializeField] private MaskReference standingOnWithSmallestDistanceLayer = new MaskReference();
         [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
         [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
-
+        */
         #endregion
 
         private const string ModelAssetPath = "PlatformerModel.asset";
@@ -113,6 +114,9 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
+        public GameObject Character => character;
+        public Transform Transform => character.transform;
+        public PlatformerRuntimeData RuntimeData { get; set; }
         public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
         public bool IsCollidingAbove => isCollidingAbove.Value;
         public bool IsCollidingBelow => isCollidingBelow.Value;
