@@ -150,7 +150,7 @@ namespace VFEngine.Platformer
 
         public struct DistanceToGroundRaycastHitCollider
         {
-            public bool DistanceToGroundRaycastHit { get; set; }
+            public bool DistanceToGroundRaycastHitConnected { get; set; }
         }
 
         public struct DownRaycastHitCollider
@@ -407,9 +407,9 @@ namespace VFEngine.Platformer
             boxCollider.BoxCollider2D = collider;
         }
 
-        public void SetDistanceToGroundRaycastHitCollider(bool distanceToGroundRaycastHit)
+        public void SetDistanceToGroundRaycastHitCollider(bool hitConnected)
         {
-            distanceToGroundRaycastHitCollider.DistanceToGroundRaycastHit = distanceToGroundRaycastHit;
+            distanceToGroundRaycastHitCollider.DistanceToGroundRaycastHitConnected = hitConnected;
         }
 
         public void SetDownRaycastHitCollider(bool hasPhysicsMaterialClosestToDownHit,

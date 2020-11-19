@@ -12,8 +12,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
-    [InlineEditor]
     [CreateAssetMenu(fileName = "DownRaycastData", menuName = PlatformerDownRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class DownRaycastData : ScriptableObject
     {
         #region fields

@@ -2,7 +2,6 @@
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static Vector3;
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
-    using static RaycastModel;
     using static Single;
 
     [CreateAssetMenu(fileName = "DownRaycastHitColliderModel", menuName = PlatformerDownRaycastHitColliderModelPath,
@@ -37,22 +35,41 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
+            d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PhysicsMaterialData>();
+            d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
+            d.PathMovementClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PathMovementData>();
+            d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
+            d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
+            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
+            d.HasMovingPlatform = d.MovingPlatform != null;
+            d.DownHitsStorageLength = d.DownHitsStorage.Length;
+            d.RuntimeData.SetDownRaycastHitCollider(d.HasPhysicsMaterialClosestToDownHit,
+                d.HasPathMovementClosestToDownHit, d.DownHitConnected, d.IsCollidingBelow, d.OnMovingPlatform,
+                d.HasMovingPlatform, d.HasStandingOnLastFrame, d.HasGroundedLastFrame, d.GroundedEvent,
+                d.DownHitsStorageLength, d.CurrentDownHitsStorageIndex, d.CurrentDownHitSmallestDistance,
+                d.SmallestDistanceToDownHit, d.MovingPlatformCurrentGravity, d.MovingPlatformCurrentSpeed,
+                d.CrossBelowSlopeAngle, d.StandingOnLastFrame, d.StandingOnCollider,
+                d.StandingOnWithSmallestDistanceLayer, d.RaycastDownHitAt);
         }
 
         private void InitializeModel()
         {
-            d.standingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
-            d.physicsMaterialClosestToDownHit = d.standingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PhysicsMaterialData>();
-            d.HasPhysicsMaterialClosestToDownHit = d.physicsMaterialClosestToDownHit != null;
-            d.pathMovementClosestToDownHit = d.standingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PathMovementData>();
-            d.HasPathMovementClosestToDownHit = d.pathMovementClosestToDownHit != null;
-            d.StandingOnWithSmallestDistanceLayer = d.standingOnWithSmallestDistance.gameObject.layer;
-            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
-            d.HasMovingPlatform = d.MovingPlatform != null;
-            d.DownHitsStorageLength = d.DownHitsStorage.Length;
+            d.Transform = d.RuntimeData.platformer.Transform;
+            d.NumberOfVerticalRaysPerSide = d.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            d.SavedBelowLayer = d.RuntimeData.layerMask.SavedBelowLayer;
+            d.DownRaycastFromLeft = d.RuntimeData.downRaycast.DownRaycastFromLeft;
+            d.DownRaycastToRight = d.RuntimeData.downRaycast.DownRaycastToRight;
+            d.CurrentDownRaycastHit = d.RuntimeData.downRaycast.CurrentDownRaycastHit;
             InitializeFriction();
             InitializeDownHitsStorage();
             InitializeDownHitsStorageSmallestDistanceIndex();
@@ -62,12 +79,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetCurrentDownHitsStorage()
         {
-            d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycast;
+            d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = d.CurrentDownRaycastHit;
         }
 
         private void InitializeFriction()
         {
-            d.friction = 0;
+            d.Friction = 0;
         }
 
         private void InitializeDownHitsStorage()
@@ -97,7 +114,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetRaycastDownHitAt()
         {
-            d.RaycastDownHitAt = OnSetRaycast(d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex]);
+            d.RaycastDownHitAt = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
         }
 
         private void SetDownHitConnected()
@@ -107,7 +124,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetBelowSlopeAngleAt()
         {
-            d.belowSlopeAngle = Vector2.Angle(d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].normal,
+            d.BelowSlopeAngle = Vector2.Angle(d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].normal,
                 d.Transform.up);
         }
 
@@ -134,8 +151,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetFrictionToDownHitWithSmallestDistancesFriction()
         {
-            if (d.physicsMaterialClosestToDownHit is null) return;
-            d.friction = d.physicsMaterialClosestToDownHit.Friction;
+            if (d.PhysicsMaterialClosestToDownHit is null) return;
+            d.Friction = d.PhysicsMaterialClosestToDownHit.Friction;
         }
 
         private void SetIsCollidingBelow()
@@ -150,8 +167,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
         {
-            if (d.pathMovementClosestToDownHit is null) return;
-            d.MovingPlatform = d.pathMovementClosestToDownHit;
+            if (d.PathMovementClosestToDownHit is null) return;
+            d.MovingPlatform = d.PathMovementClosestToDownHit;
         }
 
         private void SetMovingPlatformToNull()
@@ -193,7 +210,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetStandingOn()
         {
-            d.standingOn = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider.gameObject;
+            d.StandingOn = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider.gameObject;
         }
 
         private void SetStandingOnCollider()
@@ -205,9 +222,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.IsCollidingBelow = false;
             d.GroundedEvent = false;
-            d.belowSlopeAngle = 0f;
+            d.BelowSlopeAngle = 0f;
             d.CrossBelowSlopeAngle = zero;
-            d.standingOn = null;
+            d.StandingOn = null;
             d.OnMovingPlatform = false;
             d.StandingOnCollider = null;
             d.DownHitConnected = false;
@@ -217,12 +234,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetWasGroundedLastFrame()
         {
-            d.WasGroundedLastFrame = d.IsCollidingBelow;
+            d.HasGroundedLastFrame = d.IsCollidingBelow;
         }
 
         private void SetStandingOnLastFrame()
         {
-            d.StandingOnLastFrame = d.standingOn;
+            d.StandingOnLastFrame = d.StandingOn;
         }
 
         private void SetOnMovingPlatform()
@@ -237,7 +254,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetMovingPlatformCurrentGravity()
         {
-            d.MovingPlatformCurrentGravity = d.movingPlatformGravity;
+            d.MovingPlatformCurrentGravity = d.MovingPlatformGravity;
         }
 
         private void SetMovingPlatformCurrentSpeed()
@@ -252,7 +269,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetSmallestDistanceToDownHitDistance()
         {
-            d.SmallestDistanceToDownHit = d.RaycastDownHitAt.hit2D.distance;
+            d.SmallestDistanceToDownHit = d.RaycastDownHitAt.distance;
         }
 
         #endregion

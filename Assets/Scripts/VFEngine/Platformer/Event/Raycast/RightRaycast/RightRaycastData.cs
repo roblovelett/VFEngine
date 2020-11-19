@@ -12,8 +12,8 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
-    [InlineEditor]
     [CreateAssetMenu(fileName = "RightRaycastData", menuName = PlatformerRightRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class RightRaycastData : ScriptableObject
     {
         #region fields

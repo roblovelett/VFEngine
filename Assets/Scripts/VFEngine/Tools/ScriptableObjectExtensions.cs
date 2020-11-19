@@ -99,8 +99,14 @@ namespace VFEngine.Tools
         public const string PlatformerDistanceToGroundRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Distance To Ground Raycast Hit Collider/Distance To Ground Raycast Hit Collider Model";
 
+        public const string PlatformerDistanceToGroundRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Distance To Ground Raycast Hit Collider/Distance To Ground Raycast Hit Collider Data";
+
         public const string PlatformerDownRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Down Raycast Hit Collider/Down Raycast Hit Collider Model";
+
+        public const string PlatformerDownRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Down Raycast Hit Collider/Down Raycast Hit Collider Data";
 
         public const string PlatformerLeftRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Left Raycast Hit Collider/Left Raycast Hit Collider Model";

@@ -10,8 +10,8 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
 
-    [InlineEditor]
     [CreateAssetMenu(fileName = "RaycastData", menuName = PlatformerRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class RaycastData : ScriptableObject
     {
         #region fields

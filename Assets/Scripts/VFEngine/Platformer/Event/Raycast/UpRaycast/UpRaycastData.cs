@@ -12,8 +12,8 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
-    [InlineEditor]
     [CreateAssetMenu(fileName = "UpRaycastData", menuName = PlatformerUpRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class UpRaycastData : ScriptableObject
     {
         #region fields

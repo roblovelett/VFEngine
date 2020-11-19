@@ -28,22 +28,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RuntimeData.SetDistanceToGroundRaycastHitCollider(d.DistanceToGroundRaycastHitConnected);
         }
 
         private void InitializeModel()
         {
+            d.DistanceToGroundRayMaximumLength = d.RuntimeData.raycast.DistanceToGroundRayMaximumLength;
+            d.DistanceToGroundRaycastHit = d.RuntimeData.distanceToGroundRaycast.DistanceToGroundRaycastHit;
+            d.BoundsHeight = d.RuntimeData.raycast.BoundsHeight;
             ResetState();
         }
 
         private void SetDistanceToGroundRaycastHit()
         {
-            d.DistanceToGroundRaycastHit = true;
+            d.DistanceToGroundRaycastHitConnected = true;
         }
 
         private void ResetState()
         {
-            d.DistanceToGroundRaycastHit = false;
+            d.DistanceToGroundRaycastHitConnected = false;
             InitializeDistanceToGround();
         }
 
@@ -59,7 +69,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
         {
-            d.DistanceToGround = d.DistanceToGroundRaycast.distance - d.BoundsHeight / 2;
+            d.DistanceToGround = d.DistanceToGroundRaycastHit.distance - d.BoundsHeight / 2;
         }
 
         #endregion

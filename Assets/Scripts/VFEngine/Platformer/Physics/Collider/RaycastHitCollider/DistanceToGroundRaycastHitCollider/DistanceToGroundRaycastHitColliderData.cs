@@ -1,6 +1,5 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -9,26 +8,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderData",
+        menuName = PlatformerDistanceToGroundRaycastHitColliderDataPath, order = 0)]
     [InlineEditor]
-    public class DistanceToGroundRaycastHitColliderData : SerializedMonoBehaviour
+    public class DistanceToGroundRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region depenedencies
 
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
-        [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
-        [SerializeField] private BoolReference distanceToGroundRaycastHit = new BoolReference();
+        [SerializeField] private BoolReference distanceToGroundRaycastHitConnected = new BoolReference();
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =
             $"{RaycastHitColliderPath}DistanceToGroundRaycastHitCollider/";
 
         private static readonly string ModelAssetPath =
-            $"{DistanceToGroundRaycastHitColliderPath}DownRaycastHitColliderModel.asset";
+            $"{DistanceToGroundRaycastHitColliderPath}DistanceToGroundRaycastHitColliderModel.asset";
 
         #endregion
 
@@ -36,20 +36,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region depenedencies
 
-        public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-
-        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value.hit2D;
-
-        public float BoundsHeight => boundsHeight.Value;
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public float DistanceToGroundRayMaximumLength { get; set; }
+        public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
+        public float BoundsHeight { get; set; }
 
         #endregion
 
-        public bool DistanceToGroundRaycastHit
-        {
-            set => value = distanceToGroundRaycastHit.Value;
-        }
-
         public float DistanceToGround { get; set; }
+
+        public bool DistanceToGroundRaycastHitConnected
+        {
+            get => distanceToGroundRaycastHitConnected.Value;
+            set => value = distanceToGroundRaycastHitConnected.Value;
+        }
 
         public static readonly string DistanceToGroundRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

@@ -12,8 +12,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
 
-    [InlineEditor]
     [CreateAssetMenu(fileName = "RightStickyRaycastData", menuName = PlatformerRightStickyRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class RightStickyRaycastData : ScriptableObject
     {
         #region fields
