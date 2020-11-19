@@ -25,7 +25,6 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastController raycast = null;
         [SerializeField] private RaycastHitColliderController raycastHitCollider = null;
         [SerializeField] private LayerMaskController layerMask = null;
-
         [SerializeField] private BoxcastController boxcast = null;
         /*
         [SerializeField] private Vector2Reference speed = new Vector2Reference();

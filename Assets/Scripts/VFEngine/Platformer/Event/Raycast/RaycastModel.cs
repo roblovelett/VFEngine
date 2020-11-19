@@ -43,7 +43,6 @@ namespace VFEngine.Platformer.Event.Raycast
         private void InitializeData()
         {
             r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            r.Transform = r.RuntimeData.platformer.Transform;
             r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
             r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
             r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
@@ -67,6 +66,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeModel()
         {
+            r.Transform = r.RuntimeData.platformer.Transform;
             SetRaysParameters();
         }
 

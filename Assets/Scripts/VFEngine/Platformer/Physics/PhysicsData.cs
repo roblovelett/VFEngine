@@ -11,8 +11,9 @@ namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     [InlineEditor]
-    public class PhysicsData : SerializedMonoBehaviour
+    public class PhysicsData : ScriptableObject
     {
         #region fields
 
@@ -53,7 +54,7 @@ namespace VFEngine.Platformer.Physics
         public GameObject Character => character;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
-        public bool HasTransform => transform;
+        public bool HasTransform => Transform;
         public bool HasSettings => settings;
         public float Physics2DPushForceSetting => settings.physics2DPushForce;
         public bool Physics2DInteractionControlSetting => settings.physics2DInteractionControl;
@@ -88,6 +89,7 @@ namespace VFEngine.Platformer.Physics
         #endregion
 
         public AnimationCurve SlopeAngleSpeedFactor { get; set; }
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public float CurrentVerticalSpeedFactor { get; set; }
 
