@@ -30,12 +30,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.Transform = r.RuntimeData.platformer.Transform;
+            r.RightHitsStorageLength = r.RightHitsStorage.Length;
+            r.RuntimeData.SetRightRaycastHitCollider(r.RightHitConnected, r.IsCollidingRight, r.RightHitsStorageLength,
+                r.CurrentRightHitsStorageIndex, r.CurrentRightHitAngle, r.CurrentRightHitDistance,
+                r.DistanceBetweenRightHitAndRaycastOrigin, r.CurrentRightHitCollider);
         }
 
         private void InitializeModel()
         {
-            r.RightHitsStorageLength = r.RightHitsStorage.Length;
             InitializeRightHitsStorage();
             InitializeCurrentRightHitsStorageIndex();
             ResetState();
@@ -58,7 +68,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void SetRightDistanceToRightCollider()
         {
-            r.distanceToRightCollider = r.CurrentRightHitAngle;
+            r.DistanceToRightCollider = r.CurrentRightHitAngle;
         }
 
         private void SetRightRaycastHitMissed()
@@ -84,12 +94,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void SetRightCurrentWallCollider()
         {
-            r.currentRightWallCollider = r.CurrentRightHitCollider.gameObject;
+            r.CurrentRightWallCollider = r.CurrentRightHitCollider.gameObject;
         }
 
         private void SetCurrentWallColliderNull()
         {
-            r.currentRightWallCollider = null;
+            r.CurrentRightWallCollider = null;
         }
 
         private void AddToCurrentRightHitsStorageIndex()
@@ -109,12 +119,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void SetCurrentRightLateralSlopeAngle()
         {
-            r.rightLateralSlopeAngle = r.CurrentRightHitAngle;
+            r.RightLateralSlopeAngle = r.CurrentRightHitAngle;
         }
 
         private void SetRightFailedSlopeAngle()
         {
-            r.passedRightSlopeAngle = false;
+            r.PassedRightSlopeAngle = false;
         }
 
         private void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
@@ -132,8 +142,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.IsCollidingRight = false;
             r.CurrentRightHitCollider = null;
             r.CurrentRightHitAngle = 0f;
-            r.rightLateralSlopeAngle = 0f;
-            r.distanceToRightCollider = -1f;
+            r.RightLateralSlopeAngle = 0f;
+            r.DistanceToRightCollider = -1f;
         }
 
         #endregion

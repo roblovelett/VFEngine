@@ -232,7 +232,7 @@ namespace VFEngine.Platformer
         public struct RaycastHitCollider
         {
             public RaycastHitColliderController RaycastHitColliderController { get; set; }
-            public Collider2D IgnoredCollider { get; set; }
+            public Collider IgnoredCollider { get; set; }
             public RaycastHitColliderContactList ContactList { get; set; }
         }
 
@@ -506,7 +506,7 @@ namespace VFEngine.Platformer
             raycastHitCollider.RaycastHitColliderController = controller;
         }
 
-        public void SetRaycastHitCollider(Collider2D ignoredCollider, RaycastHitColliderContactList contactList)
+        public void SetRaycastHitCollider(Collider ignoredCollider, RaycastHitColliderContactList contactList)
         {
             raycastHitCollider.IgnoredCollider = ignoredCollider;
             raycastHitCollider.ContactList = contactList;

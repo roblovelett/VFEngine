@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -10,7 +9,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 {
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
-    using static RaycastModel;
 
     [CreateAssetMenu(fileName = "UpRaycastHitColliderModel", menuName = PlatformerUpRaycastHitColliderModelPath,
         order = 0)]
@@ -30,13 +28,24 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            u.RuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            u.Transform = u.RuntimeData.platformer.Transform;
+            u.WasTouchingCeilingLastFrame = false;
+            u.UpHitsStorageLength = u.UpHitsStorage.Length;
+            u.RuntimeData.SetUpRaycastHitCollider(u.UpHitConnected, u.IsCollidingAbove, u.WasTouchingCeilingLastFrame,
+                u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex, u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);
         }
 
         private void InitializeModel()
         {
-            u.WasTouchingCeilingLastFrame = false;
-            u.UpHitsStorageLength = u.UpHitsStorage.Length;
+            u.NumberOfVerticalRaysPerSide = u.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            u.CurrentUpRaycastHit = u.RuntimeData.upRaycast.CurrentUpRaycastHit;
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
             InitializeUpHitsStorage();
@@ -70,12 +79,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void SetCurrentUpHitsStorage()
         {
-            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycast;
+            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycastHit;
         }
 
         private void SetRaycastUpHitAt()
         {
-            u.RaycastUpHitAt = OnSetRaycast(u.UpHitsStorage[u.CurrentUpHitsStorageIndex]);
+            u.RaycastUpHitAt = u.UpHitsStorage[u.CurrentUpHitsStorageIndex];
         }
 
         private void SetUpHitConnected()

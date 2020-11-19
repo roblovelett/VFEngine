@@ -1,25 +1,27 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
 using ScriptableObjects.Variables;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "UpRaycastHitColliderData", menuName = PlatformerUpRaycastHitColliderDataPath,
+        order = 0)]
     [InlineEditor]
-    public class UpRaycastHitColliderData : SerializedMonoBehaviour
+    public class UpRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private IntReference numberOfVerticalRaysPerSide = new IntReference();
-        [SerializeField] private RaycastReference currentUpRaycast = new RaycastReference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -39,13 +41,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        public int NumberOfVerticalRaysPerSide => numberOfVerticalRaysPerSide.Value;
-        public RaycastHit2D CurrentUpRaycast => currentUpRaycast.Value.hit2D;
+        public GameObject Character => character;
+        public Transform Transform { get; set; }
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public int NumberOfVerticalRaysPerSide { get; set; }
+        public RaycastHit2D CurrentUpRaycastHit { get; set; }
 
         #endregion
 
         public bool UpHitConnected
         {
+            get => upHitConnected.Value;
             set => value = upHitConnected.Value;
         }
 
@@ -57,16 +63,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         public bool WasTouchingCeilingLastFrame
         {
+            get => wasTouchingCeilingLastFrame.Value;
             set => value = wasTouchingCeilingLastFrame.Value;
         }
 
         public int UpHitsStorageLength
         {
+            get => upHitsStorageLength.Value;
             set => value = upHitsStorageLength.Value;
         }
 
         public int UpHitsStorageCollidingIndex
         {
+            get => upHitsStorageCollidingIndex.Value;
             set => value = upHitsStorageCollidingIndex.Value;
         }
 
@@ -76,9 +85,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             set => value = currentUpHitsStorageIndex.Value;
         }
 
-        public Raycast RaycastUpHitAt
+        public RaycastHit2D RaycastUpHitAt
         {
-            set => value = raycastUpHitAt.Value;
+            get => raycastUpHitAt.Value.hit2D;
+            set => raycastUpHitAt.Value = new Raycast(value);
         }
 
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];

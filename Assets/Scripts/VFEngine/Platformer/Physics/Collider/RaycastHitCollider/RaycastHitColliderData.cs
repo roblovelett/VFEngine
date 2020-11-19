@@ -1,8 +1,8 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+using Collision = ScriptableObjects.Variables.Collision;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
@@ -10,20 +10,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "RaycastHitColliderData", menuName = PlatformerRaycastHitColliderDataPath, order = 0)]
     [InlineEditor]
-    public class RaycastHitColliderData : SerializedMonoBehaviour
+    public class RaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private RaycastReference currentRightRaycast = new RaycastReference();
-        [SerializeField] private RaycastReference currentLeftRaycast = new RaycastReference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
         [SerializeField] private RaycastHitColliderContactList contactList = null;
-        [SerializeField] private Collider2DReference ignoredCollider = new Collider2DReference();
+        [SerializeField] private CollisionReference ignoredCollider = new CollisionReference();
         private static readonly string ModelAssetPath = $"{RaycastHitColliderPath}RaycastHitColliderModel.asset";
 
         #endregion
@@ -32,17 +32,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value.hit2D;
-        public RaycastHit2D CurrentLeftRaycast => currentLeftRaycast.Value.hit2D;
+        public RaycastHit2D CurrentRightRaycastHit { get; set; }
+        public RaycastHit2D CurrentLeftRaycastHit { get; set; }
 
         #endregion
 
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
         public RaycastHitColliderContactList ContactList => contactList;
 
-        public Collider2D IgnoredCollider
+        public UnityEngine.Collider IgnoredCollider
         {
-            get => ignoredCollider.Value;
-            set => value = ignoredCollider.Value;
+            get => ignoredCollider.Value.collider;
+            set => ignoredCollider.Value = new Collision(value);
         }
 
         public const string RaycastHitColliderPath = "Physics/Collider/RaycastHitCollider/";

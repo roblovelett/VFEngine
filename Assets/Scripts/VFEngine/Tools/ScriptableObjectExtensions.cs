@@ -90,6 +90,9 @@ namespace VFEngine.Tools
         public const string PlatformerRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Raycast Hit Collider Model";
 
+        public const string PlatformerRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Raycast Hit Collider Data";
+
         public const string PlatformerRaycastHitColliderSettingsPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Raycast Hit Collider Settings";
 
@@ -111,11 +114,20 @@ namespace VFEngine.Tools
         public const string PlatformerLeftRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Left Raycast Hit Collider/Left Raycast Hit Collider Model";
 
+        public const string PlatformerLeftRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Left Raycast Hit Collider/Left Raycast Hit Collider Data";
+
         public const string PlatformerRightRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Right Raycast Hit Collider/Right Raycast Hit Collider Model";
 
+        public const string PlatformerRightRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Right Raycast Hit Collider/Right Raycast Hit Collider Data";
+
         public const string PlatformerUpRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Up Raycast Hit Collider/Up Raycast Hit Collider Model";
+
+        public const string PlatformerUpRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Up Raycast Hit Collider/Up Raycast Hit Collider Data";
 
         public const string PlatformerStickyRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Sticky Raycast Hit Collider Model";

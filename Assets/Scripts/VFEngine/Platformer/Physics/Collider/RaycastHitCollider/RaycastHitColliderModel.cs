@@ -29,22 +29,31 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RuntimeData.SetRaycastHitCollider(r.IgnoredCollider, r.ContactList);
         }
 
         private void InitializeModel()
         {
+            r.CurrentRightRaycastHit = r.RuntimeData.rightRaycast.CurrentRightRaycastHit;
+            r.CurrentLeftRaycastHit = r.RuntimeData.leftRaycast.CurrentLeftRaycastHit;
             ClearContactList();
         }
 
         private void AddRightHitToContactList()
         {
-            r.ContactList.Add(r.CurrentRightRaycast);
+            r.ContactList.Add(r.CurrentRightRaycastHit);
         }
 
         private void AddLeftHitToContactList()
         {
-            r.ContactList.Add(r.CurrentLeftRaycast);
+            r.ContactList.Add(r.CurrentLeftRaycastHit);
         }
 
         private void ClearContactList()

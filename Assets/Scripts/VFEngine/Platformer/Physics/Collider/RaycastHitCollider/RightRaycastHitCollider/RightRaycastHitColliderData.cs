@@ -1,9 +1,11 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
+using Collision = ScriptableObjects.Variables.Collision;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider
@@ -11,18 +13,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "RightRaycastHitColliderData", menuName = PlatformerRightRaycastHitColliderDataPath,
+        order = 0)]
     [InlineEditor]
-    public class RightRaycastHitColliderData : SerializedMonoBehaviour
+    public class RightRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
-        [SerializeField] private RaycastReference currentRightRaycast = new RaycastReference();
-        [SerializeField] private new Transform transform = null;
-        [SerializeField] private Vector2Reference rightRaycastFromBottomOrigin = new Vector2Reference();
-        [SerializeField] private Vector2Reference rightRaycastToTopOrigin = new Vector2Reference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         [SerializeField] private FloatReference distanceBetweenRightHitAndRaycastOrigin = new FloatReference();
         [SerializeField] private BoolReference rightHitConnected = new BoolReference();
         [SerializeField] private BoolReference isCollidingRight = new BoolReference();
-        [SerializeField] private Collider2DReference currentRightHitCollider = new Collider2DReference();
+        [SerializeField] private CollisionReference currentRightHitCollider = new CollisionReference();
 
         private static readonly string RightRaycastHitColliderPath =
             $"{RaycastHitColliderPath}RightRaycastHitCollider/";
@@ -47,11 +47,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #region dependencies
 
-        public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-        public RaycastHit2D CurrentRightRaycast => currentRightRaycast.Value.hit2D;
-        public Transform Transform => transform;
-        public Vector2 RightRaycastFromBottomOrigin => rightRaycastFromBottomOrigin.Value;
-        public Vector2 RightRaycastToTopOrigin => rightRaycastToTopOrigin.Value;
+        public GameObject Character => character;
+        public Transform Transform { get; set; }
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public int NumberOfHorizontalRaysPerSide { get; set; }
+        public RaycastHit2D CurrentRightRaycast { get; set; }
+        public Vector2 RightRaycastFromBottomOrigin { get; set; }
+        public Vector2 RightRaycastToTopOrigin { get; set; }
 
         #endregion
 
@@ -59,6 +61,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         public int RightHitsStorageLength
         {
+            get => rightHitsStorageLength.Value;
             set => value = rightHitsStorageLength.Value;
         }
 
@@ -76,35 +79,39 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         public float CurrentRightHitDistance
         {
+            get => currentRightHitDistance.Value;
             set => value = currentRightHitDistance.Value;
         }
 
         public float DistanceBetweenRightHitAndRaycastOrigin
         {
+            get => distanceBetweenRightHitAndRaycastOrigin.Value;
             set => value = distanceBetweenRightHitAndRaycastOrigin.Value;
         }
 
         public bool RightHitConnected
         {
+            get => rightHitConnected.Value;
             set => value = rightHitConnected.Value;
         }
 
         public bool IsCollidingRight
         {
+            get => isCollidingRight.Value;
             set => value = isCollidingRight.Value;
         }
 
-        [HideInInspector] public bool passedRightSlopeAngle;
+        public bool PassedRightSlopeAngle { get; set; }
 
         public Collider2D CurrentRightHitCollider
         {
-            get => currentRightHitCollider.Value;
-            set => value = currentRightHitCollider.Value;
+            get => currentRightHitCollider.Value.collider2D;
+            set => currentRightHitCollider.Value = new Collision(value);
         }
 
-        [HideInInspector] public GameObject currentRightWallCollider;
-        [HideInInspector] public float distanceToRightCollider;
-        [HideInInspector] public float rightLateralSlopeAngle;
+        public GameObject CurrentRightWallCollider { get; set; }
+        public float DistanceToRightCollider { get; set; }
+        public float RightLateralSlopeAngle { get; set; }
 
         public static readonly string RightRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
