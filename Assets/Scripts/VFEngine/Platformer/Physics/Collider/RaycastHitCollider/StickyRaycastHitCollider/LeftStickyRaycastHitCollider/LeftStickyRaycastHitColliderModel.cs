@@ -29,11 +29,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            l.RuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.RuntimeData.SetLeftStickyRaycastHitCollider(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
         {
+            l.LeftStickyRaycastHit = l.RuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
+            l.Transform = l.RuntimeData.platformer.Transform;
             ResetState();
         }
 
@@ -45,12 +54,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void SetBelowSlopeAngleLeft()
         {
-            l.BelowSlopeAngleLeft = Vector2.Angle(l.LeftStickyRaycast.normal, l.Transform.up);
+            l.BelowSlopeAngleLeft = Vector2.Angle(l.LeftStickyRaycastHit.normal, l.Transform.up);
         }
 
         private void SetCrossBelowSlopeAngleLeft()
         {
-            l.CrossBelowSlopeAngleLeft = Cross(l.Transform.up, l.LeftStickyRaycast.normal);
+            l.CrossBelowSlopeAngleLeft = Cross(l.Transform.up, l.LeftStickyRaycastHit.normal);
         }
 
         private void SetBelowSlopeAngleLeftToNegative()

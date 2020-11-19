@@ -131,13 +131,17 @@ namespace VFEngine.Tools
 
         public const string PlatformerStickyRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Sticky Raycast Hit Collider Model";
+        public const string PlatformerStickyRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Sticky Raycast Hit Collider Data";
 
         public const string PlatformerLeftStickyRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Left Sticky Raycast Hit Collider/Left Sticky Raycast Hit Collider Model";
-
+        public const string PlatformerLeftStickyRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Left Sticky Raycast Hit Collider/Left Sticky Raycast Hit Collider Data";
         public const string PlatformerRightStickyRaycastHitColliderModelPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider Model";
-
+        public const string PlatformerRightStickyRaycastHitColliderDataPath =
+            "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider Data";
         public static string PlatformerScriptableObjectsPath { get; } = $"{ScriptableObjectsPath}{PlatformerPath}";
 
         #region public methods

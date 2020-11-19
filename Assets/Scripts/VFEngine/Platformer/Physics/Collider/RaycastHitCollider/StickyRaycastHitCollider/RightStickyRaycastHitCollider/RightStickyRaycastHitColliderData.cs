@@ -1,26 +1,25 @@
-﻿using ScriptableObjects.Atoms.Raycast.References;
+﻿using ScriptableObjectArchitecture;
 using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider
 {
     using static StickyRaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "RightStickyRaycastHitColliderData",
+        menuName = PlatformerRightStickyRaycastHitColliderDataPath, order = 0)]
     [InlineEditor]
-    public class RightStickyRaycastHitColliderData : SerializedMonoBehaviour
+    public class RightStickyRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
-        [SerializeField] private new Transform transform = null;
+        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -39,8 +38,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value.hit2D;
-        public Transform Transform => transform;
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public Transform Transform { get; set; }
+        public RaycastHit2D RightStickyRaycastHit { get; set; }
 
         #endregion
 
@@ -52,6 +53,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         public Vector3 CrossBelowSlopeAngleRight
         {
+            get => crossBelowSlopeAngleRight.Value;
             set => value = crossBelowSlopeAngleRight.Value;
         }
 

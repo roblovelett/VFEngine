@@ -28,11 +28,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void Initialize()
         {
+            InitializeData();
             InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            s.RuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            s.RuntimeData.SetStickyRaycastHitCollider(s.BelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
         {
+            s.BelowSlopeAngleRight = s.RuntimeData.rightStickyRaycastHitCollider.BelowSlopeAngleRight;
+            s.BelowSlopeAngleLeft = s.RuntimeData.leftStickyRaycastHitCollider.BelowSlopeAngleLeft;
             InitializeBelowSlopeAngle();
         }
 

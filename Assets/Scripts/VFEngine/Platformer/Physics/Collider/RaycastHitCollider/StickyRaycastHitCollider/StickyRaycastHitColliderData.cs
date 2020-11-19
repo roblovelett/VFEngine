@@ -1,5 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
+﻿using ScriptableObjectArchitecture;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
@@ -8,15 +8,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
+    
+    [CreateAssetMenu(fileName = "StickyRaycastHitColliderData", menuName = PlatformerStickyRaycastHitColliderDataPath,
+        order = 0)]
     [InlineEditor]
-    public class StickyRaycastHitColliderData : SerializedMonoBehaviour
+    public class StickyRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
-        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
+        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -32,13 +34,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
-        public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
-        public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
+        public GameObject Character => character;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public float BelowSlopeAngleRight { get; set; }
+        public float BelowSlopeAngleLeft { get; set; }
 
         #region dependencies
 
         public float BelowSlopeAngle
         {
+            get => belowSlopeAngle.Value;
             set => value = belowSlopeAngle.Value;
         }
 
