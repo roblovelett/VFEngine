@@ -41,9 +41,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public PlatformerRuntimeData RuntimeData { get; set; }
         public RaycastHitColliderContactList ContactList => contactList;
 
-        public UnityEngine.Collider IgnoredCollider
+        public Collider2D IgnoredCollider
         {
-            get => ignoredCollider.Value.collider;
+            get => ignoredCollider.Value.collider2D;
             set => ignoredCollider.Value = new Collision(value);
         }
 

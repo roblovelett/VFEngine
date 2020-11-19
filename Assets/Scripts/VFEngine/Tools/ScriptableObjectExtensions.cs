@@ -21,6 +21,7 @@ namespace VFEngine.Tools
         #region properties
 
         public const string PlatformerModelPath = "VFEngine/Platformer/Platformer Model";
+        public const string PlatformerDataPath = "VFEngine/Platformer/Platformer Data";
         public const string PlatformerSettingsPath = "VFEngine/Platformer/Platformer Settings";
         public const string PlatformerRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Raycast Model";
         public const string PlatformerRaycastDataPath = "VFEngine/Platformer/Event/Raycast/Raycast Data";

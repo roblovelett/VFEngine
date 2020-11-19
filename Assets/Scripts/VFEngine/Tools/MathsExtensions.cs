@@ -4,14 +4,6 @@ namespace VFEngine.Tools
 {
     public static class MathsExtensions
     {
-        public static bool IsZero(float number)
-        {
-            return number == 0f;
-        }
-        public static float Half(float number)
-        {
-            return number / 2f;
-        }
         public static bool IsEven(int number)
         {
             return number % 2 == 0;

@@ -12,8 +12,9 @@ namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
     [InlineEditor]
-    public class PlatformerData : SerializedMonoBehaviour
+    public class PlatformerData : ScriptableObject
     {
         #region fields
 
@@ -26,82 +27,6 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastHitColliderController raycastHitCollider = null;
         [SerializeField] private LayerMaskController layerMask = null;
         [SerializeField] private BoxcastController boxcast = null;
-        /*
-        [SerializeField] private Vector2Reference speed = new Vector2Reference();
-        [SerializeField] private BoolReference gravityActive = new BoolReference();
-        [SerializeField] private FloatReference fallSlowFactor = new FloatReference();
-        [SerializeField] private Vector2Reference movingPlatformCurrentSpeed = new Vector2Reference();
-        [SerializeField] private BoolReference wasTouchingCeilingLastFrame = new BoolReference();
-        [SerializeField] private FloatReference movementDirectionThreshold = new FloatReference();
-        [SerializeField] private Vector2Reference externalForce = new Vector2Reference();
-        [SerializeField] private BoolReference castRaysOnBothSides = new BoolReference();
-        [SerializeField] private IntReference horizontalMovementDirection = new IntReference();
-        [SerializeField] private BoolReference wasGroundedLastFrame = new BoolReference();
-        [SerializeField] private IntReference numberOfHorizontalRaysPerSide = new IntReference();
-        [SerializeField] private FloatReference currentRightHitDistance = new FloatReference();
-        [SerializeField] private FloatReference currentLeftHitDistance = new FloatReference();
-        [SerializeField] private FloatReference currentDownHitSmallestDistance = new FloatReference();
-        [SerializeField] private Collider2DReference currentRightHitCollider = new Collider2DReference();
-        [SerializeField] private Collider2DReference currentLeftHitCollider = new Collider2DReference();
-        [SerializeField] private Collider2DReference ignoredCollider = new Collider2DReference();
-        [SerializeField] private FloatReference currentRightHitAngle = new FloatReference();
-        [SerializeField] private FloatReference currentLeftHitAngle = new FloatReference();
-        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
-        [SerializeField] private BoolReference groundedEvent = new BoolReference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private FloatReference smallValue = new FloatReference();
-        [SerializeField] private FloatReference gravity = new FloatReference();
-        [SerializeField] private BoolReference isFalling = new BoolReference();
-        [SerializeField] private BoolReference onMovingPlatform = new BoolReference();
-        [SerializeField] private IntReference downHitsStorageLength = new IntReference();
-        [SerializeField] private GameObjectReference standingOnLastFrame = new GameObjectReference();
-        [SerializeField] private BoolReference hasStandingOnLastFrame = new BoolReference();
-        [SerializeField] private Collider2DReference standingOnCollider = new Collider2DReference();
-        [SerializeField] private Vector2Reference boundsBottomCenterPosition = new Vector2Reference();
-        [SerializeField] private FloatReference smallestDistanceToDownHit = new FloatReference();
-        [SerializeField] private RaycastReference raycastDownHitAt = new RaycastReference();
-        [SerializeField] private Vector3Reference crossBelowSlopeAngle = new Vector3Reference();
-        [SerializeField] private FloatReference boundsHeight = new FloatReference();
-        [SerializeField] private BoolReference hasPhysicsMaterialClosestToDownHit = new BoolReference();
-        [SerializeField] private BoolReference hasPathMovementClosestToDownHit = new BoolReference();
-        [SerializeField] private BoolReference hasMovingPlatform = new BoolReference();
-        [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
-        [SerializeField] private FloatReference stickToSlopesOffsetY = new FloatReference();
-        [SerializeField] private BoolReference isJumping = new BoolReference();
-        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference rightStickyRaycastLength = new FloatReference();
-        [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft = new Vector3Reference();
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleRight = new Vector3Reference();
-        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
-        [SerializeField] private FloatReference belowSlopeAngleRight = new FloatReference();
-        [SerializeField] private BoolReference isCastingLeft = new BoolReference();
-        [SerializeField] private BoolReference performSafetyBoxcast = new BoolReference();
-        [SerializeField] private RaycastReference safetyBoxcast = new RaycastReference();
-        [SerializeField] private RaycastReference leftStickyRaycast = new RaycastReference();
-        [SerializeField] private RaycastReference rightStickyRaycast = new RaycastReference();
-        [SerializeField] private IntReference upHitsStorageLength = new IntReference();
-        [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
-        [SerializeField] private FloatReference upRaycastSmallestDistance = new FloatReference();
-        [SerializeField] private BoolReference upHitConnected = new BoolReference();
-        [SerializeField] private BoolReference rightHitConnected = new BoolReference();
-        [SerializeField] private BoolReference downHitConnected = new BoolReference();
-        [SerializeField] private BoolReference leftHitConnected = new BoolReference();
-        [SerializeField] private IntReference rightHitsStorageLength = new IntReference();
-        [SerializeField] private IntReference leftHitsStorageLength = new IntReference();
-        [SerializeField] private BoolReference isCollidingBelow = new BoolReference();
-        [SerializeField] private BoolReference isCollidingLeft = new BoolReference();
-        [SerializeField] private BoolReference isCollidingRight = new BoolReference();
-        [SerializeField] private BoolReference isCollidingAbove = new BoolReference();
-        [SerializeField] private FloatReference distanceToGroundRayMaximumLength = new FloatReference();
-        [SerializeField] private BoolReference distanceToGroundRaycastHit = new BoolReference();
-        [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
-        [SerializeField] private MaskReference midHeightOneWayPlatformMask = new MaskReference();
-        [SerializeField] private MaskReference stairsMask = new MaskReference();
-        [SerializeField] private MaskReference standingOnWithSmallestDistanceLayer = new MaskReference();
-        [SerializeField] private MaskReference oneWayPlatformMask = new MaskReference();
-        [SerializeField] private MaskReference movingOneWayPlatformMask = new MaskReference();
-        */
 
         #endregion
 
@@ -113,92 +38,91 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        public GameObject Character => character;
-        public Transform Transform => character.transform;
-        public PlatformerRuntimeData RuntimeData { get; set; }
-        public float DistanceToGroundRayMaximumLength => distanceToGroundRayMaximumLength.Value;
-        public bool IsCollidingAbove => isCollidingAbove.Value;
-        public bool IsCollidingBelow => isCollidingBelow.Value;
-        public bool IsCollidingLeft => isCollidingLeft.Value;
-        public bool IsCollidingRight => isCollidingRight.Value;
-        public int LeftHitsStorageLength => leftHitsStorageLength.Value;
-        public int RightHitsStorageLength => rightHitsStorageLength.Value;
-        public bool DisplayWarnings => settings.displayWarningsControl;
         public bool HasSettings => settings;
+        public bool DisplayWarnings => settings.displayWarningsControl;
         public PhysicsController Physics => physics;
         public RaycastController Raycast => raycast;
         public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
-
-        //public LayerMaskController LayerMask => layerMask;
+        public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
-        public Vector2 Speed => speed.Value;
-        public bool GravityActive => gravityActive.Value;
-        public float FallSlowFactor => fallSlowFactor.Value;
-        public Vector2 MovingPlatformCurrentSpeed => movingPlatformCurrentSpeed.Value;
-        public bool WasTouchingCeilingLastFrame => wasTouchingCeilingLastFrame.Value;
-        public float MovementDirectionThreshold => movementDirectionThreshold.Value;
-        public bool CastRaysOnBothSides => castRaysOnBothSides.Value;
-        public Vector2 ExternalForce => externalForce.Value;
-        public int HorizontalMovementDirection => horizontalMovementDirection.Value;
-        public int NumberOfHorizontalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-        public bool WasGroundedLastFrame => wasGroundedLastFrame.Value;
-        public float CurrentRightHitDistance => currentRightHitDistance.Value;
-        public float CurrentLeftHitDistance => currentLeftHitDistance.Value;
-        public Collider2D CurrentRightHitCollider => currentRightHitCollider.Value;
-        public Collider2D CurrentLeftHitCollider => currentLeftHitCollider.Value;
-        public Collider2D IgnoredCollider => ignoredCollider.Value;
-        public float CurrentRightHitAngle => currentRightHitAngle.Value;
-        public float CurrentLeftHitAngle => currentLeftHitAngle.Value;
-        public float MaximumSlopeAngle => maximumSlopeAngle.Value;
-        public bool GroundedEvent => groundedEvent.Value;
-        public Vector2 NewPosition => newPosition.Value;
-        public float SmallValue => smallValue.Value;
-        public float Gravity => gravity.Value;
-        public bool IsFalling => isFalling.Value;
-        public bool OnMovingPlatform => onMovingPlatform.Value;
-        public int DownHitsStorageLength => downHitsStorageLength.Value;
-        public int NumberOfVerticalRaysPerSide => numberOfHorizontalRaysPerSide.Value;
-        public GameObject StandingOnLastFrame => standingOnLastFrame.Value;
-        public bool HasStandingOnLastFrame => hasStandingOnLastFrame.Value;
-        public Collider2D StandingOnCollider => standingOnCollider.Value;
-        public Vector2 BoundsBottomCenterPosition => boundsBottomCenterPosition.Value;
-        public float SmallestDistanceToDownHit => smallestDistanceToDownHit.Value;
-        public bool DownHitConnected => downHitConnected.Value;
-        public float CurrentDownHitSmallestDistance => currentDownHitSmallestDistance.Value;
-        public Vector3 CrossBelowSlopeAngle => crossBelowSlopeAngle.Value;
-        public float BoundsHeight => boundsHeight.Value;
-        public LayerMask MidHeightOneWayPlatformMask => midHeightOneWayPlatformMask.Value.layer;
-        public LayerMask StairsMask => stairsMask.Value.layer;
-        public LayerMask StandingOnWithSmallestDistanceLayer => standingOnWithSmallestDistanceLayer.Value.layer;
-        public LayerMask OneWayPlatformMask => oneWayPlatformMask.Value.layer;
-        public LayerMask MovingOneWayPlatformMask => movingOneWayPlatformMask.Value.layer;
-        public bool HasPhysicsMaterialDataClosestToDownHit => hasPhysicsMaterialClosestToDownHit.Value;
-        public bool HasPathMovementControllerClosestToDownHit => hasPathMovementClosestToDownHit.Value;
-        public bool HasMovingPlatform => hasMovingPlatform.Value;
-        public bool StickToSlopesControl => stickToSlopesControl.Value;
-        public float StickToSlopesOffsetY => stickToSlopesOffsetY.Value;
-        public bool IsJumping => isJumping.Value;
-        public float StickyRaycastLength => stickyRaycastLength.Value;
-        public float LeftStickyRaycastLength => leftStickyRaycastLength.Value;
-        public float RightStickyRaycastLength => rightStickyRaycastLength.Value;
-        public Vector3 CrossBelowSlopeAngleLeft => crossBelowSlopeAngleLeft.Value;
-        public Vector3 CrossBelowSlopeAngleRight => crossBelowSlopeAngleRight.Value;
-        public float BelowSlopeAngleLeft => belowSlopeAngleLeft.Value;
-        public float BelowSlopeAngleRight => belowSlopeAngleRight.Value;
-        public bool IsCastingLeft => isCastingLeft.Value;
-        public bool PerformSafetyBoxcast => performSafetyBoxcast.Value;
-        public RaycastHit2D RaycastDownHitAt => raycastDownHitAt.Value.hit2D;
-        public RaycastHit2D SafetyBoxcast => safetyBoxcast.Value.hit2D;
-        public RaycastHit2D LeftStickyRaycast => leftStickyRaycast.Value.hit2D;
-        public RaycastHit2D RightStickyRaycast => rightStickyRaycast.Value.hit2D;
-        public RaycastHit2D RaycastUpHitAt => raycastUpHitAt.Value.hit2D;
-        public RaycastHit2D DistanceToGroundRaycast => distanceToGroundRaycast.Value.hit2D;
-        public int UpHitsStorageLength => upHitsStorageLength.Value;
-        public float UpRaycastSmallestDistance => upRaycastSmallestDistance.Value;
-        public bool UpHitConnected => upHitConnected.Value;
-        public bool RightHitConnected => rightHitConnected.Value;
-        public bool LeftHitConnected => leftHitConnected.Value;
-        public bool DistanceToGroundRaycastHit => distanceToGroundRaycastHit.Value;
+        public GameObject Character => character;
+        public Transform Transform => character.transform;
+        public PlatformerRuntimeData RuntimeData { get; set; }
+        public float DistanceToGroundRayMaximumLength { get; set; }
+        public bool IsCollidingAbove { get; set; }
+        public bool IsCollidingBelow { get; set; }
+        public bool IsCollidingLeft { get; set; }
+        public bool IsCollidingRight { get; set; }
+        public int LeftHitsStorageLength { get; set; }
+        public int RightHitsStorageLength { get; set; }
+        public Vector2 Speed { get; set; }
+        public bool GravityActive { get; set; }
+        public float FallSlowFactor { get; set; }
+        public Vector2 MovingPlatformCurrentSpeed { get; set; }
+        public bool WasTouchingCeilingLastFrame { get; set; }
+        public float MovementDirectionThreshold { get; set; }
+        public bool CastRaysOnBothSides { get; set; }
+        public Vector2 ExternalForce { get; set; }
+        public int HorizontalMovementDirection { get; set; }
+        public int NumberOfHorizontalRaysPerSide { get; set; }
+        public bool WasGroundedLastFrame { get; set; }
+        public float CurrentRightHitDistance { get; set; }
+        public float CurrentLeftHitDistance { get; set; }
+        public Collider2D CurrentRightHitCollider { get; set; }
+        public Collider2D CurrentLeftHitCollider { get; set; }
+        public Collider2D IgnoredCollider { get; set; }
+        public float CurrentRightHitAngle { get; set; }
+        public float CurrentLeftHitAngle { get; set; }
+        public float MaximumSlopeAngle { get; set; }
+        public bool GroundedEvent { get; set; }
+        public Vector2 NewPosition { get; set; }
+        public float SmallValue { get; set; }
+        public float Gravity { get; set; }
+        public bool IsFalling { get; set; }
+        public bool OnMovingPlatform { get; set; }
+        public int DownHitsStorageLength { get; set; }
+        public int NumberOfVerticalRaysPerSide { get; set; }
+        public GameObject StandingOnLastFrame { get; set; }
+        public bool HasStandingOnLastFrame { get; set; }
+        public Collider2D StandingOnCollider { get; set; }
+        public Vector2 BoundsBottomCenterPosition { get; set; }
+        public float SmallestDistanceToDownHit { get; set; }
+        public bool DownHitConnected { get; set; }
+        public float CurrentDownHitSmallestDistance { get; set; }
+        public Vector3 CrossBelowSlopeAngle { get; set; }
+        public float BoundsHeight { get; set; }
+        public LayerMask MidHeightOneWayPlatformMask { get; set; }
+        public LayerMask StairsMask { get; set; }
+        public LayerMask StandingOnWithSmallestDistanceLayer { get; set; }
+        public LayerMask OneWayPlatformMask { get; set; }
+        public LayerMask MovingOneWayPlatformMask { get; set; }
+        public bool HasPhysicsMaterialDataClosestToDownHit { get; set; }
+        public bool HasPathMovementControllerClosestToDownHit { get; set; }
+        public bool HasMovingPlatform { get; set; }
+        public bool StickToSlopesControl { get; set; }
+        public float StickToSlopesOffsetY { get; set; }
+        public bool IsJumping { get; set; }
+        public float StickyRaycastLength { get; set; }
+        public float LeftStickyRaycastLength { get; set; }
+        public float RightStickyRaycastLength { get; set; }
+        public Vector3 CrossBelowSlopeAngleLeft { get; set; }
+        public Vector3 CrossBelowSlopeAngleRight { get; set; }
+        public float BelowSlopeAngleLeft { get; set; }
+        public float BelowSlopeAngleRight { get; set; }
+        public bool IsCastingLeft { get; set; }
+        public bool SafetyBoxcastControl { get; set; }
+        public RaycastHit2D RaycastDownHitAt { get; set; }
+        public RaycastHit2D SafetyBoxcastHit { get; set; }
+        public RaycastHit2D LeftStickyRaycastHit { get; set; }
+        public RaycastHit2D RightStickyRaycastHit { get; set; }
+        public RaycastHit2D RaycastUpHitAt { get; set; }
+        public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
+        public int UpHitsStorageLength { get; set; }
+        public float UpRaycastSmallestDistance { get; set; }
+        public bool UpHitConnected { get; set; }
+        public bool RightHitConnected { get; set; }
+        public bool LeftHitConnected { get; set; }
+        public bool DistanceToGroundRaycastHitConnected { get; set; }
 
         #endregion
 

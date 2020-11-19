@@ -6,6 +6,7 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer
 {
     public class PlatformerRuntimeData : SerializedScriptableObject
@@ -232,7 +233,7 @@ namespace VFEngine.Platformer
         public struct RaycastHitCollider
         {
             public RaycastHitColliderController RaycastHitColliderController { get; set; }
-            public Collider IgnoredCollider { get; set; }
+            public Collider2D IgnoredCollider { get; set; }
             public RaycastHitColliderContactList ContactList { get; set; }
         }
 
@@ -506,7 +507,7 @@ namespace VFEngine.Platformer
             raycastHitCollider.RaycastHitColliderController = controller;
         }
 
-        public void SetRaycastHitCollider(Collider ignoredCollider, RaycastHitColliderContactList contactList)
+        public void SetRaycastHitCollider(Collider2D ignoredCollider, RaycastHitColliderContactList contactList)
         {
             raycastHitCollider.IgnoredCollider = ignoredCollider;
             raycastHitCollider.ContactList = contactList;
