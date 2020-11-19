@@ -19,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -38,7 +38,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public Transform Transform { get; set; }
         public RaycastHit2D RightStickyRaycastHit { get; set; }

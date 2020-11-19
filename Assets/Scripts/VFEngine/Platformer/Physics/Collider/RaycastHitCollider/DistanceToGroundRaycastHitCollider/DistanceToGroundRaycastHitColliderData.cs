@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region depenedencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -36,7 +37,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region depenedencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public float DistanceToGroundRayMaximumLength { get; set; }
         public RaycastHit2D DistanceToGroundRaycastHit { get; set; }

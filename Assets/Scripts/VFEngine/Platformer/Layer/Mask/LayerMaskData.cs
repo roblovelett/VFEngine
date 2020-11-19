@@ -3,9 +3,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable NotAccessedField.Global
 // ReSharper disable RedundantDefaultMemberInitializer
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -19,7 +18,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
         [SerializeField] private LayerMaskSettings settings = CreateInstance<LayerMaskSettings>();
 
         #endregion
@@ -46,7 +45,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public int StandingOnLastFrameLayer { get; set; }

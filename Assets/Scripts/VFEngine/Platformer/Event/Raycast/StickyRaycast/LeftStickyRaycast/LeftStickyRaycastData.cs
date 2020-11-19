@@ -5,7 +5,6 @@ using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
@@ -20,14 +19,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
         [SerializeField] private RaycastReference leftStickyRaycastHit = new RaycastReference();
         [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
-        private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
-        private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}RightRaycastModel.asset";
+        private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}LeftStickyRaycast/";
+        private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}LeftRaycastModel.asset";
 
         #endregion
 
@@ -35,7 +34,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public Transform Transform { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }

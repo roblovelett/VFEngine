@@ -26,7 +26,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public Transform Transform { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }

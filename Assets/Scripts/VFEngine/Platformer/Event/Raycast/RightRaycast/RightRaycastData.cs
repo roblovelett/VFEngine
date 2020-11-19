@@ -5,7 +5,6 @@ using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
@@ -20,7 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -37,7 +36,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }

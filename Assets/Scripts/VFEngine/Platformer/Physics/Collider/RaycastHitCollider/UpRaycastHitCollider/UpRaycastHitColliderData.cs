@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
@@ -21,7 +22,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -41,7 +42,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }

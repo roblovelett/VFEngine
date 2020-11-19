@@ -44,6 +44,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeModel()
         {
+            u.Transform = u.RuntimeData.platformer.Transform;
             u.DrawRaycastGizmosControl = u.RuntimeData.raycast.DrawRaycastGizmosControl;
             u.GroundedEvent = u.RuntimeData.downRaycastHitCollider.GroundedEvent;
             u.CurrentUpHitsStorageIndex = u.RuntimeData.upRaycastHitCollider.CurrentUpHitsStorageIndex;

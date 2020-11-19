@@ -46,7 +46,8 @@ namespace VFEngine.Platformer
         private void InitializeData()
         {
             p.RuntimeData = p.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            p.RuntimeData.SetPlatformer(p.Transform);
+            p.CharacterReference = p.Character;
+            p.RuntimeData.SetPlatformer(p.Character.transform);
         }
 
         private void InitializeModel()

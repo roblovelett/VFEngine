@@ -19,7 +19,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
         [SerializeField] private PhysicsSettings settings = null;
 
         #endregion
@@ -51,7 +51,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public bool HasTransform => Transform;

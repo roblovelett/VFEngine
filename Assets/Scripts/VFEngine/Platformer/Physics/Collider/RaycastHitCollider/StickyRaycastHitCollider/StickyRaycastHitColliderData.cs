@@ -3,12 +3,13 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-    
+
     [CreateAssetMenu(fileName = "StickyRaycastHitColliderData", menuName = PlatformerStickyRaycastHitColliderDataPath,
         order = 0)]
     [InlineEditor]
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public float BelowSlopeAngleRight { get; set; }
         public float BelowSlopeAngleLeft { get; set; }

@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Variables.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -37,7 +38,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #endregion
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public RaycastHitColliderContactList ContactList => contactList;
 

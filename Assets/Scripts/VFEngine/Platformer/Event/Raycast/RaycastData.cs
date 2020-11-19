@@ -4,7 +4,6 @@ using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -18,7 +17,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
         [SerializeField] private RaycastSettings settings = null;
         [SerializeField] private BoxCollider2D boxCollider = null;
 
@@ -50,7 +49,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public BoxCollider2D BoxCollider => boxCollider;
         public PlatformerRuntimeData RuntimeData { get; set; }

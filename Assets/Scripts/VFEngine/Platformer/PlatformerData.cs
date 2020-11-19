@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using ScriptableObjectArchitecture;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
@@ -7,6 +8,7 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer
 {
@@ -20,7 +22,7 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObject character = null;
         [SerializeField] private PlatformerSettings settings = null;
         [SerializeField] private PhysicsController physics = null;
         [SerializeField] private RaycastController raycast = null;
@@ -30,6 +32,7 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        [SerializeField] private GameObjectReference characterReference = null;
         private const string ModelAssetPath = "PlatformerModel.asset";
 
         #endregion
@@ -46,7 +49,12 @@ namespace VFEngine.Platformer
         public LayerMaskController LayerMask => layerMask;
         public BoxcastController Boxcast => boxcast;
         public GameObject Character => character;
-        public Transform Transform => character.transform;
+
+        public GameObject CharacterReference
+        {
+            set => value = characterReference.Value;
+        }
+
         public PlatformerRuntimeData RuntimeData { get; set; }
         public float DistanceToGroundRayMaximumLength { get; set; }
         public bool IsCollidingAbove { get; set; }

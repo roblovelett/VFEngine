@@ -1,8 +1,10 @@
-﻿using ScriptableObjects.Variables.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
@@ -15,7 +17,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -29,7 +31,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public bool DrawBoxcastGizmosControl { get; set; }

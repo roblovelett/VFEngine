@@ -4,9 +4,7 @@ using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable RedundantMemberInitializer
-
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
@@ -21,7 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
         [SerializeField] private StickyRaycastSettings settings = null;
 
         #endregion
@@ -37,7 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public PlatformerRuntimeData RuntimeData { get; set; }
         public bool HasSettings => settings;
         public bool StickToSlopesControl { get; set; }

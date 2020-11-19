@@ -1,8 +1,10 @@
-﻿using ScriptableObjects.Variables.References;
+﻿using ScriptableObjectArchitecture;
+using ScriptableObjects.Variables.References;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
@@ -17,7 +19,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObjectReference character = null;
 
         #endregion
 
@@ -33,7 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character => character.Value;
         public Transform Transform { get; set; }
         public PlatformerRuntimeData RuntimeData { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
