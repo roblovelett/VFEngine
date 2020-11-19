@@ -142,6 +142,12 @@ namespace VFEngine.Tools
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider Model";
         public const string PlatformerRightStickyRaycastHitColliderDataPath =
             "VFEngine/Platformer/Physics/Collider/Raycast Hit Collider/Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider/Right Sticky Raycast Hit Collider Data";
+
+        public const string PlatformerPathMovementDataPath =
+            "VFEngine/Platformer/Physics/Path Movement/Path Movement Data";
+
+        public const string PlatformerPhysicsMaterialDataPath =
+            "VFEngine/Platformer/Physics/Physics Material/Physics Material Data";
         public static string PlatformerScriptableObjectsPath { get; } = $"{ScriptableObjectsPath}{PlatformerPath}";
 
         #region public methods

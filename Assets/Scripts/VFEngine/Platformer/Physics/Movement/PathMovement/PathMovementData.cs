@@ -1,13 +1,14 @@
-﻿using Sirenix.OdinInspector;
-using UnityAtoms.BaseAtoms;
+﻿using ScriptableObjectArchitecture;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Movement.PathMovement
 {
     using static ScriptableObjectExtensions;
+    [CreateAssetMenu(fileName = "PathMovementData", menuName = PlatformerPathMovementDataPath, order = 0)]
     [InlineEditor]
-    public class PathMovementData : SerializedMonoBehaviour
+    public class PathMovementData : ScriptableObject
     {
         #region fields
 

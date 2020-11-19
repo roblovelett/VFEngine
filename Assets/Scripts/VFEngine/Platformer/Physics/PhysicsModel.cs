@@ -1,8 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedVariable
@@ -10,7 +8,6 @@ namespace VFEngine.Platformer.Physics
 {
     using static DebugExtensions;
     using static Quaternion;
-    using static UniTaskExtensions;
     using static Time;
     using static Mathf;
     using static Vector2;
@@ -32,17 +29,16 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private async UniTaskVoid Initialize()
+        private void Initialize()
         {
             InitializeData();
-            var pTask1 = Async(GetWarningMessages());
-            var pTask2 = Async(InitializeModel());
-            var pTask = await (pTask1, pTask2);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            InitializeModel();
+            if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeData()
         {
+            p.RuntimeData = p.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             p.Physics2DPushForce = p.Physics2DPushForceSetting;
             p.Physics2DInteractionControl = p.Physics2DInteractionControlSetting;
             p.MaximumVelocity = p.MaximumVelocitySetting;
@@ -60,49 +56,67 @@ namespace VFEngine.Platformer.Physics
             p.FallSlowFactor = 0f;
             p.SmallValue = 0.0001f;
             p.MovementDirectionThreshold = p.SmallValue;
+            p.RuntimeData.SetPhysics(p.StickToSlopesControl, p.SafetyBoxcastControl, p.Physics2DInteractionControl,
+                p.IsJumping, p.IsFalling, p.GravityActive, p.SafeSetTransformControl, p.HorizontalMovementDirection,
+                p.FallSlowFactor, p.Physics2DPushForce, p.MaximumSlopeAngle, p.SmallValue, p.Gravity,
+                p.MovementDirectionThreshold, p.CurrentVerticalSpeedFactor, p.Speed, p.MaximumVelocity, p.NewPosition,
+                p.ExternalForce, p.Transform);
         }
 
-        private async UniTaskVoid GetWarningMessages()
+        private void InitializeModel()
         {
-            if (p.DisplayWarningsControl)
-            {
-                const string ph = "Physics";
-                var settings = $"{ph} Settings";
-                var warningMessage = "";
-                var warningMessageCount = 0;
-                if (!p.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
-                //if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
-                if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");
-                DebugLogWarning(warningMessageCount, warningMessage);
-
-                string FieldString(string field, string scriptableObject)
-                {
-                    AddWarningMessageCount();
-                    return FieldMessage(field, scriptableObject);
-                }
-
-                string FieldParentString(string field, string scriptableObject)
-                {
-                    AddWarningMessageCount();
-                    return FieldParentMessage(field, scriptableObject);
-                }
-
-                void AddWarningMessageCount()
-                {
-                    warningMessageCount++;
-                }
-            }
-
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid InitializeModel()
-        {
+            p.Transform = p.RuntimeData.platformer.Transform;
+            p.MovingPlatformCurrentGravity = p.RuntimeData.downRaycastHitCollider.MovingPlatformCurrentGravity;
+            p.MovingPlatformCurrentSpeed = p.RuntimeData.downRaycastHitCollider.MovingPlatformCurrentSpeed;
+            p.BoundsWidth = p.RuntimeData.raycast.BoundsWidth;
+            p.RayOffset = p.RuntimeData.raycast.RayOffset;
+            p.CurrentDownHitSmallestDistance = p.RuntimeData.downRaycastHitCollider.CurrentDownHitSmallestDistance;
+            p.BoundsHeight = p.RuntimeData.raycast.BoundsHeight;
+            p.SafetyBoxcastHit = p.RuntimeData.safetyBoxcast.SafetyBoxcastHit;
+            p.LeftStickyRaycastOriginY = p.RuntimeData.leftStickyRaycast.LeftStickyRaycastOriginY;
+            p.RightStickyRaycastOriginY = p.RuntimeData.rightStickyRaycast.RightStickyRaycastOriginY;
+            p.LeftStickyRaycastHit = p.RuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
+            p.RightStickyRaycastHit = p.RuntimeData.rightStickyRaycast.RightStickyRaycastHit;
+            p.UpRaycastSmallestDistance = p.RuntimeData.upRaycast.UpRaycastSmallestDistance;
+            p.DistanceBetweenLeftHitAndRaycastOrigin =
+                p.RuntimeData.leftRaycastHitCollider.DistanceBetweenLeftHitAndRaycastOrigin;
+            p.DistanceBetweenRightHitAndRaycastOrigin =
+                p.RuntimeData.rightRaycastHitCollider.DistanceBetweenRightHitAndRaycastOrigin;
+            p.BelowSlopeAngle = p.RuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            p.ContactList = p.RuntimeData.raycastHitCollider.ContactList;
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
             if (p.AutomaticGravityControl /*&& !p.HasGravityController*/) p.Transform.rotation = identity;
             ResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private void GetWarningMessages()
+        {
+            const string ph = "Physics";
+            var settings = $"{ph} Settings";
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!p.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+            //if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
+            if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldString(string field, string scriptableObject)
+            {
+                AddWarningMessageCount();
+                return FieldMessage(field, scriptableObject);
+            }
+
+            string FieldParentString(string field, string scriptableObject)
+            {
+                AddWarningMessageCount();
+                return FieldParentMessage(field, scriptableObject);
+            }
+
+            void AddWarningMessageCount()
+            {
+                warningMessageCount++;
+            }
         }
 
         private void SetCurrentGravity()
@@ -164,7 +178,7 @@ namespace VFEngine.Platformer.Physics
 
         private void SetForcesApplied()
         {
-            p.forcesApplied = p.Speed;
+            p.ForcesApplied = p.Speed;
         }
 
         private void SetHorizontalMovementDirectionToStored()
@@ -258,19 +272,19 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcast.point.y,
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.SafetyBoxcastHit.point.y,
                 p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private void ApplyLeftStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycast.point.y,
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.LeftStickyRaycastHit.point.y,
                 p.LeftStickyRaycastOriginY, p.BoundsHeight);
         }
 
         private void ApplyRightStickyRaycastToNewVerticalPosition()
         {
-            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycast.point.y,
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(p.RightStickyRaycastHit.point.y,
                 p.RightStickyRaycastOriginY, p.BoundsHeight);
         }
 
@@ -320,7 +334,7 @@ namespace VFEngine.Platformer.Physics
         private void ContactListHit()
         {
             if (!p.Physics2DInteractionControl) return;
-            foreach (var hit in p.ContactList)
+            foreach (var hit in p.ContactList.List)
             {
                 p.CurrentHitRigidBody = hit.collider.attachedRigidbody;
                 if (!p.CurrentHitRigidBodyCanBePushed) return;
@@ -336,7 +350,7 @@ namespace VFEngine.Platformer.Physics
 
         private void SetWorldSpeedToSpeed()
         {
-            p.worldSpeed = p.Speed;
+            p.WorldSpeed = p.Speed;
         }
 
         private void SlowFall()
@@ -354,7 +368,7 @@ namespace VFEngine.Platformer.Physics
 
         public void OnInitialize()
         {
-            Async(Initialize());
+            Initialize();
         }
 
         public void OnSetCurrentCurrentGravity()
