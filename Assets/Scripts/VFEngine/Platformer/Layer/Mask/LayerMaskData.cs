@@ -19,7 +19,7 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private GameObjectReference character = null;
-        [SerializeField] private LayerMaskSettings settings = CreateInstance<LayerMaskSettings>();
+        [SerializeField] private LayerMaskSettings settings = null;
 
         #endregion
 
