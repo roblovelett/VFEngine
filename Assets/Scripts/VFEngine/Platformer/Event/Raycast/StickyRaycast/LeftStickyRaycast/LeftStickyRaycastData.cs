@@ -1,9 +1,10 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
@@ -19,12 +20,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private RaycastReference leftStickyRaycastHit = new RaycastReference();
-        [SerializeField] private FloatReference leftStickyRaycastLength = new FloatReference();
         private static readonly string LeftStickyRaycastPath = $"{StickyRaycastPath}LeftStickyRaycast/";
         private static readonly string ModelAssetPath = $"{LeftStickyRaycastPath}LeftRaycastModel.asset";
 
@@ -34,8 +33,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public float StickyRaycastLength { get; set; }
@@ -50,12 +53,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #endregion
 
-        public float LeftStickyRaycastLength
-        {
-            get => leftStickyRaycastLength.Value;
-            set => value = leftStickyRaycastLength.Value;
-        }
-
+        public LeftStickyRaycastRuntimeData RuntimeData { get; set; }
+        public RaycastHit2D LeftStickyRaycastHit { get; set; }
+        public float LeftStickyRaycastLength { get; set; }
         public Vector2 LeftStickyRaycastOrigin { get; } = Vector2.zero;
 
         public float LeftStickyRaycastOriginX
@@ -66,12 +66,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public float LeftStickyRaycastOriginY
         {
             set => value = LeftStickyRaycastOrigin.y;
-        }
-
-        public RaycastHit2D LeftStickyRaycastHit
-        {
-            get => leftStickyRaycastHit.Value.hit2D;
-            set => leftStickyRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
         }
 
         public static readonly string LeftStickyRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

@@ -1,5 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -33,20 +36,26 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void InitializeData()
         {
-            s.RuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            s.RuntimeData = s.Character.GetComponentNoAllocation<BoxcastController>().SafetyBoxcastRuntimeData;
             s.RuntimeData.SetSafetyBoxcast(s.SafetyBoxcast);
         }
 
         private void InitializeModel()
         {
-            s.Transform = s.RuntimeData.platformer.Transform;
-            s.DrawBoxcastGizmosControl = s.RuntimeData.raycast.DrawRaycastGizmosControl;
-            s.StickyRaycastLength = s.RuntimeData.stickyRaycast.StickyRaycastLength;
-            s.NewPosition = s.RuntimeData.physics.NewPosition;
-            s.Bounds = s.RuntimeData.raycast.Bounds;
-            s.BoundsCenter = s.RuntimeData.raycast.BoundsCenter;
-            s.PlatformMask = s.RuntimeData.layerMask.PlatformMask;
-            s.RaysBelowLayerMaskPlatforms = s.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+            s.PlatformerRuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            s.LayerMaskRuntimeData = s.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            s.StickyRaycastRuntimeData =
+                s.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
+            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            s.Transform = s.PlatformerRuntimeData.platformer.Transform;
+            s.PlatformMask = s.LayerMaskRuntimeData.layerMask.PlatformMask;
+            s.RaysBelowLayerMaskPlatforms = s.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+            s.DrawBoxcastGizmosControl = s.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
+            s.Bounds = s.RaycastRuntimeData.raycast.Bounds;
+            s.BoundsCenter = s.RaycastRuntimeData.raycast.BoundsCenter;
+            s.StickyRaycastLength = s.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
+            s.NewPosition = s.PhysicsRuntimeData.physics.NewPosition;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()

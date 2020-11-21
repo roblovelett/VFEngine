@@ -1,6 +1,11 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -19,14 +24,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
         [SerializeField] private StickyRaycastSettings settings = null;
 
         #endregion
 
-        [SerializeField] private FloatReference stickToSlopesOffsetY = new FloatReference();
-        [SerializeField] private BoolReference isCastingLeft = new BoolReference();
-        [SerializeField] private FloatReference stickyRaycastLength = new FloatReference();
         private const string ModelAssetPath = "StickyRaycastModel.asset";
 
         #endregion
@@ -35,8 +37,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public GameObject Character => character;
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData { get; set; }
+        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
+        public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
+        public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; set; }
+        public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; set; }
         public bool HasSettings => settings;
         public bool StickToSlopesControl { get; set; }
         public bool DisplayWarningsControl { get; set; }
@@ -52,27 +60,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #endregion
 
-        public float StickToSlopesOffsetY
-        {
-            get => stickToSlopesOffsetY.Value;
-            set => value = stickToSlopesOffsetY.Value;
-        }
-
+        public StickyRaycastRuntimeData RuntimeData { get; set; }
+        public bool IsCastingLeft { get; set; }
+        public float StickToSlopesOffsetY { get; set; }
+        public float StickyRaycastLength { get; set; }
         public float StickToSlopesOffsetYSetting => settings.stickToSlopesOffsetY;
         public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
-
-        public bool IsCastingLeft
-        {
-            get => isCastingLeft.Value;
-            set => value = isCastingLeft.Value;
-        }
-
-        public float StickyRaycastLength
-        {
-            get => stickyRaycastLength.Value;
-            set => value = stickyRaycastLength.Value;
-        }
-
         public static string StickyRaycastPath { get; } = $"{RaycastPath}StickyRaycast/";
 
         public static readonly string StickyRaycastModelPath =

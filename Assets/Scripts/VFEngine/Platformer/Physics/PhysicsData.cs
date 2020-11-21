@@ -1,7 +1,15 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -19,29 +27,11 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
         [SerializeField] private PhysicsSettings settings = null;
 
         #endregion
 
-        [SerializeField] private BoolReference physics2DInteractionControl = new BoolReference();
-        [SerializeField] private BoolReference safetyBoxcastControl = new BoolReference();
-        [SerializeField] private BoolReference stickToSlopesControl = new BoolReference();
-        [SerializeField] private BoolReference safeSetTransformControl = new BoolReference();
-        [SerializeField] private BoolReference isJumping = new BoolReference();
-        [SerializeField] private BoolReference isFalling = new BoolReference();
-        [SerializeField] private BoolReference gravityActive = new BoolReference();
-        [SerializeField] private IntReference horizontalMovementDirection = new IntReference();
-        [SerializeField] private FloatReference physics2DPushForce = new FloatReference();
-        [SerializeField] private FloatReference maximumSlopeAngle = new FloatReference();
-        [SerializeField] private FloatReference fallSlowFactor = new FloatReference();
-        [SerializeField] private FloatReference smallValue = new FloatReference();
-        [SerializeField] private FloatReference gravity = new FloatReference();
-        [SerializeField] private FloatReference movementDirectionThreshold = new FloatReference();
-        [SerializeField] private Vector2Reference maximumVelocity = new Vector2Reference();
-        [SerializeField] private Vector2Reference speed = new Vector2Reference();
-        [SerializeField] private Vector2Reference newPosition = new Vector2Reference();
-        [SerializeField] private Vector2Reference externalForce = new Vector2Reference();
         private const string PhPath = "Physics/";
         private static readonly string ModelAssetPath = $"{PhPath}PhysicsModel.asset";
 
@@ -51,9 +41,19 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
+        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
+        public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData { get; set; }
+        public SafetyBoxcastRuntimeData SafetyBoxcastRuntimeData { get; set; }
+        public RaycastHitColliderRuntimeData RaycastHitColliderRuntimeData { get; set; }
+        public LeftRaycastHitColliderRuntimeData LeftRaycastHitColliderRuntimeData { get; set; }
+        public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; set; }
+        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
+        public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
         public bool HasTransform => Transform;
         public bool HasSettings => settings;
         public float Physics2DPushForceSetting => settings.physics2DPushForce;
@@ -88,128 +88,41 @@ namespace VFEngine.Platformer.Physics
 
         #endregion
 
+        public PhysicsRuntimeData RuntimeData { get; set; }
         public AnimationCurve SlopeAngleSpeedFactor { get; set; }
-
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public float CurrentVerticalSpeedFactor { get; set; }
+        public bool Physics2DInteractionControl { get; set; }
+        public bool SafetyBoxcastControl { get; set; }
+        public bool StickToSlopesControl { get; set; }
+        public bool SafeSetTransformControl { get; set; }
+        public bool IsJumping { get; set; }
+        public bool IsFalling { get; set; }
+        public bool GravityActive { get; set; }
+        public int HorizontalMovementDirection { get; set; }
+        public float Physics2DPushForce { get; set; }
+        public float MaximumSlopeAngle { get; set; }
+        public float FallSlowFactor { get; set; }
+        public float SmallValue { get; set; }
+        public float Gravity { get; set; }
+        public float MovementDirectionThreshold { get; set; }
+        public Vector2 MaximumVelocity { get; set; }
+        public Vector2 Speed { get; set; }
+        public Vector2 NewPosition { get; set; }
 
-        public float Physics2DPushForce
+        public float NewPositionY
         {
-            get => physics2DPushForce.Value;
-            set => value = physics2DPushForce.Value;
-        }
-
-        public bool Physics2DInteractionControl
-        {
-            get => physics2DInteractionControl.Value;
-            set => value = physics2DInteractionControl.Value;
-        }
-
-        public Vector2 MaximumVelocity
-        {
-            get => maximumVelocity.Value;
-            set => value = maximumVelocity.Value;
-        }
-
-        public bool SafetyBoxcastControl
-        {
-            get => safetyBoxcastControl.Value;
-            set => value = safetyBoxcastControl.Value;
-        }
-
-        public float MaximumSlopeAngle
-        {
-            get => maximumSlopeAngle.Value;
-            set => value = maximumSlopeAngle.Value;
-        }
-
-        public bool StickToSlopesControl
-        {
-            get => stickToSlopesControl.Value;
-            set => value = stickToSlopesControl.Value;
-        }
-
-        public bool SafeSetTransformControl
-        {
-            get => safeSetTransformControl.Value;
-            set => value = safeSetTransformControl.Value;
-        }
-
-        public Vector2 Speed
-        {
-            get => speed.Value;
-            set => value = speed.Value;
-        }
-
-        public bool GravityActive
-        {
-            get => gravityActive.Value;
-            set => value = gravityActive.Value;
-        }
-
-        public float FallSlowFactor
-        {
-            get => fallSlowFactor.Value;
-            set => value = fallSlowFactor.Value;
-        }
-
-        public int HorizontalMovementDirection
-        {
-            get => horizontalMovementDirection.Value;
-            set => value = horizontalMovementDirection.Value;
-        }
-
-        public Vector2 NewPosition
-        {
-            get => newPosition.Value;
-            set => value = newPosition.Value;
+            set => value = NewPosition.y;
         }
 
         public float NewPositionX
         {
-            get => newPosition.Value.x;
             set => value = NewPosition.x;
         }
 
-        public float NewPositionY
-        {
-            get => newPosition.Value.y;
-            set => value = NewPosition.y;
-        }
-
-        public float SmallValue
-        {
-            get => smallValue.Value;
-            set => value = smallValue.Value;
-        }
-
-        public float Gravity
-        {
-            get => gravity.Value;
-            set => value = gravity.Value;
-        }
-
-        public bool IsJumping
-        {
-            get => isJumping.Value;
-            set => value = isJumping.Value;
-        }
-
-        public bool IsFalling
-        {
-            get => isFalling.Value;
-            set => value = isFalling.Value;
-        }
-
-        public Vector2 ExternalForce
-        {
-            get => externalForce.Value;
-            set => value = externalForce.Value;
-        }
+        public Vector2 ExternalForce { get; set; }
 
         public float ExternalForceY
         {
-            get => ExternalForce.y;
             set => value = ExternalForce.y;
         }
 
@@ -235,12 +148,6 @@ namespace VFEngine.Platformer.Physics
         {
             get => Speed.y;
             set => value = Speed.y;
-        }
-
-        public float MovementDirectionThreshold
-        {
-            get => movementDirectionThreshold.Value;
-            set => value = movementDirectionThreshold.Value;
         }
 
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

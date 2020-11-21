@@ -1,9 +1,8 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Tools;
-using Collision = ScriptableObjects.Variables.Collision;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -22,22 +21,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private IntReference leftHitsStorageLength = new IntReference();
-        [SerializeField] private IntReference currentLeftHitsStorageIndex = new IntReference();
-        [SerializeField] private FloatReference currentLeftHitAngle = new FloatReference();
-        [SerializeField] private FloatReference currentLeftHitDistance = new FloatReference();
-        [SerializeField] private FloatReference distanceBetweenLeftHitAndRaycastOrigin = new FloatReference();
-        [SerializeField] private BoolReference leftHitConnected = new BoolReference();
-        [SerializeField] private BoolReference isCollidingLeft = new BoolReference();
-        [SerializeField] private CollisionReference currentLeftHitCollider = new CollisionReference();
         private static readonly string LeftRaycastHitColliderPath = $"{RaycastHitColliderPath}LeftRaycastHitCollider/";
 
-        private static readonly string ModelAssetPath =
-            $"{LeftRaycastHitColliderPath}LeftRaycastHitColliderModel.asset";
+        private static readonly string
+            ModelAssetPath = $"{LeftRaycastHitColliderPath}LeftRaycastHitColliderModel.asset";
 
         #endregion
 
@@ -45,9 +36,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
         public int NumberOfHorizontalRaysPerSide { get; set; }
         public RaycastHit2D CurrentLeftRaycastHit { get; set; }
         public Vector2 LeftRaycastFromBottomOrigin { get; set; }
@@ -55,58 +48,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #endregion
 
+        public LeftRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public RaycastHit2D[] LeftHitsStorage { get; set; } = new RaycastHit2D[0];
-
-        public int LeftHitsStorageLength
-        {
-            get => leftHitsStorageLength.Value;
-            set => value = leftHitsStorageLength.Value;
-        }
-
-        public int CurrentLeftHitsStorageIndex
-        {
-            get => currentLeftHitsStorageIndex.Value;
-            set => value = currentLeftHitsStorageIndex.Value;
-        }
-
-        public float CurrentLeftHitAngle
-        {
-            get => currentLeftHitAngle.Value;
-            set => value = currentLeftHitAngle.Value;
-        }
-
-        public float CurrentLeftHitDistance
-        {
-            get => currentLeftHitDistance.Value;
-            set => value = currentLeftHitDistance.Value;
-        }
-
-        public float DistanceBetweenLeftHitAndRaycastOrigin
-        {
-            get => distanceBetweenLeftHitAndRaycastOrigin.Value;
-            set => value = distanceBetweenLeftHitAndRaycastOrigin.Value;
-        }
-
-        public bool LeftHitConnected
-        {
-            get => leftHitConnected.Value;
-            set => value = leftHitConnected.Value;
-        }
-
-        public bool IsCollidingLeft
-        {
-            get => isCollidingLeft.Value;
-            set => value = isCollidingLeft.Value;
-        }
-
+        public bool LeftHitConnected { get; set; }
+        public bool IsCollidingLeft { get; set; }
+        public int LeftHitsStorageLength { get; set; }
+        public int CurrentLeftHitsStorageIndex { get; set; }
+        public float CurrentLeftHitAngle { get; set; }
+        public float CurrentLeftHitDistance { get; set; }
+        public float DistanceBetweenLeftHitAndRaycastOrigin { get; set; }
+        public Collider2D CurrentLeftHitCollider { get; set; }
         public bool PassedLeftSlopeAngle { get; set; }
-
-        public Collider2D CurrentLeftHitCollider
-        {
-            get => currentLeftHitCollider.Value.collider2D;
-            set => currentLeftHitCollider.Value = new Collision(value);
-        }
-
         public GameObject CurrentLeftWallCollider { get; set; }
         public float DistanceToLeftCollider { get; set; }
         public float LeftLateralSlopeAngle { get; set; }

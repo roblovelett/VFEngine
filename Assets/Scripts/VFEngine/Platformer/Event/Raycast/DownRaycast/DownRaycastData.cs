@@ -1,8 +1,10 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
@@ -19,15 +21,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private FloatReference downRayLength = new FloatReference();
-        [SerializeField] private Vector2Reference currentDownRaycastOrigin = new Vector2Reference();
-        [SerializeField] private Vector2Reference downRaycastFromLeft = new Vector2Reference();
-        [SerializeField] private Vector2Reference downRaycastToRight = new Vector2Reference();
-        [SerializeField] private RaycastReference currentDownRaycastHit = new RaycastReference();
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
         private static readonly string ModelAssetPath = $"{DownRaycastPath}DownRaycastModel.asset";
 
@@ -37,9 +34,13 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public int CurrentDownHitsStorageIndex { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }
@@ -55,36 +56,12 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #endregion
 
-        public float DownRayLength
-        {
-            get => downRayLength.Value;
-            set => value = downRayLength.Value;
-        }
-
-        public Vector2 CurrentDownRaycastOrigin
-        {
-            get => currentDownRaycastOrigin.Value;
-            set => value = currentDownRaycastOrigin.Value;
-        }
-
-        public Vector2 DownRaycastFromLeft
-        {
-            get => downRaycastFromLeft.Value;
-            set => value = downRaycastFromLeft.Value;
-        }
-
-        public Vector2 DownRaycastToRight
-        {
-            get => downRaycastToRight.Value;
-            set => value = downRaycastToRight.Value;
-        }
-
-        public RaycastHit2D CurrentDownRaycastHit
-        {
-            get => currentDownRaycastHit.Value.hit2D;
-            set => currentDownRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
-        }
-
+        public DownRaycastRuntimeData RuntimeData { get; set; }
+        public float DownRayLength { get; set; }
+        public Vector2 CurrentDownRaycastOrigin { get; set; }
+        public Vector2 DownRaycastFromLeft { get; set; }
+        public Vector2 DownRaycastToRight { get; set; }
+        public RaycastHit2D CurrentDownRaycastHit { get; set; }
         public static readonly string DownRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

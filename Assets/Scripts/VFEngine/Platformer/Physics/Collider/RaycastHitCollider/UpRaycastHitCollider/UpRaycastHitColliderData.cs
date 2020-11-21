@@ -1,8 +1,7 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -22,17 +21,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private BoolReference upHitConnected = new BoolReference();
-        [SerializeField] private IntReference upHitsStorageLength = new IntReference();
-        [SerializeField] private IntReference upHitsStorageCollidingIndex = new IntReference();
-        [SerializeField] private IntReference currentUpHitsStorageIndex = new IntReference();
-        [SerializeField] private RaycastReference raycastUpHitAt = new RaycastReference();
-        [SerializeField] private BoolReference isCollidingAbove = new BoolReference();
-        [SerializeField] private BoolReference wasTouchingCeilingLastFrame = new BoolReference();
         private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
         private static readonly string ModelAssetPath = $"{UpRaycastHitColliderPath}UpRaycastHitColliderModel.asset";
 
@@ -42,56 +34,24 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }
         public RaycastHit2D CurrentUpRaycastHit { get; set; }
 
         #endregion
 
-        public bool UpHitConnected
-        {
-            get => upHitConnected.Value;
-            set => value = upHitConnected.Value;
-        }
-
-        public bool IsCollidingAbove
-        {
-            get => isCollidingAbove.Value;
-            set => value = isCollidingAbove.Value;
-        }
-
-        public bool WasTouchingCeilingLastFrame
-        {
-            get => wasTouchingCeilingLastFrame.Value;
-            set => value = wasTouchingCeilingLastFrame.Value;
-        }
-
-        public int UpHitsStorageLength
-        {
-            get => upHitsStorageLength.Value;
-            set => value = upHitsStorageLength.Value;
-        }
-
-        public int UpHitsStorageCollidingIndex
-        {
-            get => upHitsStorageCollidingIndex.Value;
-            set => value = upHitsStorageCollidingIndex.Value;
-        }
-
-        public int CurrentUpHitsStorageIndex
-        {
-            get => currentUpHitsStorageIndex.Value;
-            set => value = currentUpHitsStorageIndex.Value;
-        }
-
-        public RaycastHit2D RaycastUpHitAt
-        {
-            get => raycastUpHitAt.Value.hit2D;
-            set => raycastUpHitAt.Value = new Raycast(value);
-        }
-
+        public UpRaycastHitColliderRuntimeData RuntimeData { get; set; }
+        public bool UpHitConnected { get; set; }
+        public bool IsCollidingAbove { get; set; }
+        public bool WasTouchingCeilingLastFrame { get; set; }
+        public int UpHitsStorageLength { get; set; }
+        public int UpHitsStorageCollidingIndex { get; set; }
+        public int CurrentUpHitsStorageIndex { get; set; }
+        public RaycastHit2D RaycastUpHitAt { get; set; }
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
 
         public static readonly string UpRaycastHitColliderModelPath =

@@ -1,7 +1,7 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -19,12 +19,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character;
 
         #endregion
 
-        [SerializeField] private RaycastReference rightStickyRaycastHit = new RaycastReference();
-        [SerializeField] private FloatReference rightStickyRaycastLength = new FloatReference();
         private static readonly string RightStickyRaycastPath = $"{StickyRaycastPath}RightStickyRaycast/";
         private static readonly string ModelAssetPath = $"{RightStickyRaycastPath}RightRaycastModel.asset";
 
@@ -34,8 +32,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public float StickyRaycastLength { get; set; }
@@ -50,6 +52,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #endregion
 
+        public RightStickyRaycastRuntimeData RuntimeData { get; set; }
+        public RaycastHit2D RightStickyRaycastHit { get; set; }
+        public float RightStickyRaycastLength { get; set; }
         public Vector2 RightStickyRaycastOrigin { get; } = Vector2.zero;
 
         public float RightStickyRaycastOriginX
@@ -60,18 +65,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         public float RightStickyRaycastOriginY
         {
             set => value = RightStickyRaycastOrigin.y;
-        }
-
-        public float RightStickyRaycastLength
-        {
-            get => rightStickyRaycastLength.Value;
-            set => value = rightStickyRaycastLength.Value;
-        }
-
-        public RaycastHit2D RightStickyRaycastHit
-        {
-            get => rightStickyRaycastHit.Value.hit2D;
-            set => rightStickyRaycastHit.Value = new ScriptableObjects.Variables.Raycast(value);
         }
 
         public static readonly string RightStickyRaycastModelPath =

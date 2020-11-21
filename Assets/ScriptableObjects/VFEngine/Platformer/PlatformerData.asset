@@ -13,13 +13,4 @@ MonoBehaviour:
   m_Name: PlatformerData
   m_EditorClassIdentifier: 
   character: {fileID: 0}
-  settings: {fileID: 0}
-  physics: {fileID: 0}
-  raycast: {fileID: 0}
-  raycastHitCollider: {fileID: 0}
-  layerMask: {fileID: 0}
-  boxcast: {fileID: 0}
-  characterReference:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
+  settings: {fileID: 11400000, guid: 0c9c0e470a228bd41a04a1e8529aeb94, type: 2}

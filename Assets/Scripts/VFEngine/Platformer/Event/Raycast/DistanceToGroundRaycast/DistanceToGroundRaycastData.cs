@@ -1,9 +1,10 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
@@ -19,11 +20,10 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private RaycastReference distanceToGroundRaycast = new RaycastReference();
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
         private static readonly string ModelAssetPath =
@@ -35,9 +35,12 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public float BelowSlopeAngle { get; set; }
         public float DistanceToGroundRayMaximumLength { get; set; }
@@ -48,12 +51,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #endregion
 
-        public RaycastHit2D DistanceToGroundRaycast
-        {
-            get => distanceToGroundRaycast.Value.hit2D;
-            set => distanceToGroundRaycast.Value = new ScriptableObjects.Variables.Raycast(value);
-        }
-
+        public DistanceToGroundRaycastRuntimeData RuntimeData { get; set; }
+        public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
         public Vector2 DistanceToGroundRaycastOrigin { get; set; } = Vector2.zero;
 
         public static readonly string DistanceToGroundRaycastModelPath =

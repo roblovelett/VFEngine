@@ -10,6 +10,7 @@ namespace VFEngine.Platformer.Physics
     using static PhysicsData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
     public class PhysicsController : MonoBehaviour, IController
     {
@@ -18,12 +19,25 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [SerializeField] private PhysicsModel physicsModel;
+        private readonly PhysicsController controller;
 
         #endregion
 
         #region private methods
 
         private void Awake()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            RuntimeData = CreateInstance<PhysicsRuntimeData>();
+            RuntimeData.SetPhysicsController(controller);
+        }
+
+        private void InitializeModel()
         {
             if (!physicsModel) physicsModel = LoadData(ModelPath) as PhysicsModel;
             Assert(physicsModel != null, nameof(physicsModel) + " != null");
@@ -36,6 +50,12 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
+        public PhysicsRuntimeData RuntimeData { get; private set; }
+        public PhysicsController()
+        {
+            controller = this;
+        }
+        
         #region public methods
 
         #region physics model

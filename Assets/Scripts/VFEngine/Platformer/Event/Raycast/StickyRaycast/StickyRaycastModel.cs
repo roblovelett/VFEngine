@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -34,6 +36,42 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             if (s.DisplayWarningsControl) GetWarningMessages();
         }
 
+        private void InitializeData()
+        {
+            s.RuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
+            s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
+            s.DisplayWarningsControl = s.DisplayWarningsControlSetting;
+            s.RuntimeData.SetStickyRaycast(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);
+        }
+
+        private void InitializeModel()
+        {
+            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            s.RightStickyRaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>()
+                .RightStickyRaycastRuntimeData;
+            s.LeftStickyRaycastRuntimeData =
+                s.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
+            s.StickyRaycastHitColliderRuntimeData = s.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .StickyRaycastHitColliderRuntimeData;
+            s.LeftStickyRaycastHitColliderRuntimeData = s.Character
+                .GetComponentNoAllocation<RaycastHitColliderController>().LeftStickyRaycastHitColliderRuntimeData;
+            s.RightStickyRaycastHitColliderRuntimeData = s.Character
+                .GetComponentNoAllocation<RaycastHitColliderController>().RightStickyRaycastHitColliderRuntimeData;
+            s.StickToSlopesControl = s.PhysicsRuntimeData.physics.StickToSlopesControl;
+            s.MaximumSlopeAngle = s.PhysicsRuntimeData.physics.MaximumSlopeAngle;
+            s.BoundsWidth = s.RaycastRuntimeData.raycast.BoundsWidth;
+            s.BoundsHeight = s.RaycastRuntimeData.raycast.BoundsHeight;
+            s.RayOffset = s.RaycastRuntimeData.raycast.RayOffset;
+            s.RightStickyRaycastHit = s.RightStickyRaycastRuntimeData.rightStickyRaycast.RightStickyRaycastHit;
+            s.LeftStickyRaycastHit = s.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
+            s.BelowSlopeAngle = s.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.leftStickyRaycastHitCollider
+                .BelowSlopeAngleLeft;
+            s.BelowSlopeAngleRight = s.RightStickyRaycastHitColliderRuntimeData.rightStickyRaycastHitCollider
+                .BelowSlopeAngleRight;
+        }
+        
         private void GetWarningMessages()
         {
             var warningMessage = "";
@@ -54,28 +92,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 warningMessageCount++;
                 return $"{field} must be set to value greater than zero.@";
             }
-        }
-
-        private void InitializeData()
-        {
-            s.RuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
-            s.DisplayWarningsControl = s.DisplayWarningsControlSetting;
-            s.RuntimeData.SetStickyRaycast(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);
-        }
-
-        private void InitializeModel()
-        {
-            s.StickToSlopesControl = s.RuntimeData.physics.StickToSlopesControl;
-            s.BelowSlopeAngle = s.RuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
-            s.BoundsWidth = s.RuntimeData.raycast.BoundsWidth;
-            s.MaximumSlopeAngle = s.RuntimeData.physics.MaximumSlopeAngle;
-            s.BoundsHeight = s.RuntimeData.raycast.BoundsHeight;
-            s.RayOffset = s.RuntimeData.raycast.RayOffset;
-            s.BelowSlopeAngleLeft = s.RuntimeData.leftStickyRaycastHitCollider.BelowSlopeAngleLeft;
-            s.BelowSlopeAngleRight = s.RuntimeData.rightStickyRaycastHitCollider.BelowSlopeAngleRight;
-            s.LeftStickyRaycastHit = s.RuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
-            s.RightStickyRaycastHit = s.RuntimeData.rightStickyRaycast.RightStickyRaycastHit;
         }
 
         private void SetStickyRaycastLength()

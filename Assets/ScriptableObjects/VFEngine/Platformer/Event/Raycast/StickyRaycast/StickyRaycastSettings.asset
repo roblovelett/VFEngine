@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: StickyRaycastSettings
   m_EditorClassIdentifier: 
   stickToSlopesOffsetY: 0.2
+  displayWarningsControl: 1

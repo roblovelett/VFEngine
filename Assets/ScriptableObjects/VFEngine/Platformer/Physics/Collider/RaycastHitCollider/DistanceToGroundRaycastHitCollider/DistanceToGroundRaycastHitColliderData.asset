@@ -12,11 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0621605fe4624d7396311a69b6b574b8, type: 3}
   m_Name: DistanceToGroundRaycastHitColliderData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  distanceToGroundRaycastHitConnected:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

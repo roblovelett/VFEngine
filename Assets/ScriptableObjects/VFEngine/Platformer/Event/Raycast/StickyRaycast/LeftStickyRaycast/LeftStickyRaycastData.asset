@@ -12,14 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46fcaed50eca40f9b47c3db066e497fe, type: 3}
   m_Name: LeftStickyRaycastData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  leftStickyRaycastHit:
-    _useConstant: 0
-    _variable: {fileID: 0}
-  leftStickyRaycastLength:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

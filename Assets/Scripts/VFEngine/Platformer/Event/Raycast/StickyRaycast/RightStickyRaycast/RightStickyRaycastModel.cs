@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -36,24 +38,30 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RightStickyRaycastRuntimeData;
             r.RuntimeData.SetRightStickyRaycast(r.RightStickyRaycastLength, r.RightStickyRaycastOrigin.y,
                 r.RightStickyRaycastHit);
         }
 
         private void InitializeModel()
         {
-            r.Transform = r.RuntimeData.platformer.Transform;
-            r.DrawRaycastGizmosControl = r.RuntimeData.raycast.DrawRaycastGizmosControl;
-            r.StickyRaycastLength = r.RuntimeData.stickyRaycast.StickyRaycastLength;
-            r.BoundsWidth = r.RuntimeData.raycast.BoundsWidth;
-            r.MaximumSlopeAngle = r.RuntimeData.physics.MaximumSlopeAngle;
-            r.BoundsHeight = r.RuntimeData.raycast.BoundsHeight;
-            r.RayOffset = r.RuntimeData.raycast.RayOffset;
-            r.BoundsBottomRightCorner = r.RuntimeData.raycast.BoundsBottomRightCorner;
-            r.NewPosition = r.RuntimeData.physics.NewPosition;
-            r.BoundsCenter = r.RuntimeData.raycast.BoundsCenter;
-            r.RaysBelowLayerMaskPlatforms = r.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+            r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            r.StickyRaycastRuntimeData =
+                r.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            r.LayerMaskRuntimeData = r.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
+            r.DrawRaycastGizmosControl = r.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
+            r.BoundsWidth = r.RaycastRuntimeData.raycast.BoundsWidth;
+            r.BoundsHeight = r.RaycastRuntimeData.raycast.BoundsHeight;
+            r.RayOffset = r.RaycastRuntimeData.raycast.RayOffset;
+            r.BoundsBottomRightCorner = r.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
+            r.BoundsCenter = r.RaycastRuntimeData.raycast.BoundsCenter;
+            r.StickyRaycastLength = r.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
+            r.MaximumSlopeAngle = r.PhysicsRuntimeData.physics.MaximumSlopeAngle;
+            r.NewPosition = r.PhysicsRuntimeData.physics.NewPosition;
+            r.RaysBelowLayerMaskPlatforms = r.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetRightStickyRaycastLengthToStickyRaycastLength()

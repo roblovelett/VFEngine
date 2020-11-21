@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -36,20 +38,26 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void InitializeData()
         {
-            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            d.RuntimeData.SetDistanceToGroundRaycast(d.DistanceToGroundRaycast);
+            d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastController>()
+                .DistanceToGroundRaycastRuntimeData;
+            d.RuntimeData.SetDistanceToGroundRaycast(d.DistanceToGroundRaycastHit);
         }
 
         private void InitializeModel()
         {
-            d.Transform = d.RuntimeData.platformer.Transform;
-            d.DrawRaycastGizmosControl = d.RuntimeData.raycast.DrawRaycastGizmosControl;
-            d.BelowSlopeAngle = d.RuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
-            d.DistanceToGroundRayMaximumLength = d.RuntimeData.raycast.DistanceToGroundRayMaximumLength;
-            d.BoundsBottomLeftCorner = d.RuntimeData.raycast.BoundsBottomLeftCorner;
-            d.BoundsBottomRightCorner = d.RuntimeData.raycast.BoundsBottomRightCorner;
-            d.BoundsCenter = d.RuntimeData.raycast.BoundsCenter;
-            d.RaysBelowLayerMaskPlatforms = d.RuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+            d.PlatformerRuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.StickyRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .StickyRaycastHitColliderRuntimeData;
+            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            d.Transform = d.PlatformerRuntimeData.platformer.Transform;
+            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
+            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.raycast.DistanceToGroundRayMaximumLength;
+            d.BoundsCenter = d.RaycastRuntimeData.raycast.BoundsCenter;
+            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
+            d.BoundsBottomRightCorner = d.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
+            d.BelowSlopeAngle = d.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetDistanceToGroundRaycastOrigin()
@@ -63,7 +71,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void SetDistanceToGroundRaycast()
         {
-            d.DistanceToGroundRaycast = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
+            d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
                 d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
         }
 

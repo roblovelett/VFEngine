@@ -1,7 +1,9 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -19,13 +21,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
 
-        [SerializeField] private FloatReference upRaycastSmallestDistance = new FloatReference();
-        [SerializeField] private Vector2Reference currentUpRaycastOrigin = new Vector2Reference();
-        [SerializeField] private RaycastReference currentUpRaycastHit = new RaycastReference();
         private static readonly string UpRaycastPath = $"{RaycastPath}UpRaycast/";
         private static readonly string ModelAssetPath = $"{UpRaycastPath}UpRaycastModel.asset";
 
@@ -35,9 +34,14 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public UpRaycastHitColliderRuntimeData UpRaycastHitColliderRuntimeData { get; set; }
+        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public bool GroundedEvent { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public int CurrentUpHitsStorageIndex { get; set; }
@@ -55,28 +59,13 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #endregion
 
+        public UpRaycastRuntimeData RuntimeData { get; set; }
         public float UpRayLength { get; set; }
         public Vector2 UpRaycastStart { get; set; } = Vector2.zero;
         public Vector2 UpRaycastEnd { get; set; } = Vector2.zero;
-
-        public float UpRaycastSmallestDistance
-        {
-            get => upRaycastSmallestDistance.Value;
-            set => value = upRaycastSmallestDistance.Value;
-        }
-
-        public Vector2 CurrentUpRaycastOrigin
-        {
-            get => currentUpRaycastOrigin.Value;
-            set => value = currentUpRaycastOrigin.Value;
-        }
-
-        public RaycastHit2D CurrentUpRaycastHit
-        {
-            get => currentUpRaycastHit.Value.hit2D;
-            set => value = currentUpRaycastHit.Value.hit2D;
-        }
-
+        public float UpRaycastSmallestDistance { get; set; }
+        public Vector2 CurrentUpRaycastOrigin { get; set; }
+        public RaycastHit2D CurrentUpRaycastHit { get; set; }
         public static readonly string UpRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

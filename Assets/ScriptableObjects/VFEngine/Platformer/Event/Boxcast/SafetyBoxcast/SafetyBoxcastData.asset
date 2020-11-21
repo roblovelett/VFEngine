@@ -12,10 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65eb84635abf458b93262b66b5b839cd, type: 3}
   m_Name: SafetyBoxcastData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  safetyBoxcast:
-    _useConstant: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

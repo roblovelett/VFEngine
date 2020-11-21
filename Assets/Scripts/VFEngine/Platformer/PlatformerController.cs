@@ -16,6 +16,7 @@ namespace VFEngine.Platformer
         #region dependencies
 
         [SerializeField] private PlatformerModel model = null;
+        private readonly PlatformerController controller;
 
         #endregion
 
@@ -23,11 +24,20 @@ namespace VFEngine.Platformer
 
         private void Awake()
         {
+            InitializeData();
+            InitializeModel();
+        }
+        
+        private void InitializeData()
+        {
+            RuntimeData = CreateInstance<PlatformerRuntimeData>();
+            RuntimeData.SetPlatformerController(controller);
+        }
+
+        private void InitializeModel()
+        {
             if (!model) model = LoadData(ModelPath) as PlatformerModel;
             Assert(model != null, nameof(model) + " != null");
-            model.OnInitialize();
-            
-            RuntimeData = CreateInstance<PlatformerRuntimeData>();
             model.OnInitialize();
         }
 
@@ -43,7 +53,10 @@ namespace VFEngine.Platformer
         #region properties
 
         public PlatformerRuntimeData RuntimeData { get; private set; }
-
+        public PlatformerController()
+        {
+            controller = this;
+        }
         #endregion
     }
 }

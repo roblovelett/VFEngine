@@ -12,15 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed1debb5faf4a76bf40c754e39fc9ad, type: 3}
   m_Name: LeftStickyRaycastHitColliderData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  belowSlopeAngleLeft:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  crossBelowSlopeAngleLeft:
-    _useConstant: 0
-    _constantValue: {x: 0, y: 0, z: 0}
-    _variable: {fileID: 0}
+  character: {fileID: 0}

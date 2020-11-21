@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -36,8 +37,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            l.Transform = l.RuntimeData.platformer.Transform;
+            l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .LeftRaycastHitColliderRuntimeData;
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
             l.RuntimeData.SetLeftRaycastHitCollider(l.LeftHitConnected, l.IsCollidingLeft, l.LeftHitsStorageLength,
                 l.CurrentLeftHitsStorageIndex, l.CurrentLeftHitAngle, l.CurrentLeftHitDistance,
@@ -46,10 +47,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeModel()
         {
-            l.NumberOfHorizontalRaysPerSide = l.RuntimeData.raycast.NumberOfHorizontalRaysPerSide;
-            l.CurrentLeftRaycastHit = l.RuntimeData.leftRaycast.CurrentLeftRaycastHit;
-            l.LeftRaycastFromBottomOrigin = l.RuntimeData.leftRaycast.LeftRaycastFromBottomOrigin;
-            l.LeftRaycastToTopOrigin = l.RuntimeData.leftRaycast.LeftRaycastToTopOrigin;
+            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            l.LeftRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
+            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
+            l.NumberOfHorizontalRaysPerSide = l.RaycastRuntimeData.raycast.NumberOfHorizontalRaysPerSide;
+            l.CurrentLeftRaycastHit = l.LeftRaycastRuntimeData.leftRaycast.CurrentLeftRaycastHit;
+            l.LeftRaycastFromBottomOrigin = l.LeftRaycastRuntimeData.leftRaycast.LeftRaycastFromBottomOrigin;
+            l.LeftRaycastToTopOrigin = l.LeftRaycastRuntimeData.leftRaycast.LeftRaycastToTopOrigin;
             InitializeLeftHitsStorage();
             InitializeCurrentLeftHitsStorageIndex();
             ResetState();

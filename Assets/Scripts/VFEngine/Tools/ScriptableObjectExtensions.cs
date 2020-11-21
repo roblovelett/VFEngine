@@ -26,6 +26,8 @@ namespace VFEngine.Tools
         public const string PlatformerRaycastModelPath = "VFEngine/Platformer/Event/Raycast/Raycast Model";
         public const string PlatformerRaycastDataPath = "VFEngine/Platformer/Event/Raycast/Raycast Data";
         public const string PlatformerRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/Raycast Settings";
+        public const string PlatformerBoxcastModelPath = "VFEngine/Platformer/Event/Boxcast/Boxcast Model";
+        public const string PlatformerBoxcastDataPath = "VFEngine/Platformer/Event/Boxcast/Boxcast Data";
 
         public const string PlatformerSafetyBoxcastModelPath =
             "VFEngine/Platformer/Event/Boxcast/Safety Boxcast/Safety Boxcast Model";

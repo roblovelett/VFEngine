@@ -11,6 +11,8 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollid
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
@@ -25,6 +27,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     using static RightStickyRaycastHitColliderData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
     public class RaycastHitColliderController : MonoBehaviour
     {
@@ -42,17 +45,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         [SerializeField] private RightStickyRaycastHitColliderModel rightStickyRaycastHitColliderModel;
         [SerializeField] private LeftStickyRaycastHitColliderModel leftStickyRaycastHitColliderModel;
 
+        private readonly RaycastHitColliderController controller;
+
         #endregion
 
         #region private methods
 
         private void Awake()
         {
-            GetModels();
+            InitializeData();
             Async(InitializeModels());
         }
 
-        private void GetModels()
+        private void InitializeData()
+        {
+            RuntimeData = CreateInstance<RaycastHitColliderRuntimeData>();
+            RuntimeData.SetRaycastHitColliderController(controller);
+            UpRaycastHitColliderRuntimeData = CreateInstance<UpRaycastHitColliderRuntimeData>();
+            RightRaycastHitColliderRuntimeData = CreateInstance<RightRaycastHitColliderRuntimeData>();
+            DownRaycastHitColliderRuntimeData = CreateInstance<DownRaycastHitColliderRuntimeData>();
+            LeftRaycastHitColliderRuntimeData = CreateInstance<LeftRaycastHitColliderRuntimeData>();
+            DistanceToGroundRaycastHitColliderRuntimeData =
+                CreateInstance<DistanceToGroundRaycastHitColliderRuntimeData>();
+            StickyRaycastHitColliderRuntimeData = CreateInstance<StickyRaycastHitColliderRuntimeData>();
+            RightStickyRaycastHitColliderRuntimeData = CreateInstance<RightStickyRaycastHitColliderRuntimeData>();
+            LeftStickyRaycastHitColliderRuntimeData = CreateInstance<LeftStickyRaycastHitColliderRuntimeData>();
+        }
+
+        private async UniTaskVoid InitializeModels()
         {
             if (!raycastHitColliderModel)
                 raycastHitColliderModel = LoadModel<RaycastHitColliderModel>(RaycastHitColliderModelPath);
@@ -77,10 +97,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             if (!leftStickyRaycastHitColliderModel)
                 leftStickyRaycastHitColliderModel =
                     LoadModel<LeftStickyRaycastHitColliderModel>(LeftStickyRaycastHitColliderModelPath);
-        }
-
-        private async UniTaskVoid InitializeModels()
-        {
             var rTask1 = Async(raycastHitColliderModel.OnInitialize());
             var rTask2 = Async(upRaycastHitColliderModel.OnInitialize());
             var rTask3 = Async(rightRaycastHitColliderModel.OnInitialize());
@@ -119,6 +135,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #endregion
 
         #region properties
+
+        public RaycastHitColliderController()
+        {
+            controller = this;
+        }
+        
+        public RaycastHitColliderRuntimeData RuntimeData { get; private set; }
+        public UpRaycastHitColliderRuntimeData UpRaycastHitColliderRuntimeData { get; private set; }
+        public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; private set; }
+        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; private set; }
+        public LeftRaycastHitColliderRuntimeData LeftRaycastHitColliderRuntimeData { get; private set; }
+
+        public DistanceToGroundRaycastHitColliderRuntimeData DistanceToGroundRaycastHitColliderRuntimeData
+        {
+            get;
+            private set;
+        }
+
+        public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; private set; }
+        public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; private set; }
+        public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; private set; }
 
         #region public methods
 
@@ -402,7 +439,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             downRaycastHitColliderModel.OnSetCrossBelowSlopeAngleAt();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid InitializeSmallestDistanceToDownHit()
         {
             downRaycastHitColliderModel.OnInitializeSmallestDistanceToDownHit();

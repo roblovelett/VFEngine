@@ -2,9 +2,13 @@
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Tools;
 
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static SafetyBoxcastData;
+    using static BoxcastData;
+    using static Debug;
+    using static ScriptableObject;
     using static ScriptableObjectExtensions;
 
     public class BoxcastController : MonoBehaviour, IController
@@ -13,7 +17,9 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
+        [SerializeField] private BoxcastModel boxcastModel;
         [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
+        private readonly BoxcastController controller;
 
         #endregion
 
@@ -21,17 +27,24 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void Awake()
         {
-            GetModels();
-            InitializeModels();
+            InitializeData();
+            InitializeModel();
         }
 
-        private void GetModels()
+        private void InitializeData()
         {
-            if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+            RuntimeData = CreateInstance<BoxcastRuntimeData>();
+            RuntimeData.SetBoxcastController(controller);
+            SafetyBoxcastRuntimeData = CreateInstance<SafetyBoxcastRuntimeData>();
         }
 
-        private void InitializeModels()
+        private void InitializeModel()
         {
+            if (!boxcastModel) boxcastModel = LoadData(BoxcastModelPath) as BoxcastModel;
+            Assert(boxcastModel != null, nameof(boxcastModel) + " != null");
+            boxcastModel.OnInitialize();
+            if (!safetyBoxcastModel) safetyBoxcastModel = LoadData(SafetyBoxcastModelPath) as SafetyBoxcastModel;
+            Assert(safetyBoxcastModel != null, nameof(safetyBoxcastModel) + " != null");
             safetyBoxcastModel.OnInitialize();
         }
 
@@ -40,6 +53,14 @@ namespace VFEngine.Platformer.Event.Boxcast
         #endregion
 
         #region properties
+
+        public BoxcastController()
+        {
+            controller = this;
+        }
+
+        public BoxcastRuntimeData RuntimeData { get; private set; }
+        public SafetyBoxcastRuntimeData SafetyBoxcastRuntimeData { get; private set; }
 
         #region public methods
 

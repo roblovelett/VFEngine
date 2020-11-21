@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -34,13 +35,18 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.RuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
             l.PlatformMask = l.PlatformMaskSetting;
             l.MovingPlatformMask = l.MovingPlatformMaskSetting;
             l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
             l.MovingOneWayPlatformMask = l.MovingOneWayPlatformMaskSetting;
             l.MidHeightOneWayPlatformMask = l.MidHeightOneWayPlatformMaskSetting;
             l.StairsMask = l.StairsMaskSetting;
+            l.SavedPlatformMask = l.PlatformMask;
+            l.PlatformMask |= l.OneWayPlatformMask;
+            l.PlatformMask |= l.MovingPlatformMask;
+            l.PlatformMask |= l.MovingOneWayPlatformMask;
+            l.PlatformMask |= l.MidHeightOneWayPlatformMask;
             l.RuntimeData.SetLayerMasks(l.SavedBelowLayer, l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask,
                 l.MovingOneWayPlatformMask, l.MidHeightOneWayPlatformMask, l.StairsMask,
                 l.RaysBelowLayerMaskPlatformsWithoutOneWay, l.RaysBelowLayerMaskPlatformsWithoutMidHeight,
@@ -49,13 +55,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeModel()
         {
-            l.StandingOnLastFrameLayer = l.RuntimeData.downRaycastHitCollider.StandingOnLastFrame.layer;
-            l.Transform = l.RuntimeData.platformer.Transform;
-            l.SavedPlatformMask = l.PlatformMask;
-            l.PlatformMask |= l.OneWayPlatformMask;
-            l.PlatformMask |= l.MovingPlatformMask;
-            l.PlatformMask |= l.MovingOneWayPlatformMask;
-            l.PlatformMask |= l.MidHeightOneWayPlatformMask;
+            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.DownRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .DownRaycastHitColliderRuntimeData;
+            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
+            l.StandingOnLastFrameLayer =
+                l.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.StandingOnLastFrame.layer;
         }
 
         private void GetWarningMessages()

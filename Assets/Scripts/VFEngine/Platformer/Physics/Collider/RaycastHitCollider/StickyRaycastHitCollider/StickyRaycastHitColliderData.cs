@@ -1,8 +1,10 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
@@ -19,11 +21,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
-
-        [SerializeField] private FloatReference belowSlopeAngle = new FloatReference();
 
         private static readonly string StickyRaycastHitColliderPathInternal =
             $"{RaycastHitColliderPath}/StickyRaycastHitCollider/";
@@ -35,21 +35,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
-        public GameObject Character => character.Value;
-        public PlatformerRuntimeData RuntimeData { get; set; }
-        public float BelowSlopeAngleRight { get; set; }
-        public float BelowSlopeAngleLeft { get; set; }
-
         #region dependencies
 
-        public float BelowSlopeAngle
-        {
-            get => belowSlopeAngle.Value;
-            set => value = belowSlopeAngle.Value;
-        }
+        public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; set; }
+        public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; set; }
+        public float BelowSlopeAngleRight { get; set; }
+        public float BelowSlopeAngleLeft { get; set; }
+        public GameObject Character => character;
 
         #endregion
 
+        public StickyRaycastHitColliderRuntimeData RuntimeData { get; set; }
+        public float BelowSlopeAngle { get; set; }
         public static readonly string StickyRaycastHitColliderPath = StickyRaycastHitColliderPathInternal;
 
         public static readonly string StickyRaycastHitColliderModelPath =

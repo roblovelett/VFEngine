@@ -12,38 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a3361d9d504dfa97ff4f6d71e1f160, type: 3}
   m_Name: LeftRaycastHitColliderData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  leftHitsStorageLength:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentLeftHitsStorageIndex:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentLeftHitAngle:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentLeftHitDistance:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  distanceBetweenLeftHitAndRaycastOrigin:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  leftHitConnected:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  isCollidingLeft:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentLeftHitCollider:
-    _useConstant: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

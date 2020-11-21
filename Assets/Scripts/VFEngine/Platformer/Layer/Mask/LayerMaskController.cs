@@ -3,13 +3,13 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
     using static LayerMaskData;
     using static Debug;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
     public class LayerMaskController : MonoBehaviour, IController
     {
@@ -18,12 +18,25 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private LayerMaskModel model;
+        private readonly LayerMaskController controller;
 
         #endregion
 
         #region private methods
 
         private void Awake()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
+        private void InitializeData()
+        {
+            RuntimeData = CreateInstance<LayerMaskRuntimeData>();
+            RuntimeData.SetLayerMaskController(controller);
+        }
+
+        private void InitializeModel()
         {
             if (!model) model = LoadData(ModelPath) as LayerMaskModel;
             Assert(model != null, nameof(model) + " != null");
@@ -35,6 +48,13 @@ namespace VFEngine.Platformer.Layer.Mask
         #endregion
 
         #region properties
+
+        public LayerMaskController()
+        {
+            controller = this;
+        }
+
+        public LayerMaskRuntimeData RuntimeData { get; private set; }
 
         #region public methods
 

@@ -1,6 +1,6 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -19,12 +19,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character = null;
 
         #endregion
-
-        [SerializeField] private FloatReference belowSlopeAngleLeft = new FloatReference();
-        [SerializeField] private Vector3Reference crossBelowSlopeAngleLeft = new Vector3Reference();
 
         private static readonly string LeftStickyRaycastHitColliderPath =
             $"{StickyRaycastHitColliderPath}LeftStickyRaycastHitCollider/";
@@ -38,24 +35,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
         public RaycastHit2D LeftStickyRaycastHit { get; set; }
 
         #endregion
 
-        public float BelowSlopeAngleLeft
-        {
-            get => belowSlopeAngleLeft.Value;
-            set => value = belowSlopeAngleLeft.Value;
-        }
-
-        public Vector3 CrossBelowSlopeAngleLeft
-        {
-            get => crossBelowSlopeAngleLeft.Value;
-            set => value = crossBelowSlopeAngleLeft.Value;
-        }
+        public LeftStickyRaycastHitColliderRuntimeData RuntimeData { get; set; }
+        public float BelowSlopeAngleLeft { get; set; }
+        public Vector3 CrossBelowSlopeAngleLeft { get; set; }
 
         public static readonly string LeftStickyRaycastHitColliderModelPath =
             $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

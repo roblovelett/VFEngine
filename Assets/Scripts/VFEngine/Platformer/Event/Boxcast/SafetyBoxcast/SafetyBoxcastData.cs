@@ -1,7 +1,9 @@
-﻿using ScriptableObjectArchitecture;
-using ScriptableObjects.Variables.References;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -17,11 +19,10 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private GameObjectReference character = null;
+        [SerializeField] private GameObject character;
 
         #endregion
 
-        [SerializeField] private RaycastReference safetyBoxcast = new RaycastReference();
         private const string SbPath = "Event/Boxcast/SafetyBoxcast/";
         private static readonly string ModelAssetPath = $"{SbPath}SafetyBoxcastModel.asset";
 
@@ -31,9 +32,13 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public GameObject Character => character.Value;
+        public GameObject Character => character;
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public bool DrawBoxcastGizmosControl { get; set; }
         public float StickyRaycastLength { get; set; }
         public Vector2 NewPosition { get; set; }
@@ -44,13 +49,9 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #endregion
 
+        public SafetyBoxcastRuntimeData RuntimeData { get; set; }
+        public RaycastHit2D SafetyBoxcast { get; set; }
         public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
-        public RaycastHit2D SafetyBoxcast
-        {
-            get => safetyBoxcast.Value.hit2D;
-            set => safetyBoxcast.Value = new ScriptableObjects.Variables.Raycast(value);
-        }
 
         #endregion
     }

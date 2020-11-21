@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -34,8 +35,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void InitializeData()
         {
-            u.RuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            u.Transform = u.RuntimeData.platformer.Transform;
+            u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .UpRaycastHitColliderRuntimeData;
             u.WasTouchingCeilingLastFrame = false;
             u.UpHitsStorageLength = u.UpHitsStorage.Length;
             u.RuntimeData.SetUpRaycastHitCollider(u.UpHitConnected, u.IsCollidingAbove, u.WasTouchingCeilingLastFrame,
@@ -44,8 +45,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void InitializeModel()
         {
-            u.NumberOfVerticalRaysPerSide = u.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
-            u.CurrentUpRaycastHit = u.RuntimeData.upRaycast.CurrentUpRaycastHit;
+            u.PlatformerRuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            u.UpRaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
+            u.Transform = u.PlatformerRuntimeData.platformer.Transform;
+            u.NumberOfVerticalRaysPerSide = u.RaycastRuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            u.CurrentUpRaycastHit = u.UpRaycastRuntimeData.upRaycast.CurrentUpRaycastHit;
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
             InitializeUpHitsStorage();

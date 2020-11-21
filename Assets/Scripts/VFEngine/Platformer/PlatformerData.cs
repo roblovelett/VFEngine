@@ -1,11 +1,23 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
+using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantAssignment
@@ -24,15 +36,9 @@ namespace VFEngine.Platformer
 
         [SerializeField] private GameObject character = null;
         [SerializeField] private PlatformerSettings settings = null;
-        [SerializeField] private PhysicsController physics = null;
-        [SerializeField] private RaycastController raycast = null;
-        [SerializeField] private RaycastHitColliderController raycastHitCollider = null;
-        [SerializeField] private LayerMaskController layerMask = null;
-        [SerializeField] private BoxcastController boxcast = null;
 
         #endregion
 
-        [SerializeField] private GameObjectReference characterReference = null;
         private const string ModelAssetPath = "PlatformerModel.asset";
 
         #endregion
@@ -41,21 +47,32 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
+        public GameObject Character => character;
         public bool HasSettings => settings;
         public bool DisplayWarnings => settings.displayWarningsControl;
-        public PhysicsController Physics => physics;
-        public RaycastController Raycast => raycast;
-        public RaycastHitColliderController RaycastHitCollider => raycastHitCollider;
-        public LayerMaskController LayerMask => layerMask;
-        public BoxcastController Boxcast => boxcast;
-        public GameObject Character => character;
-
-        public GameObject CharacterReference
-        {
-            set => value = characterReference.Value;
-        }
-
-        public PlatformerRuntimeData RuntimeData { get; set; }
+        public PhysicsController Physics { get; set; }
+        public RaycastController Raycast { get; set; }
+        public RaycastHitColliderController RaycastHitCollider { get; set; }
+        public LayerMaskController LayerMask { get; set; }
+        public BoxcastController Boxcast { get; set; }
+        public RaycastRuntimeData RaycastRuntimeData { get; set; }
+        public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
+        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData { get; set; }
+        public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
+        public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData { get; set; }
+        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
+        public BoxcastRuntimeData BoxcastRuntimeData { get; set; }
+        public SafetyBoxcastRuntimeData SafetyBoxcastRuntimeData { get; set; }
+        public RaycastHitColliderRuntimeData RaycastHitColliderRuntimeData { get; set; }
+        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
+        public UpRaycastHitColliderRuntimeData UpRaycastHitColliderRuntimeData { get; set; }
+        public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; set; }
+        public LeftRaycastHitColliderRuntimeData LeftRaycastHitColliderRuntimeData { get; set; }
+        public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; set; }
+        public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; set; }
+        public DistanceToGroundRaycastHitColliderRuntimeData DistanceToGroundRaycastHitColliderRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public float DistanceToGroundRayMaximumLength { get; set; }
         public bool IsCollidingAbove { get; set; }
         public bool IsCollidingBelow { get; set; }
@@ -134,6 +151,7 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        public PlatformerRuntimeData RuntimeData { get; set; }
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

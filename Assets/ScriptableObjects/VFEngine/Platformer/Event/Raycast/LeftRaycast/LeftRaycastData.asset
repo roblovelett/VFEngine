@@ -12,22 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942e9f6c21d94429bb21334e7fcfdd3f, type: 3}
   m_Name: LeftRaycastData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  leftRayLength:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  leftRaycastFromBottomOrigin:
-    _useConstant: 0
-    _constantValue: {x: 0, y: 0}
-    _variable: {fileID: 0}
-  leftRaycastToTopOrigin:
-    _useConstant: 0
-    _constantValue: {x: 0, y: 0}
-    _variable: {fileID: 0}
-  currentLeftRaycastHit:
-    _useConstant: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

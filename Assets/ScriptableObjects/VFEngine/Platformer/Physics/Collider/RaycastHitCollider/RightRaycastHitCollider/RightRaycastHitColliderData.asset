@@ -12,38 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b307b4796a9471eadce472318ae0070, type: 3}
   m_Name: RightRaycastHitColliderData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  rightHitsStorageLength:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentRightHitsStorageIndex:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentRightHitAngle:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentRightHitDistance:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  distanceBetweenRightHitAndRaycastOrigin:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  rightHitConnected:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  isCollidingRight:
-    _useConstant: 0
-    _constantValue: 0
-    _variable: {fileID: 0}
-  currentRightHitCollider:
-    _useConstant: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

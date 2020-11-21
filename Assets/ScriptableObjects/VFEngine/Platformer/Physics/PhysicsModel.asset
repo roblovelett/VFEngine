@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5224a52eda642b593e10cfe6eca49a3, type: 3}
   m_Name: PhysicsModel
   m_EditorClassIdentifier: 
-  p: {fileID: 0}
+  p: {fileID: 11400000, guid: 316669954770f4c44a95cb9dcf7efcf3, type: 2}

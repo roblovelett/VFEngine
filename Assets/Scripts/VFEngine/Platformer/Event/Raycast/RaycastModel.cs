@@ -42,7 +42,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
             r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
             r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
@@ -56,17 +56,18 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
-            r.RuntimeData.SetBoxCollider(r.BoxCollider);
             r.RuntimeData.SetRaycast(r.DisplayWarningsControl, r.DrawRaycastGizmosControl, r.CastRaysOnBothSides,
                 r.PerformSafetyBoxcast, r.NumberOfHorizontalRaysPerSide, r.NumberOfVerticalRaysPerSide,
                 r.DistanceToGroundRayMaximumLength, r.BoundsWidth, r.BoundsHeight, r.RayOffset,
                 r.ObstacleHeightTolerance, r.Bounds, r.BoundsCenter, r.BoundsBottomLeftCorner,
-                r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition, r.BoundsTopLeftCorner, r.BoundsTopRightCorner);
+                r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition, r.BoundsTopLeftCorner, r.BoundsTopRightCorner,
+                r.BoxCollider);
         }
 
         private void InitializeModel()
         {
-            r.Transform = r.RuntimeData.platformer.Transform;
+            r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
             SetRaysParameters();
         }
 

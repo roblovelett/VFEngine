@@ -12,10 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d350ccae306457f89c9a247aeb24bb2, type: 3}
   m_Name: DistanceToGroundRaycastData
   m_EditorClassIdentifier: 
-  character:
-    _useConstant: 0
-    _constantValue: {fileID: 0}
-    _variable: {fileID: 0}
-  distanceToGroundRaycast:
-    _useConstant: 0
-    _variable: {fileID: 0}
+  character: {fileID: 0}

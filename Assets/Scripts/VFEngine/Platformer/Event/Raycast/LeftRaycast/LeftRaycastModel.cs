@@ -1,6 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -36,28 +39,37 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            l.RuntimeData.SetLeftRaycast(l.LeftRayLength, l.LeftRaycastFromBottomOrigin, l.LeftRaycastToTopOrigin, l.CurrentLeftRaycastHit);
+            l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
+            l.RuntimeData.SetLeftRaycast(l.LeftRayLength, l.LeftRaycastFromBottomOrigin, l.LeftRaycastToTopOrigin,
+                l.CurrentLeftRaycastHit);
         }
 
         private void InitializeModel()
         {
-            l.Transform = l.RuntimeData.platformer.Transform;
-            l.DrawRaycastGizmosControl = l.RuntimeData.raycast.DrawRaycastGizmosControl;
-            l.NumberOfHorizontalRaysPerSide = l.RuntimeData.raycast.NumberOfHorizontalRaysPerSide;
-            l.CurrentLeftHitsStorageIndex = l.RuntimeData.leftRaycastHitCollider.CurrentLeftHitsStorageIndex;
-            l.RayOffset = l.RuntimeData.raycast.RayOffset;
-            l.ObstacleHeightTolerance = l.RuntimeData.raycast.ObstacleHeightTolerance;
-            l.BoundsWidth = l.RuntimeData.raycast.BoundsWidth;
-            l.BoundsBottomLeftCorner = l.RuntimeData.raycast.BoundsBottomLeftCorner;
-            l.BoundsBottomRightCorner = l.RuntimeData.raycast.BoundsBottomRightCorner;
-            l.BoundsTopLeftCorner = l.RuntimeData.raycast.BoundsTopLeftCorner;
-            l.BoundsTopRightCorner = l.RuntimeData.raycast.BoundsTopRightCorner;
-            l.Speed = l.RuntimeData.physics.Speed;
-            l.PlatformMask = l.RuntimeData.layerMask.PlatformMask;
-            l.OneWayPlatformMask = l.RuntimeData.layerMask.OneWayPlatformMask;
-            l.MovingOneWayPlatformMask = l.RuntimeData.layerMask.MovingOneWayPlatformMask;
+            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            l.LeftRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .LeftRaycastHitColliderRuntimeData;
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
+            l.DrawRaycastGizmosControl = l.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
+            l.NumberOfHorizontalRaysPerSide = l.RaycastRuntimeData.raycast.NumberOfHorizontalRaysPerSide;
+            l.RayOffset = l.RaycastRuntimeData.raycast.RayOffset;
+            l.ObstacleHeightTolerance = l.RaycastRuntimeData.raycast.ObstacleHeightTolerance;
+            l.BoundsWidth = l.RaycastRuntimeData.raycast.BoundsWidth;
+            l.BoundsBottomLeftCorner = l.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
+            l.BoundsBottomRightCorner = l.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
+            l.BoundsTopLeftCorner = l.RaycastRuntimeData.raycast.BoundsTopLeftCorner;
+            l.BoundsTopRightCorner = l.RaycastRuntimeData.raycast.BoundsTopRightCorner;
+            l.CurrentLeftHitsStorageIndex =
+                l.LeftRaycastHitColliderRuntimeData.leftRaycastHitCollider.CurrentLeftHitsStorageIndex;
+            l.Speed = l.PhysicsRuntimeData.physics.Speed;
+            l.PlatformMask = l.LayerMaskRuntimeData.layerMask.PlatformMask;
+            l.OneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
+            l.MovingOneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
         }
+
         private void SetLeftRaycastFromBottomOrigin()
         {
             l.LeftRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(l.BoundsBottomRightCorner,
@@ -83,8 +95,8 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
-            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength, l.PlatformMask, red,
-                l.DrawRaycastGizmosControl);
+            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -l.Transform.right, l.LeftRayLength,
+                l.PlatformMask, red, l.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentLeftRaycast()

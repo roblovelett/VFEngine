@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -34,15 +35,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeData()
         {
-            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .DistanceToGroundRaycastHitColliderRuntimeData;
             d.RuntimeData.SetDistanceToGroundRaycastHitCollider(d.DistanceToGroundRaycastHitConnected);
         }
 
         private void InitializeModel()
         {
-            d.DistanceToGroundRayMaximumLength = d.RuntimeData.raycast.DistanceToGroundRayMaximumLength;
-            d.DistanceToGroundRaycastHit = d.RuntimeData.distanceToGroundRaycast.DistanceToGroundRaycastHit;
-            d.BoundsHeight = d.RuntimeData.raycast.BoundsHeight;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.DistanceToGroundRaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>()
+                .DistanceToGroundRaycastRuntimeData;
+            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.raycast.DistanceToGroundRayMaximumLength;
+            d.BoundsHeight = d.RaycastRuntimeData.raycast.BoundsHeight;
+            d.DistanceToGroundRaycastHit =
+                d.DistanceToGroundRaycastRuntimeData.distanceToGroundRaycast.DistanceToGroundRaycastHit;
             ResetState();
         }
 

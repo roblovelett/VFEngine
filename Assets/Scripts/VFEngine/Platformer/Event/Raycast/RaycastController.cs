@@ -11,6 +11,8 @@ using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -25,6 +27,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static LeftStickyRaycastData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
     public class RaycastController : MonoBehaviour
     {
@@ -41,6 +44,7 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private StickyRaycastModel stickyRaycastModel;
         [SerializeField] private LeftStickyRaycastModel leftStickyRaycastModel;
         [SerializeField] private RightStickyRaycastModel rightStickyRaycastModel;
+        private readonly RaycastController controller;
 
         #endregion
 
@@ -48,11 +52,25 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Awake()
         {
-            GetModels();
+            InitializeData();
             Async(InitializeModels());
         }
 
-        private void GetModels()
+        private void InitializeData()
+        {
+            RuntimeData = CreateInstance<RaycastRuntimeData>();
+            RuntimeData.SetRaycastController(controller);
+            UpRaycastRuntimeData = CreateInstance<UpRaycastRuntimeData>();
+            RightRaycastRuntimeData = CreateInstance<RightRaycastRuntimeData>();
+            DownRaycastRuntimeData = CreateInstance<DownRaycastRuntimeData>();
+            LeftRaycastRuntimeData = CreateInstance<LeftRaycastRuntimeData>();
+            DistanceToGroundRaycastRuntimeData = CreateInstance<DistanceToGroundRaycastRuntimeData>();
+            StickyRaycastRuntimeData = CreateInstance<StickyRaycastRuntimeData>();
+            RightStickyRaycastRuntimeData = CreateInstance<RightStickyRaycastRuntimeData>();
+            LeftStickyRaycastRuntimeData = CreateInstance<LeftStickyRaycastRuntimeData>();
+        }
+
+        private async UniTaskVoid InitializeModels()
         {
             if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
             if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
@@ -67,10 +85,6 @@ namespace VFEngine.Platformer.Event.Raycast
                 rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
             if (!leftStickyRaycastModel)
                 leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
-        }
-
-        private async UniTaskVoid InitializeModels()
-        {
             var rTask1 = Async(raycastModel.OnInitialize());
             var rTask2 = Async(distanceToGroundRaycastModel.OnInitialize());
             var rTask3 = Async(upRaycastModel.OnInitialize());
@@ -89,6 +103,21 @@ namespace VFEngine.Platformer.Event.Raycast
         #endregion
 
         #region properties
+
+        public RaycastController()
+        {
+            controller = this;
+        }
+
+        public RaycastRuntimeData RuntimeData { get; private set; }
+        public UpRaycastRuntimeData UpRaycastRuntimeData { get; private set; }
+        public RightRaycastRuntimeData RightRaycastRuntimeData { get; private set; }
+        public DownRaycastRuntimeData DownRaycastRuntimeData { get; private set; }
+        public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; private set; }
+        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData { get; private set; }
+        public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; private set; }
+        public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData { get; private set; }
+        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; private set; }
 
         #region public methods
 

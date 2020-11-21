@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1947e5bc8fb14d21aef23c263c460dff, type: 3}
   m_Name: StickyRaycastHitColliderModel
   m_EditorClassIdentifier: 
-  s: {fileID: 0}
+  s: {fileID: 11400000, guid: 065be3a1ba955a74289a57a29ba047be, type: 2}

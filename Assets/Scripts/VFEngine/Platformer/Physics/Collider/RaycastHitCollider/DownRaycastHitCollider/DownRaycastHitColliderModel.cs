@@ -2,6 +2,8 @@
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
@@ -41,7 +43,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializeData()
         {
-            d.RuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+                .DownRaycastHitColliderRuntimeData;
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
             d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
@@ -64,12 +67,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializeModel()
         {
-            d.Transform = d.RuntimeData.platformer.Transform;
-            d.NumberOfVerticalRaysPerSide = d.RuntimeData.raycast.NumberOfVerticalRaysPerSide;
-            d.SavedBelowLayer = d.RuntimeData.layerMask.SavedBelowLayer;
-            d.DownRaycastFromLeft = d.RuntimeData.downRaycast.DownRaycastFromLeft;
-            d.DownRaycastToRight = d.RuntimeData.downRaycast.DownRaycastToRight;
-            d.CurrentDownRaycastHit = d.RuntimeData.downRaycast.CurrentDownRaycastHit;
+            d.PlatformerRuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.DownRaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().DownRaycastRuntimeData;
+            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            d.Transform = d.PlatformerRuntimeData.platformer.Transform;
+            d.NumberOfVerticalRaysPerSide = d.RaycastRuntimeData.raycast.NumberOfVerticalRaysPerSide;
+            d.DownRaycastFromLeft = d.DownRaycastRuntimeData.downRaycast.DownRaycastFromLeft;
+            d.DownRaycastToRight = d.DownRaycastRuntimeData.downRaycast.DownRaycastToRight;
+            d.CurrentDownRaycastHit = d.DownRaycastRuntimeData.downRaycast.CurrentDownRaycastHit;
+            d.SavedBelowLayer = d.LayerMaskRuntimeData.layerMask.SavedBelowLayer;
             InitializeFriction();
             InitializeDownHitsStorage();
             InitializeDownHitsStorageSmallestDistanceIndex();
