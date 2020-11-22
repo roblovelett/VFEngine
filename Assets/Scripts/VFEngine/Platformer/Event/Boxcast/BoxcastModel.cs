@@ -1,13 +1,14 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable UnusedMember.Local
-// ReSharper disable NotAccessedField.Local
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "BoxcastModel", menuName = PlatformerBoxcastModelPath, order = 0)]
     [InlineEditor]
@@ -24,12 +25,6 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
             b.RuntimeData = b.Character.GetComponentNoAllocation<BoxcastController>().RuntimeData;
@@ -37,6 +32,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void InitializeModel()
         {
+            // foobar
         }
 
         #endregion
@@ -47,11 +43,18 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region public methods
 
-        public void OnInitialize()
+        public async UniTaskVoid OnInitializeData()
         {
-            Initialize();
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         #endregion
 
         #endregion

@@ -1,9 +1,11 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
@@ -12,6 +14,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
     using static Vector2;
     using static Color;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
     [InlineEditor]
@@ -27,12 +30,6 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         #endregion
 
         #region private methods
-
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
 
         private void InitializeData()
         {
@@ -90,9 +87,16 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             SetSafetyBoxcast();
         }
 
-        public void OnInitialize()
+        public async UniTaskVoid OnInitializeData()
         {
-            Initialize();
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

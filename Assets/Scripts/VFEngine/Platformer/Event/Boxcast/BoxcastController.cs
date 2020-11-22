@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedVariable
 // ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Event.Boxcast
 {
@@ -10,6 +13,7 @@ namespace VFEngine.Platformer.Event.Boxcast
     using static Debug;
     using static ScriptableObject;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     public class BoxcastController : MonoBehaviour, IController
     {
@@ -27,25 +31,60 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void Awake()
         {
-            InitializeData();
-            InitializeModel();
+            Async(InitializeData());
         }
 
-        private void InitializeData()
+        private void Start()
+        {
+            Async(InitializeModels());
+        }
+
+        private async UniTaskVoid InitializeData()
+        {
+            var t1 = Async(SetBoxcastRuntimeData());
+            var t2 = Async(SetSafetyBoxcastRuntimeData());
+            var t3 = Async(SetBoxcastModel());
+            var t4 = Async(SetSafetyBoxcastModel());
+            var task1 = await (t1, t2, t3, t4);
+            var t5 = Async(boxcastModel.OnInitializeData());
+            var t6 = Async(safetyBoxcastModel.OnInitializeData());
+            var task2 = await (t5, t6);
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetBoxcastRuntimeData()
         {
             RuntimeData = CreateInstance<BoxcastRuntimeData>();
             RuntimeData.SetBoxcastController(controller);
-            SafetyBoxcastRuntimeData = CreateInstance<SafetyBoxcastRuntimeData>();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private void InitializeModel()
+        private async UniTaskVoid SetSafetyBoxcastRuntimeData()
+        {
+            SafetyBoxcastRuntimeData = CreateInstance<SafetyBoxcastRuntimeData>();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetBoxcastModel()
         {
             if (!boxcastModel) boxcastModel = LoadData(BoxcastModelPath) as BoxcastModel;
             Assert(boxcastModel != null, nameof(boxcastModel) + " != null");
-            boxcastModel.OnInitialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid SetSafetyBoxcastModel()
+        {
             if (!safetyBoxcastModel) safetyBoxcastModel = LoadData(SafetyBoxcastModelPath) as SafetyBoxcastModel;
             Assert(safetyBoxcastModel != null, nameof(safetyBoxcastModel) + " != null");
-            safetyBoxcastModel.OnInitialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModels()
+        {
+            var t1 = Async(boxcastModel.OnInitializeModel());
+            var t2 = Async(safetyBoxcastModel.OnInitializeModel());
+            var task1 = await (t1, t2);
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

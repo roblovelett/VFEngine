@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicsModel: {fileID: 11400000, guid: b09d70b3825413b4caf154076f8628d9, type: 2}
+  runtimeData: {fileID: 0}
 --- !u!61 &8095126451442617776
 BoxCollider2D:
   m_ObjectHideFlags: 0

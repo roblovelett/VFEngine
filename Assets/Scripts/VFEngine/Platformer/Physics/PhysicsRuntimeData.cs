@@ -3,7 +3,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics
 {
-    public class PhysicsRuntimeData : ScriptableObject
+    public class PhysicsRuntimeData
     {
         public Physics physics;
 

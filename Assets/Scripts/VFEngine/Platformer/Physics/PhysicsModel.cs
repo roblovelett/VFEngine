@@ -1,12 +1,13 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics
 {
     using static DebugExtensions;
@@ -16,6 +17,7 @@ namespace VFEngine.Platformer.Physics
     using static Vector2;
     using static RigidbodyType2D;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
     [InlineEditor]
@@ -41,7 +43,7 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeData()
         {
-            p.RuntimeData = p.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            p.RuntimeData = p.Character.GetComponent<PhysicsController>().RuntimeData;
             p.Physics2DPushForce = p.Physics2DPushForceSetting;
             p.Physics2DInteractionControl = p.Physics2DInteractionControlSetting;
             p.MaximumVelocity = p.MaximumVelocitySetting;
@@ -604,6 +606,18 @@ namespace VFEngine.Platformer.Physics
         public void OnSlowFall()
         {
             SlowFall();
+        }
+
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

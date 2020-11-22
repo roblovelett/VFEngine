@@ -90,6 +90,7 @@ namespace VFEngine.Tools
         public const string PlatformerLayerMaskDataPath = "VFEngine/Platformer/Layer/Mask/Layer Mask Data";
         public const string PlatformerPhysicsModelPath = "VFEngine/Platformer/Physics/Physics Model";
         public const string PlatformerPhysicsDataPath = "VFEngine/Platformer/Physics/Physics Data";
+        public const string PlatformerPhysicsRuntimeDataPath = "VFEngine/Platformer/Physics/Physics Runtime Data";
         public const string PlatformerPhysicsSettingsPath = "VFEngine/Platformer/Physics/Physics Settings";
 
         public const string PlatformerRaycastHitColliderModelPath =
