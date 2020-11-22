@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8bcbd072d845d88e64ae9b74f6c2ae, type: 3}
-  m_Name: PlatformerModel
+  m_Script: {fileID: 11500000, guid: 69e79b98e44d43d2a5847b55e6431ca5, type: 3}
+  m_Name: PhysicsRuntimeData
   m_EditorClassIdentifier: 
-  p: {fileID: 0}

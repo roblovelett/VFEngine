@@ -3,8 +3,6 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics
 {
     using static Debug;
@@ -19,7 +17,6 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [SerializeField] private PhysicsModel physicsModel;
-        private readonly PhysicsController controller;
 
         #endregion
 
@@ -27,41 +24,29 @@ namespace VFEngine.Platformer.Physics
 
         private void Awake()
         {
-            Async(InitializeData());
+            InitializeData();
         }
 
         private void Start()
         {
-            Async(InitializeModel());
+            InitializeModel();
         }
 
-        private async UniTaskVoid InitializeData()
-        {
-            var t1 = Async(SetPhysicsRuntimeData());
-            var t2 = Async(SetPhysicsModel());
-            var task1 = await (t1, t2);
-            await Async(physicsModel.OnInitializeData());
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid SetPhysicsRuntimeData()
-        {
-            RuntimeData = new PhysicsRuntimeData();
-            RuntimeData.SetPhysicsController(controller);
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid SetPhysicsModel()
+        private void InitializeData()
         {
             if (!physicsModel) physicsModel = LoadData(ModelPath) as PhysicsModel;
             Assert(physicsModel != null, nameof(physicsModel) + " != null");
-            await SetYieldOrSwitchToThreadPoolAsync();
+            physicsModel.OnInitializeData();
         }
 
-        private async UniTaskVoid InitializeModel()
+        private void InitializeModel()
         {
-            await Async(physicsModel.OnInitializeModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
+            physicsModel.OnInitializeModel();
+        }
+
+        private void SetPhysicsRuntimeData(PhysicsRuntimeData data)
+        {
+            RuntimeData = data;
         }
 
         #endregion
@@ -70,16 +55,16 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsRuntimeData RuntimeData { get; private set; }
-
-        public PhysicsController()
-        {
-            controller = this;
-        }
+        public PhysicsRuntimeData RuntimeData { get; private set; } = new PhysicsRuntimeData();
 
         #region public methods
 
         #region physics model
+
+        public void OnSetPhysicsRuntimeData(PhysicsRuntimeData data)
+        {
+            SetPhysicsRuntimeData(data);
+        }
 
         public void SetCurrentGravity()
         {

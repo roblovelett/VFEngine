@@ -1,11 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics
@@ -17,7 +15,6 @@ namespace VFEngine.Platformer.Physics
     using static Vector2;
     using static RigidbodyType2D;
     using static ScriptableObjectExtensions;
-    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
     [InlineEditor]
@@ -26,6 +23,9 @@ namespace VFEngine.Platformer.Physics
         #region fields
 
         #region dependencies
+
+        [LabelText("Character")] [SerializeField]
+        private GameObject character;
 
         [LabelText("Physics Data")] [SerializeField]
         private PhysicsData p = null;
@@ -43,7 +43,9 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeData()
         {
-            p.RuntimeData = p.Character.GetComponent<PhysicsController>().RuntimeData;
+            p = CreateInstance<PhysicsData>();
+            p.Character = character;
+            p.Settings = CreateInstance<PhysicsSettings>();
             p.Physics2DPushForce = p.Physics2DPushForceSetting;
             p.Physics2DInteractionControl = p.Physics2DInteractionControlSetting;
             p.MaximumVelocity = p.MaximumVelocitySetting;
@@ -63,11 +65,15 @@ namespace VFEngine.Platformer.Physics
             p.MovementDirectionThreshold = p.SmallValue;
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
+            p.Controller = p.Character.GetComponentNoAllocation<PhysicsController>();
+            p.RuntimeData = new PhysicsRuntimeData(); //CreateInstance<PhysicsRuntimeData>();
+            p.RuntimeData.SetPhysicsController(p.Controller);
             p.RuntimeData.SetPhysics(p.StickToSlopesControl, p.SafetyBoxcastControl, p.Physics2DInteractionControl,
                 p.IsJumping, p.IsFalling, p.GravityActive, p.SafeSetTransformControl, p.HorizontalMovementDirection,
                 p.FallSlowFactor, p.Physics2DPushForce, p.MaximumSlopeAngle, p.SmallValue, p.Gravity,
                 p.MovementDirectionThreshold, p.CurrentVerticalSpeedFactor, p.Speed, p.MaximumVelocity, p.NewPosition,
                 p.ExternalForce);
+            p.Controller.OnSetPhysicsRuntimeData(p.RuntimeData);
         }
 
         private void InitializeModel()
@@ -608,16 +614,14 @@ namespace VFEngine.Platformer.Physics
             SlowFall();
         }
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnInitializeModel()
+        public void OnInitializeModel()
         {
             InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

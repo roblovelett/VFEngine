@@ -27,9 +27,6 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private GameObject character = null;
-        [SerializeField] private PhysicsSettings settings = null;
-
         #endregion
 
         private const string PhPath = "Physics/";
@@ -52,23 +49,24 @@ namespace VFEngine.Platformer.Physics
         public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; set; }
         public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
         public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public bool HasTransform => Transform;
-        public bool HasSettings => settings;
-        public float Physics2DPushForceSetting => settings.physics2DPushForce;
-        public bool Physics2DInteractionControlSetting => settings.physics2DInteractionControl;
-        public Vector2 MaximumVelocitySetting => settings.maximumVelocity;
-        public AnimationCurve SlopeAngleSpeedFactorSetting => settings.slopeAngleSpeedFactor;
-        public bool SafetyBoxcastControlSetting => settings.safetyBoxcastControl;
-        public float MaximumSlopeAngleSetting => settings.maximumSlopeAngle;
-        public bool StickToSlopesControlSetting => settings.stickToSlopeControl;
-        public bool SafeSetTransformControlSetting => settings.safeSetTransformControl;
-        public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
-        public bool AutomaticGravityControlSetting => settings.automaticGravityControl;
-        public float AscentMultiplierSetting => settings.ascentMultiplier;
-        public float FallMultiplierSetting => settings.fallMultiplier;
-        public float GravitySetting => settings.gravity;
+        public PhysicsSettings Settings { get; set; }
+        public bool HasSettings => Settings;
+        public float Physics2DPushForceSetting => Settings.physics2DPushForce;
+        public bool Physics2DInteractionControlSetting => Settings.physics2DInteractionControl;
+        public Vector2 MaximumVelocitySetting => Settings.maximumVelocity;
+        public AnimationCurve SlopeAngleSpeedFactorSetting => Settings.slopeAngleSpeedFactor;
+        public bool SafetyBoxcastControlSetting => Settings.safetyBoxcastControl;
+        public float MaximumSlopeAngleSetting => Settings.maximumSlopeAngle;
+        public bool StickToSlopesControlSetting => Settings.stickToSlopeControl;
+        public bool SafeSetTransformControlSetting => Settings.safeSetTransformControl;
+        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
+        public bool AutomaticGravityControlSetting => Settings.automaticGravityControl;
+        public float AscentMultiplierSetting => Settings.ascentMultiplier;
+        public float FallMultiplierSetting => Settings.fallMultiplier;
+        public float GravitySetting => Settings.gravity;
         public float MovingPlatformCurrentGravity { get; set; }
         public Vector2 MovingPlatformCurrentSpeed { get; set; }
         public float BoundsWidth { get; set; }
@@ -88,6 +86,7 @@ namespace VFEngine.Platformer.Physics
 
         #endregion
 
+        public PhysicsController Controller { get; set; }
         public PhysicsRuntimeData RuntimeData { get; set; }
         public AnimationCurve SlopeAngleSpeedFactor { get; set; }
         public float CurrentVerticalSpeedFactor { get; set; }
