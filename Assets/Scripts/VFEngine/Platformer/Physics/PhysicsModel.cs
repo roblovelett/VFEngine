@@ -24,11 +24,8 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [LabelText("Character")] [SerializeField]
-        private GameObject character;
-
-        [LabelText("Physics Data")] [SerializeField]
-        private PhysicsData p = null;
+        [LabelText("Character")] [SerializeField] private GameObject character;
+        private PhysicsData p;
 
         #endregion
 
@@ -43,9 +40,7 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeData()
         {
-            p = CreateInstance<PhysicsData>();
-            p.Character = character;
-            p.Settings = CreateInstance<PhysicsSettings>();
+            p = new PhysicsData {Character = character, Settings = CreateInstance<PhysicsSettings>()};
             p.Physics2DPushForce = p.Physics2DPushForceSetting;
             p.Physics2DInteractionControl = p.Physics2DInteractionControlSetting;
             p.MaximumVelocity = p.MaximumVelocitySetting;
@@ -66,7 +61,7 @@ namespace VFEngine.Platformer.Physics
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
             p.Controller = p.Character.GetComponentNoAllocation<PhysicsController>();
-            p.RuntimeData = new PhysicsRuntimeData(); //CreateInstance<PhysicsRuntimeData>();
+            p.RuntimeData = new PhysicsRuntimeData();
             p.RuntimeData.SetPhysicsController(p.Controller);
             p.RuntimeData.SetPhysics(p.StickToSlopesControl, p.SafetyBoxcastControl, p.Physics2DInteractionControl,
                 p.IsJumping, p.IsFalling, p.GravityActive, p.SafeSetTransformControl, p.HorizontalMovementDirection,

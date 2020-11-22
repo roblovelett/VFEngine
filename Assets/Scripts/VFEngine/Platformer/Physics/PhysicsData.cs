@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
@@ -19,9 +18,7 @@ namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
-    [InlineEditor]
-    public class PhysicsData : ScriptableObject
+    public class PhysicsData
     {
         #region fields
 
