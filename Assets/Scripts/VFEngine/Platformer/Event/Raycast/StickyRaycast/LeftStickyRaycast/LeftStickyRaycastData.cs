@@ -12,15 +12,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
 
-    [CreateAssetMenu(fileName = "LeftStickyRaycastData", menuName = PlatformerLeftStickyRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class LeftStickyRaycastData : ScriptableObject
+   
+    public class LeftStickyRaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
 
         #endregion
 
@@ -38,7 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
         public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public float StickyRaycastLength { get; set; }

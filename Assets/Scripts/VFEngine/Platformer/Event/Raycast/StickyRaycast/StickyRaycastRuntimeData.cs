@@ -1,23 +1,28 @@
-﻿using UnityEngine;
-
-namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
+﻿namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
-    public class StickyRaycastRuntimeData : ScriptableObject
+    public class StickyRaycastRuntimeData
     {
-        public StickyRaycast stickyRaycast;
-        
-        public struct StickyRaycast
+        #region properties
+
+        public bool IsCastingLeft { get; private set; }
+        public float StickToSlopesOffsetY { get; private set; }
+        public float StickyRaycastLength { get; private set; }
+
+        #region public methods
+
+        public static StickyRaycastRuntimeData CreateInstance(bool isCastingLeft, float stickToSlopesOffsetY,
+            float stickyRaycastLength)
         {
-            public bool IsCastingLeft { get; set; }
-            public float StickToSlopesOffsetY { get; set; }
-            public float StickyRaycastLength { get; set; }
+            return new StickyRaycastRuntimeData
+            {
+                IsCastingLeft = isCastingLeft,
+                StickToSlopesOffsetY = stickToSlopesOffsetY,
+                StickyRaycastLength = stickyRaycastLength
+            };
         }
-        
-        public void SetStickyRaycast(bool isCastingLeft, float stickToSlopesOffsetY, float stickyRaycastLength)
-        {
-            stickyRaycast.IsCastingLeft = isCastingLeft;
-            stickyRaycast.StickToSlopesOffsetY = stickToSlopesOffsetY;
-            stickyRaycast.StickyRaycastLength = stickyRaycastLength;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

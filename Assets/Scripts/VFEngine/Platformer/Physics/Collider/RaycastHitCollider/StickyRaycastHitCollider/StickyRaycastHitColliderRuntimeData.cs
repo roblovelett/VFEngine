@@ -1,19 +1,20 @@
-﻿using UnityEngine;
-
-namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
+﻿namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
-    public class StickyRaycastHitColliderRuntimeData : ScriptableObject
+    public class StickyRaycastHitColliderRuntimeData
     {
-        public StickyRaycastHitCollider stickyRaycastHitCollider;
-        
-        public struct StickyRaycastHitCollider
+        #region properties
+
+        public float BelowSlopeAngle { get; private set; }
+
+        #region public methods
+
+        public static StickyRaycastHitColliderRuntimeData CreateInstance(float belowSlopeAngle)
         {
-            public float BelowSlopeAngle { get; set; }
+            return new StickyRaycastHitColliderRuntimeData {BelowSlopeAngle = belowSlopeAngle};
         }
-        
-        public void SetStickyRaycastHitCollider(float belowSlopeAngle)
-        {
-            stickyRaycastHitCollider.BelowSlopeAngle = belowSlopeAngle;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

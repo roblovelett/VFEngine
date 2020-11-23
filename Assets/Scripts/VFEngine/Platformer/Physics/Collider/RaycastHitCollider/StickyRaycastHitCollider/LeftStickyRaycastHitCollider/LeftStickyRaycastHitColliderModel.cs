@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -21,33 +20,28 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [LabelText("Left Sticky Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private LeftStickyRaycastHitColliderData l = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .LeftStickyRaycastHitColliderRuntimeData;
-            l.RuntimeData.SetLeftStickyRaycastHitCollider(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
+            l = new LeftStickyRaycastHitColliderData {Character = character};
+            //l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            //    .LeftStickyRaycastHitColliderRuntimeData;
+            //l.RuntimeData.SetLeftStickyRaycastHitCollider(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
         {
-            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             l.LeftStickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
             l.Transform = l.PlatformerRuntimeData.platformer.Transform;
             l.LeftStickyRaycastHit = l.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
-            ResetState();
+            ResetState();*/
         }
 
         private void ResetState()

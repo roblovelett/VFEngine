@@ -1,6 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -19,23 +18,17 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [LabelText("Layer Mask Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         public LayerMaskData l;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-            if (l.DisplayWarnings) GetWarningMessages();
-        }
-
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            l = new LayerMaskData {Character = character};
+            /*l.RuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
             l.PlatformMask = l.PlatformMaskSetting;
             l.MovingPlatformMask = l.MovingPlatformMaskSetting;
             l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
@@ -50,17 +43,17 @@ namespace VFEngine.Platformer.Layer.Mask
             l.RuntimeData.SetLayerMasks(l.SavedBelowLayer, l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask,
                 l.MovingOneWayPlatformMask, l.MidHeightOneWayPlatformMask, l.StairsMask,
                 l.RaysBelowLayerMaskPlatformsWithoutOneWay, l.RaysBelowLayerMaskPlatformsWithoutMidHeight,
-                l.RaysBelowLayerMaskPlatforms);
+                l.RaysBelowLayerMaskPlatforms);*/
         }
 
         private void InitializeModel()
         {
-            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             l.DownRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .DownRaycastHitColliderRuntimeData;
             l.Transform = l.PlatformerRuntimeData.platformer.Transform;
             l.StandingOnLastFrameLayer =
-                l.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.StandingOnLastFrame.layer;
+                l.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.StandingOnLastFrame.layer;*/
         }
 
         private void GetWarningMessages()

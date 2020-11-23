@@ -34,14 +34,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeData()
         {
-            s.RuntimeData = s.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .StickyRaycastHitColliderRuntimeData;
-            s.RuntimeData.SetStickyRaycastHitCollider(s.BelowSlopeAngleLeft);
+            s = new StickyRaycastHitColliderData {Character = character};
+            //s.RuntimeData = s.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            //    .StickyRaycastHitColliderRuntimeData;
+            //s.RuntimeData.SetStickyRaycastHitCollider(s.BelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
         {
-            s.RightStickyRaycastHitColliderRuntimeData = s.Character
+            /*s.RightStickyRaycastHitColliderRuntimeData = s.Character
                 .GetComponentNoAllocation<RaycastHitColliderController>().RightStickyRaycastHitColliderRuntimeData;
             s.LeftStickyRaycastHitColliderRuntimeData = s.Character
                 .GetComponentNoAllocation<RaycastHitColliderController>().LeftStickyRaycastHitColliderRuntimeData;
@@ -49,7 +50,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
                 .BelowSlopeAngleRight;
             s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.leftStickyRaycastHitCollider
                 .BelowSlopeAngleLeft;
-            InitializeBelowSlopeAngle();
+            InitializeBelowSlopeAngle();*/
         }
 
         private void ResetState()

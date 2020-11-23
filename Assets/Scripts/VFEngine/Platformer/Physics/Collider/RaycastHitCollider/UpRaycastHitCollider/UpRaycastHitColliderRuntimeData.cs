@@ -2,31 +2,38 @@
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
-    public class UpRaycastHitColliderRuntimeData : ScriptableObject
+    public class UpRaycastHitColliderRuntimeData
     {
-        public UpRaycastHitCollider upRaycastHitCollider;
-        public struct UpRaycastHitCollider
-        {
-            public bool UpHitConnected { get; set; }
-            public bool IsCollidingAbove { get; set; }
-            public bool WasTouchingCeilingLastFrame { get; set; }
-            public int UpHitsStorageLength { get; set; }
-            public int UpHitsStorageCollidingIndex { get; set; }
-            public int CurrentUpHitsStorageIndex { get; set; }
-            public RaycastHit2D RaycastUpHitAt { get; set; }
-        }
-        
-        public void SetUpRaycastHitCollider(bool upHitConnected, bool isCollidingAbove,
+        #region properties
+
+        public bool UpHitConnected { get; private set; }
+        public bool IsCollidingAbove { get; private set; }
+        public bool WasTouchingCeilingLastFrame { get; private set; }
+        public int UpHitsStorageLength { get; private set; }
+        public int UpHitsStorageCollidingIndex { get; private set; }
+        public int CurrentUpHitsStorageIndex { get; private set; }
+        public RaycastHit2D RaycastUpHitAt { get; private set; }
+
+        #region public methods
+
+        public static UpRaycastHitColliderRuntimeData CreateInstance(bool upHitConnected, bool isCollidingAbove,
             bool wasTouchingCeilingLastFrame, int upHitsStorageLength, int upHitsStorageCollidingIndex,
             int currentUpHitsStorageIndex, RaycastHit2D raycastUpHitAt)
         {
-            upRaycastHitCollider.UpHitConnected = upHitConnected;
-            upRaycastHitCollider.IsCollidingAbove = isCollidingAbove;
-            upRaycastHitCollider.WasTouchingCeilingLastFrame = wasTouchingCeilingLastFrame;
-            upRaycastHitCollider.UpHitsStorageLength = upHitsStorageLength;
-            upRaycastHitCollider.UpHitsStorageCollidingIndex = upHitsStorageCollidingIndex;
-            upRaycastHitCollider.CurrentUpHitsStorageIndex = currentUpHitsStorageIndex;
-            upRaycastHitCollider.RaycastUpHitAt = raycastUpHitAt;
+            return new UpRaycastHitColliderRuntimeData
+            {
+                UpHitConnected = upHitConnected,
+                IsCollidingAbove = isCollidingAbove,
+                WasTouchingCeilingLastFrame = wasTouchingCeilingLastFrame,
+                UpHitsStorageLength = upHitsStorageLength,
+                UpHitsStorageCollidingIndex = upHitsStorageCollidingIndex,
+                CurrentUpHitsStorageIndex = currentUpHitsStorageIndex,
+                RaycastUpHitAt = raycastUpHitAt
+            };
         }
+
+        #endregion
+
+        #endregion
     }
 }

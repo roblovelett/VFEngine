@@ -12,16 +12,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "UpRaycastHitColliderData", menuName = PlatformerUpRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class UpRaycastHitColliderData : ScriptableObject
+    
+    public class UpRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private GameObject character = null;
+        
 
         #endregion
 
@@ -37,7 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }
         public RaycastHit2D CurrentUpRaycastHit { get; set; }

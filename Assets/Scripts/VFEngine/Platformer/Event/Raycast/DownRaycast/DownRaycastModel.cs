@@ -25,8 +25,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [LabelText("Down Raycast Data")] [SerializeField]
-        private DownRaycastData d = null;
+        [SerializeField] private GameObject character;
+        private DownRaycastData d;
 
         #endregion
 
@@ -40,34 +40,32 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void InitializeData()
         {
-            d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().DownRaycastRuntimeData;
-            d.RuntimeData.SetDownRaycast(d.DownRayLength, d.CurrentDownRaycastOrigin, d.DownRaycastFromLeft,
-                d.DownRaycastToRight, d.CurrentDownRaycastHit);
+            d = new DownRaycastData {Character = character};
+            d.RuntimeData = DownRaycastRuntimeData.CreateInstance(d.DownRayLength, d.CurrentDownRaycastOrigin,
+                d.DownRaycastFromLeft, d.DownRaycastToRight, d.CurrentDownRaycastHit);
         }
 
         private void InitializeModel()
         {
-            d.PlatformerRuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             d.DownRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .DownRaycastHitColliderRuntimeData;
-            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            d.Transform = d.PlatformerRuntimeData.platformer.Transform;
-            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            d.NumberOfVerticalRaysPerSide = d.RaycastRuntimeData.raycast.NumberOfVerticalRaysPerSide;
-            d.RayOffset = d.RaycastRuntimeData.raycast.RayOffset;
-            d.BoundsHeight = d.RaycastRuntimeData.raycast.BoundsHeight;
-            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
-            d.BoundsBottomRightCorner = d.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
-            d.BoundsTopLeftCorner = d.RaycastRuntimeData.raycast.BoundsTopLeftCorner;
-            d.BoundsTopRightCorner = d.RaycastRuntimeData.raycast.BoundsTopRightCorner;
-            d.CurrentDownHitsStorageIndex =
-                d.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.CurrentDownHitsStorageIndex;
+            d.Transform = d.PhysicsRuntimeData.Transform;
             d.NewPosition = d.PhysicsRuntimeData.NewPosition;
+            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.DrawRaycastGizmosControl;
+            d.NumberOfVerticalRaysPerSide = d.RaycastRuntimeData.NumberOfVerticalRaysPerSide;
+            d.RayOffset = d.RaycastRuntimeData.RayOffset;
+            d.BoundsHeight = d.RaycastRuntimeData.BoundsHeight;
+            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.BoundsBottomLeftCorner;
+            d.BoundsBottomRightCorner = d.RaycastRuntimeData.BoundsBottomRightCorner;
+            d.BoundsTopLeftCorner = d.RaycastRuntimeData.BoundsTopLeftCorner;
+            d.BoundsTopRightCorner = d.RaycastRuntimeData.BoundsTopRightCorner;
+            d.CurrentDownHitsStorageIndex = d.DownRaycastHitColliderRuntimeData.CurrentDownHitsStorageIndex;
             d.RaysBelowLayerMaskPlatformsWithoutOneWay =
-                d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay;
-            d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+                d.LayerMaskRuntimeData.RaysBelowLayerMaskPlatformsWithoutOneWay;
+            d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
@@ -124,7 +122,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public DownRaycastRuntimeData RuntimeData => d.RuntimeData;
 
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();

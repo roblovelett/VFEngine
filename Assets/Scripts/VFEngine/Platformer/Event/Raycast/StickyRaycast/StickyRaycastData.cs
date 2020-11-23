@@ -16,17 +16,13 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     using static ScriptableObjectExtensions;
     using static RaycastData;
 
-    [CreateAssetMenu(fileName = "StickyRaycastData", menuName = PlatformerStickyRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class StickyRaycastData : ScriptableObject
+   
+    public class StickyRaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
-        [SerializeField] private StickyRaycastSettings settings = null;
-
+        
         #endregion
 
         private const string ModelAssetPath = "StickyRaycastModel.asset";
@@ -37,7 +33,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
+        public StickyRaycastSettings Settings { get; set; }
         public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData { get; set; }
@@ -45,7 +42,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
         public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; set; }
         public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; set; }
-        public bool HasSettings => settings;
+        public bool HasSettings => Settings;
         public bool StickToSlopesControl { get; set; }
         public bool DisplayWarningsControl { get; set; }
         public float BelowSlopeAngle { get; set; }
@@ -64,8 +61,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public bool IsCastingLeft { get; set; }
         public float StickToSlopesOffsetY { get; set; }
         public float StickyRaycastLength { get; set; }
-        public float StickToSlopesOffsetYSetting => settings.stickToSlopesOffsetY;
-        public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
+        public float StickToSlopesOffsetYSetting => Settings.stickToSlopesOffsetY;
+        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
         public static string StickyRaycastPath { get; } = $"{RaycastPath}StickyRaycast/";
 
         public static readonly string StickyRaycastModelPath =

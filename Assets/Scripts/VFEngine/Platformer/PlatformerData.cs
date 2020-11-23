@@ -25,18 +25,14 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
-    [InlineEditor]
-    public class PlatformerData : ScriptableObject
+    
+    public class PlatformerData
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private GameObject character = null;
-        [SerializeField] private PlatformerSettings settings = null;
-
+        
         #endregion
 
         private const string ModelAssetPath = "PlatformerModel.asset";
@@ -47,9 +43,10 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        public GameObject Character => character;
-        public bool HasSettings => settings;
-        public bool DisplayWarnings => settings.displayWarningsControl;
+        public GameObject Character { get; set; }
+        public PlatformerSettings Settings { get; set; }
+        public bool HasSettings => Settings;
+        public bool DisplayWarnings => Settings.displayWarningsControl;
         public PhysicsController Physics { get; set; }
         public RaycastController Raycast { get; set; }
         public RaycastHitColliderController RaycastHitCollider { get; set; }

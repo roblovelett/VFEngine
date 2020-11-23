@@ -10,17 +10,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
     using static StickyRaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LeftStickyRaycastHitColliderData",
-        menuName = PlatformerLeftStickyRaycastHitColliderDataPath, order = 0)]
-    [InlineEditor]
-    public class LeftStickyRaycastHitColliderData : ScriptableObject
+    
+    public class LeftStickyRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private GameObject character = null;
-
+        
         #endregion
 
         private static readonly string LeftStickyRaycastHitColliderPath =
@@ -37,7 +34,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public RaycastHit2D LeftStickyRaycastHit { get; set; }
 

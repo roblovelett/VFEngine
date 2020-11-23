@@ -11,17 +11,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderData",
-        menuName = PlatformerDistanceToGroundRaycastHitColliderDataPath, order = 0)]
-    [InlineEditor]
-    public class DistanceToGroundRaycastHitColliderData : ScriptableObject
+    
+    public class DistanceToGroundRaycastHitColliderData
     {
         #region fields
 
         #region depenedencies
-
-        [SerializeField] private GameObject character = null;
-
+        
         #endregion
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =
@@ -38,7 +34,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public float DistanceToGroundRayMaximumLength { get; set; }
         public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
         public float BoundsHeight { get; set; }

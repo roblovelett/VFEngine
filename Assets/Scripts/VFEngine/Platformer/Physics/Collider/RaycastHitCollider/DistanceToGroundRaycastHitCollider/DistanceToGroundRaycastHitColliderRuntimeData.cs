@@ -1,19 +1,23 @@
-﻿using UnityEngine;
-
-namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
+﻿namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
-    public class DistanceToGroundRaycastHitColliderRuntimeData : ScriptableObject
+    public class DistanceToGroundRaycastHitColliderRuntimeData
     {
-        public DistanceToGroundRaycastHitCollider distanceToGroundRaycastHitCollider;
+        #region properties
 
-        public struct DistanceToGroundRaycastHitCollider
+        public bool DistanceToGroundRaycastHitConnected { get; private set; }
+
+        #region public methods
+
+        public static DistanceToGroundRaycastHitColliderRuntimeData CreateInstance(bool hitConnected)
         {
-            public bool DistanceToGroundRaycastHitConnected { get; set; }
+            return new DistanceToGroundRaycastHitColliderRuntimeData
+            {
+                DistanceToGroundRaycastHitConnected = hitConnected
+            };
         }
 
-        public void SetDistanceToGroundRaycastHitCollider(bool hitConnected)
-        {
-            distanceToGroundRaycastHitCollider.DistanceToGroundRaycastHitConnected = hitConnected;
-        }
+        #endregion
+
+        #endregion
     }
 }

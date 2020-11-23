@@ -1,11 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -31,7 +27,7 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [LabelText("Platformer Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private PlatformerData p = null;
 
         #endregion
@@ -40,22 +36,16 @@ namespace VFEngine.Platformer
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-            if (!p.DisplayWarnings) GetWarningMessages();
-        }
-
         private void InitializeData()
         {
-            p.RuntimeData = CreateInstance<PlatformerRuntimeData>();
-            p.RuntimeData.SetPlatformer(p.Character.transform);
+            p = new PlatformerData {Character = character};
+            //p.RuntimeData = CreateInstance<PlatformerRuntimeData>();
+            //p.RuntimeData.SetPlatformer(p.Character.transform);
         }
 
         private void InitializeModel()
         {
-            p.RaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            /*p.RaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             p.UpRaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
             p.DistanceToGroundRaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>()
                 .DistanceToGroundRaycastRuntimeData;
@@ -184,7 +174,7 @@ namespace VFEngine.Platformer
             p.MidHeightOneWayPlatformMask = p.LayerMaskRuntimeData.layerMask.MidHeightOneWayPlatformMask;
             p.StairsMask = p.LayerMaskRuntimeData.layerMask.StairsMask;
             p.OneWayPlatformMask = p.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
-            p.MovingOneWayPlatformMask = p.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
+            p.MovingOneWayPlatformMask = p.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;*/
         }
 
         private void GetWarningMessages()

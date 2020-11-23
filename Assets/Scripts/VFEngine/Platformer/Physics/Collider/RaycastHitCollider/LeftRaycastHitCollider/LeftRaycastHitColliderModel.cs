@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,32 +21,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [LabelText("Left Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private LeftRaycastHitColliderData l = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            l = new LeftRaycastHitColliderData {Character = character};
+            /*l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .LeftRaycastHitColliderRuntimeData;
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
             l.RuntimeData.SetLeftRaycastHitCollider(l.LeftHitConnected, l.IsCollidingLeft, l.LeftHitsStorageLength,
                 l.CurrentLeftHitsStorageIndex, l.CurrentLeftHitAngle, l.CurrentLeftHitDistance,
-                l.DistanceBetweenLeftHitAndRaycastOrigin, l.CurrentLeftHitCollider);
+                l.DistanceBetweenLeftHitAndRaycastOrigin, l.CurrentLeftHitCollider);*/
         }
 
         private void InitializeModel()
         {
-            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             l.LeftRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
             l.Transform = l.PlatformerRuntimeData.platformer.Transform;
@@ -57,7 +51,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.LeftRaycastToTopOrigin = l.LeftRaycastRuntimeData.leftRaycast.LeftRaycastToTopOrigin;
             InitializeLeftHitsStorage();
             InitializeCurrentLeftHitsStorageIndex();
-            ResetState();
+            ResetState();*/
         }
 
         private void InitializeLeftHitsStorage()

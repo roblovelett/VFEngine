@@ -12,17 +12,12 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "DownRaycastData", menuName = PlatformerDownRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class DownRaycastData : ScriptableObject
+    public class DownRaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
-
+        
         #endregion
 
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";
@@ -34,7 +29,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }

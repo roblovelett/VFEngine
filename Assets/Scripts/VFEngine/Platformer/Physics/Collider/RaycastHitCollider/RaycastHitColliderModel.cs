@@ -1,8 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,33 +20,28 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        [LabelText("Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private RaycastHitColliderData r = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>().RuntimeData;
-            r.RuntimeData.SetRaycastHitCollider(r.IgnoredCollider, r.ContactList);
+            r = new RaycastHitColliderData {Character = character};
+            //r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>().RuntimeData;
+            //r.RuntimeData.SetRaycastHitCollider(r.IgnoredCollider, r.ContactList);
         }
 
         private void InitializeModel()
         {
-            r.RightRaycastRuntimeData =
+            /*r.RightRaycastRuntimeData =
                 r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
             r.LeftRaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
             r.CurrentRightRaycastHit = r.RightRaycastRuntimeData.rightRaycast.CurrentRightRaycastHit;
             r.CurrentLeftRaycastHit = r.LeftRaycastRuntimeData.leftRaycast.CurrentLeftRaycastHit;
-            ClearContactList();
+            ClearContactList();*/
         }
 
         private void AddRightHitToContactList()
@@ -83,7 +76,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region properties
 
         public RaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
-        
+
         #region public methods
 
         public void OnClearContactList()

@@ -13,15 +13,12 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RightRaycastData", menuName = PlatformerRightRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class RightRaycastData : ScriptableObject
+    
+    public class RightRaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
 
         #endregion
 
@@ -34,7 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }

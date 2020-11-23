@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
 
@@ -10,16 +11,12 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
-    [InlineEditor]
-    public class LayerMaskData : ScriptableObject
+    
+    public class LayerMaskData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
-        [SerializeField] private LayerMaskSettings settings = null;
 
         #endregion
 
@@ -32,19 +29,20 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public LayerMaskSettings Settings { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public int StandingOnLastFrameLayer { get; set; }
-        public bool HasSettings => settings;
-        public bool DisplayWarnings => settings.displayWarningsControl;
-        public LayerMask PlatformMaskSetting => settings.platformMask;
-        public LayerMask MovingPlatformMaskSetting => settings.movingPlatformMask;
-        public LayerMask OneWayPlatformMaskSetting => settings.oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMaskSetting => settings.movingOneWayPlatformMask;
-        public LayerMask MidHeightOneWayPlatformMaskSetting => settings.midHeightOneWayPlatformMask;
-        public LayerMask StairsMaskSetting => settings.stairsMask;
+        public bool HasSettings => Settings;
+        public bool DisplayWarnings => Settings.displayWarningsControl;
+        public LayerMask PlatformMaskSetting => Settings.platformMask;
+        public LayerMask MovingPlatformMaskSetting => Settings.movingPlatformMask;
+        public LayerMask OneWayPlatformMaskSetting => Settings.oneWayPlatformMask;
+        public LayerMask MovingOneWayPlatformMaskSetting => Settings.movingOneWayPlatformMask;
+        public LayerMask MidHeightOneWayPlatformMaskSetting => Settings.midHeightOneWayPlatformMask;
+        public LayerMask StairsMaskSetting => Settings.stairsMask;
 
         #endregion
 

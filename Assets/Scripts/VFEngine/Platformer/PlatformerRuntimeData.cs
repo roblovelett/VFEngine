@@ -1,33 +1,21 @@
-﻿using UnityEngine;
-
+﻿
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer
 {
-    public class PlatformerRuntimeData : ScriptableObject
+    public class PlatformerRuntimeData
     {
         #region properties
 
-        public Platformer platformer;
-
-        public struct Platformer
-        {
-            public PlatformerController Controller { get; set; }
-            public Transform Transform { get; set; }
-        }
-
-        #endregion
+        public PlatformerController Controller { get; private set; }
 
         #region public methods
 
-        public void SetPlatformerController(PlatformerController controller)
+        private static PlatformerRuntimeData CreateInstance(PlatformerController controller)
         {
-            platformer.Controller = controller;
+            return new PlatformerRuntimeData {Controller = controller};
         }
 
-        public void SetPlatformer(Transform transform)
-        {
-            platformer.Transform = transform;
-        }
+        #endregion
 
         #endregion
     }

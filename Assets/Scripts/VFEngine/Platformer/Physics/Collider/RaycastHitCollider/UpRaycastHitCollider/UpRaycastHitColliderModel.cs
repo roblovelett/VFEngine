@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -20,32 +19,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [LabelText("Up Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private UpRaycastHitColliderData u = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            u = new UpRaycastHitColliderData {Character = character};
+            /*u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .UpRaycastHitColliderRuntimeData;
             u.WasTouchingCeilingLastFrame = false;
             u.UpHitsStorageLength = u.UpHitsStorage.Length;
             u.RuntimeData.SetUpRaycastHitCollider(u.UpHitConnected, u.IsCollidingAbove, u.WasTouchingCeilingLastFrame,
-                u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex, u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);
+                u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex, u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);*/
         }
 
         private void InitializeModel()
         {
-            u.PlatformerRuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*u.PlatformerRuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             u.UpRaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
             u.Transform = u.PlatformerRuntimeData.platformer.Transform;
@@ -54,7 +48,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
             InitializeUpHitsStorage();
-            ResetState();
+            ResetState();*/
         }
 
         private void InitializeUpHitConnected()

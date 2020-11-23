@@ -24,29 +24,24 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region dependencies
 
-        [LabelText("Left Raycast Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private LeftRaycastData l = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
-            l.RuntimeData.SetLeftRaycast(l.LeftRayLength, l.LeftRaycastFromBottomOrigin, l.LeftRaycastToTopOrigin,
-                l.CurrentLeftRaycastHit);
+            l = new LeftRaycastData { Character = character };
+            //l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
+            //l.RuntimeData.SetLeftRaycast(l.LeftRayLength, l.LeftRaycastFromBottomOrigin, l.LeftRaycastToTopOrigin,
+            //    l.CurrentLeftRaycastHit);
         }
 
         private void InitializeModel()
         {
-            l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             l.LeftRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .LeftRaycastHitColliderRuntimeData;
@@ -67,7 +62,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             l.Speed = l.PhysicsRuntimeData.Speed;
             l.PlatformMask = l.LayerMaskRuntimeData.layerMask.PlatformMask;
             l.OneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
-            l.MovingOneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
+            l.MovingOneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;*/
         }
 
         private void SetLeftRaycastFromBottomOrigin()

@@ -12,16 +12,11 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "LeftRaycastData", menuName = PlatformerLeftRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class LeftRaycastData : ScriptableObject
+    public class LeftRaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
 
         #endregion
 
@@ -34,7 +29,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }

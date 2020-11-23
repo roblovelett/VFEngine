@@ -16,16 +16,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "DownRaycastHitColliderData", menuName = PlatformerDownRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class DownRaycastHitColliderData : ScriptableObject
+    
+    public class DownRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
 
         #endregion
 
@@ -44,7 +40,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public DownRaycastRuntimeData DownRaycastRuntimeData { get; set; }
         public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
         public int NumberOfVerticalRaysPerSide { get; set; }
         public int SavedBelowLayer { get; set; }

@@ -33,13 +33,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        private async UniTaskVoid Initialize()
+        /*private async UniTaskVoid Initialize()
         {
             InitializeData();
             InitializeModel();
             if (r.DisplayWarningsControl) GetWarningMessages();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         private void InitializeData()
         {

@@ -2,45 +2,48 @@
 
 namespace VFEngine.Platformer.Layer.Mask
 {
-    public class LayerMaskRuntimeData : ScriptableObject
+    public class LayerMaskRuntimeData
     {
-        public LayerMasks layerMask;
-        
-        public struct LayerMasks
+        #region properties
+
+        public LayerMaskController LayerMaskController { get; private set; }
+        public int SavedBelowLayer { get; private set; }
+        public LayerMask PlatformMask { get; private set; }
+        public LayerMask MovingPlatformMask { get; private set; }
+        public LayerMask OneWayPlatformMask { get; private set; }
+        public LayerMask MovingOneWayPlatformMask { get; private set; }
+        public LayerMask MidHeightOneWayPlatformMask { get; private set; }
+        public LayerMask StairsMask { get; private set; }
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay { get; private set; }
+        public LayerMask RaysBelowLayerMaskPlatformsWithoutMidHeight { get; private set; }
+        public LayerMask RaysBelowLayerMaskPlatforms { get; private set; }
+
+        #region public methods
+
+        public static LayerMaskRuntimeData CreateInstance(LayerMaskController controller, int savedBelowLayer,
+            LayerMask platformMask, LayerMask movingPlatformMask, LayerMask oneWayPlatformMask,
+            LayerMask movingOneWayPlatformMask, LayerMask midHeightOneWayPlatformMask, LayerMask stairsMask,
+            LayerMask raysBelowLayerMaskPlatformsWithoutOneWay, LayerMask raysBelowLayerMaskPlatformsWithoutMidHeight,
+            LayerMask raysBelowLayerMaskPlatforms)
         {
-            public LayerMaskController LayerMaskController { get; set; }
-            public int SavedBelowLayer { get; set; }
-            public LayerMask PlatformMask { get; set; }
-            public LayerMask MovingPlatformMask { get; set; }
-            public LayerMask OneWayPlatformMask { get; set; }
-            public LayerMask MovingOneWayPlatformMask { get; set; }
-            public LayerMask MidHeightOneWayPlatformMask { get; set; }
-            public LayerMask StairsMask { get; set; }
-            public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay { get; set; }
-            public LayerMask RaysBelowLayerMaskPlatformsWithoutMidHeight { get; set; }
-            public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
+            return new LayerMaskRuntimeData
+            {
+                LayerMaskController = controller,
+                SavedBelowLayer = savedBelowLayer,
+                PlatformMask = platformMask,
+                MovingPlatformMask = movingPlatformMask,
+                OneWayPlatformMask = oneWayPlatformMask,
+                MovingOneWayPlatformMask = movingOneWayPlatformMask,
+                MidHeightOneWayPlatformMask = midHeightOneWayPlatformMask,
+                StairsMask = stairsMask,
+                RaysBelowLayerMaskPlatformsWithoutOneWay = raysBelowLayerMaskPlatformsWithoutOneWay,
+                RaysBelowLayerMaskPlatformsWithoutMidHeight = raysBelowLayerMaskPlatformsWithoutMidHeight,
+                RaysBelowLayerMaskPlatforms = raysBelowLayerMaskPlatforms
+            };
         }
-        
-        public void SetLayerMaskController(LayerMaskController controller)
-        {
-            layerMask.LayerMaskController = controller;
-        }
-        
-        public void SetLayerMasks(int savedBelowLayer, LayerMask platformMask, LayerMask movingPlatformMask,
-            LayerMask oneWayPlatformMask, LayerMask movingOneWayPlatformMask, LayerMask midHeightOneWayPlatformMask,
-            LayerMask stairsMask, LayerMask raysBelowLayerMaskPlatformsWithoutOneWay,
-            LayerMask raysBelowLayerMaskPlatformsWithoutMidHeight, LayerMask raysBelowLayerMaskPlatforms)
-        {
-            layerMask.SavedBelowLayer = savedBelowLayer;
-            layerMask.PlatformMask = platformMask;
-            layerMask.MovingPlatformMask = movingPlatformMask;
-            layerMask.OneWayPlatformMask = oneWayPlatformMask;
-            layerMask.MovingOneWayPlatformMask = movingOneWayPlatformMask;
-            layerMask.MidHeightOneWayPlatformMask = midHeightOneWayPlatformMask;
-            layerMask.StairsMask = stairsMask;
-            layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay = raysBelowLayerMaskPlatformsWithoutOneWay;
-            layerMask.RaysBelowLayerMaskPlatformsWithoutMidHeight = raysBelowLayerMaskPlatformsWithoutMidHeight;
-            layerMask.RaysBelowLayerMaskPlatforms = raysBelowLayerMaskPlatforms;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

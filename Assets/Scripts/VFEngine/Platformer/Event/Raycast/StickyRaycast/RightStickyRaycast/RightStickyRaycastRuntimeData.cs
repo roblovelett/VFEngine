@@ -2,22 +2,29 @@
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
-    public class RightStickyRaycastRuntimeData : ScriptableObject
+    public class RightStickyRaycastRuntimeData
     {
-        public RightStickyRaycast rightStickyRaycast;
-        public struct RightStickyRaycast
+        #region properties
+
+        public float RightStickyRaycastLength { get; private set; }
+        public float RightStickyRaycastOriginY { get; private set; }
+        public RaycastHit2D RightStickyRaycastHit { get; private set; }
+
+        #region public methods
+
+        public static RightStickyRaycastRuntimeData CreateInstance(float rightStickyRaycastLength,
+            float rightStickyRaycastOriginY, RaycastHit2D rightStickyRaycastHit)
         {
-            public float RightStickyRaycastLength { get; set; }
-            public float RightStickyRaycastOriginY { get; set; }
-            public RaycastHit2D RightStickyRaycastHit { get; set; }
+            return new RightStickyRaycastRuntimeData
+            {
+                RightStickyRaycastLength = rightStickyRaycastLength,
+                RightStickyRaycastOriginY = rightStickyRaycastOriginY,
+                RightStickyRaycastHit = rightStickyRaycastHit
+            };
         }
-        
-        public void SetRightStickyRaycast(float rightStickyRaycastLength, float rightStickyRaycastOriginY,
-            RaycastHit2D rightStickyRaycastHit)
-        {
-            rightStickyRaycast.RightStickyRaycastLength = rightStickyRaycastLength;
-            rightStickyRaycast.RightStickyRaycastOriginY = rightStickyRaycastOriginY;
-            rightStickyRaycast.RightStickyRaycastHit = rightStickyRaycastHit;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

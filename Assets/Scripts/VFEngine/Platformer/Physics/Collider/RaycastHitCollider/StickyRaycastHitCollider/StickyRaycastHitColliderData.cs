@@ -21,7 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character = null;
+        
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; set; }
         public float BelowSlopeAngleRight { get; set; }
         public float BelowSlopeAngleLeft { get; set; }
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
 
         #endregion
 

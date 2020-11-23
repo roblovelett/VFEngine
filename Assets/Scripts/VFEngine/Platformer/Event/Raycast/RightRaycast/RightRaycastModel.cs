@@ -1,9 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -24,29 +21,24 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [LabelText("Right Raycast Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private RightRaycastData r = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
-            r.RuntimeData.SetRightRaycast(r.RightRayLength, r.RightRaycastFromBottomOrigin, r.RightRaycastToTopOrigin,
-                r.CurrentRightRaycastHit);
+            r = new RightRaycastData {Character = character};
+            //r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
+            //r.RuntimeData.SetRightRaycast(r.RightRayLength, r.RightRaycastFromBottomOrigin, r.RightRaycastToTopOrigin,
+            //    r.CurrentRightRaycastHit);
         }
 
         private void InitializeModel()
         {
-            r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             r.RightRaycastHitColliderRuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .RightRaycastHitColliderRuntimeData;
@@ -67,7 +59,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             r.Speed = r.PhysicsRuntimeData.Speed;
             r.PlatformMask = r.LayerMaskRuntimeData.layerMask.PlatformMask;
             r.OneWayPlatformMask = r.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
-            r.MovingOneWayPlatformMask = r.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
+            r.MovingOneWayPlatformMask = r.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;*/
         }
 
         private void SetRightRaycastFromBottomOrigin()
@@ -114,7 +106,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public RightRaycastRuntimeData RuntimeData => r.RuntimeData;
 
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();

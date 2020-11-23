@@ -2,25 +2,29 @@
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
-    public class RaycastHitColliderRuntimeData : ScriptableObject
+    public class RaycastHitColliderRuntimeData
     {
-        public RaycastHitCollider raycastHitCollider;
-        public struct RaycastHitCollider
+        #region properties
+
+        public RaycastHitColliderController RaycastHitColliderController { get; private set; }
+        public Collider2D IgnoredCollider { get; private set; }
+        public RaycastHitColliderContactList ContactList { get; private set; }
+
+        #region public methods
+
+        public static RaycastHitColliderRuntimeData CreateInstance(RaycastHitColliderController controller,
+            Collider2D ignoredCollider, RaycastHitColliderContactList contactList)
         {
-            public RaycastHitColliderController RaycastHitColliderController { get; set; }
-            public Collider2D IgnoredCollider { get; set; }
-            public RaycastHitColliderContactList ContactList { get; set; }
+            return new RaycastHitColliderRuntimeData
+            {
+                RaycastHitColliderController = controller,
+                IgnoredCollider = ignoredCollider,
+                ContactList = contactList
+            };
         }
-        
-        public void SetRaycastHitColliderController(RaycastHitColliderController controller)
-        {
-            raycastHitCollider.RaycastHitColliderController = controller;
-        }
-        
-        public void SetRaycastHitCollider(Collider2D ignoredCollider, RaycastHitColliderContactList contactList)
-        {
-            raycastHitCollider.IgnoredCollider = ignoredCollider;
-            raycastHitCollider.ContactList = contactList;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

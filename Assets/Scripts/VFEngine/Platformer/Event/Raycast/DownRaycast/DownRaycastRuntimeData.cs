@@ -2,27 +2,33 @@
 
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
-    public class DownRaycastRuntimeData : ScriptableObject
+    public class DownRaycastRuntimeData
     {
-        public DownRaycast downRaycast;
-        
-        public struct DownRaycast
+        #region properties
+
+        public float DownRayLength { get; private set; }
+        public Vector2 CurrentDownRaycastOrigin { get; private set; }
+        public Vector2 DownRaycastFromLeft { get; private set; }
+        public Vector2 DownRaycastToRight { get; private set; }
+        public RaycastHit2D CurrentDownRaycastHit { get; private set; }
+
+        #region public methods
+
+        public static DownRaycastRuntimeData CreateInstance(float downRayLength, Vector2 currentDownRaycastOrigin,
+            Vector2 downRaycastFromLeft, Vector2 downRaycastToRight, RaycastHit2D currentDownRaycastHit)
         {
-            public float DownRayLength { get; set; }
-            public Vector2 CurrentDownRaycastOrigin { get; set; }
-            public Vector2 DownRaycastFromLeft { get; set; }
-            public Vector2 DownRaycastToRight { get; set; }
-            public RaycastHit2D CurrentDownRaycastHit { get; set; }
+            return new DownRaycastRuntimeData
+            {
+                DownRayLength = downRayLength,
+                CurrentDownRaycastOrigin = currentDownRaycastOrigin,
+                DownRaycastFromLeft = downRaycastFromLeft,
+                DownRaycastToRight = downRaycastToRight,
+                CurrentDownRaycastHit = currentDownRaycastHit
+            };
         }
-        
-        public void SetDownRaycast(float downRayLength, Vector2 currentDownRaycastOrigin, Vector2 downRaycastFromLeft,
-            Vector2 downRaycastToRight, RaycastHit2D currentDownRaycastHit)
-        {
-            downRaycast.DownRayLength = downRayLength;
-            downRaycast.CurrentDownRaycastOrigin = currentDownRaycastOrigin;
-            downRaycast.DownRaycastFromLeft = downRaycastFromLeft;
-            downRaycast.DownRaycastToRight = downRaycastToRight;
-            downRaycast.CurrentDownRaycastHit = currentDownRaycastHit;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

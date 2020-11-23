@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,32 +21,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #region dependencies
 
-        [LabelText("Right Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private RightRaycastHitColliderData r = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            r = new RightRaycastHitColliderData {Character = character};
+            /*r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .RightRaycastHitColliderRuntimeData;
             r.RightHitsStorageLength = r.RightHitsStorage.Length;
             r.RuntimeData.SetRightRaycastHitCollider(r.RightHitConnected, r.IsCollidingRight, r.RightHitsStorageLength,
                 r.CurrentRightHitsStorageIndex, r.CurrentRightHitAngle, r.CurrentRightHitDistance,
-                r.DistanceBetweenRightHitAndRaycastOrigin, r.CurrentRightHitCollider);
+                r.DistanceBetweenRightHitAndRaycastOrigin, r.CurrentRightHitCollider);*/
         }
 
         private void InitializeModel()
         {
-            r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             r.RightRaycastRuntimeData =
                 r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
@@ -58,7 +52,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.RightRaycastToTopOrigin = r.RightRaycastRuntimeData.rightRaycast.RightRaycastToTopOrigin;
             InitializeRightHitsStorage();
             InitializeCurrentRightHitsStorageIndex();
-            ResetState();
+            ResetState();*/
         }
 
         private void InitializeRightHitsStorage()

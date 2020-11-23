@@ -2,9 +2,6 @@
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -26,28 +23,23 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [LabelText("Up Raycast Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private UpRaycastData u = null;
 
         #endregion
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
-            u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
-            u.RuntimeData.SetUpRaycast(u.UpRaycastSmallestDistance, u.CurrentUpRaycastOrigin, u.CurrentUpRaycastHit);
+            u = new UpRaycastData {Character = character};
+            //u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
+            //u.RuntimeData.SetUpRaycast(u.UpRaycastSmallestDistance, u.CurrentUpRaycastOrigin, u.CurrentUpRaycastHit);
         }
 
         private void InitializeModel()
         {
-            u.PlatformerRuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*u.PlatformerRuntimeData = u.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             u.UpRaycastHitColliderRuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .UpRaycastHitColliderRuntimeData;
@@ -70,7 +62,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             u.NewPosition = u.PhysicsRuntimeData.NewPosition;
             u.PlatformMask = u.LayerMaskRuntimeData.layerMask.PlatformMask;
             u.OneWayPlatformMask = u.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
-            u.MovingOneWayPlatformMask = u.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
+            u.MovingOneWayPlatformMask = u.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;*/
         }
 
         private void InitializeUpRaycastLength()
@@ -123,9 +115,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         #region properties
 
         public UpRaycastRuntimeData RuntimeData => u.RuntimeData;
-        
+
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();

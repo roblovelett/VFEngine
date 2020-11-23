@@ -11,15 +11,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RaycastHitColliderData", menuName = PlatformerRaycastHitColliderDataPath, order = 0)]
-    [InlineEditor]
-    public class RaycastHitColliderData : ScriptableObject
+    
+    public class RaycastHitColliderData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
+        
 
         #endregion
 
@@ -31,14 +29,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
+        public GameObject Character { get; set; }
         public RightRaycastRuntimeData RightRaycastRuntimeData { get; set; }
         public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; set; }
         public RaycastHit2D CurrentRightRaycastHit { get; set; }
         public RaycastHit2D CurrentLeftRaycastHit { get; set; }
 
         #endregion
-
-        public GameObject Character => character;
         public RaycastHitColliderRuntimeData RuntimeData { get; set; }
         public RaycastHitColliderContactList ContactList { get; set; }
         public Collider2D IgnoredCollider { get; set; }

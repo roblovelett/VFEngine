@@ -2,34 +2,41 @@
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider
 {
-    public class LeftRaycastHitColliderRuntimeData : ScriptableObject
+    public class LeftRaycastHitColliderRuntimeData
     {
-        public LeftRaycastHitCollider leftRaycastHitCollider;
-        
-        public struct LeftRaycastHitCollider
+        #region properties
+
+        public bool LeftHitConnected { get; private set; }
+        public bool IsCollidingLeft { get; private set; }
+        public int LeftHitsStorageLength { get; private set; }
+        public int CurrentLeftHitsStorageIndex { get; private set; }
+        public float CurrentLeftHitAngle { get; private set; }
+        public float CurrentLeftHitDistance { get; private set; }
+        public float DistanceBetweenLeftHitAndRaycastOrigin { get; private set; }
+        public Collider2D CurrentLeftHitCollider { get; private set; }
+
+        #region public methods
+
+        public static LeftRaycastHitColliderRuntimeData CreateInstance(bool leftHitConnected, bool isCollidingLeft,
+            int leftHitsStorageLength, int currentLeftHitsStorageIndex, float currentLeftHitAngle,
+            float currentLeftHitDistance, float distanceBetweenLeftHitAndRaycastOrigin,
+            Collider2D currentLeftHitCollider)
         {
-            public bool LeftHitConnected { get; set; }
-            public bool IsCollidingLeft { get; set; }
-            public int LeftHitsStorageLength { get; set; }
-            public int CurrentLeftHitsStorageIndex { get; set; }
-            public float CurrentLeftHitAngle { get; set; }
-            public float CurrentLeftHitDistance { get; set; }
-            public float DistanceBetweenLeftHitAndRaycastOrigin { get; set; }
-            public Collider2D CurrentLeftHitCollider { get; set; }
+            return new LeftRaycastHitColliderRuntimeData
+            {
+                LeftHitConnected = leftHitConnected,
+                IsCollidingLeft = isCollidingLeft,
+                LeftHitsStorageLength = leftHitsStorageLength,
+                CurrentLeftHitsStorageIndex = currentLeftHitsStorageIndex,
+                CurrentLeftHitAngle = currentLeftHitAngle,
+                CurrentLeftHitDistance = currentLeftHitDistance,
+                DistanceBetweenLeftHitAndRaycastOrigin = distanceBetweenLeftHitAndRaycastOrigin,
+                CurrentLeftHitCollider = currentLeftHitCollider
+            };
         }
-        
-        public void SetLeftRaycastHitCollider(bool leftHitConnected, bool isCollidingLeft, int leftHitsStorageLength,
-            int currentLeftHitsStorageIndex, float currentLeftHitAngle, float currentLeftHitDistance,
-            float distanceBetweenLeftHitAndRaycastOrigin, Collider2D currentLeftHitCollider)
-        {
-            leftRaycastHitCollider.LeftHitConnected = leftHitConnected;
-            leftRaycastHitCollider.IsCollidingLeft = isCollidingLeft;
-            leftRaycastHitCollider.LeftHitsStorageLength = leftHitsStorageLength;
-            leftRaycastHitCollider.CurrentLeftHitsStorageIndex = currentLeftHitsStorageIndex;
-            leftRaycastHitCollider.CurrentLeftHitAngle = currentLeftHitAngle;
-            leftRaycastHitCollider.CurrentLeftHitDistance = currentLeftHitDistance;
-            leftRaycastHitCollider.DistanceBetweenLeftHitAndRaycastOrigin = distanceBetweenLeftHitAndRaycastOrigin;
-            leftRaycastHitCollider.CurrentLeftHitCollider = currentLeftHitCollider;
-        }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -2,19 +2,26 @@
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider
 {
-    public class LeftStickyRaycastHitColliderRuntimeData : ScriptableObject
+    public class LeftStickyRaycastHitColliderRuntimeData
     {
-        public LeftStickyRaycastHitCollider leftStickyRaycastHitCollider;
-        public struct LeftStickyRaycastHitCollider
+        #region properties
+
+        public float BelowSlopeAngleLeft { get; private set; }
+        public Vector3 CrossBelowSlopeAngleLeft { get; private set; }
+
+        #region public methods
+
+        public static LeftStickyRaycastHitColliderRuntimeData CreateInstance(float belowSlopeAngleLeft,
+            Vector3 crossBelowSlopeAngleLeft)
         {
-            public float BelowSlopeAngleLeft { get; set; }
-            public Vector3 CrossBelowSlopeAngleLeft { get; set; }
+            return new LeftStickyRaycastHitColliderRuntimeData
+            {
+                BelowSlopeAngleLeft = belowSlopeAngleLeft, CrossBelowSlopeAngleLeft = crossBelowSlopeAngleLeft
+            };
         }
-        
-        public void SetLeftStickyRaycastHitCollider(float belowSlopeAngleLeft, Vector3 crossBelowSlopeAngleLeft)
-        {
-            leftStickyRaycastHitCollider.BelowSlopeAngleLeft = belowSlopeAngleLeft;
-            leftStickyRaycastHitCollider.CrossBelowSlopeAngleLeft = crossBelowSlopeAngleLeft;
-        }
+
+        #endregion
+
+        #endregion
     }
 }
