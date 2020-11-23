@@ -78,6 +78,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
+        public StickyRaycastHitColliderRuntimeData RuntimeData => s.RuntimeData;
+
         #region public methods
 
         public void OnResetState()

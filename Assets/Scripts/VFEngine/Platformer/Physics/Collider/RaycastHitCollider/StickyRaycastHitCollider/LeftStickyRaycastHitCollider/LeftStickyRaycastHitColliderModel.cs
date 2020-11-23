@@ -77,6 +77,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
+        public LeftStickyRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
+
         #region public methods
 
         public void OnSetBelowSlopeAngleLeft()

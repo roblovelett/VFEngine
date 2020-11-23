@@ -1,5 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -8,17 +8,11 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "RaycastData", menuName = PlatformerRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class RaycastData : ScriptableObject
+    public class RaycastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
-        [SerializeField] private RaycastSettings settings = null;
-        [SerializeField] private BoxCollider2D boxCollider = null;
 
         #endregion
 
@@ -30,23 +24,25 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
-        public BoxCollider2D BoxCollider => boxCollider;
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
-        public bool HasSettings => settings;
-        public bool HasBoxCollider => boxCollider;
-        public bool DisplayWarningsControlSetting => settings.displayWarningsControl;
-        public bool DrawRaycastGizmosControlSetting => settings.drawRaycastGizmosControl;
-        public bool CastRaysOnBothSidesSetting => settings.castRaysOnBothSides;
-        public bool PerformSafetyBoxcastSetting => settings.performSafetyBoxcast;
-        public int NumberOfHorizontalRaysSetting => settings.numberOfHorizontalRays;
-        public int NumberOfVerticalRaysSetting => settings.numberOfVerticalRays;
-        public float RayOffsetSetting => settings.rayOffset;
-        public float DistanceToGroundRayMaximumLengthSetting => settings.distanceToGroundRayMaximumLength;
+        public BoxCollider2D BoxCollider { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
+        public RaycastSettings Settings { get; set; }
+        public bool HasSettings => Settings;
+        public bool HasBoxCollider => BoxCollider;
+        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
+        public bool DrawRaycastGizmosControlSetting => Settings.drawRaycastGizmosControl;
+        public bool CastRaysOnBothSidesSetting => Settings.castRaysOnBothSides;
+        public bool PerformSafetyBoxcastSetting => Settings.performSafetyBoxcast;
+        public int NumberOfHorizontalRaysSetting => Settings.numberOfHorizontalRays;
+        public int NumberOfVerticalRaysSetting => Settings.numberOfVerticalRays;
+        public float RayOffsetSetting => Settings.rayOffset;
+        public float DistanceToGroundRayMaximumLengthSetting => Settings.distanceToGroundRayMaximumLength;
 
         #endregion
 
+        public RaycastController Controller { get; set; }
         public RaycastRuntimeData RuntimeData { get; set; }
         public bool DisplayWarningsControl { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }

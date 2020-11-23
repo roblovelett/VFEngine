@@ -35,6 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeData()
         {
+            
             d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .DistanceToGroundRaycastHitColliderRuntimeData;
             d.RuntimeData.SetDistanceToGroundRaycastHitCollider(d.DistanceToGroundRaycastHitConnected);
@@ -82,6 +83,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #endregion
 
+        #region properties
+
+        public DistanceToGroundRaycastHitColliderRuntimeData RuntimeData => d.RuntimeData;
+        
         #region public methods
 
         public void OnSetDistanceToGroundRaycastHit()
@@ -115,6 +120,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        #endregion
+        
         #endregion
     }
 }

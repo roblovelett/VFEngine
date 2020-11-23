@@ -52,7 +52,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             s.Bounds = s.RaycastRuntimeData.raycast.Bounds;
             s.BoundsCenter = s.RaycastRuntimeData.raycast.BoundsCenter;
             s.StickyRaycastLength = s.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
-            s.NewPosition = s.PhysicsRuntimeData.physics.NewPosition;
+            s.NewPosition = s.PhysicsRuntimeData.NewPosition;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()

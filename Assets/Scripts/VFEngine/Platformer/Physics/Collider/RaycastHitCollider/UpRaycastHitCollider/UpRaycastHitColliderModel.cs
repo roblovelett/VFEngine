@@ -124,6 +124,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region properties
 
+        public UpRaycastHitColliderRuntimeData RuntimeData => u.RuntimeData;
+
         #region public methods
 
         public void OnInitializeUpHitConnected()

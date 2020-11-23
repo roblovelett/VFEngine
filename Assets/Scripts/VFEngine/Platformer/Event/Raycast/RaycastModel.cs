@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -25,8 +26,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [LabelText("Raycast Data")] [SerializeField]
-        private RaycastData r = null;
+        [SerializeField] private GameObject character;
+        private RaycastData r;
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeData()
         {
-            r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            r = new RaycastData {Character = character, Settings = CreateInstance<RaycastSettings>()};
             r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
             r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
             r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
@@ -53,21 +54,24 @@ namespace VFEngine.Platformer.Event.Raycast
             r.NumberOfVerticalRays = r.NumberOfVerticalRaysSetting;
             r.ObstacleHeightTolerance = r.RayOffset;
             r.NumberOfVerticalRaysPerSide = r.NumberOfVerticalRays / 2;
-            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
-            r.RuntimeData.SetRaycast(r.DisplayWarningsControl, r.DrawRaycastGizmosControl, r.CastRaysOnBothSides,
-                r.PerformSafetyBoxcast, r.NumberOfHorizontalRaysPerSide, r.NumberOfVerticalRaysPerSide,
-                r.DistanceToGroundRayMaximumLength, r.BoundsWidth, r.BoundsHeight, r.RayOffset,
-                r.ObstacleHeightTolerance, r.Bounds, r.BoundsCenter, r.BoundsBottomLeftCorner,
-                r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition, r.BoundsTopLeftCorner, r.BoundsTopRightCorner,
-                r.BoxCollider);
+            r.BoxCollider = r.Character.GetComponentNoAllocation<BoxCollider2D>();
+            SetRaysParameters();
+            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
+            r.Controller = r.Character.GetComponentNoAllocation<RaycastController>();
+            r.RuntimeData = RaycastRuntimeData.CreateInstance(r.Controller, r.DisplayWarningsControl,
+                r.DrawRaycastGizmosControl, r.CastRaysOnBothSides, r.PerformSafetyBoxcast,
+                r.NumberOfHorizontalRaysPerSide, r.NumberOfVerticalRaysPerSide, r.DistanceToGroundRayMaximumLength,
+                r.BoundsWidth, r.BoundsHeight, r.RayOffset, r.ObstacleHeightTolerance, r.Bounds, r.BoundsCenter,
+                r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition,
+                r.BoundsTopLeftCorner, r.BoundsTopRightCorner, r.BoxCollider);
         }
 
         private void InitializeModel()
         {
-            r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            r.Transform = r.PhysicsRuntimeData.Transform;
             SetRaysParameters();
         }
 
@@ -232,7 +236,15 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
+        public RaycastRuntimeData RuntimeData => r.RuntimeData;
+
         #region public methods
+
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public static Vector2 OnSetCurrentRaycastOrigin(Vector2 origin1, Vector2 origin2, int index, int rays)
         {

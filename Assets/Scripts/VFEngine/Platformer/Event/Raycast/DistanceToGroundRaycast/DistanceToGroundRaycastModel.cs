@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
@@ -23,41 +24,34 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [LabelText("Distance To Ground Raycast Data")] [SerializeField]
-        private DistanceToGroundRaycastData d = null;
+        [SerializeField] private GameObject character;
+        private DistanceToGroundRaycastData d;
 
         #endregion
 
         #region private methods
-
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
+        
         private void InitializeData()
         {
-            d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastController>()
-                .DistanceToGroundRaycastRuntimeData;
-            d.RuntimeData.SetDistanceToGroundRaycast(d.DistanceToGroundRaycastHit);
+            d = new DistanceToGroundRaycastData {Character = character};
+            d.RuntimeData = DistanceToGroundRaycastRuntimeData.CreateInstance(d.DistanceToGroundRaycastHit);
         }
 
         private void InitializeModel()
         {
-            d.PlatformerRuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
-            d.StickyRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .StickyRaycastHitColliderRuntimeData;
-            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            d.Transform = d.PlatformerRuntimeData.platformer.Transform;
-            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.raycast.DistanceToGroundRayMaximumLength;
-            d.BoundsCenter = d.RaycastRuntimeData.raycast.BoundsCenter;
-            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
-            d.BoundsBottomRightCorner = d.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
-            d.BelowSlopeAngle = d.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
-            d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
+            //d.StickyRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
+            //    .StickyRaycastHitColliderRuntimeData;
+            //d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            d.Transform = d.PhysicsRuntimeData.Transform;
+            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.DrawRaycastGizmosControl;
+            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.DistanceToGroundRayMaximumLength;
+            d.BoundsCenter = d.RaycastRuntimeData.BoundsCenter;
+            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.BoundsBottomLeftCorner;
+            d.BoundsBottomRightCorner = d.RaycastRuntimeData.BoundsBottomRightCorner;
+            //d.BelowSlopeAngle = d.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
+            //d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetDistanceToGroundRaycastOrigin()
@@ -81,7 +75,15 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region properties
 
+        public DistanceToGroundRaycastRuntimeData RuntimeData => d.RuntimeData;
+
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetDistanceToGroundRaycastOrigin()
         {
@@ -93,11 +95,11 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
             SetDistanceToGroundRaycast();
         }
 
-        public async UniTaskVoid OnInitialize()
+        /*public async UniTaskVoid OnInitialize()
         {
             Initialize();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         #endregion
 

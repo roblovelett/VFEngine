@@ -58,8 +58,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 .GetComponentNoAllocation<RaycastHitColliderController>().LeftStickyRaycastHitColliderRuntimeData;
             s.RightStickyRaycastHitColliderRuntimeData = s.Character
                 .GetComponentNoAllocation<RaycastHitColliderController>().RightStickyRaycastHitColliderRuntimeData;
-            s.StickToSlopesControl = s.PhysicsRuntimeData.physics.StickToSlopesControl;
-            s.MaximumSlopeAngle = s.PhysicsRuntimeData.physics.MaximumSlopeAngle;
+            s.StickToSlopesControl = s.PhysicsRuntimeData.StickToSlopesControl;
+            s.MaximumSlopeAngle = s.PhysicsRuntimeData.MaximumSlopeAngle;
             s.BoundsWidth = s.RaycastRuntimeData.raycast.BoundsWidth;
             s.BoundsHeight = s.RaycastRuntimeData.raycast.BoundsHeight;
             s.RayOffset = s.RaycastRuntimeData.raycast.RayOffset;
@@ -152,7 +152,15 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region properties
 
+        public StickyRaycastRuntimeData RuntimeData => s.RuntimeData;
+        
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public async UniTaskVoid OnInitialize()
         {

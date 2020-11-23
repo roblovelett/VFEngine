@@ -67,7 +67,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
                 u.UpRaycastHitColliderRuntimeData.upRaycastHitCollider.CurrentUpHitsStorageIndex;
             u.RaycastUpHitAt = u.UpRaycastHitColliderRuntimeData.upRaycastHitCollider.RaycastUpHitAt;
             u.GroundedEvent = u.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.GroundedEvent;
-            u.NewPosition = u.PhysicsRuntimeData.physics.NewPosition;
+            u.NewPosition = u.PhysicsRuntimeData.NewPosition;
             u.PlatformMask = u.LayerMaskRuntimeData.layerMask.PlatformMask;
             u.OneWayPlatformMask = u.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
             u.MovingOneWayPlatformMask = u.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
@@ -122,7 +122,15 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region properties
 
+        public UpRaycastRuntimeData RuntimeData => u.RuntimeData;
+        
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnInitializeUpRaycastLength()
         {

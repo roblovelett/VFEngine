@@ -12,7 +12,6 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics
 {
@@ -47,7 +46,7 @@ namespace VFEngine.Platformer.Physics
         public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
         public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; set; }
         public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
+        public Transform Transform => Character.transform;
         public bool HasTransform => Transform;
         public PhysicsSettings Settings { get; set; }
         public bool HasSettings => Settings;
@@ -146,7 +145,30 @@ namespace VFEngine.Platformer.Physics
             set => value = Speed.y;
         }
 
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public static readonly string PhysicsModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        /*public void SetRuntimeData(PlatformerRuntimeData platformerRuntimeData, RaycastRuntimeData raycastRuntimeData,
+            UpRaycastRuntimeData upRaycastRuntimeData, LeftStickyRaycastRuntimeData leftStickyRaycastRuntimeData,
+            RightStickyRaycastRuntimeData rightStickyRaycastRuntimeData,
+            SafetyBoxcastRuntimeData safetyBoxcastRuntimeData,
+            RaycastHitColliderRuntimeData raycastHitColliderRuntimeData,
+            LeftRaycastHitColliderRuntimeData leftRaycastHitColliderRuntimeData,
+            RightRaycastHitColliderRuntimeData rightRaycastHitColliderRuntimeData,
+            DownRaycastHitColliderRuntimeData downRaycastHitColliderRuntimeData,
+            StickyRaycastHitColliderRuntimeData stickyRaycastHitColliderRuntimeData)
+        {
+            PlatformerRuntimeData = platformerRuntimeData;
+            RaycastRuntimeData = raycastRuntimeData;
+            UpRaycastRuntimeData = upRaycastRuntimeData;
+            LeftStickyRaycastRuntimeData = leftStickyRaycastRuntimeData;
+            RightStickyRaycastRuntimeData = rightStickyRaycastRuntimeData;
+            SafetyBoxcastRuntimeData = safetyBoxcastRuntimeData;
+            RaycastHitColliderRuntimeData = raycastHitColliderRuntimeData;
+            LeftRaycastHitColliderRuntimeData = leftRaycastHitColliderRuntimeData;
+            RightRaycastHitColliderRuntimeData = rightRaycastHitColliderRuntimeData;
+            DownRaycastHitColliderRuntimeData = downRaycastHitColliderRuntimeData;
+            StickyRaycastHitColliderRuntimeData = stickyRaycastHitColliderRuntimeData;
+        }*/
 
         #endregion
     }

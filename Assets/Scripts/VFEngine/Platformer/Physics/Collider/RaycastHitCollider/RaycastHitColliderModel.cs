@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -81,6 +82,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region properties
 
+        public RaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
+        
         #region public methods
 
         public void OnClearContactList()

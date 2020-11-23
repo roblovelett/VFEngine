@@ -1,21 +1,22 @@
 ﻿using UnityEngine;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
-    public class DistanceToGroundRaycastRuntimeData : ScriptableObject
+    public class DistanceToGroundRaycastRuntimeData
     {
-        public DistanceToGroundRaycast distanceToGroundRaycast;
+        #region properties
 
-        public struct DistanceToGroundRaycast
+        public RaycastHit2D DistanceToGroundRaycastHit { get; private set; }
+
+        #region public methods
+
+        public static DistanceToGroundRaycastRuntimeData CreateInstance(RaycastHit2D distanceToGroundRaycastHit)
         {
-            public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
+            return new DistanceToGroundRaycastRuntimeData {DistanceToGroundRaycastHit = distanceToGroundRaycastHit};
         }
 
-        public void SetDistanceToGroundRaycast(RaycastHit2D hit)
-        {
-            distanceToGroundRaycast.DistanceToGroundRaycastHit = hit;
-        }
+        #endregion
+
+        #endregion
     }
 }

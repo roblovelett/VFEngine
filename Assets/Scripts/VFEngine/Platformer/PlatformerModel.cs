@@ -165,21 +165,21 @@ namespace VFEngine.Platformer
                 .BelowSlopeAngleRight;
             p.DistanceToGroundRaycastHitConnected = p.DistanceToGroundRaycastHitColliderRuntimeData
                 .distanceToGroundRaycastHitCollider.DistanceToGroundRaycastHitConnected;
-            p.Physics = p.PhysicsRuntimeData.physics.PhysicsController;
-            p.Speed = p.PhysicsRuntimeData.physics.Speed;
-            p.GravityActive = p.PhysicsRuntimeData.physics.GravityActive;
-            p.FallSlowFactor = p.PhysicsRuntimeData.physics.FallSlowFactor;
-            p.HorizontalMovementDirection = p.PhysicsRuntimeData.physics.HorizontalMovementDirection;
-            p.MovementDirectionThreshold = p.PhysicsRuntimeData.physics.MovementDirectionThreshold;
-            p.ExternalForce = p.PhysicsRuntimeData.physics.ExternalForce;
-            p.MaximumSlopeAngle = p.PhysicsRuntimeData.physics.MaximumSlopeAngle;
-            p.NewPosition = p.PhysicsRuntimeData.physics.NewPosition;
-            p.SmallValue = p.PhysicsRuntimeData.physics.SmallValue;
-            p.Gravity = p.PhysicsRuntimeData.physics.Gravity;
-            p.IsFalling = p.PhysicsRuntimeData.physics.IsFalling;
-            p.StickToSlopesControl = p.PhysicsRuntimeData.physics.StickToSlopesControl;
-            p.IsJumping = p.PhysicsRuntimeData.physics.IsJumping;
-            p.SafetyBoxcastControl = p.PhysicsRuntimeData.physics.SafetyBoxcastControl;
+            p.Physics = p.PhysicsRuntimeData.Controller;
+            p.Speed = p.PhysicsRuntimeData.Speed;
+            p.GravityActive = p.PhysicsRuntimeData.GravityActive;
+            p.FallSlowFactor = p.PhysicsRuntimeData.FallSlowFactor;
+            p.HorizontalMovementDirection = p.PhysicsRuntimeData.HorizontalMovementDirection;
+            p.MovementDirectionThreshold = p.PhysicsRuntimeData.MovementDirectionThreshold;
+            p.ExternalForce = p.PhysicsRuntimeData.ExternalForce;
+            p.MaximumSlopeAngle = p.PhysicsRuntimeData.MaximumSlopeAngle;
+            p.NewPosition = p.PhysicsRuntimeData.NewPosition;
+            p.SmallValue = p.PhysicsRuntimeData.SmallValue;
+            p.Gravity = p.PhysicsRuntimeData.Gravity;
+            p.IsFalling = p.PhysicsRuntimeData.IsFalling;
+            p.StickToSlopesControl = p.PhysicsRuntimeData.StickToSlopesControl;
+            p.IsJumping = p.PhysicsRuntimeData.IsJumping;
+            p.SafetyBoxcastControl = p.PhysicsRuntimeData.SafetyBoxcastControl;
             p.LayerMask = p.LayerMaskRuntimeData.layerMask.LayerMaskController;
             p.MidHeightOneWayPlatformMask = p.LayerMaskRuntimeData.layerMask.MidHeightOneWayPlatformMask;
             p.StairsMask = p.LayerMaskRuntimeData.layerMask.StairsMask;
@@ -977,6 +977,8 @@ namespace VFEngine.Platformer
         #endregion
 
         #region properties
+
+        public PlatformerRuntimeData RuntimeData => p.RuntimeData;
 
         #region public methods
 

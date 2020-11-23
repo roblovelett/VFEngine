@@ -59,8 +59,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             l.BoundsBottomLeftCorner = l.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
             l.BoundsCenter = l.RaycastRuntimeData.raycast.BoundsCenter;
             l.StickyRaycastLength = l.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
-            l.MaximumSlopeAngle = l.PhysicsRuntimeData.physics.MaximumSlopeAngle;
-            l.NewPosition = l.PhysicsRuntimeData.physics.NewPosition;
+            l.MaximumSlopeAngle = l.PhysicsRuntimeData.MaximumSlopeAngle;
+            l.NewPosition = l.PhysicsRuntimeData.NewPosition;
             l.RaysBelowLayerMaskPlatforms = l.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
         }
 
@@ -97,7 +97,15 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region properties
 
+        public LeftStickyRaycastRuntimeData RuntimeData => l.RuntimeData;
+        
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetLeftStickyRaycastLength()
         {

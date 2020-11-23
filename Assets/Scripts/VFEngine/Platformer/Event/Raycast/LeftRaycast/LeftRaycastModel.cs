@@ -64,7 +64,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             l.BoundsTopRightCorner = l.RaycastRuntimeData.raycast.BoundsTopRightCorner;
             l.CurrentLeftHitsStorageIndex =
                 l.LeftRaycastHitColliderRuntimeData.leftRaycastHitCollider.CurrentLeftHitsStorageIndex;
-            l.Speed = l.PhysicsRuntimeData.physics.Speed;
+            l.Speed = l.PhysicsRuntimeData.Speed;
             l.PlatformMask = l.LayerMaskRuntimeData.layerMask.PlatformMask;
             l.OneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
             l.MovingOneWayPlatformMask = l.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;
@@ -111,8 +111,16 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region properties
 
+        public LeftRaycastRuntimeData RuntimeData => l.RuntimeData;
+
         #region public methods
 
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
         public void OnSetLeftRaycastFromBottomOrigin()
         {
             SetLeftRaycastFromBottomOrigin();

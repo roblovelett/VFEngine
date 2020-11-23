@@ -285,6 +285,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region properties
 
+        public DownRaycastHitColliderRuntimeData RuntimeData => d.RuntimeData;
+
         #region public methods
 
         public void OnSetOnMovingPlatform()

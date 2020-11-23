@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Event.Boxcast;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+//using VFEngine.Platformer.Event.Boxcast;
+//using VFEngine.Platformer.Event.Raycast;
+//using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -24,7 +24,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [LabelText("Character")] [SerializeField] private GameObject character;
+        [SerializeField] private GameObject character;
         private PhysicsData p;
 
         #endregion
@@ -51,6 +51,7 @@ namespace VFEngine.Platformer.Physics
             p.SlopeAngleSpeedFactor = p.SlopeAngleSpeedFactorSetting;
             p.DisplayWarningsControl = p.DisplayWarningsControlSetting;
             p.AutomaticGravityControl = p.AutomaticGravityControlSetting;
+            if (p.AutomaticGravityControl) p.Transform.rotation = identity;
             p.AscentMultiplier = p.AscentMultiplierSetting;
             p.FallMultiplier = p.FallMultiplierSetting;
             p.IsJumping = false;
@@ -61,60 +62,49 @@ namespace VFEngine.Platformer.Physics
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
             p.Controller = p.Character.GetComponentNoAllocation<PhysicsController>();
-            p.RuntimeData = new PhysicsRuntimeData();
-            p.RuntimeData.SetPhysicsController(p.Controller);
-            p.RuntimeData.SetPhysics(p.StickToSlopesControl, p.SafetyBoxcastControl, p.Physics2DInteractionControl,
-                p.IsJumping, p.IsFalling, p.GravityActive, p.SafeSetTransformControl, p.HorizontalMovementDirection,
-                p.FallSlowFactor, p.Physics2DPushForce, p.MaximumSlopeAngle, p.SmallValue, p.Gravity,
-                p.MovementDirectionThreshold, p.CurrentVerticalSpeedFactor, p.Speed, p.MaximumVelocity, p.NewPosition,
-                p.ExternalForce);
-            p.Controller.OnSetPhysicsRuntimeData(p.RuntimeData);
+            p.RuntimeData = PhysicsRuntimeData.CreateInstance(p.Controller, p.Transform, p.StickToSlopesControl,
+                p.SafetyBoxcastControl, p.Physics2DInteractionControl, p.IsJumping, p.IsFalling, p.GravityActive,
+                p.SafeSetTransformControl, p.HorizontalMovementDirection, p.FallSlowFactor, p.Physics2DPushForce,
+                p.MaximumSlopeAngle, p.SmallValue, p.Gravity, p.MovementDirectionThreshold,
+                p.CurrentVerticalSpeedFactor, p.Speed, p.MaximumVelocity, p.NewPosition, p.ExternalForce);
         }
 
         private void InitializeModel()
         {
-            p.PlatformerRuntimeData = p.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            p.RaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
-            p.UpRaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
-            p.LeftStickyRaycastRuntimeData =
-                p.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
-            p.RightStickyRaycastRuntimeData = p.Character.GetComponentNoAllocation<RaycastController>()
-                .RightStickyRaycastRuntimeData;
-            p.SafetyBoxcastRuntimeData =
-                p.Character.GetComponentNoAllocation<BoxcastController>().SafetyBoxcastRuntimeData;
-            p.RaycastHitColliderRuntimeData =
-                p.Character.GetComponentNoAllocation<RaycastHitColliderController>().RuntimeData;
-            p.LeftRaycastHitColliderRuntimeData = p.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .LeftRaycastHitColliderRuntimeData;
-            p.RightRaycastHitColliderRuntimeData = p.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .RightRaycastHitColliderRuntimeData;
-            p.DownRaycastHitColliderRuntimeData = p.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .DownRaycastHitColliderRuntimeData;
-            p.StickyRaycastHitColliderRuntimeData = p.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .StickyRaycastHitColliderRuntimeData;
-            p.Transform = p.PlatformerRuntimeData.platformer.Transform;
-            p.BoundsWidth = p.RaycastRuntimeData.raycast.BoundsWidth;
-            p.RayOffset = p.RaycastRuntimeData.raycast.RayOffset;
-            p.BoundsHeight = p.RaycastRuntimeData.raycast.BoundsHeight;
-            p.UpRaycastSmallestDistance = p.UpRaycastRuntimeData.upRaycast.UpRaycastSmallestDistance;
-            p.LeftStickyRaycastOriginY = p.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastOriginY;
-            p.LeftStickyRaycastHit = p.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
-            p.RightStickyRaycastOriginY = p.RightStickyRaycastRuntimeData.rightStickyRaycast.RightStickyRaycastOriginY;
-            p.RightStickyRaycastHit = p.RightStickyRaycastRuntimeData.rightStickyRaycast.RightStickyRaycastHit;
-            p.SafetyBoxcastHit = p.SafetyBoxcastRuntimeData.safetyBoxcast.SafetyBoxcastHit;
-            p.ContactList = p.RaycastHitColliderRuntimeData.raycastHitCollider.ContactList;
-            p.DistanceBetweenLeftHitAndRaycastOrigin = p.LeftRaycastHitColliderRuntimeData.leftRaycastHitCollider
-                .DistanceBetweenLeftHitAndRaycastOrigin;
-            p.DistanceBetweenRightHitAndRaycastOrigin = p.RightRaycastHitColliderRuntimeData.rightRaycastHitCollider
-                .DistanceBetweenRightHitAndRaycastOrigin;
-            p.MovingPlatformCurrentGravity = p.DownRaycastHitColliderRuntimeData.downRaycastHitCollider
-                .MovingPlatformCurrentGravity;
-            p.MovingPlatformCurrentSpeed =
-                p.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.MovingPlatformCurrentSpeed;
-            p.CurrentDownHitSmallestDistance = p.DownRaycastHitColliderRuntimeData.downRaycastHitCollider
-                .CurrentDownHitSmallestDistance;
-            p.BelowSlopeAngle = p.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
-            if (p.AutomaticGravityControl /*&& !p.HasGravityController*/) p.Transform.rotation = identity;
+            /*var platformer = p.Character.GetComponentNoAllocation<PlatformerController>();
+            var raycast = p.Character.GetComponentNoAllocation<RaycastController>();
+            var raycastHitCollider = p.Character.GetComponentNoAllocation<RaycastHitColliderController>();
+            var boxcast = p.Character.GetComponentNoAllocation<BoxcastController>();
+            
+            p.PlatformerRuntimeData = platformer.RuntimeData;
+            p.RaycastRuntimeData = raycast.RuntimeData;
+            p.UpRaycastRuntimeData = raycast.UpRaycastRuntimeData;
+            p.LeftStickyRaycastRuntimeData = raycast.LeftStickyRaycastRuntimeData;
+            p.RightStickyRaycastRuntimeData = raycast.RightStickyRaycastRuntimeData;
+            p.SafetyBoxcastRuntimeData = boxcast.SafetyBoxcastRuntimeData;
+            p.RaycastHitColliderRuntimeData = raycastHitCollider.RuntimeData;
+            p.LeftRaycastHitColliderRuntimeData = raycastHitCollider.LeftRaycastHitColliderRuntimeData;
+            p.RightRaycastHitColliderRuntimeData = raycastHitCollider.RightRaycastHitColliderRuntimeData;
+            p.DownRaycastHitColliderRuntimeData = raycastHitCollider.DownRaycastHitColliderRuntimeData;
+            p.StickyRaycastHitColliderRuntimeData = raycastHitCollider.StickyRaycastHitColliderRuntimeData;*/
+            
+            /*p.BoundsWidth = p.RaycastRuntimeData.BoundsWidth;
+            p.RayOffset = p.RaycastRuntimeData.RayOffset;
+            p.BoundsHeight = p.RaycastRuntimeData.BoundsHeight;
+            p.UpRaycastSmallestDistance = p.UpRaycastRuntimeData.UpRaycastSmallestDistance;
+            p.LeftStickyRaycastOriginY = p.LeftStickyRaycastRuntimeData.LeftStickyRaycastOriginY;
+            p.LeftStickyRaycastHit = p.LeftStickyRaycastRuntimeData.LeftStickyRaycastHit;
+            p.RightStickyRaycastOriginY = p.RightStickyRaycastRuntimeData.RightStickyRaycastOriginY;
+            p.RightStickyRaycastHit = p.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
+            p.SafetyBoxcastHit = p.SafetyBoxcastRuntimeData.SafetyBoxcastHit;
+            p.ContactList = p.RaycastHitColliderRuntimeData.ContactList;
+            p.DistanceBetweenLeftHitAndRaycastOrigin = p.LeftRaycastHitColliderRuntimeData.DistanceBetweenLeftHitAndRaycastOrigin;
+            p.DistanceBetweenRightHitAndRaycastOrigin = p.RightRaycastHitColliderRuntimeData.DistanceBetweenRightHitAndRaycastOrigin;
+            p.MovingPlatformCurrentGravity = p.DownRaycastHitColliderRuntimeData.MovingPlatformCurrentGravity;
+            p.MovingPlatformCurrentSpeed = p.DownRaycastHitColliderRuntimeData.MovingPlatformCurrentSpeed;
+            p.CurrentDownHitSmallestDistance = p.DownRaycastHitColliderRuntimeData.CurrentDownHitSmallestDistance;
+            p.BelowSlopeAngle = p.StickyRaycastHitColliderRuntimeData.BelowSlopeAngle;*/
+            
             ResetState();
         }
 
@@ -391,6 +381,8 @@ namespace VFEngine.Platformer.Physics
         #endregion
 
         #region properties
+
+        public PhysicsRuntimeData RuntimeData => p.RuntimeData;
 
         #region public methods
 

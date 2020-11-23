@@ -164,6 +164,8 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
+        public LayerMaskRuntimeData RuntimeData => l.RuntimeData;
+
         #region public methods
 
         public void OnInitialize()

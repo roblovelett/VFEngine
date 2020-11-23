@@ -5,62 +5,67 @@ namespace VFEngine.Platformer.Physics
 {
     public class PhysicsRuntimeData
     {
-        public Physics physics;
+        #region properties
 
-        public struct Physics
+        public PhysicsController Controller { get; private set; }
+        public Transform Transform { get; private set; }
+        public bool StickToSlopesControl { get; private set; }
+        public bool SafetyBoxcastControl { get; private set; }
+        public bool Physics2DInteractionControl { get; private set; }
+        public bool IsJumping { get; private set; }
+        public bool IsFalling { get; private set; }
+        public bool GravityActive { get; private set; }
+        public bool SafeSetTransformControl { get; private set; }
+        public int HorizontalMovementDirection { get; private set; }
+        public float FallSlowFactor { get; private set; }
+        public float Physics2DPushForce { get; private set; }
+        public float MaximumSlopeAngle { get; private set; }
+        public float SmallValue { get; private set; }
+        public float Gravity { get; private set; }
+        public float MovementDirectionThreshold { get; private set; }
+        public float CurrentVerticalSpeedFactor { get; private set; }
+        public Vector2 Speed { get; private set; }
+        public Vector2 MaximumVelocity { get; private set; }
+        public Vector2 NewPosition { get; private set; }
+        public Vector2 ExternalForce { get; private set; }
+
+        #region public methods
+
+        public static PhysicsRuntimeData CreateInstance(PhysicsController controller, Transform transform,
+            bool stickToSlopesControl, bool safetyBoxcastControl, bool physics2DInteractionControl, bool isJumping,
+            bool isFalling, bool gravityActive, bool safeSetTransformControl, int horizontalMovementDirection,
+            float fallSlowFactor, float physics2DPushForce, float maximumSlopeAngle, float smallValue, float gravity,
+            float movementDirectionThreshold, float currentVerticalSpeedFactor, Vector2 speed, Vector2 maximumVelocity,
+            Vector2 newPosition, Vector2 externalForce)
         {
-            public PhysicsController PhysicsController { get; set; }
-            public bool StickToSlopesControl { get; set; }
-            public bool SafetyBoxcastControl { get; set; }
-            public bool Physics2DInteractionControl { get; set; }
-            public bool IsJumping { get; set; }
-            public bool IsFalling { get; set; }
-            public bool GravityActive { get; set; }
-            public bool SafeSetTransformControl { get; set; }
-            public int HorizontalMovementDirection { get; set; }
-            public float FallSlowFactor { get; set; }
-            public float Physics2DPushForce { get; set; }
-            public float MaximumSlopeAngle { get; set; }
-            public float SmallValue { get; set; }
-            public float Gravity { get; set; }
-            public float MovementDirectionThreshold { get; set; }
-            public float CurrentVerticalSpeedFactor { get; set; }
-            public Vector2 Speed { get; set; }
-            public Vector2 MaximumVelocity { get; set; }
-            public Vector2 NewPosition { get; set; }
-            public Vector2 ExternalForce { get; set; }
+            return new PhysicsRuntimeData
+            {
+                Controller = controller,
+                Transform = transform,
+                StickToSlopesControl = stickToSlopesControl,
+                SafetyBoxcastControl = safetyBoxcastControl,
+                Physics2DInteractionControl = physics2DInteractionControl,
+                IsJumping = isJumping,
+                IsFalling = isFalling,
+                GravityActive = gravityActive,
+                SafeSetTransformControl = safeSetTransformControl,
+                HorizontalMovementDirection = horizontalMovementDirection,
+                FallSlowFactor = fallSlowFactor,
+                Physics2DPushForce = physics2DPushForce,
+                MaximumSlopeAngle = maximumSlopeAngle,
+                SmallValue = smallValue,
+                Gravity = gravity,
+                MovementDirectionThreshold = movementDirectionThreshold,
+                CurrentVerticalSpeedFactor = currentVerticalSpeedFactor,
+                Speed = speed,
+                MaximumVelocity = maximumVelocity,
+                NewPosition = newPosition,
+                ExternalForce = externalForce
+            };
         }
 
-        public void SetPhysicsController(PhysicsController controller)
-        {
-            physics.PhysicsController = controller;
-        }
+        #endregion
 
-        public void SetPhysics(bool stickToSlopesControl, bool safetyBoxcastControl, bool physics2DInteractionControl,
-            bool isJumping, bool isFalling, bool gravityActive, bool safeSetTransformControl,
-            int horizontalMovementDirection, float fallSlowFactor, float physics2DPushForce, float maximumSlopeAngle,
-            float smallValue, float gravity, float movementDirectionThreshold, float currentVerticalSpeedFactor,
-            Vector2 speed, Vector2 maximumVelocity, Vector2 newPosition, Vector2 externalForce)
-        {
-            physics.StickToSlopesControl = stickToSlopesControl;
-            physics.SafetyBoxcastControl = safetyBoxcastControl;
-            physics.Physics2DInteractionControl = physics2DInteractionControl;
-            physics.IsJumping = isJumping;
-            physics.IsFalling = isFalling;
-            physics.GravityActive = gravityActive;
-            physics.SafeSetTransformControl = safeSetTransformControl;
-            physics.HorizontalMovementDirection = horizontalMovementDirection;
-            physics.FallSlowFactor = fallSlowFactor;
-            physics.Physics2DPushForce = physics2DPushForce;
-            physics.MaximumSlopeAngle = maximumSlopeAngle;
-            physics.SmallValue = smallValue;
-            physics.Gravity = gravity;
-            physics.MovementDirectionThreshold = movementDirectionThreshold;
-            physics.CurrentVerticalSpeedFactor = currentVerticalSpeedFactor;
-            physics.Speed = speed;
-            physics.MaximumVelocity = maximumVelocity;
-            physics.NewPosition = newPosition;
-            physics.ExternalForce = externalForce;
-        }
+        #endregion
     }
 }

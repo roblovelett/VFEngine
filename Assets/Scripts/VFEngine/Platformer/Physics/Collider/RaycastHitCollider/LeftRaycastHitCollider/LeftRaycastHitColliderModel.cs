@@ -161,6 +161,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region properties
 
+        public LeftRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
+
         #region public methods
 
         public void OnInitializeLeftHitsStorage()

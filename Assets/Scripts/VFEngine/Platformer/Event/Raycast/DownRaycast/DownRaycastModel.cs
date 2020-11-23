@@ -64,7 +64,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             d.BoundsTopRightCorner = d.RaycastRuntimeData.raycast.BoundsTopRightCorner;
             d.CurrentDownHitsStorageIndex =
                 d.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.CurrentDownHitsStorageIndex;
-            d.NewPosition = d.PhysicsRuntimeData.physics.NewPosition;
+            d.NewPosition = d.PhysicsRuntimeData.NewPosition;
             d.RaysBelowLayerMaskPlatformsWithoutOneWay =
                 d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay;
             d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
@@ -121,7 +121,15 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region properties
 
+        public DownRaycastRuntimeData RuntimeData => d.RuntimeData;
+
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
         {

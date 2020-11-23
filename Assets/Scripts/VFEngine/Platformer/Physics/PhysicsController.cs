@@ -5,7 +5,6 @@ using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Physics
 {
-    using static Debug;
     using static PhysicsData;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
@@ -34,8 +33,7 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeData()
         {
-            if (!physicsModel) physicsModel = LoadData(ModelPath) as PhysicsModel;
-            Assert(physicsModel != null, nameof(physicsModel) + " != null");
+            if (!physicsModel) physicsModel = LoadModel<PhysicsModel>(PhysicsModelPath);
             physicsModel.OnInitializeData();
         }
 
@@ -44,27 +42,17 @@ namespace VFEngine.Platformer.Physics
             physicsModel.OnInitializeModel();
         }
 
-        private void SetPhysicsRuntimeData(PhysicsRuntimeData data)
-        {
-            RuntimeData = data;
-        }
-
         #endregion
 
         #endregion
 
         #region properties
 
-        public PhysicsRuntimeData RuntimeData { get; private set; } = new PhysicsRuntimeData();
+        public PhysicsRuntimeData RuntimeData => physicsModel.RuntimeData;
 
         #region public methods
 
         #region physics model
-
-        public void OnSetPhysicsRuntimeData(PhysicsRuntimeData data)
-        {
-            SetPhysicsRuntimeData(data);
-        }
 
         public void SetCurrentGravity()
         {
