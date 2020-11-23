@@ -7,7 +7,6 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static DebugExtensions;
@@ -24,8 +23,8 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [LabelText("Safety Boxcast Data")] [SerializeField]
-        private SafetyBoxcastData s = null;
+        [SerializeField] private GameObject character;
+        private SafetyBoxcastData s;
 
         #endregion
 
@@ -33,39 +32,38 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void InitializeData()
         {
-            s.RuntimeData = s.Character.GetComponentNoAllocation<BoxcastController>().SafetyBoxcastRuntimeData;
-            s.RuntimeData.SetSafetyBoxcast(s.SafetyBoxcast);
+            s = new SafetyBoxcastData {Character = character};
+            s.RuntimeData = SafetyBoxcastRuntimeData.CreateInstance(s.SafetyBoxcastHit);
         }
 
         private void InitializeModel()
         {
-            s.PlatformerRuntimeData = s.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            s.LayerMaskRuntimeData = s.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             s.StickyRaycastRuntimeData =
                 s.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
-            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            s.Transform = s.PlatformerRuntimeData.platformer.Transform;
-            s.PlatformMask = s.LayerMaskRuntimeData.layerMask.PlatformMask;
-            s.RaysBelowLayerMaskPlatforms = s.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;
-            s.DrawBoxcastGizmosControl = s.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            s.Bounds = s.RaycastRuntimeData.raycast.Bounds;
-            s.BoundsCenter = s.RaycastRuntimeData.raycast.BoundsCenter;
-            s.StickyRaycastLength = s.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
+            s.LayerMaskRuntimeData = s.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
+            s.Transform = s.PhysicsRuntimeData.Transform;
             s.NewPosition = s.PhysicsRuntimeData.NewPosition;
+            s.DrawBoxcastGizmosControl = s.RaycastRuntimeData.DrawRaycastGizmosControl;
+            s.Bounds = s.RaycastRuntimeData.Bounds;
+            s.BoundsCenter = s.RaycastRuntimeData.BoundsCenter;
+            s.StickyRaycastLength = s.StickyRaycastRuntimeData.StickyRaycastLength;
+            s.PlatformMask = s.LayerMaskRuntimeData.PlatformMask;
+            s.RaysBelowLayerMaskPlatforms = s.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()
         {
             var transformUp = s.Transform.up;
-            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp,
+            s.SafetyBoxcastHit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp,
                 s.StickyRaycastLength, s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
         }
 
         private void SetSafetyBoxcast()
         {
             var transformUp = s.Transform.up;
-            s.SafetyBoxcast = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
+            s.SafetyBoxcastHit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
                 s.NewPosition.magnitude, s.PlatformMask, red, s.DrawBoxcastGizmosControl);
         }
 

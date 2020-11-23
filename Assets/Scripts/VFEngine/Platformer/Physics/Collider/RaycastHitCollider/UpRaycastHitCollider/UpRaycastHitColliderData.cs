@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
@@ -12,14 +11,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    
     public class UpRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
-
-        
 
         #endregion
 
@@ -32,7 +28,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
         public GameObject Character { get; set; }

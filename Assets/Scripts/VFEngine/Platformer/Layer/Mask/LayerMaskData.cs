@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
@@ -11,7 +10,6 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
 
-    
     public class LayerMaskData
     {
         #region fields
@@ -37,7 +35,7 @@ namespace VFEngine.Platformer.Layer.Mask
         public Transform Transform { get; set; }
         public int StandingOnLastFrameLayer { get; set; }
         public bool HasSettings => Settings;
-        public bool DisplayWarnings => Settings.displayWarningsControl;
+        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
         public LayerMask PlatformMaskSetting => Settings.platformMask;
         public LayerMask MovingPlatformMaskSetting => Settings.movingPlatformMask;
         public LayerMask OneWayPlatformMaskSetting => Settings.oneWayPlatformMask;
@@ -48,6 +46,7 @@ namespace VFEngine.Platformer.Layer.Mask
         #endregion
 
         public LayerMaskRuntimeData RuntimeData { get; set; }
+        public bool DisplayWarningsControl { get; set; }
         public LayerMask PlatformMask { get; set; }
         public LayerMask MovingPlatformMask { get; set; }
         public LayerMask OneWayPlatformMask { get; set; }
@@ -59,7 +58,7 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
         public int SavedBelowLayer { get; set; }
         public LayerMask SavedPlatformMask { get; set; }
-        public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public static readonly string LayerMaskModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

@@ -39,11 +39,11 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void InitializeModel()
         {
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             r.RightRaycastHitColliderRuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .RightRaycastHitColliderRuntimeData;
-            r.LayerMaskRuntimeData = r.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            r.LayerMaskRuntimeData = r.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             r.Transform = r.PhysicsRuntimeData.Transform;
             r.Speed = r.PhysicsRuntimeData.Speed;
             r.DrawRaycastGizmosControl = r.RaycastRuntimeData.DrawRaycastGizmosControl;

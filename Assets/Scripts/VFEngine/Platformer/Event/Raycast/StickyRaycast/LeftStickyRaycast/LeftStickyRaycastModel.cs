@@ -38,10 +38,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void InitializeModel()
         {
-            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             l.StickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             l.Transform = l.PhysicsRuntimeData.Transform;
             l.MaximumSlopeAngle = l.PhysicsRuntimeData.MaximumSlopeAngle;
             l.NewPosition = l.PhysicsRuntimeData.NewPosition;

@@ -35,7 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeModel()
         {
-            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             d.DistanceToGroundRaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>()
                 .DistanceToGroundRaycastRuntimeData;
             d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.DistanceToGroundRayMaximumLength;

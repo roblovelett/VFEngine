@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Tools;
@@ -12,14 +11,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    
     public class LeftRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
 
-        
         #endregion
 
         private static readonly string LeftRaycastHitColliderPath = $"{RaycastHitColliderPath}LeftRaycastHitCollider/";

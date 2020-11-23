@@ -2,6 +2,7 @@
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
+// ReSharper disable RedundantAssignment
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {

@@ -5,13 +5,11 @@ using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedVariable
-// ReSharper disable NotAccessedField.Local
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static SafetyBoxcastData;
     using static BoxcastData;
-    using static Debug;
-    using static ScriptableObject;
     using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
@@ -23,7 +21,6 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         [SerializeField] private BoxcastModel boxcastModel;
         [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
-        private readonly BoxcastController controller;
 
         #endregion
 
@@ -31,7 +28,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void Awake()
         {
-            Async(InitializeData());
+            InitializeData();
         }
 
         private void Start()
@@ -39,43 +36,37 @@ namespace VFEngine.Platformer.Event.Boxcast
             Async(InitializeModels());
         }
 
-        private async UniTaskVoid InitializeData()
+        private void InitializeData()
         {
-            var t1 = Async(SetBoxcastRuntimeData());
-            var t2 = Async(SetSafetyBoxcastRuntimeData());
-            var t3 = Async(SetBoxcastModel());
-            var t4 = Async(SetSafetyBoxcastModel());
-            var task1 = await (t1, t2, t3, t4);
-            var t5 = Async(boxcastModel.OnInitializeData());
-            var t6 = Async(safetyBoxcastModel.OnInitializeData());
-            var task2 = await (t5, t6);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            Async(LoadModels());
+            Async(InitializeModelsData());
         }
 
-        private async UniTaskVoid SetBoxcastRuntimeData()
+        private async UniTaskVoid LoadModels()
         {
-            RuntimeData = CreateInstance<BoxcastRuntimeData>();
-            RuntimeData.SetBoxcastController(controller);
+            var t1 = Async(LoadBoxcastModel());
+            var t2 = Async(LoadSafetyBoxcastModel());
+            var task1 = await (t1, t2);
             await SetYieldOrSwitchToThreadPoolAsync();
+
+            async UniTaskVoid LoadBoxcastModel()
+            {
+                if (!boxcastModel) boxcastModel = LoadModel<BoxcastModel>(BoxcastModelPath);
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid LoadSafetyBoxcastModel()
+            {
+                if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
         }
 
-        private async UniTaskVoid SetSafetyBoxcastRuntimeData()
+        private async UniTaskVoid InitializeModelsData()
         {
-            SafetyBoxcastRuntimeData = CreateInstance<SafetyBoxcastRuntimeData>();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid SetBoxcastModel()
-        {
-            if (!boxcastModel) boxcastModel = LoadData(BoxcastModelPath) as BoxcastModel;
-            Assert(boxcastModel != null, nameof(boxcastModel) + " != null");
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid SetSafetyBoxcastModel()
-        {
-            if (!safetyBoxcastModel) safetyBoxcastModel = LoadData(SafetyBoxcastModelPath) as SafetyBoxcastModel;
-            Assert(safetyBoxcastModel != null, nameof(safetyBoxcastModel) + " != null");
+            var t1 = Async(boxcastModel.OnInitializeData());
+            var t2 = Async(safetyBoxcastModel.OnInitializeData());
+            var task1 = await (t1, t2);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -93,12 +84,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region properties
 
-        public BoxcastController()
-        {
-            controller = this;
-        }
-
-        public BoxcastRuntimeData RuntimeData { get; private set; }
+        public BoxcastRuntimeData BoxcastRuntimeData { get; private set; }
         public SafetyBoxcastRuntimeData SafetyBoxcastRuntimeData { get; private set; }
 
         #region public methods

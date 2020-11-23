@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
@@ -25,14 +24,13 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
-    
+
     public class PlatformerData
     {
         #region fields
 
         #region dependencies
 
-        
         #endregion
 
         private const string ModelAssetPath = "PlatformerModel.asset";

@@ -41,13 +41,13 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeModel()
         {
-            u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             u.UpRaycastHitColliderRuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .UpRaycastHitColliderRuntimeData;
             u.DownRaycastHitColliderRuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .DownRaycastHitColliderRuntimeData;
-            u.PhysicsRuntimeData = u.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            u.LayerMaskRuntimeData = u.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            u.PhysicsRuntimeData = u.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            u.LayerMaskRuntimeData = u.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             u.Transform = u.PhysicsRuntimeData.Transform;
             u.NewPosition = u.PhysicsRuntimeData.NewPosition;
             u.DrawRaycastGizmosControl = u.RaycastRuntimeData.DrawRaycastGizmosControl;

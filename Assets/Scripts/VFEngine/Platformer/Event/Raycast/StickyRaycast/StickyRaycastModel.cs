@@ -30,17 +30,18 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void InitializeData()
         {
-            s = new StickyRaycastData {Character = character};
+            s = new StickyRaycastData {Character = character, Settings = CreateInstance<StickyRaycastSettings>()};
             s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
             s.DisplayWarningsControl = s.DisplayWarningsControlSetting;
             s.RuntimeData =
                 StickyRaycastRuntimeData.CreateInstance(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);
+            if (s.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeModel()
         {
-            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             s.RightStickyRaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>()
                 .RightStickyRaycastRuntimeData;
             s.LeftStickyRaycastRuntimeData =

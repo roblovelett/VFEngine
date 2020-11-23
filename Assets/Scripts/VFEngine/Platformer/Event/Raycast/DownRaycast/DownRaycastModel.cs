@@ -46,11 +46,11 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void InitializeModel()
         {
-            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             d.DownRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .DownRaycastHitColliderRuntimeData;
-            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             d.Transform = d.PhysicsRuntimeData.Transform;
             d.NewPosition = d.PhysicsRuntimeData.NewPosition;
             d.DrawRaycastGizmosControl = d.RaycastRuntimeData.DrawRaycastGizmosControl;

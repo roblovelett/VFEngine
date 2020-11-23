@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
@@ -13,7 +12,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
-    
     public class UpRaycastData
     {
         #region fields

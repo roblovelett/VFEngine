@@ -34,7 +34,6 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
         public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
@@ -146,29 +145,6 @@ namespace VFEngine.Platformer.Physics
         }
 
         public static readonly string PhysicsModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
-        /*public void SetRuntimeData(PlatformerRuntimeData platformerRuntimeData, RaycastRuntimeData raycastRuntimeData,
-            UpRaycastRuntimeData upRaycastRuntimeData, LeftStickyRaycastRuntimeData leftStickyRaycastRuntimeData,
-            RightStickyRaycastRuntimeData rightStickyRaycastRuntimeData,
-            SafetyBoxcastRuntimeData safetyBoxcastRuntimeData,
-            RaycastHitColliderRuntimeData raycastHitColliderRuntimeData,
-            LeftRaycastHitColliderRuntimeData leftRaycastHitColliderRuntimeData,
-            RightRaycastHitColliderRuntimeData rightRaycastHitColliderRuntimeData,
-            DownRaycastHitColliderRuntimeData downRaycastHitColliderRuntimeData,
-            StickyRaycastHitColliderRuntimeData stickyRaycastHitColliderRuntimeData)
-        {
-            PlatformerRuntimeData = platformerRuntimeData;
-            RaycastRuntimeData = raycastRuntimeData;
-            UpRaycastRuntimeData = upRaycastRuntimeData;
-            LeftStickyRaycastRuntimeData = leftStickyRaycastRuntimeData;
-            RightStickyRaycastRuntimeData = rightStickyRaycastRuntimeData;
-            SafetyBoxcastRuntimeData = safetyBoxcastRuntimeData;
-            RaycastHitColliderRuntimeData = raycastHitColliderRuntimeData;
-            LeftRaycastHitColliderRuntimeData = leftRaycastHitColliderRuntimeData;
-            RightRaycastHitColliderRuntimeData = rightRaycastHitColliderRuntimeData;
-            DownRaycastHitColliderRuntimeData = downRaycastHitColliderRuntimeData;
-            StickyRaycastHitColliderRuntimeData = stickyRaycastHitColliderRuntimeData;
-        }*/
 
         #endregion
     }

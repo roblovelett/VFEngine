@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Platformer.Physics;
@@ -16,13 +15,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     using static ScriptableObjectExtensions;
     using static RaycastData;
 
-   
     public class StickyRaycastData
     {
         #region fields
 
         #region dependencies
-        
+
         #endregion
 
         private const string ModelAssetPath = "StickyRaycastModel.asset";

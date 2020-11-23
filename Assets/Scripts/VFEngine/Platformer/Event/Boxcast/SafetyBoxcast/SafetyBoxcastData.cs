@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
@@ -11,15 +10,11 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "SafetyBoxcastData", menuName = PlatformerSafetyBoxcastDataPath, order = 0)]
-    [InlineEditor]
-    public class SafetyBoxcastData : ScriptableObject
+    public class SafetyBoxcastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -32,13 +27,12 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public bool DrawBoxcastGizmosControl { get; set; }
         public float StickyRaycastLength { get; set; }
         public Vector2 NewPosition { get; set; }
@@ -50,7 +44,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         #endregion
 
         public SafetyBoxcastRuntimeData RuntimeData { get; set; }
-        public RaycastHit2D SafetyBoxcast { get; set; }
+        public RaycastHit2D SafetyBoxcastHit { get; set; }
         public static readonly string SafetyBoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

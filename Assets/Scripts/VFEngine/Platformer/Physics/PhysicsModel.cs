@@ -1,11 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
-//using VFEngine.Platformer.Event.Boxcast;
-//using VFEngine.Platformer.Event.Raycast;
-//using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Event.Boxcast;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics
 {
     using static DebugExtensions;
@@ -15,6 +16,7 @@ namespace VFEngine.Platformer.Physics
     using static Vector2;
     using static RigidbodyType2D;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
     [InlineEditor]
@@ -30,13 +32,6 @@ namespace VFEngine.Platformer.Physics
         #endregion
 
         #region private methods
-
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-            if (p.DisplayWarningsControl) GetWarningMessages();
-        }
 
         private void InitializeData()
         {
@@ -67,28 +62,25 @@ namespace VFEngine.Platformer.Physics
                 p.SafeSetTransformControl, p.HorizontalMovementDirection, p.FallSlowFactor, p.Physics2DPushForce,
                 p.MaximumSlopeAngle, p.SmallValue, p.Gravity, p.MovementDirectionThreshold,
                 p.CurrentVerticalSpeedFactor, p.Speed, p.MaximumVelocity, p.NewPosition, p.ExternalForce);
+            if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeModel()
         {
-            /*var platformer = p.Character.GetComponentNoAllocation<PlatformerController>();
             var raycast = p.Character.GetComponentNoAllocation<RaycastController>();
             var raycastHitCollider = p.Character.GetComponentNoAllocation<RaycastHitColliderController>();
             var boxcast = p.Character.GetComponentNoAllocation<BoxcastController>();
-            
-            p.PlatformerRuntimeData = platformer.RuntimeData;
-            p.RaycastRuntimeData = raycast.RuntimeData;
+            p.RaycastRuntimeData = raycast.RaycastRuntimeData;
             p.UpRaycastRuntimeData = raycast.UpRaycastRuntimeData;
             p.LeftStickyRaycastRuntimeData = raycast.LeftStickyRaycastRuntimeData;
             p.RightStickyRaycastRuntimeData = raycast.RightStickyRaycastRuntimeData;
             p.SafetyBoxcastRuntimeData = boxcast.SafetyBoxcastRuntimeData;
-            p.RaycastHitColliderRuntimeData = raycastHitCollider.RuntimeData;
+            p.RaycastHitColliderRuntimeData = raycastHitCollider.RaycastHitColliderRuntimeData;
             p.LeftRaycastHitColliderRuntimeData = raycastHitCollider.LeftRaycastHitColliderRuntimeData;
             p.RightRaycastHitColliderRuntimeData = raycastHitCollider.RightRaycastHitColliderRuntimeData;
             p.DownRaycastHitColliderRuntimeData = raycastHitCollider.DownRaycastHitColliderRuntimeData;
-            p.StickyRaycastHitColliderRuntimeData = raycastHitCollider.StickyRaycastHitColliderRuntimeData;*/
-            
-            /*p.BoundsWidth = p.RaycastRuntimeData.BoundsWidth;
+            p.StickyRaycastHitColliderRuntimeData = raycastHitCollider.StickyRaycastHitColliderRuntimeData;
+            p.BoundsWidth = p.RaycastRuntimeData.BoundsWidth;
             p.RayOffset = p.RaycastRuntimeData.RayOffset;
             p.BoundsHeight = p.RaycastRuntimeData.BoundsHeight;
             p.UpRaycastSmallestDistance = p.UpRaycastRuntimeData.UpRaycastSmallestDistance;
@@ -98,13 +90,14 @@ namespace VFEngine.Platformer.Physics
             p.RightStickyRaycastHit = p.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
             p.SafetyBoxcastHit = p.SafetyBoxcastRuntimeData.SafetyBoxcastHit;
             p.ContactList = p.RaycastHitColliderRuntimeData.ContactList;
-            p.DistanceBetweenLeftHitAndRaycastOrigin = p.LeftRaycastHitColliderRuntimeData.DistanceBetweenLeftHitAndRaycastOrigin;
-            p.DistanceBetweenRightHitAndRaycastOrigin = p.RightRaycastHitColliderRuntimeData.DistanceBetweenRightHitAndRaycastOrigin;
+            p.DistanceBetweenLeftHitAndRaycastOrigin =
+                p.LeftRaycastHitColliderRuntimeData.DistanceBetweenLeftHitAndRaycastOrigin;
+            p.DistanceBetweenRightHitAndRaycastOrigin =
+                p.RightRaycastHitColliderRuntimeData.DistanceBetweenRightHitAndRaycastOrigin;
             p.MovingPlatformCurrentGravity = p.DownRaycastHitColliderRuntimeData.MovingPlatformCurrentGravity;
             p.MovingPlatformCurrentSpeed = p.DownRaycastHitColliderRuntimeData.MovingPlatformCurrentSpeed;
             p.CurrentDownHitSmallestDistance = p.DownRaycastHitColliderRuntimeData.CurrentDownHitSmallestDistance;
-            p.BelowSlopeAngle = p.StickyRaycastHitColliderRuntimeData.BelowSlopeAngle;*/
-            
+            p.BelowSlopeAngle = p.StickyRaycastHitColliderRuntimeData.BelowSlopeAngle;
             ResetState();
         }
 
@@ -386,9 +379,16 @@ namespace VFEngine.Platformer.Physics
 
         #region public methods
 
-        public void OnInitialize()
+        public async UniTaskVoid OnInitializeData()
         {
-            Initialize();
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetCurrentCurrentGravity()
@@ -599,16 +599,6 @@ namespace VFEngine.Platformer.Physics
         public void OnSlowFall()
         {
             SlowFall();
-        }
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public void OnInitializeModel()
-        {
-            InitializeModel();
         }
 
         #endregion

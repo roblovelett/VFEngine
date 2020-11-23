@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -35,11 +36,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeModel()
         {
-            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
             l.LeftStickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
-            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
-            l.LeftStickyRaycastHit = l.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
-            ResetState();*/
+            l.Transform = l.PhysicsRuntimeData.Transform;
+            l.LeftStickyRaycastHit = l.LeftStickyRaycastRuntimeData.LeftStickyRaycastHit;
+            ResetState();
         }
 
         private void ResetState()

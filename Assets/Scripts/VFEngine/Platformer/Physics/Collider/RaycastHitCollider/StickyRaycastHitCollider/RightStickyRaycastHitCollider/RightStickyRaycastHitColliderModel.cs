@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -30,17 +31,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void InitializeData()
         {
             r = new RightStickyRaycastHitColliderData {Character = character};
-            r.RuntimeData = RightStickyRaycastHitColliderRuntimeData.CreateInstance(r.BelowSlopeAngleRight, r.CrossBelowSlopeAngleRight);
+            r.RuntimeData =
+                RightStickyRaycastHitColliderRuntimeData.CreateInstance(r.BelowSlopeAngleRight,
+                    r.CrossBelowSlopeAngleRight);
         }
 
         private void InitializeModel()
         {
-            /*r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
             r.RightStickyRaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>()
                 .RightStickyRaycastRuntimeData;
-            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
-            r.RightStickyRaycastHit = r.RightStickyRaycastRuntimeData.rightStickyRaycast.RightStickyRaycastHit;
-            ResetState();*/
+            r.Transform = r.PhysicsRuntimeData.Transform;
+            r.RightStickyRaycastHit = r.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
+            ResetState();
         }
 
         private void ResetState()
@@ -73,13 +76,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public RightStickyRaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
 
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();

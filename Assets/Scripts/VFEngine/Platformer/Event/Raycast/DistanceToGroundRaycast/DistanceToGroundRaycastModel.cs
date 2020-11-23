@@ -38,11 +38,11 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void InitializeModel()
         {
-            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             d.StickyRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .StickyRaycastHitColliderRuntimeData;
-            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             d.Transform = d.PhysicsRuntimeData.Transform;
             d.DrawRaycastGizmosControl = d.RaycastRuntimeData.DrawRaycastGizmosControl;
             d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.DistanceToGroundRayMaximumLength;

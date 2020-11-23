@@ -21,25 +21,39 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private void Awake()
+        private async void Awake()
         {
-            InitializeData();
+            await Async(LoadModels());
+            await Async(InitializeModelsData());
         }
 
-        private void Start()
+        private async void Start()
         {
-            InitializeModel();
+            await Async(InitializeModels());
         }
 
-        private void InitializeData()
+        private async UniTaskVoid LoadModels()
         {
-            if (!physicsModel) physicsModel = LoadModel<PhysicsModel>(PhysicsModelPath);
-            physicsModel.OnInitializeData();
+            await Async(LoadPlatformerModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
+
+            async UniTaskVoid LoadPlatformerModel()
+            {
+                if (!physicsModel) physicsModel = LoadModel<PhysicsModel>(PhysicsModelPath);
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
         }
 
-        private void InitializeModel()
+        private async UniTaskVoid InitializeModelsData()
         {
-            physicsModel.OnInitializeModel();
+            await Async(physicsModel.OnInitializeData());
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModels()
+        {
+            await Async(physicsModel.OnInitializeModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion
@@ -48,7 +62,7 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsRuntimeData RuntimeData => physicsModel.RuntimeData;
+        public PhysicsRuntimeData PhysicsRuntimeData => physicsModel.RuntimeData;
 
         #region public methods
 

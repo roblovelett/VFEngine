@@ -1,23 +1,23 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     public class DownRaycastData
     {
         #region fields
 
         #region dependencies
-        
+
         #endregion
 
         private static readonly string DownRaycastPath = $"{RaycastPath}DownRaycast/";

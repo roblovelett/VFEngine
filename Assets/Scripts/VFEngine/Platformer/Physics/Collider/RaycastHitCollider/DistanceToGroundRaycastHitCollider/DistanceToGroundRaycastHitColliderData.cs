@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Tools;
@@ -11,13 +10,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    
     public class DistanceToGroundRaycastHitColliderData
     {
         #region fields
 
         #region depenedencies
-        
+
         #endregion
 
         private static readonly string DistanceToGroundRaycastHitColliderPath =

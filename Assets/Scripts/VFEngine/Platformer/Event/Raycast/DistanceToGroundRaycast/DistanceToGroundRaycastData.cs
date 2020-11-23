@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
@@ -9,6 +8,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     public class DistanceToGroundRaycastData
     {
         #region fields
@@ -19,7 +19,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private static readonly string DistanceToGroundRaycastPath = $"{RaycastPath}DistanceToGroundRaycast/";
 
-        private static readonly string ModelAssetPath = $"{DistanceToGroundRaycastPath}DistanceToGroundRaycastModel.asset";
+        private static readonly string ModelAssetPath =
+            $"{DistanceToGroundRaycastPath}DistanceToGroundRaycastModel.asset";
 
         #endregion
 
@@ -47,7 +48,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
         public Vector2 DistanceToGroundRaycastOrigin { get; set; } = Vector2.zero;
 
-        public static readonly string DistanceToGroundRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+        public static readonly string DistanceToGroundRaycastModelPath =
+            $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

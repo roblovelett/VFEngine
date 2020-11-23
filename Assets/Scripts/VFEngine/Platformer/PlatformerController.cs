@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer
 {
-    using static PlatformerData;
     using static ScriptableObjectExtensions;
-    using static Debug;
-    using static ScriptableObject;
+    using static UniTaskExtensions;
 
     public class PlatformerController : MonoBehaviour, IController
     {
@@ -15,48 +16,61 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [SerializeField] private PlatformerModel model = null;
+        [SerializeField] private PlatformerModel platformerModel;
         private readonly PlatformerController controller;
 
         #endregion
 
         #region private methods
 
-        private void Awake()
+        private async void Awake()
         {
-            InitializeData();
-            InitializeModel();
-        }
-        
-        private void InitializeData()
-        {
-            RuntimeData = CreateInstance<PlatformerRuntimeData>();
-            RuntimeData.SetPlatformerController(controller);
+            await Async(LoadModels());
+            await Async(InitializeModelsData());
         }
 
-        private void InitializeModel()
+        private async void Start()
         {
-            if (!model) model = LoadData(ModelPath) as PlatformerModel;
-            Assert(model != null, nameof(model) + " != null");
-            model.OnInitialize();
+            await Async(InitializeModels());
+        }
+
+        private async UniTaskVoid LoadModels()
+        {
+            await Async(LoadPlatformerModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
+
+            async UniTaskVoid LoadPlatformerModel()
+            {
+                if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+        }
+
+        private async UniTaskVoid InitializeModelsData()
+        {
+            await Async(platformerModel.OnInitializeData());
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModels()
+        {
+            await Async(platformerModel.OnInitializeModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         private void FixedUpdate()
         {
-            model.OnRunPlatformer();
+            platformerModel.OnRunPlatformer();
         }
 
         #endregion
 
         #endregion
-        
+
         #region properties
 
-        public PlatformerRuntimeData RuntimeData { get; private set; }
-        public PlatformerController()
-        {
-            controller = this;
-        }
+        public PlatformerRuntimeData PlatformerRuntimeData { get; private set; }
+
         #endregion
     }
 }

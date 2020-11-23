@@ -1,6 +1,10 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedVariable
@@ -9,6 +13,7 @@ namespace VFEngine.Platformer.Layer.Mask
     using static LayerMask;
     using static DebugExtensions;
     using static ScriptableObjectExtensions;
+    using static UniTaskExtensions;
 
     [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)]
     [InlineEditor]
@@ -19,7 +24,7 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private GameObject character;
-        public LayerMaskData l;
+        private LayerMaskData l;
 
         #endregion
 
@@ -29,6 +34,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             l = new LayerMaskData {Character = character, Settings = CreateInstance<LayerMaskSettings>()};
             l.Controller = l.Character.GetComponentNoAllocation<LayerMaskController>();
+            l.DisplayWarningsControl = l.DisplayWarningsControlSetting;
             l.PlatformMask = l.PlatformMaskSetting;
             l.MovingPlatformMask = l.MovingPlatformMaskSetting;
             l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
@@ -44,16 +50,15 @@ namespace VFEngine.Platformer.Layer.Mask
                 l.MovingOneWayPlatformMask, l.MidHeightOneWayPlatformMask, l.StairsMask,
                 l.RaysBelowLayerMaskPlatformsWithoutOneWay, l.RaysBelowLayerMaskPlatformsWithoutMidHeight,
                 l.RaysBelowLayerMaskPlatforms);
+            if (l.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeModel()
         {
-            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
-            l.DownRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .DownRaycastHitColliderRuntimeData;
-            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
-            l.StandingOnLastFrameLayer =
-                l.DownRaycastHitColliderRuntimeData.downRaycastHitCollider.StandingOnLastFrame.layer;*/
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            l.DownRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>().DownRaycastHitColliderRuntimeData;
+            l.Transform = l.PhysicsRuntimeData.Transform;
+            l.StandingOnLastFrameLayer = l.DownRaycastHitColliderRuntimeData.StandingOnLastFrame.layer;
         }
 
         private void GetWarningMessages()
@@ -160,6 +165,18 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMaskRuntimeData RuntimeData => l.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetRaysBelowLayerMaskPlatforms()
         {

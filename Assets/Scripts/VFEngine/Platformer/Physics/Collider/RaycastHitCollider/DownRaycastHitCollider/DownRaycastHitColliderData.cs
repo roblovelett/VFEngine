@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    
     public class DownRaycastHitColliderData
     {
         #region fields

@@ -6,7 +6,6 @@ using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable RedundantDefaultMemberInitializer
-
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -32,18 +31,11 @@ namespace VFEngine.Platformer.Event.Raycast
         #endregion
 
         #region private methods
-
-        /*private async UniTaskVoid Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-            if (r.DisplayWarningsControl) GetWarningMessages();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
-
+        
         private void InitializeData()
         {
             r = new RaycastData {Character = character, Settings = CreateInstance<RaycastSettings>()};
+            r.BoxCollider = r.Character.GetComponentNoAllocation<BoxCollider2D>();
             r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
             r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
             r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
@@ -54,11 +46,11 @@ namespace VFEngine.Platformer.Event.Raycast
             r.NumberOfVerticalRays = r.NumberOfVerticalRaysSetting;
             r.ObstacleHeightTolerance = r.RayOffset;
             r.NumberOfVerticalRaysPerSide = r.NumberOfVerticalRays / 2;
+            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
-            r.BoxCollider = r.Character.GetComponentNoAllocation<BoxCollider2D>();
+            if (r.DisplayWarningsControl) GetWarningMessages();
             SetRaysParameters();
-            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
             r.Controller = r.Character.GetComponentNoAllocation<RaycastController>();
             r.RuntimeData = RaycastRuntimeData.CreateInstance(r.Controller, r.DisplayWarningsControl,
                 r.DrawRaycastGizmosControl, r.CastRaysOnBothSides, r.PerformSafetyBoxcast,
@@ -70,9 +62,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeModel()
         {
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
             r.Transform = r.PhysicsRuntimeData.Transform;
-            if (r.DisplayWarningsControl) GetWarningMessages();
             SetRaysParameters();
         }
 

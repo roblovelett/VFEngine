@@ -39,11 +39,11 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void InitializeModel()
         {
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
-            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
+            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
             l.LeftRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .LeftRaycastHitColliderRuntimeData;
-            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
             l.Transform = l.PhysicsRuntimeData.Transform;
             l.DrawRaycastGizmosControl = l.RaycastRuntimeData.DrawRaycastGizmosControl;
             l.NumberOfHorizontalRaysPerSide = l.RaycastRuntimeData.NumberOfHorizontalRaysPerSide;

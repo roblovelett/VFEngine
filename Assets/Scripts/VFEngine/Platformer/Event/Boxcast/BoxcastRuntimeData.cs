@@ -1,24 +1,16 @@
-﻿using UnityEngine;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-namespace VFEngine.Platformer.Event.Boxcast
+﻿namespace VFEngine.Platformer.Event.Boxcast
 {
-    public class BoxcastRuntimeData : ScriptableObject
+    public class BoxcastRuntimeData
     {
         #region properties
 
-        public Boxcast boxcast;
-
-        public struct Boxcast
-        {
-            public BoxcastController BoxcastController { get; set; }
-        }
+        public BoxcastController Controller { get; set; }
 
         #region public methods
 
-        public void SetBoxcastController(BoxcastController controller)
+        public static BoxcastRuntimeData CreateInstance(BoxcastController controller)
         {
-            boxcast.BoxcastController = controller;
+            return new BoxcastRuntimeData {Controller = controller};
         }
 
         #endregion

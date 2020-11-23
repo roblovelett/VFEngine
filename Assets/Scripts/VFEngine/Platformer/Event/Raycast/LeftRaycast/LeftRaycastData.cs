@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
@@ -12,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static RaycastData;
     using static ScriptableObjectExtensions;
+
     public class LeftRaycastData
     {
         #region fields

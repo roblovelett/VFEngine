@@ -3,13 +3,12 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
     using static LayerMaskData;
-    using static Debug;
     using static UniTaskExtensions;
-    using static ScriptableObject;
 
     public class LayerMaskController : MonoBehaviour, IController
     {
@@ -17,30 +16,51 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [SerializeField] private LayerMaskModel model;
-        private readonly LayerMaskController controller;
+        [SerializeField] private LayerMaskModel layerMaskModel;
 
         #endregion
 
         #region private methods
 
-        private void Awake()
+        private async void Awake()
         {
-            InitializeData();
-            InitializeModel();
+            await Async(InitializeData());
         }
 
-        private void InitializeData()
+        private async UniTaskVoid InitializeData()
         {
-            RuntimeData = CreateInstance<LayerMaskRuntimeData>();
-            RuntimeData.SetLayerMaskController(controller);
+            await Async(LoadModels());
+            await Async(InitializeModelsData());
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        private void InitializeModel()
+        private async void Start()
         {
-            if (!model) model = LoadData(ModelPath) as LayerMaskModel;
-            Assert(model != null, nameof(model) + " != null");
-            model.OnInitialize();
+            await Async(InitializeModels());
+        }
+
+        private async UniTaskVoid LoadModels()
+        {
+            await Async(LoadLayerMaskModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
+
+            async UniTaskVoid LoadLayerMaskModel()
+            {
+                if (!layerMaskModel) layerMaskModel = LoadModel<LayerMaskModel>(LayerMaskModelPath);
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+        }
+
+        private async UniTaskVoid InitializeModelsData()
+        {
+            await Async(layerMaskModel.OnInitializeData());
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        private async UniTaskVoid InitializeModels()
+        {
+            await Async(layerMaskModel.OnInitializeModel());
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion
@@ -49,50 +69,45 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        public LayerMaskController()
-        {
-            controller = this;
-        }
-
-        public LayerMaskRuntimeData RuntimeData { get; private set; }
+        public LayerMaskRuntimeData LayerMaskRuntimeData { get; private set; }
 
         #region public methods
 
         public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()
         {
-            model.OnSetRaysBelowLayerMaskPlatforms();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatforms();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid SetRaysBelowLayerMaskPlatformsWithoutOneWay()
         {
-            model.OnSetRaysBelowLayerMaskPlatformsWithoutOneWay();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsWithoutOneWay();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void SetRaysBelowLayerMaskPlatformsWithoutMidHeight()
         {
-            model.OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight();
         }
 
         public void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
         {
-            model.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
         }
 
         public void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
         {
-            model.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
         }
 
         public void SetRaysBelowLayerMaskPlatformsToOneWay()
         {
-            model.OnSetRaysBelowLayerMaskPlatformsToOneWay();
+            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToOneWay();
         }
 
         public void SetSavedBelowLayerToStandingOnLastFrameLayer()
         {
-            model.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
+            layerMaskModel.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
         }
 
         #endregion

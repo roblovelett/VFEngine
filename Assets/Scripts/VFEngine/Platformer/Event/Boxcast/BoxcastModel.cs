@@ -4,7 +4,6 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
@@ -18,8 +17,8 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
-        [LabelText("Boxcast Data")] [SerializeField]
-        private BoxcastData b = null;
+        [SerializeField] private GameObject character;
+        private BoxcastData b;
 
         #endregion
 
@@ -27,12 +26,14 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void InitializeData()
         {
-            b.RuntimeData = b.Character.GetComponentNoAllocation<BoxcastController>().RuntimeData;
+            b = new BoxcastData {Character = character};
+            b.Controller = b.Character.GetComponentNoAllocation<BoxcastController>();
+            b.RuntimeData = BoxcastRuntimeData.CreateInstance(b.Controller);
         }
 
         private void InitializeModel()
         {
-            // foobar
+            //
         }
 
         #endregion

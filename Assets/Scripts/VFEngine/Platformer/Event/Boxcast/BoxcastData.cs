@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -7,15 +6,11 @@ namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "BoxcastData", menuName = PlatformerBoxcastDataPath, order = 0)]
-    [InlineEditor]
-    public class BoxcastData : ScriptableObject
+    public class BoxcastData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private GameObject character = null;
 
         #endregion
 
@@ -28,11 +23,12 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
-        public GameObject Character => character;
+        public GameObject Character { get; set; }
 
         #endregion
 
         public BoxcastRuntimeData RuntimeData { get; set; }
+        public BoxcastController Controller { get; set; }
         public static readonly string BoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

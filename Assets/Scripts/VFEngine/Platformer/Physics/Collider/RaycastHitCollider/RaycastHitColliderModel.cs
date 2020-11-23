@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -31,17 +32,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             r = new RaycastHitColliderData {Character = character};
             r.Controller = r.Character.GetComponentNoAllocation<RaycastHitColliderController>();
-            r.RuntimeData = RaycastHitColliderRuntimeData.CreateInstance(r.Controller, r.IgnoredCollider, r.ContactList);
+            r.RuntimeData =
+                RaycastHitColliderRuntimeData.CreateInstance(r.Controller, r.IgnoredCollider, r.ContactList);
         }
 
         private void InitializeModel()
         {
-            /*r.RightRaycastRuntimeData =
+            r.RightRaycastRuntimeData =
                 r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
             r.LeftRaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
-            r.CurrentRightRaycastHit = r.RightRaycastRuntimeData.rightRaycast.CurrentRightRaycastHit;
-            r.CurrentLeftRaycastHit = r.LeftRaycastRuntimeData.leftRaycast.CurrentLeftRaycastHit;
-            ClearContactList();*/
+            r.CurrentRightRaycastHit = r.RightRaycastRuntimeData.CurrentRightRaycastHit;
+            r.CurrentLeftRaycastHit = r.LeftRaycastRuntimeData.CurrentLeftRaycastHit;
+            ClearContactList();
         }
 
         private void AddRightHitToContactList()
@@ -84,6 +86,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();

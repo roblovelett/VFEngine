@@ -1,25 +1,18 @@
 ﻿using UnityEngine;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable MemberCanBePrivate.Global
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
-    public class SafetyBoxcastRuntimeData : ScriptableObject
+    public class SafetyBoxcastRuntimeData
     {
         #region properties
 
-        public SafetyBoxcast safetyBoxcast;
-
-        public struct SafetyBoxcast
-        {
-            public RaycastHit2D SafetyBoxcastHit { get; set; }
-        }
+        public RaycastHit2D SafetyBoxcastHit { get; private set; }
 
         #region public methods
 
-        public void SetSafetyBoxcast(RaycastHit2D hit)
+        public static SafetyBoxcastRuntimeData CreateInstance(RaycastHit2D safetyBoxcastHit)
         {
-            safetyBoxcast.SafetyBoxcastHit = hit;
+            return new SafetyBoxcastRuntimeData {SafetyBoxcastHit = safetyBoxcastHit};
         }
 
         #endregion

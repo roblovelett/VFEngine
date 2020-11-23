@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
@@ -11,14 +10,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-    
+
     public class StickyRaycastHitColliderData
     {
         #region fields
 
         #region dependencies
-
-        
 
         #endregion
 

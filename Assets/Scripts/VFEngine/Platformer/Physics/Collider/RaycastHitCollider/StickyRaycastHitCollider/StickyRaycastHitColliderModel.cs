@@ -26,12 +26,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeData();
-            InitializeModel();
-        }
-
         private void InitializeData()
         {
             s = new StickyRaycastHitColliderData {Character = character};
@@ -40,15 +34,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeModel()
         {
-            /*s.RightStickyRaycastHitColliderRuntimeData = s.Character
+            s.RightStickyRaycastHitColliderRuntimeData = s.Character
                 .GetComponentNoAllocation<RaycastHitColliderController>().RightStickyRaycastHitColliderRuntimeData;
             s.LeftStickyRaycastHitColliderRuntimeData = s.Character
                 .GetComponentNoAllocation<RaycastHitColliderController>().LeftStickyRaycastHitColliderRuntimeData;
-            s.BelowSlopeAngleRight = s.RightStickyRaycastHitColliderRuntimeData.rightStickyRaycastHitCollider
-                .BelowSlopeAngleRight;
-            s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.leftStickyRaycastHitCollider
-                .BelowSlopeAngleLeft;
-            InitializeBelowSlopeAngle();*/
+            s.BelowSlopeAngleRight = s.RightStickyRaycastHitColliderRuntimeData.BelowSlopeAngleRight;
+            s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.BelowSlopeAngleLeft;
+            InitializeBelowSlopeAngle();
         }
 
         private void ResetState()
@@ -80,13 +72,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public StickyRaycastHitColliderRuntimeData RuntimeData => s.RuntimeData;
 
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();
@@ -112,7 +104,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         {
             SetBelowSlopeAngleToBelowSlopeAngleRight();
         }
-        
+
         #endregion
 
         #endregion
