@@ -29,12 +29,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void InitializeData()
         {
             u = new UpRaycastHitColliderData {Character = character};
-            /*u.RuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .UpRaycastHitColliderRuntimeData;
-            u.WasTouchingCeilingLastFrame = false;
             u.UpHitsStorageLength = u.UpHitsStorage.Length;
-            u.RuntimeData.SetUpRaycastHitCollider(u.UpHitConnected, u.IsCollidingAbove, u.WasTouchingCeilingLastFrame,
-                u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex, u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);*/
+            u.RuntimeData = UpRaycastHitColliderRuntimeData.CreateInstance(u.UpHitConnected, u.IsCollidingAbove, u.WasTouchingCeilingLastFrame,
+                u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex, u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);
         }
 
         private void InitializeModel()
@@ -121,6 +118,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public UpRaycastHitColliderRuntimeData RuntimeData => u.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnInitializeUpHitConnected()
         {
@@ -180,12 +188,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public void OnResetState()
         {
             ResetState();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

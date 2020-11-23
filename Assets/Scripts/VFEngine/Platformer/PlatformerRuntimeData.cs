@@ -10,7 +10,7 @@ namespace VFEngine.Platformer
 
         #region public methods
 
-        private static PlatformerRuntimeData CreateInstance(PlatformerController controller)
+        public static PlatformerRuntimeData CreateInstance(PlatformerController controller)
         {
             return new PlatformerRuntimeData {Controller = controller};
         }

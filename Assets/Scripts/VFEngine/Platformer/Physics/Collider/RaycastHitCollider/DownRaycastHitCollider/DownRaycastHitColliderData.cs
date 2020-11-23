@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public DownRaycastRuntimeData DownRaycastRuntimeData { get; set; }
         public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }

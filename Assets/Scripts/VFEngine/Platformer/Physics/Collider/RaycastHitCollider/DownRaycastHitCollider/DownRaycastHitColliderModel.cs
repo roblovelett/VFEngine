@@ -2,10 +2,13 @@
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics.Movement.PathMovement;
+using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
     using static MathsExtensions;
@@ -25,7 +28,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region dependencies
 
         [SerializeField] private GameObject character;
-        private DownRaycastHitColliderData d = null;
+        private DownRaycastHitColliderData d;
 
         #endregion
 
@@ -34,8 +37,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void InitializeData()
         {
             d = new DownRaycastHitColliderData {Character = character};
-            /*d.RuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .DownRaycastHitColliderRuntimeData;
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
             d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
@@ -47,32 +48,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;
             d.DownHitsStorageLength = d.DownHitsStorage.Length;
-            d.RuntimeData.SetDownRaycastHitCollider(d.HasPhysicsMaterialClosestToDownHit,
+            d.RuntimeData = DownRaycastHitColliderRuntimeData.CreateInstance(d.HasPhysicsMaterialClosestToDownHit,
                 d.HasPathMovementClosestToDownHit, d.DownHitConnected, d.IsCollidingBelow, d.OnMovingPlatform,
                 d.HasMovingPlatform, d.HasStandingOnLastFrame, d.HasGroundedLastFrame, d.GroundedEvent,
                 d.DownHitsStorageLength, d.CurrentDownHitsStorageIndex, d.CurrentDownHitSmallestDistance,
                 d.SmallestDistanceToDownHit, d.MovingPlatformCurrentGravity, d.MovingPlatformCurrentSpeed,
                 d.CrossBelowSlopeAngle, d.StandingOnLastFrame, d.StandingOnCollider,
-                d.StandingOnWithSmallestDistanceLayer, d.RaycastDownHitAt);*/
+                d.StandingOnWithSmallestDistanceLayer, d.RaycastDownHitAt);
         }
 
         private void InitializeModel()
         {
-            /*d.PlatformerRuntimeData = d.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             d.DownRaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().DownRaycastRuntimeData;
             d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            d.Transform = d.PlatformerRuntimeData.platformer.Transform;
-            d.NumberOfVerticalRaysPerSide = d.RaycastRuntimeData.raycast.NumberOfVerticalRaysPerSide;
-            d.DownRaycastFromLeft = d.DownRaycastRuntimeData.downRaycast.DownRaycastFromLeft;
-            d.DownRaycastToRight = d.DownRaycastRuntimeData.downRaycast.DownRaycastToRight;
-            d.CurrentDownRaycastHit = d.DownRaycastRuntimeData.downRaycast.CurrentDownRaycastHit;
-            d.SavedBelowLayer = d.LayerMaskRuntimeData.layerMask.SavedBelowLayer;
+            d.Transform = d.PhysicsRuntimeData.Transform;
+            d.NumberOfVerticalRaysPerSide = d.RaycastRuntimeData.NumberOfVerticalRaysPerSide;
+            d.DownRaycastFromLeft = d.DownRaycastRuntimeData.DownRaycastFromLeft;
+            d.DownRaycastToRight = d.DownRaycastRuntimeData.DownRaycastToRight;
+            d.CurrentDownRaycastHit = d.DownRaycastRuntimeData.CurrentDownRaycastHit;
+            d.SavedBelowLayer = d.LayerMaskRuntimeData.SavedBelowLayer;
             InitializeFriction();
             InitializeDownHitsStorage();
             InitializeDownHitsStorageSmallestDistanceIndex();
             InitializeDownHitsStorageIndex();
-            ResetState();*/
+            ResetState();
         }
 
         private void SetCurrentDownHitsStorage()
@@ -280,6 +281,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region public methods
 
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void OnSetOnMovingPlatform()
         {
             SetOnMovingPlatform();
@@ -458,12 +471,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public void OnSetMovingPlatformCurrentSpeed()
         {
             SetMovingPlatformCurrentSpeed();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

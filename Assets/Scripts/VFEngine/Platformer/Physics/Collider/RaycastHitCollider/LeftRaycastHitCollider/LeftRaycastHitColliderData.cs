@@ -33,7 +33,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; set; }
         public GameObject Character { get; set; }

@@ -72,6 +72,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             r.Transform = r.PhysicsRuntimeData.Transform;
+            if (r.DisplayWarningsControl) GetWarningMessages();
             SetRaysParameters();
         }
 
@@ -245,6 +246,11 @@ namespace VFEngine.Platformer.Event.Raycast
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public static Vector2 OnSetCurrentRaycastOrigin(Vector2 origin1, Vector2 origin2, int index, int rays)
         {
@@ -276,12 +282,6 @@ namespace VFEngine.Platformer.Event.Raycast
         public static Vector2 OnSetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
         {
             return SetVerticalRaycast(bounds1, bounds2, t, offset, x);
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            await Async(Initialize());
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetRaysParameters()

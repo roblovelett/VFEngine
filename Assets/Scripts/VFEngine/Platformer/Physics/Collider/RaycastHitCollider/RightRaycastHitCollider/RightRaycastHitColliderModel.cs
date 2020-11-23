@@ -31,12 +31,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private void InitializeData()
         {
             r = new RightRaycastHitColliderData {Character = character};
-            /*r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .RightRaycastHitColliderRuntimeData;
             r.RightHitsStorageLength = r.RightHitsStorage.Length;
-            r.RuntimeData.SetRightRaycastHitCollider(r.RightHitConnected, r.IsCollidingRight, r.RightHitsStorageLength,
+            r.RuntimeData = RightRaycastHitColliderRuntimeData.CreateInstance(r.RightHitConnected, r.IsCollidingRight, r.RightHitsStorageLength,
                 r.CurrentRightHitsStorageIndex, r.CurrentRightHitAngle, r.CurrentRightHitDistance,
-                r.DistanceBetweenRightHitAndRaycastOrigin, r.CurrentRightHitCollider);*/
+                r.DistanceBetweenRightHitAndRaycastOrigin, r.CurrentRightHitCollider);
         }
 
         private void InitializeModel()
@@ -159,6 +157,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public RightRaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnInitializeRightHitsStorage()
         {
@@ -243,12 +253,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public void OnResetState()
         {
             ResetState();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

@@ -44,9 +44,11 @@ namespace VFEngine.Platformer
         #region dependencies
 
         public GameObject Character { get; set; }
+        public PlatformerController Controller { get; set; }
         public PlatformerSettings Settings { get; set; }
         public bool HasSettings => Settings;
-        public bool DisplayWarnings => Settings.displayWarningsControl;
+        public bool DisplayWarningsControl { get; set; }
+        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
         public PhysicsController Physics { get; set; }
         public RaycastController Raycast { get; set; }
         public RaycastHitColliderController RaycastHitCollider { get; set; }

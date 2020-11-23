@@ -1,10 +1,12 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
     using static RaycastModel;
@@ -22,7 +24,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        private RightRaycastData r = null;
+        private RightRaycastData r;
 
         #endregion
 
@@ -31,35 +33,32 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         private void InitializeData()
         {
             r = new RightRaycastData {Character = character};
-            //r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
-            //r.RuntimeData.SetRightRaycast(r.RightRayLength, r.RightRaycastFromBottomOrigin, r.RightRaycastToTopOrigin,
-            //    r.CurrentRightRaycastHit);
+            r.RuntimeData = RightRaycastRuntimeData.CreateInstance(r.RightRayLength, r.RightRaycastFromBottomOrigin,
+                r.RightRaycastToTopOrigin, r.CurrentRightRaycastHit);
         }
 
         private void InitializeModel()
         {
-            /*r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             r.RightRaycastHitColliderRuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>()
                 .RightRaycastHitColliderRuntimeData;
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             r.LayerMaskRuntimeData = r.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
-            r.DrawRaycastGizmosControl = r.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            r.NumberOfHorizontalRaysPerSide = r.RaycastRuntimeData.raycast.NumberOfHorizontalRaysPerSide;
-            r.RayOffset = r.RaycastRuntimeData.raycast.RayOffset;
-            r.ObstacleHeightTolerance = r.RaycastRuntimeData.raycast.ObstacleHeightTolerance;
-            r.BoundsWidth = r.RaycastRuntimeData.raycast.BoundsWidth;
-            r.BoundsBottomLeftCorner = r.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
-            r.BoundsBottomRightCorner = r.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
-            r.BoundsTopLeftCorner = r.RaycastRuntimeData.raycast.BoundsTopLeftCorner;
-            r.BoundsTopRightCorner = r.RaycastRuntimeData.raycast.BoundsTopRightCorner;
-            r.CurrentRightHitsStorageIndex = r.RightRaycastHitColliderRuntimeData.rightRaycastHitCollider
-                .CurrentRightHitsStorageIndex;
+            r.Transform = r.PhysicsRuntimeData.Transform;
             r.Speed = r.PhysicsRuntimeData.Speed;
-            r.PlatformMask = r.LayerMaskRuntimeData.layerMask.PlatformMask;
-            r.OneWayPlatformMask = r.LayerMaskRuntimeData.layerMask.OneWayPlatformMask;
-            r.MovingOneWayPlatformMask = r.LayerMaskRuntimeData.layerMask.MovingOneWayPlatformMask;*/
+            r.DrawRaycastGizmosControl = r.RaycastRuntimeData.DrawRaycastGizmosControl;
+            r.NumberOfHorizontalRaysPerSide = r.RaycastRuntimeData.NumberOfHorizontalRaysPerSide;
+            r.RayOffset = r.RaycastRuntimeData.RayOffset;
+            r.ObstacleHeightTolerance = r.RaycastRuntimeData.ObstacleHeightTolerance;
+            r.BoundsWidth = r.RaycastRuntimeData.BoundsWidth;
+            r.BoundsBottomLeftCorner = r.RaycastRuntimeData.BoundsBottomLeftCorner;
+            r.BoundsBottomRightCorner = r.RaycastRuntimeData.BoundsBottomRightCorner;
+            r.BoundsTopLeftCorner = r.RaycastRuntimeData.BoundsTopLeftCorner;
+            r.BoundsTopRightCorner = r.RaycastRuntimeData.BoundsTopRightCorner;
+            r.CurrentRightHitsStorageIndex = r.RightRaycastHitColliderRuntimeData.CurrentRightHitsStorageIndex;
+            r.PlatformMask = r.LayerMaskRuntimeData.PlatformMask;
+            r.OneWayPlatformMask = r.LayerMaskRuntimeData.OneWayPlatformMask;
+            r.MovingOneWayPlatformMask = r.LayerMaskRuntimeData.MovingOneWayPlatformMask;
         }
 
         private void SetRightRaycastFromBottomOrigin()
@@ -113,6 +112,12 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void OnSetRightRaycastFromBottomOrigin()
         {
             SetRightRaycastFromBottomOrigin();
@@ -141,12 +146,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public void OnSetCurrentRightRaycast()
         {
             SetCurrentRightRaycast();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

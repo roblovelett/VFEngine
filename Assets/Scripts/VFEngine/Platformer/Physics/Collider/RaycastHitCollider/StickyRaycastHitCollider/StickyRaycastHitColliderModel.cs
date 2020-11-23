@@ -19,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [LabelText("Sticky Raycast Hit Collider Data")] [SerializeField]
+        [SerializeField] private GameObject character;
         private StickyRaycastHitColliderData s = null;
 
         #endregion
@@ -35,9 +35,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void InitializeData()
         {
             s = new StickyRaycastHitColliderData {Character = character};
-            //s.RuntimeData = s.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-            //    .StickyRaycastHitColliderRuntimeData;
-            //s.RuntimeData.SetStickyRaycastHitCollider(s.BelowSlopeAngleLeft);
+            s.RuntimeData = StickyRaycastHitColliderRuntimeData.CreateInstance(s.BelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
@@ -82,6 +80,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public StickyRaycastHitColliderRuntimeData RuntimeData => s.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnResetState()
         {
@@ -102,13 +112,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         {
             SetBelowSlopeAngleToBelowSlopeAngleRight();
         }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
+        
         #endregion
 
         #endregion

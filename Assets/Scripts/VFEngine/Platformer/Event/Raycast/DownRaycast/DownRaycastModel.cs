@@ -7,7 +7,6 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
     using static RaycastModel;
@@ -126,6 +125,12 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

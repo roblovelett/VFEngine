@@ -31,17 +31,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void InitializeData()
         {
             l = new LeftRaycastHitColliderData {Character = character};
-            /*l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .LeftRaycastHitColliderRuntimeData;
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
-            l.RuntimeData.SetLeftRaycastHitCollider(l.LeftHitConnected, l.IsCollidingLeft, l.LeftHitsStorageLength,
+            l.RuntimeData = LeftRaycastHitColliderRuntimeData.CreateInstance(l.LeftHitConnected, l.IsCollidingLeft, l.LeftHitsStorageLength,
                 l.CurrentLeftHitsStorageIndex, l.CurrentLeftHitAngle, l.CurrentLeftHitDistance,
-                l.DistanceBetweenLeftHitAndRaycastOrigin, l.CurrentLeftHitCollider);*/
+                l.DistanceBetweenLeftHitAndRaycastOrigin, l.CurrentLeftHitCollider);
         }
 
         private void InitializeModel()
         {
-            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            /*
+            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             l.LeftRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
             l.Transform = l.PlatformerRuntimeData.platformer.Transform;
@@ -51,7 +50,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.LeftRaycastToTopOrigin = l.LeftRaycastRuntimeData.leftRaycast.LeftRaycastToTopOrigin;
             InitializeLeftHitsStorage();
             InitializeCurrentLeftHitsStorageIndex();
-            ResetState();*/
+            ResetState();
+            */
         }
 
         private void InitializeLeftHitsStorage()
@@ -158,6 +158,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public LeftRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnInitializeLeftHitsStorage()
         {
@@ -242,12 +254,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public void OnResetState()
         {
             ResetState();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

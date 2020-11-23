@@ -38,9 +38,10 @@ namespace VFEngine.Platformer
 
         private void InitializeData()
         {
-            p = new PlatformerData {Character = character};
-            //p.RuntimeData = CreateInstance<PlatformerRuntimeData>();
-            //p.RuntimeData.SetPlatformer(p.Character.transform);
+            p = new PlatformerData {Character = character, Settings = CreateInstance<PlatformerSettings>()};
+            p.Controller = p.Character.GetComponentNoAllocation<PlatformerController>();
+            p.DisplayWarningsControl = p.DisplayWarningsControlSetting;
+            p.RuntimeData = PlatformerRuntimeData.CreateInstance(p.Controller);
         }
 
         private void InitializeModel()
@@ -971,11 +972,6 @@ namespace VFEngine.Platformer
         public PlatformerRuntimeData RuntimeData => p.RuntimeData;
 
         #region public methods
-
-        public void OnInitialize()
-        {
-            Initialize();
-        }
 
         public void OnRunPlatformer()
         {

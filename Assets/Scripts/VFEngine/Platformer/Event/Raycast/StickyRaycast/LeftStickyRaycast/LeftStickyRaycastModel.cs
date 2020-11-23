@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -31,30 +33,26 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         private void InitializeData()
         {
             l = new LeftStickyRaycastData {Character = character};
-            //l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
-            //l.RuntimeData.SetLeftStickyRaycast(l.LeftStickyRaycastLength, l.LeftStickyRaycastOrigin.y,
-            //    l.LeftStickyRaycastHit);
+            l.RuntimeData = LeftStickyRaycastRuntimeData.CreateInstance(l.LeftStickyRaycastLength, l.LeftStickyRaycastOrigin.y, l.LeftStickyRaycastHit);
         }
 
         private void InitializeModel()
         {
-            /*l.PlatformerRuntimeData = l.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
             l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
-            l.StickyRaycastRuntimeData =
-                l.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
+            l.StickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
             l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            l.Transform = l.PlatformerRuntimeData.platformer.Transform;
-            l.DrawRaycastGizmosControl = l.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            l.BoundsWidth = l.RaycastRuntimeData.raycast.BoundsWidth;
-            l.BoundsHeight = l.RaycastRuntimeData.raycast.BoundsHeight;
-            l.RayOffset = l.RaycastRuntimeData.raycast.RayOffset;
-            l.BoundsBottomLeftCorner = l.RaycastRuntimeData.raycast.BoundsBottomLeftCorner;
-            l.BoundsCenter = l.RaycastRuntimeData.raycast.BoundsCenter;
-            l.StickyRaycastLength = l.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
+            l.Transform = l.PhysicsRuntimeData.Transform;
             l.MaximumSlopeAngle = l.PhysicsRuntimeData.MaximumSlopeAngle;
             l.NewPosition = l.PhysicsRuntimeData.NewPosition;
-            l.RaysBelowLayerMaskPlatforms = l.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;*/
+            l.DrawRaycastGizmosControl = l.RaycastRuntimeData.DrawRaycastGizmosControl;
+            l.BoundsWidth = l.RaycastRuntimeData.BoundsWidth;
+            l.BoundsHeight = l.RaycastRuntimeData.BoundsHeight;
+            l.RayOffset = l.RaycastRuntimeData.RayOffset;
+            l.BoundsBottomLeftCorner = l.RaycastRuntimeData.BoundsBottomLeftCorner;
+            l.BoundsCenter = l.RaycastRuntimeData.BoundsCenter;
+            l.StickyRaycastLength = l.StickyRaycastRuntimeData.StickyRaycastLength;
+            l.RaysBelowLayerMaskPlatforms = l.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetLeftStickyRaycastLength()
@@ -99,6 +97,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetLeftStickyRaycastLength()
         {
@@ -123,12 +126,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public void OnSetLeftStickyRaycast()
         {
             SetLeftStickyRaycast();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

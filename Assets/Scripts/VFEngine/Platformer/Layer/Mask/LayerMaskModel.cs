@@ -27,8 +27,8 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeData()
         {
-            l = new LayerMaskData {Character = character};
-            /*l.RuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
+            l = new LayerMaskData {Character = character, Settings = CreateInstance<LayerMaskSettings>()};
+            l.Controller = l.Character.GetComponentNoAllocation<LayerMaskController>();
             l.PlatformMask = l.PlatformMaskSetting;
             l.MovingPlatformMask = l.MovingPlatformMaskSetting;
             l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
@@ -40,10 +40,10 @@ namespace VFEngine.Platformer.Layer.Mask
             l.PlatformMask |= l.MovingPlatformMask;
             l.PlatformMask |= l.MovingOneWayPlatformMask;
             l.PlatformMask |= l.MidHeightOneWayPlatformMask;
-            l.RuntimeData.SetLayerMasks(l.SavedBelowLayer, l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask,
+            l.RuntimeData = LayerMaskRuntimeData.CreateInstance(l.Controller, l.SavedBelowLayer, l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask,
                 l.MovingOneWayPlatformMask, l.MidHeightOneWayPlatformMask, l.StairsMask,
                 l.RaysBelowLayerMaskPlatformsWithoutOneWay, l.RaysBelowLayerMaskPlatformsWithoutMidHeight,
-                l.RaysBelowLayerMaskPlatforms);*/
+                l.RaysBelowLayerMaskPlatforms);
         }
 
         private void InitializeModel()
@@ -160,11 +160,6 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMaskRuntimeData RuntimeData => l.RuntimeData;
 
         #region public methods
-
-        public void OnInitialize()
-        {
-            Initialize();
-        }
 
         public void OnSetRaysBelowLayerMaskPlatforms()
         {

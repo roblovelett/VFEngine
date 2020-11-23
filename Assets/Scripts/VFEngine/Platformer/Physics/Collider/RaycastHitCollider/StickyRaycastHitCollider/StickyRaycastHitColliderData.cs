@@ -11,11 +11,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 {
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "StickyRaycastHitColliderData", menuName = PlatformerStickyRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class StickyRaycastHitColliderData : ScriptableObject
+    
+    public class StickyRaycastHitColliderData
     {
         #region fields
 

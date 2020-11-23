@@ -1,10 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
     using static StickyRaycastModel;
@@ -22,7 +23,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        private RightStickyRaycastData r = null;
+        private RightStickyRaycastData r;
 
         #endregion
 
@@ -31,30 +32,28 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         private void InitializeData()
         {
             r = new RightStickyRaycastData {Character = character};
-            //r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RightStickyRaycastRuntimeData;
-            //r.RuntimeData.SetRightStickyRaycast(r.RightStickyRaycastLength, r.RightStickyRaycastOrigin.y,
-            //    r.RightStickyRaycastHit);
+            r.RuntimeData = RightStickyRaycastRuntimeData.CreateInstance(r.RightStickyRaycastLength,
+                r.RightStickyRaycastOrigin.y, r.RightStickyRaycastHit);
         }
 
         private void InitializeModel()
         {
-            /*r.PlatformerRuntimeData = r.Character.GetComponentNoAllocation<PlatformerController>().RuntimeData;
+            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             r.RaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             r.StickyRaycastRuntimeData =
                 r.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             r.LayerMaskRuntimeData = r.Character.GetComponentNoAllocation<LayerMaskController>().RuntimeData;
-            r.Transform = r.PlatformerRuntimeData.platformer.Transform;
-            r.DrawRaycastGizmosControl = r.RaycastRuntimeData.raycast.DrawRaycastGizmosControl;
-            r.BoundsWidth = r.RaycastRuntimeData.raycast.BoundsWidth;
-            r.BoundsHeight = r.RaycastRuntimeData.raycast.BoundsHeight;
-            r.RayOffset = r.RaycastRuntimeData.raycast.RayOffset;
-            r.BoundsBottomRightCorner = r.RaycastRuntimeData.raycast.BoundsBottomRightCorner;
-            r.BoundsCenter = r.RaycastRuntimeData.raycast.BoundsCenter;
-            r.StickyRaycastLength = r.StickyRaycastRuntimeData.stickyRaycast.StickyRaycastLength;
+            r.Transform = r.PhysicsRuntimeData.Transform;
             r.MaximumSlopeAngle = r.PhysicsRuntimeData.MaximumSlopeAngle;
             r.NewPosition = r.PhysicsRuntimeData.NewPosition;
-            r.RaysBelowLayerMaskPlatforms = r.LayerMaskRuntimeData.layerMask.RaysBelowLayerMaskPlatforms;*/
+            r.DrawRaycastGizmosControl = r.RaycastRuntimeData.DrawRaycastGizmosControl;
+            r.BoundsWidth = r.RaycastRuntimeData.BoundsWidth;
+            r.BoundsHeight = r.RaycastRuntimeData.BoundsHeight;
+            r.RayOffset = r.RaycastRuntimeData.RayOffset;
+            r.BoundsBottomRightCorner = r.RaycastRuntimeData.BoundsBottomRightCorner;
+            r.BoundsCenter = r.RaycastRuntimeData.BoundsCenter;
+            r.StickyRaycastLength = r.StickyRaycastRuntimeData.StickyRaycastLength;
+            r.RaysBelowLayerMaskPlatforms = r.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
         }
 
         private void SetRightStickyRaycastLengthToStickyRaycastLength()
@@ -100,6 +99,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void OnSetRightStickyRaycastLengthToStickyRaycastLength()
         {
             SetRightStickyRaycastLengthToStickyRaycastLength();
@@ -123,12 +128,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         public void OnSetRightStickyRaycast()
         {
             SetRightStickyRaycast();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

@@ -11,8 +11,6 @@ using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -76,59 +74,63 @@ namespace VFEngine.Platformer.Event.Raycast
             var t8 = Async(LoadRightStickyRaycastModel());
             var t9 = Async(LoadLeftStickyRaycastModel());
             var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            
             await SetYieldOrSwitchToThreadPoolAsync();
-            
+
             async UniTaskVoid LoadRaycastModel()
             {
                 if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadUpRaycastModel()
             {
                 if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadRightRaycastModel()
             {
                 if (!rightRaycastModel) rightRaycastModel = LoadModel<RightRaycastModel>(RightRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadDownRaycastModel()
             {
                 if (!downRaycastModel) downRaycastModel = LoadModel<DownRaycastModel>(DownRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadLeftRaycastModel()
             {
                 if (!leftRaycastModel) leftRaycastModel = LoadModel<LeftRaycastModel>(LeftRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadDistanceToGroundRaycastModel()
             {
-                if (!distanceToGroundRaycastModel) distanceToGroundRaycastModel = LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
+                if (!distanceToGroundRaycastModel)
+                    distanceToGroundRaycastModel =
+                        LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadStickyRaycastModel()
             {
                 if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
-            
+
             async UniTaskVoid LoadRightStickyRaycastModel()
             {
-                if (!rightStickyRaycastModel) rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
+                if (!rightStickyRaycastModel)
+                    rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
+
             async UniTaskVoid LoadLeftStickyRaycastModel()
             {
-                if (!leftStickyRaycastModel) leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
+                if (!leftStickyRaycastModel)
+                    leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
         }
@@ -159,7 +161,7 @@ namespace VFEngine.Platformer.Event.Raycast
             var t7 = Async(stickyRaycastModel.OnInitializeModel());
             var t8 = Async(rightStickyRaycastModel.OnInitializeModel());
             var t9 = Async(leftStickyRaycastModel.OnInitializeModel());
-            var task1 = await (t1,t2,t3,t4,t5,t6,t7,t8,t9);
+            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -169,7 +171,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData => distanceToGroundRaycastModel.RuntimeData;
+        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData =>
+            distanceToGroundRaycastModel.RuntimeData;
+
         public DownRaycastRuntimeData DownRaycastRuntimeData => downRaycastModel.RuntimeData;
         public LeftRaycastRuntimeData LeftRaycastRuntimeData => leftRaycastModel.RuntimeData;
         public RightRaycastRuntimeData RightRaycastRuntimeData => rightRaycastModel.RuntimeData;
@@ -178,7 +182,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData => leftStickyRaycastModel.RuntimeData;
         public UpRaycastRuntimeData UpRaycastRuntimeData => upRaycastModel.RuntimeData;
         public RaycastRuntimeData RuntimeData => raycastModel.RuntimeData;
-        
+
         #region public methods
 
         #region raycast model

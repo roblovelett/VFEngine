@@ -1,17 +1,13 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
 
-   
     public class RightStickyRaycastData
     {
         #region fields
@@ -29,7 +25,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public StickyRaycastRuntimeData StickyRaycastRuntimeData { get; set; }
         public PhysicsRuntimeData PhysicsRuntimeData { get; set; }

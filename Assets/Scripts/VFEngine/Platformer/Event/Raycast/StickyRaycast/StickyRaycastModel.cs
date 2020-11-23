@@ -1,10 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static Mathf;
@@ -21,7 +22,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        private StickyRaycastData s = null;
+        private StickyRaycastData s;
 
         #endregion
 
@@ -30,15 +31,15 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private void InitializeData()
         {
             s = new StickyRaycastData {Character = character};
-            /*s.RuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
             s.StickToSlopesOffsetY = s.StickToSlopesOffsetYSetting;
             s.DisplayWarningsControl = s.DisplayWarningsControlSetting;
-            s.RuntimeData.SetStickyRaycast(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);*/
+            s.RuntimeData =
+                StickyRaycastRuntimeData.CreateInstance(s.IsCastingLeft, s.StickToSlopesOffsetY, s.StickyRaycastLength);
         }
 
         private void InitializeModel()
         {
-            /*s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
+            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().RuntimeData;
             s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RuntimeData;
             s.RightStickyRaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>()
                 .RightStickyRaycastRuntimeData;
@@ -52,16 +53,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 .GetComponentNoAllocation<RaycastHitColliderController>().RightStickyRaycastHitColliderRuntimeData;
             s.StickToSlopesControl = s.PhysicsRuntimeData.StickToSlopesControl;
             s.MaximumSlopeAngle = s.PhysicsRuntimeData.MaximumSlopeAngle;
-            s.BoundsWidth = s.RaycastRuntimeData.raycast.BoundsWidth;
-            s.BoundsHeight = s.RaycastRuntimeData.raycast.BoundsHeight;
-            s.RayOffset = s.RaycastRuntimeData.raycast.RayOffset;
-            s.RightStickyRaycastHit = s.RightStickyRaycastRuntimeData.rightStickyRaycast.RightStickyRaycastHit;
-            s.LeftStickyRaycastHit = s.LeftStickyRaycastRuntimeData.leftStickyRaycast.LeftStickyRaycastHit;
-            s.BelowSlopeAngle = s.StickyRaycastHitColliderRuntimeData.stickyRaycastHitCollider.BelowSlopeAngle;
-            s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.leftStickyRaycastHitCollider
-                .BelowSlopeAngleLeft;
-            s.BelowSlopeAngleRight = s.RightStickyRaycastHitColliderRuntimeData.rightStickyRaycastHitCollider
-                .BelowSlopeAngleRight;*/
+            s.BoundsWidth = s.RaycastRuntimeData.BoundsWidth;
+            s.BoundsHeight = s.RaycastRuntimeData.BoundsHeight;
+            s.RayOffset = s.RaycastRuntimeData.RayOffset;
+            s.RightStickyRaycastHit = s.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
+            s.LeftStickyRaycastHit = s.LeftStickyRaycastRuntimeData.LeftStickyRaycastHit;
+            s.BelowSlopeAngle = s.StickyRaycastHitColliderRuntimeData.BelowSlopeAngle;
+            s.BelowSlopeAngleLeft = s.LeftStickyRaycastHitColliderRuntimeData.BelowSlopeAngleLeft;
+            s.BelowSlopeAngleRight = s.RightStickyRaycastHitColliderRuntimeData.BelowSlopeAngleRight;
         }
 
         private void GetWarningMessages()
@@ -154,9 +153,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnInitialize()
+        public async UniTaskVoid OnInitializeModel()
         {
-            if (s.StickToSlopesControl) Initialize();
+            InitializeModel();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

@@ -43,9 +43,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #endregion
 
         public UpRaycastHitColliderRuntimeData RuntimeData { get; set; }
-        public bool UpHitConnected { get; set; }
-        public bool IsCollidingAbove { get; set; }
-        public bool WasTouchingCeilingLastFrame { get; set; }
+        public bool UpHitConnected { get; set; } = false;
+        public bool IsCollidingAbove { get; set; } = false;
+        public bool WasTouchingCeilingLastFrame { get; set; } = false;
         public int UpHitsStorageLength { get; set; }
         public int UpHitsStorageCollidingIndex { get; set; }
         public int CurrentUpHitsStorageIndex { get; set; }

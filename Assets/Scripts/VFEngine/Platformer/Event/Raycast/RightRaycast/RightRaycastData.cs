@@ -33,10 +33,9 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         public GameObject Character { get; set; }
         public Transform Transform { get; set; }
-        public PlatformerRuntimeData PlatformerRuntimeData { get; set; }
+        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public RaycastRuntimeData RaycastRuntimeData { get; set; }
         public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; set; }
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
         public bool DrawRaycastGizmosControl { get; set; }
         public int NumberOfHorizontalRaysPerSide { get; set; }

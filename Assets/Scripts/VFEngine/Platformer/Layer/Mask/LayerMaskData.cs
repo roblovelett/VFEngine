@@ -29,6 +29,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
+        public LayerMaskController Controller { get; set; }
         public LayerMaskSettings Settings { get; set; }
         public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
         public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }

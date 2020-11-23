@@ -30,9 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void InitializeData()
         {
             l = new LeftStickyRaycastHitColliderData {Character = character};
-            //l.RuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-            //    .LeftStickyRaycastHitColliderRuntimeData;
-            //l.RuntimeData.SetLeftStickyRaycastHitCollider(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
+            l.RuntimeData = LeftStickyRaycastHitColliderRuntimeData.CreateInstance(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
         }
 
         private void InitializeModel()
@@ -74,6 +72,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public LeftStickyRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
 
         #region public methods
+        
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
 
         public void OnSetBelowSlopeAngleLeft()
         {
@@ -93,12 +103,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public void OnResetState()
         {
             ResetState();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

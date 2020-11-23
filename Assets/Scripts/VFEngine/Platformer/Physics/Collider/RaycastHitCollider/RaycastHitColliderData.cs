@@ -30,6 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region dependencies
 
         public GameObject Character { get; set; }
+        public RaycastHitColliderController Controller { get; set; }
         public RightRaycastRuntimeData RightRaycastRuntimeData { get; set; }
         public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; set; }
         public RaycastHit2D CurrentRightRaycastHit { get; set; }

@@ -30,8 +30,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         private void InitializeData()
         {
             r = new RaycastHitColliderData {Character = character};
-            //r.RuntimeData = r.Character.GetComponentNoAllocation<RaycastHitColliderController>().RuntimeData;
-            //r.RuntimeData.SetRaycastHitCollider(r.IgnoredCollider, r.ContactList);
+            r.Controller = r.Character.GetComponentNoAllocation<RaycastHitColliderController>();
+            r.RuntimeData = RaycastHitColliderRuntimeData.CreateInstance(r.Controller, r.IgnoredCollider, r.ContactList);
         }
 
         private void InitializeModel()
@@ -79,6 +79,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region public methods
 
+        public async UniTaskVoid OnInitializeData()
+        {
+            InitializeData();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+        public async UniTaskVoid OnInitializeModel()
+        {
+            InitializeModel();
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
         public void OnClearContactList()
         {
             ClearContactList();
@@ -97,12 +108,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         public static float OnSetRaycastHitAngle(Vector2 normal, Transform t)
         {
             return SetRaycastHitAngle(normal, t);
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnResetState()
