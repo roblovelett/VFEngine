@@ -27,7 +27,10 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private UpRaycastData u;
+        [LabelText("Up Raycast Data")] [SerializeField]
+        private UpRaycastData u;
+
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
@@ -45,6 +48,11 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         private void InitializeData()
         {
             if (!u) u = CreateInstance<UpRaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
         private void InitializeModel()

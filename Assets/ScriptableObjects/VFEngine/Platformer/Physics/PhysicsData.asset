@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46458b6be9c24003bf065a69e2970195, type: 3}
   m_Name: PhysicsData
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 1497321e2445d4049b01e4f84ee8461b, type: 2}
   character: {fileID: 0}

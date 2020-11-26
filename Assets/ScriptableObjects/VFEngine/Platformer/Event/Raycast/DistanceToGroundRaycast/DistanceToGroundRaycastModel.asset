@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b348ce270024bfbbf6bfdf160607118, type: 3}
   m_Name: DistanceToGroundRaycastModel
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
+  d: {fileID: 11400000, guid: 6ea49e6e744e2034dbbb9dac53439843, type: 2}
+  physicsController: {fileID: 0}
+  raycastController: {fileID: 0}
+  raycastHitColliderController: {fileID: 0}
+  layerMaskController: {fileID: 0}

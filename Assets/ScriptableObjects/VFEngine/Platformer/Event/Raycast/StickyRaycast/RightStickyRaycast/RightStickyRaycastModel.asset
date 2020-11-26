@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fdd96651a834a69a482242d77bf5e08, type: 3}
   m_Name: RightStickyRaycastModel
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
+  r: {fileID: 11400000, guid: dcb6a1e13f392fe43a8b73a864488055, type: 2}
+  physicsController: {fileID: 0}
+  raycastController: {fileID: 0}
+  layerMaskController: {fileID: 0}

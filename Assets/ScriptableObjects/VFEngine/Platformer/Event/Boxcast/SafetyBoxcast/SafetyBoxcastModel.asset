@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033fe00320ba490196701a66eef52642, type: 3}
   m_Name: SafetyBoxcastModel
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
+  s: {fileID: 11400000, guid: 6b64d912f7bac1245b38486adc0a6536, type: 2}
+  physicsController: {fileID: 0}
+  raycastController: {fileID: 0}
+  layerMaskController: {fileID: 0}

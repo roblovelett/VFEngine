@@ -24,7 +24,8 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [SerializeField] private RightRaycastData r;
+        [LabelText("Right Raycast Data")] [SerializeField] private RightRaycastData r;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
@@ -41,6 +42,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RightRaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
         private void InitializeModel()

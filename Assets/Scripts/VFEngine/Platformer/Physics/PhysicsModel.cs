@@ -34,7 +34,8 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private PhysicsData p;
+        [LabelText("Physics Data")] [SerializeField] private PhysicsData p;
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private BoxcastController boxcastController;
@@ -56,6 +57,9 @@ namespace VFEngine.Platformer.Physics
         private void InitializeData()
         {
             if (!p) p = CreateInstance<PhysicsData>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
             if (p.AutomaticGravityControl) p.Transform.rotation = identity;
             p.IsJumping = false;
             p.FallSlowFactor = 0f;

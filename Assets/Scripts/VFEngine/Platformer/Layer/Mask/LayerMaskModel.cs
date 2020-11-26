@@ -21,7 +21,8 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [SerializeField] private LayerMaskData l;
+        [LabelText("Layer Mask Data")][SerializeField] private LayerMaskData l;
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         private DownRaycastHitColliderData downRaycastHitCollider;
 
@@ -32,6 +33,7 @@ namespace VFEngine.Platformer.Layer.Mask
         private void InitializeData()
         {
             if (!l) l = CreateInstance<LayerMaskData>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             l.SavedPlatformMask = l.PlatformMask;
             l.PlatformMask |= l.OneWayPlatformMask;
             l.PlatformMask |= l.MovingPlatformMask;

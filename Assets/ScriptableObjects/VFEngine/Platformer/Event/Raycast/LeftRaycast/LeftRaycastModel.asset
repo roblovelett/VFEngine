@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de53f0b9483467cbadb6a072cd64491, type: 3}
   m_Name: LeftRaycastModel
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
+  l: {fileID: 11400000, guid: 036e4e986702c984c8766814129c4630, type: 2}
+  physicsController: {fileID: 0}
+  raycastController: {fileID: 0}
+  raycastHitColliderController: {fileID: 0}
+  layerMaskController: {fileID: 0}

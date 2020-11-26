@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
-        [SerializeField] private BoxcastData b;
+        [LabelText("Boxcast Data")] [SerializeField] private BoxcastData b;
 
         #endregion
 

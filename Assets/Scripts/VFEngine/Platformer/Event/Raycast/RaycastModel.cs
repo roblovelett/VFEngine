@@ -23,9 +23,10 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [SerializeField] private RaycastData r;
-        [SerializeField] private BoxCollider2D boxCollider;
+        [LabelText("Raycast Data")] [SerializeField] private RaycastData r;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private BoxCollider2D boxCollider;
         private PhysicsData physics;
 
         #endregion
@@ -35,8 +36,9 @@ namespace VFEngine.Platformer.Event.Raycast
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!boxCollider) boxCollider = character.GetComponent<BoxCollider2D>();
             if (!r.Settings) r.Settings = CreateInstance<RaycastSettings>();
-            if (!boxCollider) boxCollider = new BoxCollider2D();
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             if (r.DisplayWarningsControl) GetWarningMessages();

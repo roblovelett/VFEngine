@@ -25,7 +25,8 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private DownRaycastData d;
+        [LabelText("Down Raycast Data")] [SerializeField] private DownRaycastData d;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
@@ -48,6 +49,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         private void InitializeData()
         {
             if (!d) d = CreateInstance<DownRaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
         private void InitializeModel()

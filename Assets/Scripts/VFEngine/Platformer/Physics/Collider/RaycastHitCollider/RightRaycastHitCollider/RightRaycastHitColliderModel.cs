@@ -22,7 +22,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #region dependencies
 
-        [SerializeField] private RightRaycastHitColliderData r;
+        [LabelText("Right Raycast Hit Collider Data")] [SerializeField] private RightRaycastHitColliderData r;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         private PhysicsData physics;
@@ -36,6 +37,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RightRaycastHitColliderData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
         }
 
         private void InitializeModel()

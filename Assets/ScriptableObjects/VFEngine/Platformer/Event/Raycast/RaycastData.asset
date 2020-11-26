@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e05867e94334ef7807ae2a909ab7052, type: 3}
   m_Name: RaycastData
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 1957c09b345423545b886bc1425e50d4, type: 2}

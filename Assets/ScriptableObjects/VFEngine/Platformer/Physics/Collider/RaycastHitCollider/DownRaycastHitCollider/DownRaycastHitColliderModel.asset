@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46b74be90ef9419cba47860b95ddf305, type: 3}
   m_Name: DownRaycastHitColliderModel
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
+  d: {fileID: 0}
+  physicsController: {fileID: 0}
+  raycastController: {fileID: 0}
+  layerMaskController: {fileID: 0}

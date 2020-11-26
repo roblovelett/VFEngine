@@ -43,7 +43,8 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [SerializeField] private PlatformerData p;
+        [LabelText("Platformer Data")] [SerializeField] private PlatformerData p;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private BoxcastController boxcastController;
         [SerializeField] private RaycastController raycastController;
@@ -76,6 +77,11 @@ namespace VFEngine.Platformer
         private void InitializeData()
         {
             if (!p) p = CreateInstance<PlatformerData>();
+            if (!physicsController) character.GetComponent<PhysicsController>();
+            if (!boxcastController) character.GetComponent<BoxcastController>();
+            if (!raycastController) character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) character.GetComponent<LayerMaskController>();
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
@@ -96,8 +102,7 @@ namespace VFEngine.Platformer
             leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
             leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
             rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            distanceToGroundRaycastHitCollider =
-                raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
+            distanceToGroundRaycastHitCollider = raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bd3b9caa7c453493b5cd1ffdbfe598, type: 3}
   m_Name: StickyRaycastData
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 34af127971f151f45909772db4bc0767, type: 2}

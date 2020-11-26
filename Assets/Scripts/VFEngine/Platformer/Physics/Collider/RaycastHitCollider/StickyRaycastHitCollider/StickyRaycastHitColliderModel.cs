@@ -20,7 +20,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private StickyRaycastHitColliderData s;
+        [LabelText("Sticky Raycast Hit Collider Data")] [SerializeField] private StickyRaycastHitColliderData s;
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         private RightStickyRaycastHitColliderData rightStickyRaycastHitCollider;
         private LeftStickyRaycastHitColliderData leftStickyRaycastHitCollider;
@@ -32,6 +33,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void InitializeData()
         {
             if (!s) s = CreateInstance<StickyRaycastHitColliderData>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
         }
 
         private void InitializeModel()

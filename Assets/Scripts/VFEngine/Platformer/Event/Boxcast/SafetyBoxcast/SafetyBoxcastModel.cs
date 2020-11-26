@@ -24,7 +24,10 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private SafetyBoxcastData s;
+        [LabelText("Safety Boxcast Data")] [SerializeField]
+        private SafetyBoxcastData s;
+
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
@@ -40,6 +43,9 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         private void InitializeData()
         {
             if (!s) s = CreateInstance<SafetyBoxcastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
         private void InitializeModel()

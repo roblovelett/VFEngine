@@ -22,7 +22,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [SerializeField] private LeftRaycastHitColliderData l;
+        [LabelText("Left Raycast Hit Collider Data")] [SerializeField] private LeftRaycastHitColliderData l;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         private PhysicsData physics;
@@ -36,6 +37,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void InitializeData()
         {
             if (!l) l = CreateInstance<LeftRaycastHitColliderData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
         }
 

@@ -24,7 +24,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private DistanceToGroundRaycastData d;
+        [LabelText("Distance To Ground Raycast Data")] [SerializeField] private DistanceToGroundRaycastData d;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
@@ -41,6 +42,10 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         private void InitializeData()
         {
             if (!d) d = CreateInstance<DistanceToGroundRaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
         private void InitializeModel()

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f56307325ace45679f5130d43fbbd0bd, type: 3}
   m_Name: PlatformerData
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 0c9c0e470a228bd41a04a1e8529aeb94, type: 2}

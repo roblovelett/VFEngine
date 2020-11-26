@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73cd88d6036049de96a68d36959ee77f, type: 3}
   m_Name: LayerMaskData
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 758b579fdd6b98b48ac3404d39492892, type: 2}

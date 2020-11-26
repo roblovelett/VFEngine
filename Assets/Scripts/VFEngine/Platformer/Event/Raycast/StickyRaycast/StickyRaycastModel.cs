@@ -26,7 +26,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region dependencies
 
-        [SerializeField] private StickyRaycastData s;
+        [LabelText("Sticky Raycast Data")] [SerializeField] private StickyRaycastData s;
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
@@ -45,6 +46,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private void InitializeData()
         {
             if (!s) s = CreateInstance<StickyRaycastData>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
         }
 
         private void InitializeModel()
