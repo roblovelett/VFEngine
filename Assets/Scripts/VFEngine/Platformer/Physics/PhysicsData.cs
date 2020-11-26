@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings;
         [SerializeField] private GameObject character;
-
+        
         #endregion
 
         private const string PhPath = "Physics/";
@@ -27,7 +27,6 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public GameObject Character => character;
         public Transform Transform => character.transform;
         public PhysicsSettings Settings => settings;
         public float Physics2DPushForce => settings.physics2DPushForce;

@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -21,6 +22,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         [SerializeField] private UpRaycastHitColliderData u;
+        [SerializeField] private RaycastController raycastController;
+        private RaycastData raycast;
+        private UpRaycastData upRaycast;
 
         #endregion
 
@@ -28,21 +32,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void InitializeData()
         {
-            u = new UpRaycastHitColliderData {Character = character};
+            if (!u) u = CreateInstance<UpRaycastHitColliderData>();
             u.UpHitsStorageLength = u.UpHitsStorage.Length;
-            u.RuntimeData = UpRaycastHitColliderRuntimeData.CreateInstance(u.UpHitConnected, u.IsCollidingAbove,
-                u.WasTouchingCeilingLastFrame, u.UpHitsStorageLength, u.UpHitsStorageCollidingIndex,
-                u.CurrentUpHitsStorageIndex, u.RaycastUpHitAt);
         }
 
         private void InitializeModel()
         {
-            u.PhysicsRuntimeData = u.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            u.UpRaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().UpRaycastRuntimeData;
-            u.Transform = u.PhysicsRuntimeData.Transform;
-            u.NumberOfVerticalRaysPerSide = u.RaycastRuntimeData.NumberOfVerticalRaysPerSide;
-            u.CurrentUpRaycastHit = u.UpRaycastRuntimeData.CurrentUpRaycastHit;
+            raycast = raycastController.RaycastModel.Data;
+            upRaycast = raycastController.UpRaycastModel.Data;
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
             InitializeUpHitsStorage();
@@ -66,7 +63,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void InitializeUpHitsStorage()
         {
-            u.UpHitsStorage = new RaycastHit2D[u.NumberOfVerticalRaysPerSide];
+            u.UpHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
         }
 
         private void AddToUpHitsStorageCurrentIndex()
@@ -76,7 +73,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void SetCurrentUpHitsStorage()
         {
-            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = u.CurrentUpRaycastHit;
+            u.UpHitsStorage[u.CurrentUpHitsStorageIndex] = upRaycast.CurrentUpRaycastHit;
         }
 
         private void SetRaycastUpHitAt()
@@ -116,7 +113,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region properties
 
-        public UpRaycastHitColliderRuntimeData RuntimeData => u.RuntimeData;
+        public UpRaycastHitColliderData Data => u;
 
         #region public methods
 

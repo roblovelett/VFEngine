@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,6 +23,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region dependencies
 
         [SerializeField] private LeftStickyRaycastHitColliderData l;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        private PhysicsData physics;
+        private LeftStickyRaycastData leftStickyRaycast;
 
         #endregion
 
@@ -29,16 +34,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeData()
         {
-            l = new LeftStickyRaycastHitColliderData {Character = character};
-            l.RuntimeData = LeftStickyRaycastHitColliderRuntimeData.CreateInstance(l.BelowSlopeAngleLeft, l.CrossBelowSlopeAngleLeft);
+            if (!l) l = CreateInstance<LeftStickyRaycastHitColliderData>();
         }
 
         private void InitializeModel()
         {
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            l.LeftStickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftStickyRaycastRuntimeData;
-            l.Transform = l.PhysicsRuntimeData.Transform;
-            l.LeftStickyRaycastHit = l.LeftStickyRaycastRuntimeData.LeftStickyRaycastHit;
+            physics = physicsController.PhysicsModel.Data;
+            leftStickyRaycast = raycastController.LeftStickyRaycastModel.Data;
             ResetState();
         }
 
@@ -50,12 +52,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void SetBelowSlopeAngleLeft()
         {
-            l.BelowSlopeAngleLeft = Vector2.Angle(l.LeftStickyRaycastHit.normal, l.Transform.up);
+            l.BelowSlopeAngleLeft = Vector2.Angle(leftStickyRaycast.LeftStickyRaycastHit.normal, physics.Transform.up);
         }
 
         private void SetCrossBelowSlopeAngleLeft()
         {
-            l.CrossBelowSlopeAngleLeft = Cross(l.Transform.up, l.LeftStickyRaycastHit.normal);
+            l.CrossBelowSlopeAngleLeft = Cross(physics.Transform.up, leftStickyRaycast.LeftStickyRaycastHit.normal);
         }
 
         private void SetBelowSlopeAngleLeftToNegative()
@@ -69,16 +71,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
-        public LeftStickyRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
+        public LeftStickyRaycastHitColliderData Data => l;
 
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();

@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -27,9 +25,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region properties
 
         #region dependencies
-        
 
         #endregion
+
         public bool UpHitConnected { get; set; } = false;
         public bool IsCollidingAbove { get; set; } = false;
         public bool WasTouchingCeilingLastFrame { get; set; } = false;

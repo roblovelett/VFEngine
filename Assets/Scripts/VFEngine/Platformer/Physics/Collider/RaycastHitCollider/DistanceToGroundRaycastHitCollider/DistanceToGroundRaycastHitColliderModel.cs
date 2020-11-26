@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -20,6 +21,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region dependencies
 
         [SerializeField] private DistanceToGroundRaycastHitColliderData d;
+        [SerializeField] private RaycastController raycastController;
+        private RaycastData raycast;
+        private DistanceToGroundRaycastData distanceToGroundRaycast;
 
         #endregion
 
@@ -27,19 +31,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeData()
         {
-            d = new DistanceToGroundRaycastHitColliderData {Character = character};
-            d.RuntimeData =
-                DistanceToGroundRaycastHitColliderRuntimeData.CreateInstance(d.DistanceToGroundRaycastHitConnected);
+            if (!d) d = CreateInstance<DistanceToGroundRaycastHitColliderData>();
         }
 
         private void InitializeModel()
         {
-            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            d.DistanceToGroundRaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>()
-                .DistanceToGroundRaycastRuntimeData;
-            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.DistanceToGroundRayMaximumLength;
-            d.BoundsHeight = d.RaycastRuntimeData.BoundsHeight;
-            d.DistanceToGroundRaycastHit = d.DistanceToGroundRaycastRuntimeData.DistanceToGroundRaycastHit;
+            raycast = raycastController.RaycastModel.Data;
+            distanceToGroundRaycast = raycastController.DistanceToGroundRaycastModel.Data;
             ResetState();
         }
 
@@ -56,7 +54,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeDistanceToGround()
         {
-            d.DistanceToGround = d.DistanceToGroundRayMaximumLength;
+            d.DistanceToGround = raycast.DistanceToGroundRayMaximumLength;
         }
 
         private void DecreaseDistanceToGround()
@@ -66,7 +64,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround()
         {
-            d.DistanceToGround = d.DistanceToGroundRaycastHit.distance - d.BoundsHeight / 2;
+            d.DistanceToGround = distanceToGroundRaycast.DistanceToGroundRaycastHit.distance - raycast.BoundsHeight / 2;
         }
 
         #endregion
@@ -75,7 +73,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region properties
 
-        public DistanceToGroundRaycastHitColliderRuntimeData RuntimeData => d.RuntimeData;
+        public DistanceToGroundRaycastHitColliderData Data => d;
 
         #region public methods
 

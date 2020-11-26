@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -23,6 +24,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         #region dependencies
 
         [SerializeField] private LeftRaycastHitColliderData l;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        private PhysicsData physics;
+        private RaycastData raycast;
+        private LeftRaycastData leftRaycast;
 
         #endregion
 
@@ -30,23 +36,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeData()
         {
-            l = new LeftRaycastHitColliderData {Character = character};
+            if (!l) l = CreateInstance<LeftRaycastHitColliderData>();
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
-            l.RuntimeData = LeftRaycastHitColliderRuntimeData.CreateInstance(l.LeftHitConnected, l.IsCollidingLeft,
-                l.LeftHitsStorageLength, l.CurrentLeftHitsStorageIndex, l.CurrentLeftHitAngle, l.CurrentLeftHitDistance,
-                l.DistanceBetweenLeftHitAndRaycastOrigin, l.CurrentLeftHitCollider);
         }
 
         private void InitializeModel()
         {
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            l.LeftRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
-            l.Transform = l.PhysicsRuntimeData.Transform;
-            l.NumberOfHorizontalRaysPerSide = l.RaycastRuntimeData.NumberOfHorizontalRaysPerSide;
-            l.CurrentLeftRaycastHit = l.LeftRaycastRuntimeData.CurrentLeftRaycastHit;
-            l.LeftRaycastFromBottomOrigin = l.LeftRaycastRuntimeData.LeftRaycastFromBottomOrigin;
-            l.LeftRaycastToTopOrigin = l.LeftRaycastRuntimeData.LeftRaycastToTopOrigin;
+            physics = physicsController.PhysicsModel.Data;
+            raycast = raycastController.RaycastModel.Data;
+            leftRaycast = raycastController.LeftRaycastModel.Data;
             InitializeLeftHitsStorage();
             InitializeCurrentLeftHitsStorageIndex();
             ResetState();
@@ -54,7 +52,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeLeftHitsStorage()
         {
-            l.LeftHitsStorage = new RaycastHit2D[l.NumberOfHorizontalRaysPerSide];
+            l.LeftHitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
         }
 
         private void InitializeCurrentLeftHitsStorageIndex()
@@ -64,7 +62,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void SetCurrentLeftHitsStorage()
         {
-            l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex] = l.CurrentLeftRaycastHit;
+            l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex] = leftRaycast.CurrentLeftRaycastHit;
         }
 
         private void SetCurrentLeftHitDistance()
@@ -85,7 +83,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void SetCurrentLeftHitAngle()
         {
             l.CurrentLeftHitAngle = OnSetRaycastHitAngle(l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex].normal,
-                l.Transform);
+                physics.Transform);
         }
 
         private void SetCurrentLeftHitCollider()
@@ -126,8 +124,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
             l.DistanceBetweenLeftHitAndRaycastOrigin = DistanceBetweenPointAndLine(
-                l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex].point, l.LeftRaycastFromBottomOrigin,
-                l.LeftRaycastToTopOrigin);
+                l.LeftHitsStorage[l.CurrentLeftHitsStorageIndex].point, leftRaycast.LeftRaycastFromBottomOrigin,
+                leftRaycast.LeftRaycastToTopOrigin);
         }
 
         private void AddToCurrentLeftHitsStorageIndex()
@@ -153,7 +151,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region properties
 
-        public LeftRaycastHitColliderRuntimeData RuntimeData => l.RuntimeData;
+        public LeftRaycastHitColliderData Data => l;
 
         #region public methods
 

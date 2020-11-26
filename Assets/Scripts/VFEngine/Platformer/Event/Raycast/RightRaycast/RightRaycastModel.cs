@@ -47,7 +47,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         {
             physics = physicsController.PhysicsModel.Data;
             raycast = raycastController.RaycastModel.Data;
-            rightRaycastHitCollider = raycastHitColliderController.RaycastHitColliderModel.Data;
+            rightRaycastHitCollider = raycastHitColliderController.RightRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 

@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,6 +23,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region dependencies
 
         [SerializeField] private RightStickyRaycastHitColliderData r;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        private PhysicsData physics;
+        private RightStickyRaycastData rightStickyRaycast;
 
         #endregion
 
@@ -29,19 +34,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeData()
         {
-            r = new RightStickyRaycastHitColliderData {Character = character};
-            r.RuntimeData =
-                RightStickyRaycastHitColliderRuntimeData.CreateInstance(r.BelowSlopeAngleRight,
-                    r.CrossBelowSlopeAngleRight);
+            if (!r) r = CreateInstance<RightStickyRaycastHitColliderData>();
         }
 
         private void InitializeModel()
         {
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            r.RightStickyRaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>()
-                .RightStickyRaycastRuntimeData;
-            r.Transform = r.PhysicsRuntimeData.Transform;
-            r.RightStickyRaycastHit = r.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
+            physics = physicsController.PhysicsModel.Data;
+            rightStickyRaycast = raycastController.RightStickyRaycastModel.Data;
             ResetState();
         }
 
@@ -53,12 +52,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void SetBelowSlopeAngleRight()
         {
-            r.BelowSlopeAngleRight = Vector2.Angle(r.RightStickyRaycastHit.normal, r.Transform.up);
+            r.BelowSlopeAngleRight =
+                Vector2.Angle(rightStickyRaycast.RightStickyRaycastHit.normal, physics.Transform.up);
         }
 
         private void SetCrossBelowSlopeAngleRight()
         {
-            r.CrossBelowSlopeAngleRight = Cross(r.Transform.up, r.RightStickyRaycastHit.normal);
+            r.CrossBelowSlopeAngleRight = Cross(physics.Transform.up, rightStickyRaycast.RightStickyRaycastHit.normal);
         }
 
         private void SetBelowSlopeAngleRightToNegative()
@@ -72,7 +72,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region properties
 
-        public RightStickyRaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
+        public RightStickyRaycastHitColliderData Data => r;
 
         #region public methods
 

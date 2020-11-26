@@ -2,6 +2,8 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.LeftRaycast;
+using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -22,6 +24,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region dependencies
 
         [SerializeField] private RaycastHitColliderData r;
+        [SerializeField] private RaycastController raycastController;
+        private RightRaycastData rightRaycast;
+        private LeftRaycastData leftRaycast;
 
         #endregion
 
@@ -29,30 +34,24 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void InitializeData()
         {
-            r = new RaycastHitColliderData {Character = character};
-            r.Controller = r.Character.GetComponentNoAllocation<RaycastHitColliderController>();
-            r.RuntimeData =
-                RaycastHitColliderRuntimeData.CreateInstance(r.Controller, r.IgnoredCollider, r.ContactList);
+            if (!r) r = CreateInstance<RaycastHitColliderData>();
         }
 
         private void InitializeModel()
         {
-            r.RightRaycastRuntimeData =
-                r.Character.GetComponentNoAllocation<RaycastController>().RightRaycastRuntimeData;
-            r.LeftRaycastRuntimeData = r.Character.GetComponentNoAllocation<RaycastController>().LeftRaycastRuntimeData;
-            r.CurrentRightRaycastHit = r.RightRaycastRuntimeData.CurrentRightRaycastHit;
-            r.CurrentLeftRaycastHit = r.LeftRaycastRuntimeData.CurrentLeftRaycastHit;
+            rightRaycast = raycastController.RightRaycastModel.Data;
+            leftRaycast = raycastController.LeftRaycastModel.Data;
             ClearContactList();
         }
 
         private void AddRightHitToContactList()
         {
-            r.ContactList.Add(r.CurrentRightRaycastHit);
+            r.ContactList.Add(rightRaycast.CurrentRightRaycastHit);
         }
 
         private void AddLeftHitToContactList()
         {
-            r.ContactList.Add(r.CurrentLeftRaycastHit);
+            r.ContactList.Add(leftRaycast.CurrentLeftRaycastHit);
         }
 
         private void ClearContactList()
@@ -76,7 +75,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region properties
 
-        public RaycastHitColliderRuntimeData RuntimeData => r.RuntimeData;
+        public RaycastHitColliderData Data => r;
 
         #region public methods
 
