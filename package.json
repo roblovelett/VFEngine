@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "openupm-cli": "^1.11.0"
+    "openupm-cli": "^1.11.0",
+	"com.svermeulen.extenject": "https://github.com/svermeulen/Extenject.git?path=/UnityProject/Assets/Plugins/Zenject"
   },
   "devDependencies": {},
   "scripts": {

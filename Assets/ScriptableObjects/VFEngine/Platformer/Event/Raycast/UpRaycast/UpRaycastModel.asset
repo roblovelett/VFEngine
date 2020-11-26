@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a7d43b91a24bd3ade49b7e2cc417f0, type: 3}
   m_Name: UpRaycastModel
   m_EditorClassIdentifier: 
-  u: {fileID: 11400000, guid: ec63324917120904584a0cc09db94625, type: 2}
+  character: {fileID: 0}

@@ -23,8 +23,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private LeftStickyRaycastData l = null;
+        [SerializeField] private LeftStickyRaycastData l;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsData physics;
+        private RaycastData raycast;
+        private StickyRaycastData stickyRaycast;
+        private LayerMaskData layerMask;
 
         #endregion
 
@@ -32,54 +38,43 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void InitializeData()
         {
-            l = new LeftStickyRaycastData {Character = character};
-            l.RuntimeData = LeftStickyRaycastRuntimeData.CreateInstance(l.LeftStickyRaycastLength, l.LeftStickyRaycastOrigin.y, l.LeftStickyRaycastHit);
+            if (!l) l = CreateInstance<LeftStickyRaycastData>();
         }
 
         private void InitializeModel()
         {
-            l.RaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            l.StickyRaycastRuntimeData = l.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            l.LayerMaskRuntimeData = l.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
-            l.Transform = l.PhysicsRuntimeData.Transform;
-            l.MaximumSlopeAngle = l.PhysicsRuntimeData.MaximumSlopeAngle;
-            l.NewPosition = l.PhysicsRuntimeData.NewPosition;
-            l.DrawRaycastGizmosControl = l.RaycastRuntimeData.DrawRaycastGizmosControl;
-            l.BoundsWidth = l.RaycastRuntimeData.BoundsWidth;
-            l.BoundsHeight = l.RaycastRuntimeData.BoundsHeight;
-            l.RayOffset = l.RaycastRuntimeData.RayOffset;
-            l.BoundsBottomLeftCorner = l.RaycastRuntimeData.BoundsBottomLeftCorner;
-            l.BoundsCenter = l.RaycastRuntimeData.BoundsCenter;
-            l.StickyRaycastLength = l.StickyRaycastRuntimeData.StickyRaycastLength;
-            l.RaysBelowLayerMaskPlatforms = l.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
+            physics = physicsController.PhysicsModel.Data;
+            raycast = raycastController.RaycastModel.Data;
+            stickyRaycast = raycastController.StickyRaycastModel.Data;
+            layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
         private void SetLeftStickyRaycastLength()
         {
-            l.LeftStickyRaycastLength =
-                OnSetStickyRaycastLength(l.BoundsWidth, l.MaximumSlopeAngle, l.BoundsHeight, l.RayOffset);
+            l.LeftStickyRaycastLength = OnSetStickyRaycastLength(raycast.BoundsWidth, physics.MaximumSlopeAngle,
+                raycast.BoundsHeight, raycast.RayOffset);
         }
 
         private void SetLeftStickyRaycastLengthToStickyRaycastLength()
         {
-            l.LeftStickyRaycastLength = l.StickyRaycastLength;
+            l.LeftStickyRaycastLength = stickyRaycast.StickyRaycastLength;
         }
 
         private void SetLeftStickyRaycastOriginX()
         {
-            l.LeftStickyRaycastOriginX = l.BoundsBottomLeftCorner.x * 2 + l.NewPosition.x;
+            l.LeftStickyRaycastOriginX = raycast.BoundsBottomLeftCorner.x * 2 + physics.NewPosition.x;
         }
 
         private void SetLeftStickyRaycastOriginY()
         {
-            l.LeftStickyRaycastOriginY = l.BoundsCenter.y;
+            l.LeftStickyRaycastOriginY = raycast.BoundsCenter.y;
         }
 
         private void SetLeftStickyRaycast()
         {
-            l.LeftStickyRaycastHit = Raycast(l.LeftStickyRaycastOrigin, -l.Transform.up, l.LeftStickyRaycastLength,
-                l.RaysBelowLayerMaskPlatforms, cyan, l.DrawRaycastGizmosControl);
+            l.LeftStickyRaycastHit = Raycast(l.LeftStickyRaycastOrigin, -physics.Transform.up,
+                l.LeftStickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, cyan,
+                raycast.DrawRaycastGizmosControl);
         }
 
         #endregion
@@ -88,7 +83,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region properties
 
-        public LeftStickyRaycastRuntimeData RuntimeData => l.RuntimeData;
+        public LeftStickyRaycastData Data => l;
 
         #region public methods
 
@@ -97,6 +92,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();

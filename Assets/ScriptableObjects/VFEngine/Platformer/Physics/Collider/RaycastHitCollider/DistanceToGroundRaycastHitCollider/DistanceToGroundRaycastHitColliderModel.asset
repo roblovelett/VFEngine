@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7e37c0aa69497e8f046de9d3a4a372, type: 3}
   m_Name: DistanceToGroundRaycastHitColliderModel
   m_EditorClassIdentifier: 
-  d: {fileID: 11400000, guid: d339a9da3ca7e4d4c9f019dd202a9b9c, type: 2}
+  character: {fileID: 0}

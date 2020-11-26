@@ -11,7 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class LeftRaycastHitColliderData
+    public class LeftRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -30,19 +30,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public RaycastRuntimeData RaycastRuntimeData { get; set; }
-        public LeftRaycastRuntimeData LeftRaycastRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public int NumberOfHorizontalRaysPerSide { get; set; }
-        public RaycastHit2D CurrentLeftRaycastHit { get; set; }
-        public Vector2 LeftRaycastFromBottomOrigin { get; set; }
-        public Vector2 LeftRaycastToTopOrigin { get; set; }
-
         #endregion
 
-        public LeftRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public RaycastHit2D[] LeftHitsStorage { get; set; } = new RaycastHit2D[0];
         public bool LeftHitConnected { get; set; }
         public bool IsCollidingLeft { get; set; }

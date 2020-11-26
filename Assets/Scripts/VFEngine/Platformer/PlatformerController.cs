@@ -68,8 +68,7 @@ namespace VFEngine.Platformer
         #endregion
 
         #region properties
-
-        public PlatformerRuntimeData PlatformerRuntimeData { get; private set; }
+        public PlatformerModel PlatformerModel => platformerModel;
 
         #endregion
     }

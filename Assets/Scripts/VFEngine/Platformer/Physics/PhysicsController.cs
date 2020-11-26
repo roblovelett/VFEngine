@@ -62,7 +62,7 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsRuntimeData PhysicsRuntimeData => physicsModel.RuntimeData;
+        public PhysicsModel PhysicsModel => physicsModel;
 
         #region public methods
 

@@ -10,12 +10,14 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
 
-    public class LayerMaskData
+    public class LayerMaskData : ScriptableObject
     {
         #region fields
 
         #region dependencies
 
+        [SerializeField] private LayerMaskSettings settings;
+        
         #endregion
 
         private const string LmPath = "Layer/Mask/";
@@ -26,33 +28,23 @@ namespace VFEngine.Platformer.Layer.Mask
         #region properties
 
         #region dependencies
+        
+        public LayerMaskSettings Settings => settings;
+        public bool DisplayWarningsControl => settings.displayWarningsControl;
+        public LayerMask PlatformMask
+        {
+            get => settings.platformMask;
+            set => settings.platformMask = value;
+        }
 
-        public LayerMaskController Controller { get; set; }
-        public LayerMaskSettings Settings { get; set; }
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public int StandingOnLastFrameLayer { get; set; }
-        public bool HasSettings => Settings;
-        public bool DisplayWarningsControlSetting => Settings.displayWarningsControl;
-        public LayerMask PlatformMaskSetting => Settings.platformMask;
-        public LayerMask MovingPlatformMaskSetting => Settings.movingPlatformMask;
-        public LayerMask OneWayPlatformMaskSetting => Settings.oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMaskSetting => Settings.movingOneWayPlatformMask;
-        public LayerMask MidHeightOneWayPlatformMaskSetting => Settings.midHeightOneWayPlatformMask;
-        public LayerMask StairsMaskSetting => Settings.stairsMask;
+        public LayerMask MovingPlatformMask => settings.movingPlatformMask;
+        public LayerMask OneWayPlatformMask => settings.oneWayPlatformMask;
+        public LayerMask MovingOneWayPlatformMask => settings.movingOneWayPlatformMask;
+        public LayerMask MidHeightOneWayPlatformMask => settings.midHeightOneWayPlatformMask;
+        public LayerMask StairsMask => settings.stairsMask;
 
         #endregion
 
-        public LayerMaskRuntimeData RuntimeData { get; set; }
-        public bool DisplayWarningsControl { get; set; }
-        public LayerMask PlatformMask { get; set; }
-        public LayerMask MovingPlatformMask { get; set; }
-        public LayerMask OneWayPlatformMask { get; set; }
-        public LayerMask MovingOneWayPlatformMask { get; set; }
-        public LayerMask MidHeightOneWayPlatformMask { get; set; }
-        public LayerMask StairsMask { get; set; }
         public LayerMask RaysBelowLayerMaskPlatformsWithoutOneWay { get; set; }
         public LayerMask RaysBelowLayerMaskPlatformsWithoutMidHeight { get; set; }
         public LayerMask RaysBelowLayerMaskPlatforms { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -23,8 +23,9 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private LayerMaskData l;
+        [SerializeField] private LayerMaskData l;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        private DownRaycastHitColliderData downRaycastHitCollider;
 
         #endregion
 
@@ -32,33 +33,18 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeData()
         {
-            l = new LayerMaskData {Character = character, Settings = CreateInstance<LayerMaskSettings>()};
-            l.Controller = l.Character.GetComponentNoAllocation<LayerMaskController>();
-            l.DisplayWarningsControl = l.DisplayWarningsControlSetting;
-            l.PlatformMask = l.PlatformMaskSetting;
-            l.MovingPlatformMask = l.MovingPlatformMaskSetting;
-            l.OneWayPlatformMask = l.OneWayPlatformMaskSetting;
-            l.MovingOneWayPlatformMask = l.MovingOneWayPlatformMaskSetting;
-            l.MidHeightOneWayPlatformMask = l.MidHeightOneWayPlatformMaskSetting;
-            l.StairsMask = l.StairsMaskSetting;
+            if (!l) l = CreateInstance<LayerMaskData>();
             l.SavedPlatformMask = l.PlatformMask;
             l.PlatformMask |= l.OneWayPlatformMask;
             l.PlatformMask |= l.MovingPlatformMask;
             l.PlatformMask |= l.MovingOneWayPlatformMask;
             l.PlatformMask |= l.MidHeightOneWayPlatformMask;
-            l.RuntimeData = LayerMaskRuntimeData.CreateInstance(l.Controller, l.SavedBelowLayer, l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask,
-                l.MovingOneWayPlatformMask, l.MidHeightOneWayPlatformMask, l.StairsMask,
-                l.RaysBelowLayerMaskPlatformsWithoutOneWay, l.RaysBelowLayerMaskPlatformsWithoutMidHeight,
-                l.RaysBelowLayerMaskPlatforms);
             if (l.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeModel()
         {
-            l.PhysicsRuntimeData = l.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            l.DownRaycastHitColliderRuntimeData = l.Character.GetComponentNoAllocation<RaycastHitColliderController>().DownRaycastHitColliderRuntimeData;
-            l.Transform = l.PhysicsRuntimeData.Transform;
-            l.StandingOnLastFrameLayer = l.DownRaycastHitColliderRuntimeData.StandingOnLastFrame.layer;
+            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
         }
 
         private void GetWarningMessages()
@@ -90,7 +76,7 @@ namespace VFEngine.Platformer.Layer.Mask
             var settings = $"{lM} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!l.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!l.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
             for (var i = 0; i < layers.Length; i++)
             {
                 if (layers[i].value == layerMasks[i].value) continue;
@@ -153,7 +139,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetSavedBelowLayerToStandingOnLastFrameLayer()
         {
-            l.SavedBelowLayer = l.StandingOnLastFrameLayer;
+            l.SavedBelowLayer = downRaycastHitCollider.StandingOnLastFrame.layer;
         }
 
         #endregion
@@ -162,8 +148,8 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        public LayerMaskRuntimeData RuntimeData => l.RuntimeData;
-
+        public LayerMaskData Data => l;
+        
         #region public methods
         
         public async UniTaskVoid OnInitializeData()

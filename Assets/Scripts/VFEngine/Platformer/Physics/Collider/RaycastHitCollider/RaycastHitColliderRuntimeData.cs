@@ -6,7 +6,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     {
         #region properties
 
-        public RaycastHitColliderController RaycastHitColliderController { get; private set; }
+        public RaycastHitColliderController Controller { get; private set; }
         public Collider2D IgnoredCollider { get; private set; }
         public RaycastHitColliderContactList ContactList { get; private set; }
 
@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             return new RaycastHitColliderRuntimeData
             {
-                RaycastHitColliderController = controller,
+                Controller = controller,
                 IgnoredCollider = ignoredCollider,
                 ContactList = contactList
             };

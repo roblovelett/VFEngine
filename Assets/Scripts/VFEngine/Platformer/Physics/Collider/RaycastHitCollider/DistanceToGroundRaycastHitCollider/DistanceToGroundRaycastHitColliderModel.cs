@@ -19,8 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private DistanceToGroundRaycastHitColliderData d;
+        [SerializeField] private DistanceToGroundRaycastHitColliderData d;
 
         #endregion
 

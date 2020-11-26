@@ -6,7 +6,7 @@ namespace VFEngine.Platformer.Layer.Mask
     {
         #region properties
 
-        public LayerMaskController LayerMaskController { get; private set; }
+        public LayerMaskController Controller { get; private set; }
         public int SavedBelowLayer { get; private set; }
         public LayerMask PlatformMask { get; private set; }
         public LayerMask MovingPlatformMask { get; private set; }
@@ -28,7 +28,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             return new LayerMaskRuntimeData
             {
-                LayerMaskController = controller,
+                Controller = controller,
                 SavedBelowLayer = savedBelowLayer,
                 PlatformMask = platformMask,
                 MovingPlatformMask = movingPlatformMask,

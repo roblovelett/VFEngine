@@ -20,8 +20,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private UpRaycastHitColliderData u = null;
+        [SerializeField] private UpRaycastHitColliderData u;
 
         #endregion
 

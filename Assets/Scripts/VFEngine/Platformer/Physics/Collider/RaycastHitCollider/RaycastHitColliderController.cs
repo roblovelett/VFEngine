@@ -206,21 +206,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region properties
 
-        public RaycastHitColliderRuntimeData RaycastHitColliderRuntimeData { get; private set; }
-        public UpRaycastHitColliderRuntimeData UpRaycastHitColliderRuntimeData { get; private set; }
-        public RightRaycastHitColliderRuntimeData RightRaycastHitColliderRuntimeData { get; private set; }
-        public DownRaycastHitColliderRuntimeData DownRaycastHitColliderRuntimeData { get; private set; }
-        public LeftRaycastHitColliderRuntimeData LeftRaycastHitColliderRuntimeData { get; private set; }
+        public RaycastHitColliderModel RaycastHitColliderModel => raycastHitColliderModel;
+        public UpRaycastHitColliderModel UpRaycastHitColliderModel => upRaycastHitColliderModel;
+        public RightRaycastHitColliderModel RightRaycastHitColliderModel => rightRaycastHitColliderModel;
+        public DownRaycastHitColliderModel DownRaycastHitColliderModel => downRaycastHitColliderModel;
+        public LeftRaycastHitColliderModel LeftRaycastHitColliderModel => leftRaycastHitColliderModel;
 
-        public DistanceToGroundRaycastHitColliderRuntimeData DistanceToGroundRaycastHitColliderRuntimeData
-        {
-            get;
-            private set;
-        }
+        public DistanceToGroundRaycastHitColliderModel DistanceToGroundRaycastHitColliderModel =>
+            distanceToGroundRaycastHitColliderModel;
 
-        public StickyRaycastHitColliderRuntimeData StickyRaycastHitColliderRuntimeData { get; private set; }
-        public RightStickyRaycastHitColliderRuntimeData RightStickyRaycastHitColliderRuntimeData { get; private set; }
-        public LeftStickyRaycastHitColliderRuntimeData LeftStickyRaycastHitColliderRuntimeData { get; private set; }
+        public StickyRaycastHitColliderModel StickyRaycastHitColliderModel => stickyRaycastHitColliderModel;
+
+        public RightStickyRaycastHitColliderModel RightStickyRaycastHitColliderModel =>
+            rightStickyRaycastHitColliderModel;
+
+        public LeftStickyRaycastHitColliderModel LeftStickyRaycastHitColliderModel => leftStickyRaycastHitColliderModel;
 
         #region public methods
 

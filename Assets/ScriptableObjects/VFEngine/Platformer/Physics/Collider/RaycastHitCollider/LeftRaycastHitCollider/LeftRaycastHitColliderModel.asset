@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ec483b0ba449a3b921fd571839f7e9, type: 3}
   m_Name: LeftRaycastHitColliderModel
   m_EditorClassIdentifier: 
-  l: {fileID: 11400000, guid: 6df3ea5aa78fdb448ba7a40e919aa61f, type: 2}
+  character: {fileID: 0}

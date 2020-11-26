@@ -171,16 +171,16 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public RaycastRuntimeData RaycastRuntimeData => raycastModel.RuntimeData;
-        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData => distanceToGroundRaycastModel.RuntimeData;
-        public DownRaycastRuntimeData DownRaycastRuntimeData => downRaycastModel.RuntimeData;
-        public LeftRaycastRuntimeData LeftRaycastRuntimeData => leftRaycastModel.RuntimeData;
-        public RightRaycastRuntimeData RightRaycastRuntimeData => rightRaycastModel.RuntimeData;
-        public StickyRaycastRuntimeData StickyRaycastRuntimeData => stickyRaycastModel.RuntimeData;
-        public RightStickyRaycastRuntimeData RightStickyRaycastRuntimeData => rightStickyRaycastModel.RuntimeData;
-        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData => leftStickyRaycastModel.RuntimeData;
-        public UpRaycastRuntimeData UpRaycastRuntimeData => upRaycastModel.RuntimeData;
-        
+        public RaycastModel RaycastModel => raycastModel;
+        public DistanceToGroundRaycastModel DistanceToGroundRaycastModel => distanceToGroundRaycastModel;
+        public DownRaycastModel DownRaycastModel => downRaycastModel;
+        public LeftRaycastModel LeftRaycastModel => leftRaycastModel;
+        public RightRaycastModel RightRaycastModel => rightRaycastModel;
+        public StickyRaycastModel StickyRaycastModel => stickyRaycastModel;
+        public RightStickyRaycastModel RightStickyRaycastModel => rightStickyRaycastModel;
+        public LeftStickyRaycastModel LeftStickyRaycastModel => leftStickyRaycastModel;
+        public UpRaycastModel UpRaycastModel => upRaycastModel;
+
         #region public methods
 
         #region raycast model

@@ -17,8 +17,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private BoxcastData b;
+        [SerializeField] private BoxcastData b;
 
         #endregion
 
@@ -26,9 +25,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void InitializeData()
         {
-            b = new BoxcastData {Character = character};
-            b.Controller = b.Character.GetComponentNoAllocation<BoxcastController>();
-            b.RuntimeData = BoxcastRuntimeData.CreateInstance(b.Controller);
+            if (!b) b = CreateInstance<BoxcastData>();
         }
 
         private void InitializeModel()
@@ -41,6 +38,8 @@ namespace VFEngine.Platformer.Event.Boxcast
         #endregion
 
         #region properties
+
+        public BoxcastData Data => b;
 
         #region public methods
 

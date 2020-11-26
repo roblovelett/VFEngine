@@ -25,45 +25,28 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private RaycastData r;
-
+        [SerializeField] private RaycastData r;
+        [SerializeField] private BoxCollider2D boxCollider;
+        [SerializeField] private PhysicsController physicsController;
+        private PhysicsData physics;
+        
         #endregion
 
         #region private methods
         
         private void InitializeData()
         {
-            r = new RaycastData {Character = character, Settings = CreateInstance<RaycastSettings>()};
-            r.BoxCollider = r.Character.GetComponentNoAllocation<BoxCollider2D>();
-            r.DisplayWarningsControl = r.DisplayWarningsControlSetting;
-            r.DrawRaycastGizmosControl = r.DrawRaycastGizmosControlSetting;
-            r.CastRaysOnBothSides = r.CastRaysOnBothSidesSetting;
-            r.PerformSafetyBoxcast = r.PerformSafetyBoxcastSetting;
-            r.RayOffset = r.RayOffsetSetting;
-            r.DistanceToGroundRayMaximumLength = r.DistanceToGroundRayMaximumLengthSetting;
-            r.NumberOfHorizontalRays = r.NumberOfHorizontalRaysSetting;
-            r.NumberOfVerticalRays = r.NumberOfVerticalRaysSetting;
-            r.ObstacleHeightTolerance = r.RayOffset;
-            r.NumberOfVerticalRaysPerSide = r.NumberOfVerticalRays / 2;
-            r.BoundsBottomCenterPosition = SetBoundsBottomCenterPosition(r.BoxCollider.bounds);
+            if (!r) r = CreateInstance<RaycastData>();
+            if (!r.Settings) r.Settings = CreateInstance<RaycastSettings>();
+            if (!boxCollider) boxCollider = new BoxCollider2D();
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             if (r.DisplayWarningsControl) GetWarningMessages();
-            SetRaysParameters();
-            r.Controller = r.Character.GetComponentNoAllocation<RaycastController>();
-            r.RuntimeData = RaycastRuntimeData.CreateInstance(r.Controller, r.DisplayWarningsControl,
-                r.DrawRaycastGizmosControl, r.CastRaysOnBothSides, r.PerformSafetyBoxcast,
-                r.NumberOfHorizontalRaysPerSide, r.NumberOfVerticalRaysPerSide, r.DistanceToGroundRayMaximumLength,
-                r.BoundsWidth, r.BoundsHeight, r.RayOffset, r.ObstacleHeightTolerance, r.Bounds, r.BoundsCenter,
-                r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner, r.BoundsBottomCenterPosition,
-                r.BoundsTopLeftCorner, r.BoundsTopRightCorner, r.BoxCollider);
         }
 
         private void InitializeModel()
         {
-            r.PhysicsRuntimeData = r.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            r.Transform = r.PhysicsRuntimeData.Transform;
+            physics = physicsController.PhysicsModel.Data;
             SetRaysParameters();
         }
 
@@ -82,9 +65,9 @@ namespace VFEngine.Platformer.Event.Raycast
             var nuOfVeRa = $"{nuOf} Vertical {ra}";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!r.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
-            if (!r.HasBoxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
-            if (r.BoxCollider.offset.x != 0)
+            if (!r.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!boxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
+            if (boxCollider.offset.x != 0)
                 warningMessage += PropertyNtZeroParentString($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
             if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
             if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
@@ -142,23 +125,21 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetRaysParameters()
         {
-            var top = SetPositiveBounds(r.BoxCollider.offset.y, r.BoxCollider.size.y);
-            var bottom = SetNegativeBounds(r.BoxCollider.offset.y, r.BoxCollider.size.y);
-            var left = SetNegativeBounds(r.BoxCollider.offset.x, r.BoxCollider.size.x);
-            var right = SetPositiveBounds(r.BoxCollider.offset.x, r.BoxCollider.size.x);
+            var bounds = boxCollider.bounds;
+            var top = SetPositiveBounds(boxCollider.offset.y, boxCollider.size.y);
+            var bottom = SetNegativeBounds(boxCollider.offset.y, boxCollider.size.y);
+            var left = SetNegativeBounds(boxCollider.offset.x, boxCollider.size.x);
+            var right = SetPositiveBounds(boxCollider.offset.x, boxCollider.size.x);
             r.BoundsTopLeftCorner = SetBoundsCorner(left, top);
             r.BoundsTopRightCorner = SetBoundsCorner(right, top);
             r.BoundsBottomLeftCorner = SetBoundsCorner(left, bottom);
             r.BoundsBottomRightCorner = SetBoundsCorner(right, bottom);
-            r.BoundsCenter = r.BoxCollider.bounds.center;
+            r.BoundsCenter = bounds.center;
+            r.BoundsBottomCenterPosition = new Vector2(bounds.center.x, bounds.min.y);
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
             r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
-        }
 
-        private static Vector2 SetBoundsBottomCenterPosition(Bounds b)
-        {
-            return new Vector2(b.center.x, b.min.y);
         }
 
         private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
@@ -181,7 +162,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private Vector2 SetBoundsCorner(float x, float y)
         {
-            return r.Transform.TransformPoint(new Vector2(x, y));
+            return physics.Transform.TransformPoint(new Vector2(x, y));
         }
 
         private static Vector2 SetCurrentRaycastOrigin(Vector2 origin1, Vector2 origin2, int index, int rays)
@@ -228,8 +209,26 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public RaycastRuntimeData RuntimeData => r.RuntimeData;
+        public RaycastData Data => r;
+        public bool DisplayWarningsControl => r.DisplayWarningsControl;
+        public bool DrawRaycastGizmosControl => r.DrawRaycastGizmosControl;
+        public bool CastRaysOnBothSides => r.CastRaysOnBothSides;
+        public bool PerformSafetyBoxcast => r.PerformSafetyBoxcast;
+        public int NumberOfHorizontalRaysPerSide => r.NumberOfHorizontalRaysPerSide;
+        public int NumberOfVerticalRaysPerSide => r.NumberOfVerticalRaysPerSide;
+        public float DistanceToGroundRayMaximumLength => r.DistanceToGroundRayMaximumLength;
+        public float BoundsWidth => r.BoundsWidth;
+        public float BoundsHeight => r.BoundsHeight;
+        public float RayOffset => r.RayOffset;
+        public float ObstacleHeightTolerance => r.ObstacleHeightTolerance;
+        public Vector2 Bounds => r.Bounds;
+        public Vector2 BoundsCenter => r.BoundsCenter;
+        public Vector2 BoundsBottomLeftLeftCorner => r.BoundsBottomLeftCorner;
+        public Vector2 BoundsBottomRightCorner => r.BoundsBottomRightCorner;
+        public Vector2 BoundsBottomCenterPosition => r.BoundsBottomCenterPosition;
+        public Vector2 BoundsTopRightCorner => r.BoundsTopRightCorner;
 
+        
         #region public methods
 
         public async UniTaskVoid OnInitializeData()

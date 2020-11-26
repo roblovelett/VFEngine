@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -23,8 +24,15 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private DistanceToGroundRaycastData d;
+        [SerializeField] private DistanceToGroundRaycastData d;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsData physics;
+        private RaycastData raycast;
+        private StickyRaycastHitColliderData stickyRaycastHitCollider;
+        private LayerMaskData layerMask;
 
         #endregion
 
@@ -32,40 +40,33 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void InitializeData()
         {
-            d = new DistanceToGroundRaycastData {Character = character};
-            d.RuntimeData = DistanceToGroundRaycastRuntimeData.CreateInstance(d.DistanceToGroundRaycastHit);
+            if (!d) d = CreateInstance<DistanceToGroundRaycastData>();
         }
 
         private void InitializeModel()
         {
-            d.PhysicsRuntimeData = d.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            d.RaycastRuntimeData = d.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            d.StickyRaycastHitColliderRuntimeData = d.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .StickyRaycastHitColliderRuntimeData;
-            d.LayerMaskRuntimeData = d.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
-            d.Transform = d.PhysicsRuntimeData.Transform;
-            d.DrawRaycastGizmosControl = d.RaycastRuntimeData.DrawRaycastGizmosControl;
-            d.DistanceToGroundRayMaximumLength = d.RaycastRuntimeData.DistanceToGroundRayMaximumLength;
-            d.BoundsCenter = d.RaycastRuntimeData.BoundsCenter;
-            d.BoundsBottomLeftCorner = d.RaycastRuntimeData.BoundsBottomLeftCorner;
-            d.BoundsBottomRightCorner = d.RaycastRuntimeData.BoundsBottomRightCorner;
-            d.BelowSlopeAngle = d.StickyRaycastHitColliderRuntimeData.BelowSlopeAngle;
-            d.RaysBelowLayerMaskPlatforms = d.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
+            physics = physicsController.PhysicsModel.Data;
+            raycast = raycastController.RaycastModel.Data;
+            stickyRaycastHitCollider = raycastHitColliderController.StickyRaycastHitColliderModel.Data;
+            layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
         private void SetDistanceToGroundRaycastOrigin()
         {
             d.DistanceToGroundRaycastOrigin = new Vector2
             {
-                x = d.BelowSlopeAngle < 0 ? d.BoundsBottomLeftCorner.x : d.BoundsBottomRightCorner.x,
-                y = d.BoundsCenter.y
+                x = stickyRaycastHitCollider.BelowSlopeAngle < 0
+                    ? raycast.BoundsBottomLeftCorner.x
+                    : raycast.BoundsBottomRightCorner.x,
+                y = raycast.BoundsCenter.y
             };
         }
 
         private void SetDistanceToGroundRaycast()
         {
-            d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -d.Transform.up,
-                d.DistanceToGroundRayMaximumLength, d.RaysBelowLayerMaskPlatforms, blue, d.DrawRaycastGizmosControl);
+            d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -physics.Transform.up,
+                raycast.DistanceToGroundRayMaximumLength, layerMask.RaysBelowLayerMaskPlatforms, blue,
+                raycast.DrawRaycastGizmosControl);
         }
 
         #endregion
@@ -74,7 +75,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region properties
 
-        public DistanceToGroundRaycastRuntimeData RuntimeData => d.RuntimeData;
+        public DistanceToGroundRaycastData Data => d;
 
         #region public methods
 

@@ -26,8 +26,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private PhysicsData p;
+        [SerializeField] private PhysicsData p;
 
         #endregion
 
@@ -107,9 +106,9 @@ namespace VFEngine.Platformer.Physics
             var settings = $"{ph} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!p.HasSettings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!p.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
             //if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
-            if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");
+            //if (!p.HasTransform) warningMessage += FieldParentString("Transform", $"{settings}");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldString(string field, string scriptableObject)
@@ -375,7 +374,7 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsRuntimeData RuntimeData => p.RuntimeData;
+        public PhysicsData Data => p;
 
         #region public methods
 

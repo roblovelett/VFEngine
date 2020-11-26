@@ -5,6 +5,8 @@ using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -25,8 +27,16 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private UpRaycastData u;
+        [SerializeField] private UpRaycastData u;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsData physics;
+        private RaycastData raycast;
+        private UpRaycastHitColliderData upRaycastHitCollider;
+        private DownRaycastHitColliderData downRaycastHitCollider;
+        private LayerMaskData layerMask;
 
         #endregion
 
@@ -34,50 +44,33 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void InitializeData()
         {
-            u = new UpRaycastData {Character = character};
-            u.RuntimeData = UpRaycastRuntimeData.CreateInstance(u.UpRaycastSmallestDistance, u.CurrentUpRaycastOrigin,
-                u.CurrentUpRaycastHit);
+            if (!u) u = CreateInstance<UpRaycastData>();
         }
 
         private void InitializeModel()
         {
-            u.RaycastRuntimeData = u.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            u.UpRaycastHitColliderRuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .UpRaycastHitColliderRuntimeData;
-            u.DownRaycastHitColliderRuntimeData = u.Character.GetComponentNoAllocation<RaycastHitColliderController>()
-                .DownRaycastHitColliderRuntimeData;
-            u.PhysicsRuntimeData = u.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            u.LayerMaskRuntimeData = u.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
-            u.Transform = u.PhysicsRuntimeData.Transform;
-            u.NewPosition = u.PhysicsRuntimeData.NewPosition;
-            u.DrawRaycastGizmosControl = u.RaycastRuntimeData.DrawRaycastGizmosControl;
-            u.NumberOfVerticalRaysPerSide = u.RaycastRuntimeData.NumberOfVerticalRaysPerSide;
-            u.RayOffset = u.RaycastRuntimeData.RayOffset;
-            u.BoundsBottomLeftCorner = u.RaycastRuntimeData.BoundsBottomLeftCorner;
-            u.BoundsBottomRightCorner = u.RaycastRuntimeData.BoundsBottomRightCorner;
-            u.BoundsTopLeftCorner = u.RaycastRuntimeData.BoundsTopLeftCorner;
-            u.BoundsTopRightCorner = u.RaycastRuntimeData.BoundsTopRightCorner;
-            u.CurrentUpHitsStorageIndex = u.UpRaycastHitColliderRuntimeData.CurrentUpHitsStorageIndex;
-            u.RaycastUpHitAt = u.UpRaycastHitColliderRuntimeData.RaycastUpHitAt;
-            u.GroundedEvent = u.DownRaycastHitColliderRuntimeData.GroundedEvent;
-            u.PlatformMask = u.LayerMaskRuntimeData.PlatformMask;
-            u.OneWayPlatformMask = u.LayerMaskRuntimeData.OneWayPlatformMask;
-            u.MovingOneWayPlatformMask = u.LayerMaskRuntimeData.MovingOneWayPlatformMask;
+            physics = physicsController.PhysicsModel.Data;
+            raycast = raycastController.RaycastModel.Data;
+            upRaycastHitCollider = raycastHitColliderController.UpRaycastHitColliderModel.Data;
+            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
+            layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
         private void InitializeUpRaycastLength()
         {
-            u.UpRayLength = u.GroundedEvent ? u.RayOffset : u.NewPosition.y;
+            u.UpRayLength = downRaycastHitCollider.GroundedEvent ? raycast.RayOffset : physics.NewPosition.y;
         }
 
         private void InitializeUpRaycastStart()
         {
-            u.UpRaycastStart = SetPoint(u.BoundsBottomLeftCorner, u.BoundsTopLeftCorner, u.Transform, u.NewPosition.x);
+            u.UpRaycastStart = SetPoint(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner, physics.Transform,
+                physics.NewPosition.x);
         }
 
         private void InitializeUpRaycastEnd()
         {
-            u.UpRaycastEnd = SetPoint(u.BoundsBottomRightCorner, u.BoundsTopRightCorner, u.Transform, u.NewPosition.y);
+            u.UpRaycastEnd = SetPoint(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner, physics.Transform,
+                physics.NewPosition.y);
         }
 
         private static Vector2 SetPoint(Vector2 bounds1, Vector2 bounds2, Transform t, float axis)
@@ -93,19 +86,19 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         private void SetCurrentUpRaycastOrigin()
         {
             u.CurrentUpRaycastOrigin = OnSetCurrentRaycastOrigin(u.UpRaycastStart, u.UpRaycastEnd,
-                u.CurrentUpHitsStorageIndex, u.NumberOfVerticalRaysPerSide);
+                upRaycastHitCollider.CurrentUpHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
         }
 
         private void SetCurrentUpRaycast()
         {
-            u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, u.Transform.up, u.UpRayLength,
-                u.PlatformMask & ~ u.OneWayPlatformMask & ~ u.MovingOneWayPlatformMask, cyan,
-                u.DrawRaycastGizmosControl);
+            u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, physics.Transform.up, u.UpRayLength,
+                layerMask.PlatformMask & ~ layerMask.OneWayPlatformMask & ~ layerMask.MovingOneWayPlatformMask, cyan,
+                raycast.DrawRaycastGizmosControl);
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
         {
-            u.UpRaycastSmallestDistance = u.RaycastUpHitAt.distance;
+            u.UpRaycastSmallestDistance = upRaycastHitCollider.RaycastUpHitAt.distance;
         }
 
         #endregion
@@ -114,7 +107,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region properties
 
-        public UpRaycastRuntimeData RuntimeData => u.RuntimeData;
+        public UpRaycastData Data => u;
 
         #region public methods
 

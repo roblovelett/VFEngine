@@ -10,7 +10,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class DistanceToGroundRaycastHitColliderData
+    public class DistanceToGroundRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -30,16 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region depenedencies
 
-        public RaycastRuntimeData RaycastRuntimeData { get; set; }
-        public DistanceToGroundRaycastRuntimeData DistanceToGroundRaycastRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public float DistanceToGroundRayMaximumLength { get; set; }
-        public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
-        public float BoundsHeight { get; set; }
-
         #endregion
-
-        public DistanceToGroundRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public float DistanceToGround { get; set; }
         public bool DistanceToGroundRaycastHitConnected { get; set; }
 

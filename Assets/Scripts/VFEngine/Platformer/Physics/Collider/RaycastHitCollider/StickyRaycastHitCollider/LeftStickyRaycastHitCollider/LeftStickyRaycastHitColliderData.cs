@@ -9,7 +9,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
     using static StickyRaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class LeftStickyRaycastHitColliderData
+    public class LeftStickyRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -29,15 +29,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public LeftStickyRaycastRuntimeData LeftStickyRaycastRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public RaycastHit2D LeftStickyRaycastHit { get; set; }
-
         #endregion
 
-        public LeftStickyRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public float BelowSlopeAngleLeft { get; set; }
         public Vector3 CrossBelowSlopeAngleLeft { get; set; }
 

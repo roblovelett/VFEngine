@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4664759121872859018}
-  - component: {fileID: 8395323396448603380}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -62,16 +61,3 @@ Transform:
   m_Father: {fileID: 8616489681676951005}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8395323396448603380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7812172320232213404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4ac8413f21546cdb48050f6d962ba5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  physicsModel: {fileID: 11400000, guid: b09d70b3825413b4caf154076f8628d9, type: 2}

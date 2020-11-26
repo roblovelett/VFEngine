@@ -21,8 +21,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private RightStickyRaycastHitColliderData r = null;
+        [SerializeField] private RightStickyRaycastHitColliderData r;
 
         #endregion
 

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0b7cbc09c8478698eb02b3a494bc21, type: 3}
   m_Name: BoxcastModel
   m_EditorClassIdentifier: 
-  b: {fileID: 0}
+  character: {fileID: 0}

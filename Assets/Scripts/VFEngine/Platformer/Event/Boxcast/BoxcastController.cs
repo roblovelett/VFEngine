@@ -84,8 +84,8 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region properties
 
-        public BoxcastRuntimeData BoxcastRuntimeData { get; private set; }
-        public SafetyBoxcastRuntimeData SafetyBoxcastRuntimeData { get; private set; }
+        public BoxcastModel BoxcastModel => boxcastModel;
+        public SafetyBoxcastModel SafetyBoxcastModel => safetyBoxcastModel;
 
         #region public methods
 

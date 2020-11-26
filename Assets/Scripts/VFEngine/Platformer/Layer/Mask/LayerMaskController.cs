@@ -69,7 +69,8 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        public LayerMaskRuntimeData LayerMaskRuntimeData { get; private set; }
+        public LayerMaskModel LayerMaskModel => layerMaskModel;
+        
 
         #region public methods
 

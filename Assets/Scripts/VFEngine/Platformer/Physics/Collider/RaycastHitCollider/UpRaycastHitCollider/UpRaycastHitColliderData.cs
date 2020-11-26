@@ -11,7 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class UpRaycastHitColliderData
+    public class UpRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -27,18 +27,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region properties
 
         #region dependencies
-
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public RaycastRuntimeData RaycastRuntimeData { get; set; }
-        public UpRaycastRuntimeData UpRaycastRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public int NumberOfVerticalRaysPerSide { get; set; }
-        public RaycastHit2D CurrentUpRaycastHit { get; set; }
+        
 
         #endregion
-
-        public UpRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public bool UpHitConnected { get; set; } = false;
         public bool IsCollidingAbove { get; set; } = false;
         public bool WasTouchingCeilingLastFrame { get; set; } = false;

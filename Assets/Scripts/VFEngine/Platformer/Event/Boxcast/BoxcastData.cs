@@ -6,7 +6,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
 
-    public class BoxcastData
+    public class BoxcastData : ScriptableObject
     {
         #region fields
 
@@ -22,13 +22,9 @@ namespace VFEngine.Platformer.Event.Boxcast
         #region properties
 
         #region dependencies
-
-        public GameObject Character { get; set; }
-
+        
         #endregion
 
-        public BoxcastRuntimeData RuntimeData { get; set; }
-        public BoxcastController Controller { get; set; }
         public static readonly string BoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion

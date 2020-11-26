@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f876147fd8c479babef067d2154089e, type: 3}
   m_Name: DownRaycastModel
   m_EditorClassIdentifier: 
-  d: {fileID: 11400000, guid: f8d03be6dd9c0d349a4b43ba9796c3b3, type: 2}
+  character: {fileID: 0}

@@ -6,7 +6,6 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region properties
 
-        public RaycastController Controller { get; private set; }
         public bool DisplayWarningsControl { get; private set; }
         public bool DrawRaycastGizmosControl { get; private set; }
         public bool CastRaysOnBothSides { get; private set; }
@@ -29,7 +28,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        public static RaycastRuntimeData CreateInstance(RaycastController controller, bool displayWarningsControl,
+        public RaycastRuntimeData CreateInstance(ref bool displayWarningsControl,
             bool drawRaycastGizmosControl, bool castRaysOnBothSides, bool performSafetyBoxcast,
             int numberOfHorizontalRaysPerSide, int numberOfVerticalRaysPerSide, float distanceToGroundRayMaximumLength,
             float boundsWidth, float boundsHeight, float rayOffset, float obstacleHeightTolerance, Vector2 bounds,
@@ -39,7 +38,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             return new RaycastRuntimeData
             {
-                Controller = controller,
                 DisplayWarningsControl = displayWarningsControl,
                 DrawRaycastGizmosControl = drawRaycastGizmosControl,
                 CastRaysOnBothSides = castRaysOnBothSides,

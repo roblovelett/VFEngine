@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033fe00320ba490196701a66eef52642, type: 3}
   m_Name: SafetyBoxcastModel
   m_EditorClassIdentifier: 
-  s: {fileID: 0}
+  character: {fileID: 0}

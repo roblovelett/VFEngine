@@ -11,7 +11,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class RightRaycastHitColliderData
+    public class RightRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -31,19 +31,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #region dependencies
 
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public RaycastRuntimeData RaycastRuntimeData { get; set; }
-        public RightRaycastRuntimeData RightRaycastRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public int NumberOfHorizontalRaysPerSide { get; set; }
-        public RaycastHit2D CurrentRightRaycastHit { get; set; }
-        public Vector2 RightRaycastFromBottomOrigin { get; set; }
-        public Vector2 RightRaycastToTopOrigin { get; set; }
-
         #endregion
-
-        public RightRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public bool RightHitConnected { get; set; }
         public bool IsCollidingRight { get; set; }
         public int RightHitsStorageLength { get; set; }

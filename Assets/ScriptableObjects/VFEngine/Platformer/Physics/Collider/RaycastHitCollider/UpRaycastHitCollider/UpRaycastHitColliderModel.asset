@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bfbb9835649e98183c7f6691ca053, type: 3}
   m_Name: UpRaycastHitColliderModel
   m_EditorClassIdentifier: 
-  u: {fileID: 11400000, guid: 5506b05ddd9970d42b9f2e30b0fed331, type: 2}
+  character: {fileID: 0}

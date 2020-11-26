@@ -30,8 +30,7 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private PlatformerData p;
+        [SerializeField] private PlatformerData p;
 
         #endregion
 
@@ -55,6 +54,7 @@ namespace VFEngine.Platformer
             var raycastHitCollider = p.Character.GetComponentNoAllocation<RaycastHitColliderController>();
             var physics = p.Character.GetComponentNoAllocation<PhysicsController>();
             var layerMask = p.Character.GetComponentNoAllocation<LayerMaskController>();
+            
             p.RaycastRuntimeData = raycast.RaycastRuntimeData;
             p.UpRaycastRuntimeData = raycast.UpRaycastRuntimeData;
             p.DistanceToGroundRaycastRuntimeData = raycast.DistanceToGroundRaycastRuntimeData;
@@ -70,11 +70,17 @@ namespace VFEngine.Platformer
             p.LeftRaycastHitColliderRuntimeData = raycastHitCollider.LeftRaycastHitColliderRuntimeData;
             p.LeftStickyRaycastHitColliderRuntimeData = raycastHitCollider.LeftStickyRaycastHitColliderRuntimeData;
             p.RightStickyRaycastHitColliderRuntimeData = raycastHitCollider.RightStickyRaycastHitColliderRuntimeData;
-            p.DistanceToGroundRaycastHitColliderRuntimeData =
-                raycastHitCollider.DistanceToGroundRaycastHitColliderRuntimeData;
+            p.DistanceToGroundRaycastHitColliderRuntimeData = raycastHitCollider.DistanceToGroundRaycastHitColliderRuntimeData;
             p.PhysicsRuntimeData = physics.PhysicsRuntimeData;
             p.LayerMaskRuntimeData = layerMask.LayerMaskRuntimeData;
+            
+            
             p.Raycast = p.RaycastRuntimeData.Controller;
+            p.Boxcast = p.BoxcastRuntimeData.Controller;
+            p.RaycastHitCollider = p.RaycastHitColliderRuntimeData.Controller;
+            p.Physics = p.PhysicsRuntimeData.Controller;
+            p.LayerMask = p.LayerMaskRuntimeData.Controller;
+            
             p.CastRaysOnBothSides = p.RaycastRuntimeData.CastRaysOnBothSides;
             p.NumberOfHorizontalRaysPerSide = p.RaycastRuntimeData.NumberOfHorizontalRaysPerSide;
             p.NumberOfVerticalRaysPerSide = p.RaycastRuntimeData.NumberOfVerticalRaysPerSide;
@@ -90,9 +96,11 @@ namespace VFEngine.Platformer
             p.RightStickyRaycastHit = p.RightStickyRaycastRuntimeData.RightStickyRaycastHit;
             p.LeftStickyRaycastHit = p.LeftStickyRaycastRuntimeData.LeftStickyRaycastHit;
             p.LeftStickyRaycastLength = p.LeftStickyRaycastRuntimeData.LeftStickyRaycastLength;
-            p.Boxcast = p.BoxcastRuntimeData.Controller;
+            
+            
             p.SafetyBoxcastHit = p.SafetyBoxcastRuntimeData.SafetyBoxcastHit;
-            p.RaycastHitCollider = p.RaycastHitColliderRuntimeData.RaycastHitColliderController;
+            
+            
             p.IgnoredCollider = p.RaycastHitColliderRuntimeData.IgnoredCollider;
             p.WasTouchingCeilingLastFrame = p.UpRaycastHitColliderRuntimeData.WasTouchingCeilingLastFrame;
             p.UpHitsStorageLength = p.UpRaycastHitColliderRuntimeData.UpHitsStorageLength;
@@ -117,13 +125,10 @@ namespace VFEngine.Platformer
             p.SmallestDistanceToDownHit = p.DownRaycastHitColliderRuntimeData.SmallestDistanceToDownHit;
             p.RaycastDownHitAt = p.DownRaycastHitColliderRuntimeData.RaycastDownHitAt;
             p.CrossBelowSlopeAngle = p.DownRaycastHitColliderRuntimeData.CrossBelowSlopeAngle;
-            p.HasPhysicsMaterialDataClosestToDownHit =
-                p.DownRaycastHitColliderRuntimeData.HasPhysicsMaterialClosestToDownHit;
-            p.HasPathMovementControllerClosestToDownHit =
-                p.DownRaycastHitColliderRuntimeData.HasPathMovementClosestToDownHit;
+            p.HasPhysicsMaterialDataClosestToDownHit = p.DownRaycastHitColliderRuntimeData.HasPhysicsMaterialClosestToDownHit;
+            p.HasPathMovementControllerClosestToDownHit = p.DownRaycastHitColliderRuntimeData.HasPathMovementClosestToDownHit;
             p.HasMovingPlatform = p.DownRaycastHitColliderRuntimeData.HasMovingPlatform;
-            p.StandingOnWithSmallestDistanceLayer =
-                p.DownRaycastHitColliderRuntimeData.StandingOnWithSmallestDistanceLayer;
+            p.StandingOnWithSmallestDistanceLayer = p.DownRaycastHitColliderRuntimeData.StandingOnWithSmallestDistanceLayer;
             p.DownHitConnected = p.DownRaycastHitColliderRuntimeData.DownHitConnected;
             p.IsCollidingBelow = p.DownRaycastHitColliderRuntimeData.IsCollidingBelow;
             p.CurrentLeftHitCollider = p.LeftRaycastHitColliderRuntimeData.CurrentLeftHitCollider;
@@ -136,9 +141,9 @@ namespace VFEngine.Platformer
             p.BelowSlopeAngleLeft = p.LeftStickyRaycastHitColliderRuntimeData.BelowSlopeAngleLeft;
             p.CrossBelowSlopeAngleRight = p.RightStickyRaycastHitColliderRuntimeData.CrossBelowSlopeAngleRight;
             p.BelowSlopeAngleRight = p.RightStickyRaycastHitColliderRuntimeData.BelowSlopeAngleRight;
-            p.DistanceToGroundRaycastHitConnected =
-                p.DistanceToGroundRaycastHitColliderRuntimeData.DistanceToGroundRaycastHitConnected;
-            p.Physics = p.PhysicsRuntimeData.Controller;
+            p.DistanceToGroundRaycastHitConnected = p.DistanceToGroundRaycastHitColliderRuntimeData.DistanceToGroundRaycastHitConnected;
+            
+            
             p.Speed = p.PhysicsRuntimeData.Speed;
             p.GravityActive = p.PhysicsRuntimeData.GravityActive;
             p.FallSlowFactor = p.PhysicsRuntimeData.FallSlowFactor;
@@ -153,7 +158,8 @@ namespace VFEngine.Platformer
             p.StickToSlopesControl = p.PhysicsRuntimeData.StickToSlopesControl;
             p.IsJumping = p.PhysicsRuntimeData.IsJumping;
             p.SafetyBoxcastControl = p.PhysicsRuntimeData.SafetyBoxcastControl;
-            p.LayerMask = p.LayerMaskRuntimeData.LayerMaskController;
+            
+            
             p.MidHeightOneWayPlatformMask = p.LayerMaskRuntimeData.MidHeightOneWayPlatformMask;
             p.StairsMask = p.LayerMaskRuntimeData.StairsMask;
             p.OneWayPlatformMask = p.LayerMaskRuntimeData.OneWayPlatformMask;

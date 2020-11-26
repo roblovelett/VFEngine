@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
-    public class DownRaycastHitColliderData
+    public class DownRaycastHitColliderData : ScriptableObject
     {
         #region fields
 
@@ -33,22 +33,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region properties
 
         #region dependencies
-
-        public PhysicsRuntimeData PhysicsRuntimeData { get; set; }
-        public RaycastRuntimeData RaycastRuntimeData { get; set; }
-        public DownRaycastRuntimeData DownRaycastRuntimeData { get; set; }
-        public LayerMaskRuntimeData LayerMaskRuntimeData { get; set; }
-        public GameObject Character { get; set; }
-        public Transform Transform { get; set; }
-        public int NumberOfVerticalRaysPerSide { get; set; }
-        public int SavedBelowLayer { get; set; }
-        public Vector2 DownRaycastFromLeft { get; set; }
-        public Vector2 DownRaycastToRight { get; set; }
-        public RaycastHit2D CurrentDownRaycastHit { get; set; }
-
+        
         #endregion
 
-        public DownRaycastHitColliderRuntimeData RuntimeData { get; set; }
         public bool HasPhysicsMaterialClosestToDownHit { get; set; }
         public bool HasPathMovementClosestToDownHit { get; set; }
         public bool DownHitConnected { get; set; }

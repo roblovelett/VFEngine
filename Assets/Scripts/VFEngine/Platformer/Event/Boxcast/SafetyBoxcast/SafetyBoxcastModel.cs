@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
@@ -23,8 +24,14 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
-        private SafetyBoxcastData s;
+        [SerializeField] private SafetyBoxcastData s;
+        [SerializeField] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsData physics;
+        private RaycastData raycast;
+        private StickyRaycastData stickyRaycast;
+        private LayerMaskData layerMask;
 
         #endregion
 
@@ -32,39 +39,29 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void InitializeData()
         {
-            s = new SafetyBoxcastData {Character = character};
-            s.RuntimeData = SafetyBoxcastRuntimeData.CreateInstance(s.SafetyBoxcastHit);
+            if (!s) s = CreateInstance<SafetyBoxcastData>();
         }
 
         private void InitializeModel()
         {
-            s.PhysicsRuntimeData = s.Character.GetComponentNoAllocation<PhysicsController>().PhysicsRuntimeData;
-            s.RaycastRuntimeData = s.Character.GetComponentNoAllocation<RaycastController>().RaycastRuntimeData;
-            s.StickyRaycastRuntimeData =
-                s.Character.GetComponentNoAllocation<RaycastController>().StickyRaycastRuntimeData;
-            s.LayerMaskRuntimeData = s.Character.GetComponentNoAllocation<LayerMaskController>().LayerMaskRuntimeData;
-            s.Transform = s.PhysicsRuntimeData.Transform;
-            s.NewPosition = s.PhysicsRuntimeData.NewPosition;
-            s.DrawBoxcastGizmosControl = s.RaycastRuntimeData.DrawRaycastGizmosControl;
-            s.Bounds = s.RaycastRuntimeData.Bounds;
-            s.BoundsCenter = s.RaycastRuntimeData.BoundsCenter;
-            s.StickyRaycastLength = s.StickyRaycastRuntimeData.StickyRaycastLength;
-            s.PlatformMask = s.LayerMaskRuntimeData.PlatformMask;
-            s.RaysBelowLayerMaskPlatforms = s.LayerMaskRuntimeData.RaysBelowLayerMaskPlatforms;
+            physics = physicsController.PhysicsModel.Data;
+            raycast = raycastController.RaycastModel.Data;
+            stickyRaycast = raycastController.StickyRaycastModel.Data;
+            layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()
         {
-            var transformUp = s.Transform.up;
-            s.SafetyBoxcastHit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), -transformUp,
-                s.StickyRaycastLength, s.RaysBelowLayerMaskPlatforms, red, s.DrawBoxcastGizmosControl);
+            var transformUp = physics.Transform.up;
+            s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up), -transformUp,
+                stickyRaycast.StickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, red, raycast.DrawRaycastGizmosControl);
         }
 
         private void SetSafetyBoxcast()
         {
-            var transformUp = s.Transform.up;
-            s.SafetyBoxcastHit = Boxcast(s.BoundsCenter, s.Bounds, Angle(transformUp, up), s.NewPosition.normalized,
-                s.NewPosition.magnitude, s.PlatformMask, red, s.DrawBoxcastGizmosControl);
+            var transformUp = physics.Transform.up;
+            s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up), physics.NewPosition.normalized,
+                physics.NewPosition.magnitude, layerMask.PlatformMask, red, raycast.DrawRaycastGizmosControl);
         }
 
         #endregion
@@ -72,6 +69,8 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         #endregion
 
         #region properties
+
+        public SafetyBoxcastData Data => s;
 
         #region public methods
 
