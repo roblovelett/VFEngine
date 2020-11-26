@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DownRaycastModel
   m_EditorClassIdentifier: 
   d: {fileID: 11400000, guid: f8d03be6dd9c0d349a4b43ba9796c3b3, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}

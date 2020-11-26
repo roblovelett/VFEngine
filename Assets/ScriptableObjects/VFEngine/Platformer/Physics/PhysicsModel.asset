@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PhysicsModel
   m_EditorClassIdentifier: 
   p: {fileID: 11400000, guid: 316669954770f4c44a95cb9dcf7efcf3, type: 2}
+  character: {fileID: 0}
   raycastController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}
   boxcastController: {fileID: 0}

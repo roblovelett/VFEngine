@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: LeftRaycastModel
   m_EditorClassIdentifier: 
   l: {fileID: 11400000, guid: 036e4e986702c984c8766814129c4630, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}

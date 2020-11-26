@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: UpRaycastModel
   m_EditorClassIdentifier: 
   u: {fileID: 11400000, guid: ec63324917120904584a0cc09db94625, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}

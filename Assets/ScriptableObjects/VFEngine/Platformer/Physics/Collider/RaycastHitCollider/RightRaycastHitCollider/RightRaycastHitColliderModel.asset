@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: RightRaycastHitColliderModel
   m_EditorClassIdentifier: 
   r: {fileID: 11400000, guid: 0056a6ec37bc0b44cbec27b9daa11899, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}

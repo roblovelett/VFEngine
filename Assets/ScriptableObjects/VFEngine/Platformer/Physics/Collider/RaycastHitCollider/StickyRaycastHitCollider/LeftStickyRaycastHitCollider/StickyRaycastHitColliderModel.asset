@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: StickyRaycastHitColliderModel
   m_EditorClassIdentifier: 
   l: {fileID: 11400000, guid: 31ae5fbed4cf36347a04133db883803e, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}

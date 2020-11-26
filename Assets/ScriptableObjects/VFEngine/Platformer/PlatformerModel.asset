@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PlatformerModel
   m_EditorClassIdentifier: 
   p: {fileID: 11400000, guid: 0729c68fcbd56564b9be3a3ce356b09a, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   boxcastController: {fileID: 0}
   raycastController: {fileID: 0}

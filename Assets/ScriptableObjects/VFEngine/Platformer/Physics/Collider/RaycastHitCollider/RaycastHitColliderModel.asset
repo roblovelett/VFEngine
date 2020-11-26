@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: RaycastHitColliderModel
   m_EditorClassIdentifier: 
   r: {fileID: 11400000, guid: 1db8b165c85ea6d4e9f8e11af094cb93, type: 2}
+  character: {fileID: 0}
   raycastController: {fileID: 0}

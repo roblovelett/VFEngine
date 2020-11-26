@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DistanceToGroundRaycastModel
   m_EditorClassIdentifier: 
   d: {fileID: 11400000, guid: 6ea49e6e744e2034dbbb9dac53439843, type: 2}
+  character: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}
