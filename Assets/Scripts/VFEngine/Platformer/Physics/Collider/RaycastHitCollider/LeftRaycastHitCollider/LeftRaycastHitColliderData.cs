@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -7,6 +8,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "LeftRaycastHitColliderData", menuName = PlatformerLeftRaycastHitColliderDataPath,
+        order = 0)]
+    [InlineEditor]
     public class LeftRaycastHitColliderData : ScriptableObject
     {
         #region fields

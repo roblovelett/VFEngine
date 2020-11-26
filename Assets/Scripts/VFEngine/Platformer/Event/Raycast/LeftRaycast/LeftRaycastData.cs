@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
@@ -6,6 +7,8 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "LeftRaycastData", menuName = PlatformerLeftRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class LeftRaycastData : ScriptableObject
     {
         #region fields

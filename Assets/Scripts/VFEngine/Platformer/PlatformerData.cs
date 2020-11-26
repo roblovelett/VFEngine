@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
+    [InlineEditor]
     public class PlatformerData : ScriptableObject
     {
         #region fields

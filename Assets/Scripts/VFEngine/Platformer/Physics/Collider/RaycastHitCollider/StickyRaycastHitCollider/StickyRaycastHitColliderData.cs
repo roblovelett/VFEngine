@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
@@ -6,6 +7,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "StickyRaycastHitColliderData", menuName = PlatformerStickyRaycastHitColliderDataPath,
+        order = 0)]
+    [InlineEditor]
     public class StickyRaycastHitColliderData : ScriptableObject
     {
         #region fields

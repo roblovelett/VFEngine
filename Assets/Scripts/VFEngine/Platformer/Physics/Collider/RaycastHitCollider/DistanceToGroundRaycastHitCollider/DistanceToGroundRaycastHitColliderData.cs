@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
@@ -6,6 +7,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderData",
+        menuName = PlatformerDistanceToGroundRaycastHitColliderDataPath, order = 0)]
+    [InlineEditor]
     public class DistanceToGroundRaycastHitColliderData : ScriptableObject
     {
         #region fields

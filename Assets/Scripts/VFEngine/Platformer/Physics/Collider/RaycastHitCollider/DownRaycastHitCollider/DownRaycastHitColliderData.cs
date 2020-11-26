@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
@@ -10,6 +11,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static RaycastHitColliderData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "DownRaycastHitColliderData", menuName = PlatformerDownRaycastHitColliderDataPath,
+        order = 0)]
+    [InlineEditor]
     public class DownRaycastHitColliderData : ScriptableObject
     {
         #region fields

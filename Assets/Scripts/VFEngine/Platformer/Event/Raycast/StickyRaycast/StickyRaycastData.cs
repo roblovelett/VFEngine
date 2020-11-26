@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
@@ -6,6 +7,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     using static ScriptableObjectExtensions;
     using static RaycastData;
 
+    [CreateAssetMenu(fileName = "StickyRaycastData", menuName = PlatformerStickyRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class StickyRaycastData : ScriptableObject
     {
         #region fields

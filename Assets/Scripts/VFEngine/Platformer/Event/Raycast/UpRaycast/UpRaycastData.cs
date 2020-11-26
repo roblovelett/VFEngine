@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
@@ -6,6 +7,8 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "UpRaycastData", menuName = PlatformerUpRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class UpRaycastData : ScriptableObject
     {
         #region fields

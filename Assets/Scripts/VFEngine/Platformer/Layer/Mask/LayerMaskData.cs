@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -6,6 +7,8 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
+    [InlineEditor]
     public class LayerMaskData : ScriptableObject
     {
         #region fields

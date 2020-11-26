@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;
-
+    [CreateAssetMenu(fileName = "SafetyBoxcastData", menuName = PlatformerSafetyBoxcastDataPath, order = 0)]
+    [InlineEditor]
     public class SafetyBoxcastData : ScriptableObject
     {
         #region fields

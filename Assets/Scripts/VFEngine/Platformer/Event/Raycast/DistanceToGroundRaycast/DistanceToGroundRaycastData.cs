@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
@@ -6,6 +7,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     using static RaycastData;
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "DistanceToGroundRaycastData", menuName = PlatformerDistanceToGroundRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class DistanceToGroundRaycastData : ScriptableObject
     {
         #region fields

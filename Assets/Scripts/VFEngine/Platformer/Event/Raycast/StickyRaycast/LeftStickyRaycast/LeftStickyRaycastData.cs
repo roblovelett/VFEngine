@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable RedundantAssignment
@@ -7,6 +8,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static ScriptableObjectExtensions;
     using static StickyRaycastData;
 
+    [CreateAssetMenu(fileName = "LeftStickyRaycastData", menuName = PlatformerLeftStickyRaycastDataPath, order = 0)]
+    [InlineEditor]
     public class LeftStickyRaycastData : ScriptableObject
     {
         #region fields

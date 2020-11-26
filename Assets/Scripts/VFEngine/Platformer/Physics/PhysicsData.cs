@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -7,6 +8,8 @@ namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
+    [InlineEditor]
     public class PhysicsData : ScriptableObject
     {
         #region fields

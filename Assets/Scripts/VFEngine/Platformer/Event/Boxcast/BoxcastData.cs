@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
 
+    [CreateAssetMenu(fileName = "BoxcastData", menuName = PlatformerBoxcastDataPath, order = 0)]
+    [InlineEditor]
     public class BoxcastData : ScriptableObject
     {
         #region fields
