@@ -1,8 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-// ReSharper disable RedundantAssignment
-// ReSharper disable EntityNameCapturedOnly.Local
 namespace VFEngine.Tools
 {
     using static Debug;

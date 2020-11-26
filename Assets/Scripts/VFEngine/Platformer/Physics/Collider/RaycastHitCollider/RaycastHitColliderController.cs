@@ -12,7 +12,6 @@ using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedVariable
-// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static RaycastHitColliderData;

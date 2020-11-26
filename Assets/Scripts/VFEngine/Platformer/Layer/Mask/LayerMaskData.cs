@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
@@ -17,7 +13,7 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private LayerMaskSettings settings;
-        
+
         #endregion
 
         private const string LmPath = "Layer/Mask/";
@@ -28,9 +24,10 @@ namespace VFEngine.Platformer.Layer.Mask
         #region properties
 
         #region dependencies
-        
+
         public LayerMaskSettings Settings => settings;
         public bool DisplayWarningsControl => settings.displayWarningsControl;
+
         public LayerMask PlatformMask
         {
             get => settings.platformMask;

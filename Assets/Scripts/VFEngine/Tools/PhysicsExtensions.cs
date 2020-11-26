@@ -4,6 +4,7 @@ using UnityEngine;
 namespace VFEngine.Tools
 {
     using static Single;
+
     public static class PhysicsExtensions
     {
         public static bool SpeedNan(Vector2 speed)

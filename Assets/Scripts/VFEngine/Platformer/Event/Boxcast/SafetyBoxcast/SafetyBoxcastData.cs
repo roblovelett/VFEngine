@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static ScriptableObjectExtensions;

@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObjectExtensions;

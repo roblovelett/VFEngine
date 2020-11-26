@@ -54,14 +54,16 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             var transformUp = physics.Transform.up;
             s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up), -transformUp,
-                stickyRaycast.StickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, red, raycast.DrawRaycastGizmosControl);
+                stickyRaycast.StickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, red,
+                raycast.DrawRaycastGizmosControl);
         }
 
         private void SetSafetyBoxcast()
         {
             var transformUp = physics.Transform.up;
-            s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up), physics.NewPosition.normalized,
-                physics.NewPosition.magnitude, layerMask.PlatformMask, red, raycast.DrawRaycastGizmosControl);
+            s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up),
+                physics.NewPosition.normalized, physics.NewPosition.magnitude, layerMask.PlatformMask, red,
+                raycast.DrawRaycastGizmosControl);
         }
 
         #endregion

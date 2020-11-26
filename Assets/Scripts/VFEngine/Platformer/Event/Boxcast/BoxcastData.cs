@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Event.Boxcast
 {
     using static ScriptableObjectExtensions;
@@ -22,7 +21,7 @@ namespace VFEngine.Platformer.Event.Boxcast
         #region properties
 
         #region dependencies
-        
+
         #endregion
 
         public static readonly string BoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";

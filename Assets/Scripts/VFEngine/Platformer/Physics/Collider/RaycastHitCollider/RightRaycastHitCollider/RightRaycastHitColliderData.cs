@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantAssignment
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -32,6 +28,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         #region dependencies
 
         #endregion
+
         public bool RightHitConnected { get; set; }
         public bool IsCollidingRight { get; set; }
         public int RightHitsStorageLength { get; set; }

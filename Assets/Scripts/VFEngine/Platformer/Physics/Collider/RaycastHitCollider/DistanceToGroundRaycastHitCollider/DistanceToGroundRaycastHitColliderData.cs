@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -31,6 +27,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region depenedencies
 
         #endregion
+
         public float DistanceToGround { get; set; }
         public bool DistanceToGroundRaycastHitConnected { get; set; }
 

@@ -37,7 +37,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private StickyRaycastHitColliderData stickyRaycastHitCollider;
         private LeftStickyRaycastHitColliderData leftStickyRaycastHitCollider;
         private RightStickyRaycastHitColliderData rightStickyRaycastHitCollider;
-        
+
         #endregion
 
         #region private methods
@@ -45,7 +45,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         private void InitializeData()
         {
             if (!s) s = CreateInstance<StickyRaycastData>();
-            
         }
 
         private void InitializeModel()
@@ -65,7 +64,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             var warningMessage = "";
             var warningMessageCount = 0;
             if (!s.Settings) warningMessage += FieldMessage("Settings", "Raycast Settings");
-            if (!physics.StickToSlopesControl) warningMessage += FieldMessage("Sticky Raycast Control", "Bool Reference");
+            if (!physics.StickToSlopesControl)
+                warningMessage += FieldMessage("Sticky Raycast Control", "Bool Reference");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldMessage(string field, string scriptableObject)
@@ -73,17 +73,12 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 warningMessageCount++;
                 return $"{field} field not set to {scriptableObject} ScriptableObject.@";
             }
-
-            string GtZeroMessage(string field)
-            {
-                warningMessageCount++;
-                return $"{field} must be set to value greater than zero.@";
-            }
         }
 
         private void SetStickyRaycastLength()
         {
-            s.StickyRaycastLength = SetStickyRaycastLength(raycast.BoundsWidth, physics.MaximumSlopeAngle, raycast.BoundsHeight, raycast.RayOffset);
+            s.StickyRaycastLength = SetStickyRaycastLength(raycast.BoundsWidth, physics.MaximumSlopeAngle,
+                raycast.BoundsHeight, raycast.RayOffset);
         }
 
         private void SetStickyRaycastLengthToSelf()
@@ -104,7 +99,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
         {
-            s.IsCastingLeft = Abs(leftStickyRaycastHitCollider.BelowSlopeAngleLeft) > Abs(rightStickyRaycastHitCollider.BelowSlopeAngleRight);
+            s.IsCastingLeft = Abs(leftStickyRaycastHitCollider.BelowSlopeAngleLeft) >
+                              Abs(rightStickyRaycastHitCollider.BelowSlopeAngleRight);
         }
 
         private void SetCastFromLeftWithBelowSlopeAngleLtZero()
@@ -124,7 +120,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void SetCastFromLeftWithLeftDistanceLtRightDistance()
         {
-            s.IsCastingLeft = leftStickyRaycast.LeftStickyRaycastHit.distance < rightStickyRaycast.RightStickyRaycastHit.distance;
+            s.IsCastingLeft = leftStickyRaycast.LeftStickyRaycastHit.distance <
+                              rightStickyRaycast.RightStickyRaycastHit.distance;
         }
 
         private void ResetState()

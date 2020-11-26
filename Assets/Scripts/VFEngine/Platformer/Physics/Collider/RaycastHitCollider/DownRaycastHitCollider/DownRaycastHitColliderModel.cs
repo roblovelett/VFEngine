@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private RaycastData raycast;
         private DownRaycastData downRaycast;
         private LayerMaskData layerMask;
-        
+
         #endregion
 
         #region private methods
@@ -45,9 +45,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             if (!d) d = CreateInstance<DownRaycastHitColliderData>();
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
-            d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PhysicsMaterialData>();
+            d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PhysicsMaterialData>();
             d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
-            d.PathMovementClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
+            d.PathMovementClosestToDownHit =
+                d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
             d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
             d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
@@ -270,7 +272,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region properties
 
         public DownRaycastHitColliderData Data => d;
-        
+
         #region public methods
 
         public async UniTaskVoid OnInitializeData()

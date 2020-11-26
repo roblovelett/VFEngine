@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -30,7 +25,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region properties
 
         #region dependencies
-        
+
         #endregion
 
         public float BelowSlopeAngle { get; set; }

@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings;
         [SerializeField] private GameObject character;
-        
+
         #endregion
 
         private const string PhPath = "Physics/";

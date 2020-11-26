@@ -1,15 +1,10 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
-using VFEngine.Platformer.Event.Raycast.DownRaycast;
-using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -33,7 +28,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region properties
 
         #region dependencies
-        
+
         #endregion
 
         public bool HasPhysicsMaterialClosestToDownHit { get; set; }

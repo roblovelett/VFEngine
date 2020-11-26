@@ -6,8 +6,6 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitColl
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static LayerMask;
@@ -149,9 +147,9 @@ namespace VFEngine.Platformer.Layer.Mask
         #region properties
 
         public LayerMaskData Data => l;
-        
+
         #region public methods
-        
+
         public async UniTaskVoid OnInitializeData()
         {
             InitializeData();

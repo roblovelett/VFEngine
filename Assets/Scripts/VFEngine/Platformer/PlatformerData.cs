@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantAssignment
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
@@ -25,6 +23,7 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
+        public bool DisplayWarningsControl => settings.displayWarningsControl;
         public PlatformerSettings Settings => settings;
 
         #endregion

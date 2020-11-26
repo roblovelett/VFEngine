@@ -3,7 +3,6 @@ using UnityEngine;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
@@ -70,7 +69,6 @@ namespace VFEngine.Platformer.Layer.Mask
         #region properties
 
         public LayerMaskModel LayerMaskModel => layerMaskModel;
-        
 
         #region public methods
 

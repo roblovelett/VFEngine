@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast.LeftRaycast;
-using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObjectExtensions;
@@ -25,9 +21,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         #region properties
 
         #region dependencies
-        
 
         #endregion
+
         public RaycastHitColliderContactList ContactList { get; set; }
         public Collider2D IgnoredCollider { get; set; }
         public const string RaycastHitColliderPath = "Physics/Collider/RaycastHitCollider/";

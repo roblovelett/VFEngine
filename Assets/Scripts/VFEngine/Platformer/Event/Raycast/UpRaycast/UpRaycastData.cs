@@ -1,12 +1,6 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 {
     using static RaycastData;
@@ -31,7 +25,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #endregion
 
-         public float UpRayLength { get; set; }
+        public float UpRayLength { get; set; }
         public Vector2 UpRaycastStart { get; set; } = Vector2.zero;
         public Vector2 UpRaycastEnd { get; set; } = Vector2.zero;
         public float UpRaycastSmallestDistance { get; set; }

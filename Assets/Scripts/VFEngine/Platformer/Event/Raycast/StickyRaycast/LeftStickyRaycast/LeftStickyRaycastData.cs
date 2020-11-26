@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
     using static ScriptableObjectExtensions;

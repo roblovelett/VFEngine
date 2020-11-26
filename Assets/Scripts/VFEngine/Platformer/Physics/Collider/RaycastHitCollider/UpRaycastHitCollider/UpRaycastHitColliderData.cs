@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable RedundantDefaultMemberInitializer
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
     using static RaycastHitColliderData;
@@ -28,9 +26,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #endregion
 
-        public bool UpHitConnected { get; set; } = false;
-        public bool IsCollidingAbove { get; set; } = false;
-        public bool WasTouchingCeilingLastFrame { get; set; } = false;
+        public bool UpHitConnected { get; set; }
+        public bool IsCollidingAbove { get; set; }
+        public bool WasTouchingCeilingLastFrame { get; set; }
         public int UpHitsStorageLength { get; set; }
         public int UpHitsStorageCollidingIndex { get; set; }
         public int CurrentUpHitsStorageIndex { get; set; }

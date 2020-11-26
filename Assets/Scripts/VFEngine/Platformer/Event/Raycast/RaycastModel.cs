@@ -5,8 +5,6 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable RedundantDefaultMemberInitializer
-// ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static DebugExtensions;
@@ -29,11 +27,11 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private BoxCollider2D boxCollider;
         [SerializeField] private PhysicsController physicsController;
         private PhysicsData physics;
-        
+
         #endregion
 
         #region private methods
-        
+
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RaycastData>();
@@ -139,7 +137,6 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
             r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
-
         }
 
         private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
@@ -228,7 +225,6 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 BoundsBottomCenterPosition => r.BoundsBottomCenterPosition;
         public Vector2 BoundsTopRightCorner => r.BoundsTopRightCorner;
 
-        
         #region public methods
 
         public async UniTaskVoid OnInitializeData()
@@ -236,6 +232,7 @@ namespace VFEngine.Platformer.Event.Raycast
             InitializeData();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
+
         public async UniTaskVoid OnInitializeModel()
         {
             InitializeModel();

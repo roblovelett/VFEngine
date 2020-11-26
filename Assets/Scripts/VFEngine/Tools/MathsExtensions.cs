@@ -8,15 +8,17 @@ namespace VFEngine.Tools
         {
             return number % 2 == 0;
         }
+
         public static bool IsTime(float timeScale, float deltaTime)
         {
             return timeScale != 0 || deltaTime > 0;
         }
+
         public static bool IsNan(Vector3 vector)
         {
             return float.IsNaN(vector.x) || float.IsNaN(vector.y) || float.IsNaN(vector.z);
         }
-        
+
         public static float DistanceBetweenPointAndLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
         {
             return Vector3.Magnitude(ProjectPointOnLine(point, lineStart, lineEnd) - point);
