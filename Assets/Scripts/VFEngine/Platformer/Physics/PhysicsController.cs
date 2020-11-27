@@ -21,6 +21,7 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
+        /*
         private async void Awake()
         {
             await Async(LoadModels());
@@ -31,8 +32,9 @@ namespace VFEngine.Platformer.Physics
         {
             await Async(InitializeModels());
         }
+        */
 
-        private async UniTaskVoid LoadModels()
+        /*private async UniTaskVoid LoadModels()
         {
             await Async(LoadPlatformerModel());
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -54,7 +56,7 @@ namespace VFEngine.Platformer.Physics
         {
             await Async(physicsModel.OnInitializeModel());
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         #endregion
 
@@ -66,8 +68,17 @@ namespace VFEngine.Platformer.Physics
 
         #region public methods
 
-        #region physics model
+        #region platformer
 
+        public void OnPlatformerInitializeData()
+        {
+            physicsModel.OnInitializeData();
+        }
+        
+        #endregion
+        
+        #region physics model
+        
         public void SetCurrentGravity()
         {
             physicsModel.OnSetCurrentCurrentGravity();

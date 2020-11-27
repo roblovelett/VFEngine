@@ -60,6 +60,7 @@ namespace VFEngine.Platformer.Physics
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
+            p.Transform = character.transform;
             if (p.AutomaticGravityControl) p.Transform.rotation = identity;
             p.IsJumping = false;
             p.FallSlowFactor = 0f;
@@ -93,7 +94,6 @@ namespace VFEngine.Platformer.Physics
             var warningMessageCount = 0;
             if (!p.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
             if (!p.Transform) warningMessage += FieldParentString("Transform", $"{settings}");
-            //if (!p.HasGravityController) warningMessage += FieldParentString("Gravity Controller", $"{settings}");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldString(string field, string scriptableObject)
@@ -368,10 +368,9 @@ namespace VFEngine.Platformer.Physics
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

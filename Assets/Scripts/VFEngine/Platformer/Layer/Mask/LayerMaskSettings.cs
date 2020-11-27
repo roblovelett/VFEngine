@@ -18,7 +18,7 @@ namespace VFEngine.Platformer.Layer.Mask
         [SerializeField] public LayerMask stairsMask;
 
         [LabelText("Display Warnings")] [SerializeField]
-        public bool displayWarningsControl = true;
+        public bool displayWarningsControl;
 
         #endregion
     }

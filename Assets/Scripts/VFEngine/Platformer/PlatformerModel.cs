@@ -77,11 +77,16 @@ namespace VFEngine.Platformer
         private void InitializeData()
         {
             if (!p) p = CreateInstance<PlatformerData>();
-            if (!physicsController) character.GetComponent<PhysicsController>();
-            if (!boxcastController) character.GetComponent<BoxcastController>();
-            if (!raycastController) character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController) character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) character.GetComponent<LayerMaskController>();
+            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
+            if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
+            physicsController.OnPlatformerInitializeData();
+            boxcastController.OnPlatformerInitializeData();
+            raycastController.OnPlatformerInitializeData();
+            raycastHitColliderController.OnPlatformerInitializeData();
+            layerMaskController.OnPlatformerInitializeData();
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
@@ -950,16 +955,14 @@ namespace VFEngine.Platformer
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnInitializeModel()
+        public void OnInitializeModel()
         {
             InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnRunPlatformer()

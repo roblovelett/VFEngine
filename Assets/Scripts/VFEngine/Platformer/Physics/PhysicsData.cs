@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [SerializeField] private PhysicsSettings settings;
-        [SerializeField] private GameObject character;
 
         #endregion
 
@@ -30,7 +29,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        public Transform Transform => character.transform;
+        public Transform Transform { get; set; }
         public PhysicsSettings Settings => settings;
         public float Physics2DPushForce => settings.physics2DPushForce;
         public bool Physics2DInteractionControl => settings.physics2DInteractionControl;

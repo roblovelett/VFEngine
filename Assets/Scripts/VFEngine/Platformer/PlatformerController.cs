@@ -21,44 +21,25 @@ namespace VFEngine.Platformer
 
         #region private methods
 
-        private async void Awake()
+        private void Awake()
         {
-            await Async(LoadModels());
-            await Async(InitializeModelsData());
+            LoadModels();
+            platformerModel.OnInitializeData();
         }
 
-        private async void Start()
+        private void Start()
         {
-            await Async(InitializeModels());
+            platformerModel.OnInitializeModel();
         }
 
-        private async UniTaskVoid LoadModels()
+        private void LoadModels()
         {
-            await Async(LoadPlatformerModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadPlatformerModel()
-            {
-                if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-        }
-
-        private async UniTaskVoid InitializeModelsData()
-        {
-            await Async(platformerModel.OnInitializeData());
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid InitializeModels()
-        {
-            await Async(platformerModel.OnInitializeModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
         }
 
         private void FixedUpdate()
         {
-            platformerModel.OnRunPlatformer();
+            //platformerModel.OnRunPlatformer();
         }
 
         #endregion

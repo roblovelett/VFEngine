@@ -56,8 +56,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public Collider2D StandingOnCollider { get; set; }
         public LayerMask StandingOnWithSmallestDistanceLayer { get; set; }
         public GameObject StandingOnLastFrame { get; set; }
-        [CanBeNull] public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
-        [CanBeNull] public PathMovementData PathMovementClosestToDownHit { get; set; }
+        public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
+        public PathMovementData PathMovementClosestToDownHit { get; set; }
         public float Friction { get; set; }
         public int DownHitsStorageSmallestDistanceIndex { get; set; }
         public RaycastHit2D DownHitWithSmallestDistance { get; set; }

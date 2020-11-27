@@ -33,6 +33,7 @@ namespace VFEngine.Platformer.Layer.Mask
         private void InitializeData()
         {
             if (!l) l = CreateInstance<LayerMaskData>();
+            if (!l.Settings) l.Settings = CreateInstance<LayerMaskSettings>();
             if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             l.SavedPlatformMask = l.PlatformMask;
             l.PlatformMask |= l.OneWayPlatformMask;
@@ -76,6 +77,7 @@ namespace VFEngine.Platformer.Layer.Mask
             var settings = $"{lM} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
+            
             if (!l.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
             for (var i = 0; i < layers.Length; i++)
             {

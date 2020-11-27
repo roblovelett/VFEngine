@@ -28,7 +28,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        public LayerMaskSettings Settings => settings;
+        public LayerMaskSettings Settings
+        {
+            get => settings;
+            set => settings = value;
+        }
+
         public bool DisplayWarningsControl => settings.displayWarningsControl;
 
         public LayerMask PlatformMask

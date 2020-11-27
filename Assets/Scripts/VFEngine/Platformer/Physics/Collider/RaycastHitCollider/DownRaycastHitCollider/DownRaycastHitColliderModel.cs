@@ -48,17 +48,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
-            d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
-            d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
-                .GetComponentNoAllocation<PhysicsMaterialData>();
-            d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
-            d.PathMovementClosestToDownHit =
-                d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
-            d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
+            d.DownHitWithSmallestDistance = new RaycastHit2D();
+            d.StandingOnWithSmallestDistance = new GameObject();
+            //d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
+            //d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PhysicsMaterialData>();
+            //d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
+            //d.PathMovementClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
+            //d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
             d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;
-            d.DownHitsStorageLength = d.DownHitsStorage.Length;
         }
 
         private void InitializeModel()
@@ -67,6 +66,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             raycast = raycastController.RaycastModel.Data;
             downRaycast = raycastController.DownRaycastModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
+            d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
+            d.DownHitsStorageLength = d.DownHitsStorage.Length;
+            StopMovingPlatformCurrentGravity();
             InitializeFriction();
             InitializeDownHitsStorage();
             InitializeDownHitsStorageSmallestDistanceIndex();
