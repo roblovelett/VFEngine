@@ -1,11 +1,8 @@
 ﻿using UnityEngine;
-using VFEngine.Tools;
 
 // ReSharper disable Unity.RedundantEventFunction
 namespace VFEngine.Platformer
 {
-    using static ScriptableObjectExtensions;
-
     public class PlatformerController : MonoBehaviour, IController
     {
         #region fields
@@ -38,7 +35,7 @@ namespace VFEngine.Platformer
 
         private void LoadPlatformerModel()
         {
-            if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
+            platformerModel = new PlatformerModel();
         }
 
         private void InitializePlatformerData()

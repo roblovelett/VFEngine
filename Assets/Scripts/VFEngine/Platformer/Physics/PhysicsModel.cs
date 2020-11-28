@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
@@ -15,6 +16,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
     using static DebugExtensions;
@@ -23,23 +25,25 @@ namespace VFEngine.Platformer.Physics
     using static Mathf;
     using static Vector2;
     using static RigidbodyType2D;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "PhysicsModel", menuName = PlatformerPhysicsModelPath, order = 0)]
-    [InlineEditor]
-    public class PhysicsModel : ScriptableObject, IModel
+    [Serializable]
+    public class PhysicsModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Physics Data")] [SerializeField] private PhysicsData p;
+        [LabelText("Physics Settings")] [SerializeField]
+        private PhysicsSettings settings;
+
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private BoxcastController boxcastController;
+        private PhysicsData p;
         private RaycastData raycast;
         private UpRaycastData upRaycast;
         private LeftStickyRaycastData leftStickyRaycast;
@@ -57,22 +61,21 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeData()
         {
-            if (!p) p = CreateInstance<PhysicsData>();
-            if (character && !physicsController) physicsController = character.GetComponent<PhysicsController>();
-            else if (physicsController && !character) character = physicsController.Character;
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
-            
+            if (!settings) settings = CreateInstance<PhysicsSettings>();
+            p = new PhysicsData();
+            p.ApplySettings(settings);
             p.Transform = character.transform;
             if (p.AutomaticGravityControl) p.Transform.rotation = identity;
             p.IsJumping = false;
             p.FallSlowFactor = 0f;
             p.SmallValue = 0.0001f;
             p.MovementDirectionThreshold = p.SmallValue;
-            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
-                                               p.CurrentHitRigidBody.bodyType != Static;
-            
+            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic && p.CurrentHitRigidBody.bodyType != Static;
+            if (character && !physicsController) physicsController = character.GetComponent<PhysicsController>();
+            else if (physicsController && !character) character = physicsController.Character;
+            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
@@ -94,11 +97,11 @@ namespace VFEngine.Platformer.Physics
         private void GetWarningMessages()
         {
             const string ph = "Physics";
-            var settings = $"{ph} Settings";
+            var physicsSettings = $"{ph} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!p.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
-            if (!p.Transform) warningMessage += FieldParentString("Transform", $"{settings}");
+            if (!p.Settings) warningMessage += FieldString($"{physicsSettings}", $"{physicsSettings}");
+            if (!p.Transform) warningMessage += FieldParentString("Transform", $"{physicsSettings}");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldString(string field, string scriptableObject)

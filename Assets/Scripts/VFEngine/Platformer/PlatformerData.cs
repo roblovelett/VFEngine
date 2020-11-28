@@ -1,20 +1,14 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using VFEngine.Tools;
 
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
-    [InlineEditor]
-    public class PlatformerData : ScriptableObject
+    public class PlatformerData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private PlatformerSettings settings;
 
         #endregion
 
@@ -26,12 +20,22 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        public bool DisplayWarningsControl => settings.displayWarningsControl;
-        public PlatformerSettings Settings => settings;
+        public PlatformerSettings Settings { get; private set; }
+        public bool DisplayWarningsControl { get; private set; }
 
         #endregion
 
         public static readonly string ModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #region public methods
+
+        public void ApplySettings(PlatformerSettings settings)
+        {
+            Settings = settings;
+            DisplayWarningsControl = settings.displayWarningsControl;
+        }
+
+        #endregion
 
         #endregion
     }

@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -8,15 +7,11 @@ namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
-    [InlineEditor]
-    public class PhysicsData : ScriptableObject
+    public class PhysicsData
     {
         #region fields
 
         #region dependencies
-
-        [SerializeField] private PhysicsSettings settings;
 
         #endregion
 
@@ -30,20 +25,20 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         public Transform Transform { get; set; }
-        public PhysicsSettings Settings => settings;
-        public float Physics2DPushForce => settings.physics2DPushForce;
-        public bool Physics2DInteractionControl => settings.physics2DInteractionControl;
-        public Vector2 MaximumVelocity => settings.maximumVelocity;
-        public AnimationCurve SlopeAngleSpeedFactor => settings.slopeAngleSpeedFactor;
-        public bool SafetyBoxcastControl => settings.safetyBoxcastControl;
-        public float MaximumSlopeAngle => settings.maximumSlopeAngle;
-        public bool StickToSlopesControl => settings.stickToSlopeControl;
-        public bool SafeSetTransformControl => settings.safeSetTransformControl;
-        public bool DisplayWarningsControl => settings.displayWarningsControl;
-        public bool AutomaticGravityControl => settings.automaticGravityControl;
-        public float AscentMultiplier => settings.ascentMultiplier;
-        public float FallMultiplier => settings.fallMultiplier;
-        public float Gravity => settings.gravity;
+        public PhysicsSettings Settings { get; private set; }
+        public float Physics2DPushForce { get; private set; }
+        public bool Physics2DInteractionControl { get; private set; }
+        public Vector2 MaximumVelocity { get; private set; }
+        public AnimationCurve SlopeAngleSpeedFactor { get; private set; }
+        public bool SafetyBoxcastControl { get; private set; }
+        public float MaximumSlopeAngle { get; private set; }
+        public bool StickToSlopesControl { get; private set; }
+        public bool SafeSetTransformControl { get; set; }
+        public bool DisplayWarningsControl { get; private set; }
+        public bool AutomaticGravityControl { get; private set; }
+        public float AscentMultiplier { get; private set; }
+        public float FallMultiplier { get; private set; }
+        public float Gravity { get; private set; }
 
         #endregion
 
@@ -96,6 +91,28 @@ namespace VFEngine.Platformer.Physics
         }
 
         public static readonly string PhysicsModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #region public methods
+
+        public void ApplySettings(PhysicsSettings settings)
+        {
+            Settings = settings;
+            Physics2DPushForce = settings.physics2DPushForce;
+            Physics2DInteractionControl = settings.physics2DInteractionControl;
+            MaximumVelocity = settings.maximumVelocity;
+            SlopeAngleSpeedFactor = settings.slopeAngleSpeedFactor;
+            SafetyBoxcastControl = settings.safetyBoxcastControl;
+            MaximumSlopeAngle = settings.maximumSlopeAngle;
+            StickToSlopesControl = settings.stickToSlopeControl;
+            SafeSetTransformControl = settings.safeSetTransformControl;
+            DisplayWarningsControl = settings.displayWarningsControl;
+            AutomaticGravityControl = settings.automaticGravityControl;
+            AscentMultiplier = settings.ascentMultiplier;
+            FallMultiplier = settings.fallMultiplier;
+            Gravity = settings.gravity;
+        }
+
+        #endregion
 
         #endregion
     }

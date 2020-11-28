@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
@@ -33,19 +34,16 @@ namespace VFEngine.Platformer
     using static LayerMaskExtensions;
     using static Time;
     using static RaycastDirection;
-    using static ScriptableObjectExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "PlatformerModel", menuName = PlatformerModelPath, order = 0)]
-    [InlineEditor]
-    public class PlatformerModel : ScriptableObject, IModel
+    [Serializable]
+    public class PlatformerModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Platformer Data")] [SerializeField]
-        private PlatformerData p;
-
+        [LabelText("Platformer Settings")] [SerializeField] private PlatformerSettings settings;
         [SerializeField] private GameObject character;
         [SerializeField] private PlatformerController platformerController;
         [SerializeField] private PhysicsController physicsController;
@@ -53,6 +51,7 @@ namespace VFEngine.Platformer
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private PlatformerData p;
         private PhysicsData physics;
         private SafetyBoxcastData safetyBoxcast;
         private RaycastData raycast;
@@ -79,22 +78,22 @@ namespace VFEngine.Platformer
 
         private void InitializeData()
         {
-            if (!p) p = CreateInstance<PlatformerData>();
-            if (!platformerController && character)
-                platformerController = character.GetComponent<PlatformerController>();
+            if (!settings) settings = CreateInstance<PlatformerSettings>();
+            p = new PlatformerData();
+            p.ApplySettings(settings);
+            if (!platformerController && character) platformerController = character.GetComponent<PlatformerController>();
             else if (platformerController && !character) character = platformerController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
+            if (p.DisplayWarningsControl) GetWarningMessages();
             physicsController.OnPlatformerInitializeData();
             boxcastController.OnPlatformerInitializeData();
             raycastController.OnPlatformerInitializeData();
             raycastHitColliderController.OnPlatformerInitializeData();
             layerMaskController.OnPlatformerInitializeData();
-            if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
         private void InitializeModel()
@@ -114,8 +113,7 @@ namespace VFEngine.Platformer
             leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
             leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
             rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            distanceToGroundRaycastHitCollider =
-                raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
+            distanceToGroundRaycastHitCollider = raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
@@ -125,30 +123,23 @@ namespace VFEngine.Platformer
             const string rc = "Raycast";
             const string ctr = "Controller";
             const string ch = "Character";
-            var settings = $"{pl} Settings";
+            var platformerSettings = $"{pl} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!p.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
             if (!physicsController) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
             if (!boxcastController) warningMessage += FieldParentGameObjectString($"Boxcast {ctr}", $"{ch}");
             if (!raycastController) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
-            if (!raycastHitColliderController)
-                warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
+            if (!raycastHitColliderController) warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
             if (!layerMaskController) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
+            
             DebugLogWarning(warningMessageCount, warningMessage);
-
-            string FieldString(string field, string scriptableObject)
-            {
-                AddWarningMessage();
-                return FieldMessage(field, scriptableObject);
-            }
 
             string FieldParentGameObjectString(string field, string gameObject)
             {
                 AddWarningMessage();
                 return FieldParentGameObjectMessage(field, gameObject);
             }
-
+            
             void AddWarningMessage()
             {
                 warningMessageCount++;
