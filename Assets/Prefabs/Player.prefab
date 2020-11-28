@@ -90,12 +90,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4664759121872859018}
   - component: {fileID: 7964462789057159805}
-  - component: {fileID: 4282264416442810789}
-  - component: {fileID: 6871320884588508167}
-  - component: {fileID: 7074100573741597821}
-  - component: {fileID: 5208017534849073390}
-  - component: {fileID: 7881290786926297500}
-  - component: {fileID: 2656551058129232484}
+  - component: {fileID: 2462561518829987744}
+  - component: {fileID: 3615184319560823612}
+  - component: {fileID: 7697477692587847084}
+  - component: {fileID: 4906767948932776508}
+  - component: {fileID: 6533173875672498006}
+  - component: {fileID: 3000576916605743594}
   m_Layer: 8
   m_Name: Controllers
   m_TagString: Untagged
@@ -143,7 +143,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4282264416442810789
+--- !u!114 &2462561518829987744
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,22 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf02b87c9e4b4d2ab20172cc018a879b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   boxcastModel: {fileID: 11400000, guid: 75ff83328b968b8439ff23647da7432b, type: 2}
   safetyBoxcastModel: {fileID: 11400000, guid: f734986a3813897448a468a71b766275, type: 2}
---- !u!114 &6871320884588508167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7812172320232213404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b5a9cbc9df4fe241b98c577b08231a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMaskModel: {fileID: 11400000, guid: 9632f44213c44a5408191a4b24dc15f0, type: 2}
---- !u!114 &7074100573741597821
+--- !u!114 &3615184319560823612
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,19 +170,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f0bfabf8bc4224998264065af3862d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   raycastModel: {fileID: 11400000, guid: 65b35397464a8804abe8f0cb607fe5ce, type: 2}
   upRaycastModel: {fileID: 11400000, guid: 7cb17618ae854614884f85713150604d, type: 2}
   rightRaycastModel: {fileID: 11400000, guid: 93ae8a9ce21c9254aa3922ff2afd80c2, type: 2}
   downRaycastModel: {fileID: 11400000, guid: 1baba9e161095194d93a0ce7ac326719, type: 2}
   leftRaycastModel: {fileID: 11400000, guid: 72196a7a99ad3344a903dce7678a0cda, type: 2}
-  distanceToGroundRaycastModel: {fileID: 11400000, guid: c9f674849f40a6a4bb3706b3a74c30fe,
-    type: 2}
+  distanceToGroundRaycastModel: {fileID: 0}
   stickyRaycastModel: {fileID: 11400000, guid: 765ba9727cfc88c458fbcf7920289821, type: 2}
   leftStickyRaycastModel: {fileID: 11400000, guid: 1233abd99cbc32a45adf52a369752135,
     type: 2}
   rightStickyRaycastModel: {fileID: 11400000, guid: 61ee13c50623eb04db48d97904556194,
     type: 2}
---- !u!114 &5208017534849073390
+--- !u!114 &7697477692587847084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7812172320232213404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b5a9cbc9df4fe241b98c577b08231a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 0}
+  layerMaskModel: {fileID: 11400000, guid: 9632f44213c44a5408191a4b24dc15f0, type: 2}
+--- !u!114 &4906767948932776508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,6 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b924b800fc3431b93008667a69f1568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   raycastHitColliderModel: {fileID: 11400000, guid: daa599cc6f90ac547a5ec31b860d0ff3,
     type: 2}
   upRaycastHitColliderModel: {fileID: 11400000, guid: de44e6ca6c005dc4d8604273a41ce00a,
@@ -222,9 +225,9 @@ MonoBehaviour:
     type: 2}
   rightStickyRaycastHitColliderModel: {fileID: 11400000, guid: e4bc4540da35b0443ba25cd665bf0a75,
     type: 2}
-  leftStickyRaycastHitColliderModel: {fileID: 11400000, guid: 9e2063e0cd2a61649a2d97fee39ef309,
+  leftStickyRaycastHitColliderModel: {fileID: 11400000, guid: 7338f16050cf33746a537e4597bd2761,
     type: 2}
---- !u!114 &7881290786926297500
+--- !u!114 &6533173875672498006
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,8 +239,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ac8413f21546cdb48050f6d962ba5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   physicsModel: {fileID: 11400000, guid: b09d70b3825413b4caf154076f8628d9, type: 2}
---- !u!114 &2656551058129232484
+--- !u!114 &3000576916605743594
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -249,4 +253,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c612523bd847e9bd2378dcc1cf9649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   platformerModel: {fileID: 11400000, guid: 96db15a9f0d9fa346b562dec99e4248b, type: 2}

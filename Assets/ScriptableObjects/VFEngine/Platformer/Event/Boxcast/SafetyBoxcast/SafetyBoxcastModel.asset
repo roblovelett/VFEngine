@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   s: {fileID: 11400000, guid: 6b64d912f7bac1245b38486adc0a6536, type: 2}
   character: {fileID: 0}
+  boxcastController: {fileID: 0}
   physicsController: {fileID: 0}
   raycastController: {fileID: 0}
   layerMaskController: {fileID: 0}

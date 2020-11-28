@@ -12,7 +12,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
     using static UniTaskExtensions;
     using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "StickyRaycastHitColliderModel",
+    [CreateAssetMenu(fileName = "RightStickyRaycastHitColliderModel",
         menuName = PlatformerRightStickyRaycastHitColliderModelPath, order = 0)]
     [InlineEditor]
     public class RightStickyRaycastHitColliderModel : ScriptableObject, IModel
@@ -23,6 +23,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         [LabelText("Right Sticky Raycast Hit Collider Data")] [SerializeField] private RightStickyRaycastHitColliderData r;
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         private PhysicsData physics;
@@ -35,6 +36,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RightStickyRaycastHitColliderData>();
+            if (!raycastHitColliderController && character)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
         }
@@ -78,10 +82,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

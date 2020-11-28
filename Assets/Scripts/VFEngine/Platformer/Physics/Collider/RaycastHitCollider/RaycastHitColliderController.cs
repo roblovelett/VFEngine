@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderModel raycastHitColliderModel;
         [SerializeField] private UpRaycastHitColliderModel upRaycastHitColliderModel;
         [SerializeField] private RightRaycastHitColliderModel rightRaycastHitColliderModel;
@@ -46,138 +47,179 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region private methods
 
-        private void Awake()
+        private void PlatformerInitializeData()
         {
-            InitializeData();
+            LoadCharacter();
+            LoadRaycastHitColliderModel();
+            LoadUpRaycastHitColliderModel();
+            LoadRightRaycastHitColliderModel();
+            LoadDownRaycastHitColliderModel();
+            LoadLeftRaycastHitColliderModel();
+            LoadDistanceToGroundRaycastHitColliderModel();
+            LoadStickyRaycastHitColliderModel();
+            LoadRightStickyRaycastHitColliderModel();
+            LoadLeftStickyRaycastHitColliderModel();
+            InitializeRaycastHitColliderData();
+            InitializeUpRaycastHitColliderData();
+            InitializeRightRaycastHitColliderData();
+            InitializeDownRaycastHitColliderData();
+            InitializeLeftRaycastHitColliderData();
+            InitializeDistanceToGroundRaycastHitColliderData();
+            InitializeStickyRaycastHitColliderData();
+            InitializeRightStickyRaycastHitColliderData();
+            InitializeLeftStickyRaycastHitColliderData();
         }
 
-        private void InitializeData()
+        private void LoadCharacter()
         {
-            Async(LoadModels());
-            Async(InitializeModelsData());
+            if (!character) character = transform.parent.gameObject;
         }
 
-        private async UniTaskVoid LoadModels()
+        #region load models
+
+        private void LoadRaycastHitColliderModel()
         {
-            var t1 = Async(LoadRaycastHitColliderModel());
-            var t2 = Async(LoadUpRaycastHitColliderModel());
-            var t3 = Async(LoadRightRaycastHitColliderModel());
-            var t4 = Async(LoadDownRaycastHitColliderModel());
-            var t5 = Async(LoadLeftRaycastHitColliderModel());
-            var t6 = Async(LoadDistanceToGroundRaycastHitColliderModel());
-            var t7 = Async(LoadStickyRaycastHitColliderModel());
-            var t8 = Async(LoadRightStickyRaycastHitColliderModel());
-            var t9 = Async(LoadLeftStickyRaycastHitColliderModel());
-            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadRaycastHitColliderModel()
-            {
-                if (!raycastHitColliderModel)
-                    raycastHitColliderModel = LoadModel<RaycastHitColliderModel>(RaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadUpRaycastHitColliderModel()
-            {
-                if (!upRaycastHitColliderModel)
-                    upRaycastHitColliderModel = LoadModel<UpRaycastHitColliderModel>(UpRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadRightRaycastHitColliderModel()
-            {
-                if (!rightRaycastHitColliderModel)
-                    rightRaycastHitColliderModel =
-                        LoadModel<RightRaycastHitColliderModel>(RightRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadDownRaycastHitColliderModel()
-            {
-                if (!downRaycastHitColliderModel)
-                    downRaycastHitColliderModel =
-                        LoadModel<DownRaycastHitColliderModel>(DownRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadLeftRaycastHitColliderModel()
-            {
-                if (!leftRaycastHitColliderModel)
-                    leftRaycastHitColliderModel =
-                        LoadModel<LeftRaycastHitColliderModel>(LeftRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadDistanceToGroundRaycastHitColliderModel()
-            {
-                if (!distanceToGroundRaycastHitColliderModel)
-                    distanceToGroundRaycastHitColliderModel =
-                        LoadModel<DistanceToGroundRaycastHitColliderModel>(DistanceToGroundRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadStickyRaycastHitColliderModel()
-            {
-                if (!stickyRaycastHitColliderModel)
-                    stickyRaycastHitColliderModel =
-                        LoadModel<StickyRaycastHitColliderModel>(StickyRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadRightStickyRaycastHitColliderModel()
-            {
-                if (!rightStickyRaycastHitColliderModel)
-                    rightStickyRaycastHitColliderModel =
-                        LoadModel<RightStickyRaycastHitColliderModel>(RightStickyRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadLeftStickyRaycastHitColliderModel()
-            {
-                if (!leftStickyRaycastHitColliderModel)
-                    leftStickyRaycastHitColliderModel =
-                        LoadModel<LeftStickyRaycastHitColliderModel>(LeftStickyRaycastHitColliderModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!raycastHitColliderModel)
+                raycastHitColliderModel = LoadModel<RaycastHitColliderModel>(RaycastHitColliderModelPath);
         }
 
-        private async UniTaskVoid InitializeModelsData()
+        private void LoadUpRaycastHitColliderModel()
         {
-            var t1 = Async(raycastHitColliderModel.OnInitializeData());
-            var t3 = Async(upRaycastHitColliderModel.OnInitializeData());
-            var t4 = Async(rightRaycastHitColliderModel.OnInitializeData());
-            var t5 = Async(downRaycastHitColliderModel.OnInitializeData());
-            var t6 = Async(leftRaycastHitColliderModel.OnInitializeData());
-            var t2 = Async(distanceToGroundRaycastHitColliderModel.OnInitializeData());
-            var t7 = Async(stickyRaycastHitColliderModel.OnInitializeData());
-            var t8 = Async(rightStickyRaycastHitColliderModel.OnInitializeData());
-            var t9 = Async(leftStickyRaycastHitColliderModel.OnInitializeData());
-            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!upRaycastHitColliderModel)
+                upRaycastHitColliderModel = LoadModel<UpRaycastHitColliderModel>(UpRaycastHitColliderModelPath);
         }
 
-        private void Start()
+        private void LoadRightRaycastHitColliderModel()
         {
-            Async(InitializeModels());
+            if (!rightRaycastHitColliderModel)
+                rightRaycastHitColliderModel =
+                    LoadModel<RightRaycastHitColliderModel>(RightRaycastHitColliderModelPath);
         }
 
-        private async UniTaskVoid InitializeModels()
+        private void LoadDownRaycastHitColliderModel()
         {
-            var rTask1 = Async(raycastHitColliderModel.OnInitializeModel());
-            var rTask2 = Async(upRaycastHitColliderModel.OnInitializeModel());
-            var rTask3 = Async(rightRaycastHitColliderModel.OnInitializeModel());
-            var rTask4 = Async(downRaycastHitColliderModel.OnInitializeModel());
-            var rTask5 = Async(leftRaycastHitColliderModel.OnInitializeModel());
-            var rTask6 = Async(distanceToGroundRaycastHitColliderModel.OnInitializeModel());
-            var rTask7 = Async(stickyRaycastHitColliderModel.OnInitializeModel());
-            var rTask8 = Async(leftStickyRaycastHitColliderModel.OnInitializeModel());
-            var rTask9 = Async(rightStickyRaycastHitColliderModel.OnInitializeModel());
-            var rTask = await (rTask1, rTask2, rTask3, rTask4, rTask5, rTask6, rTask7, rTask8, rTask9);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!downRaycastHitColliderModel)
+                downRaycastHitColliderModel = LoadModel<DownRaycastHitColliderModel>(DownRaycastHitColliderModelPath);
         }
+
+        private void LoadLeftRaycastHitColliderModel()
+        {
+            if (!leftRaycastHitColliderModel)
+                leftRaycastHitColliderModel = LoadModel<LeftRaycastHitColliderModel>(LeftRaycastHitColliderModelPath);
+        }
+
+        private void LoadDistanceToGroundRaycastHitColliderModel()
+        {
+            if (!distanceToGroundRaycastHitColliderModel)
+                distanceToGroundRaycastHitColliderModel =
+                    LoadModel<DistanceToGroundRaycastHitColliderModel>(DistanceToGroundRaycastHitColliderModelPath);
+        }
+
+        private void LoadStickyRaycastHitColliderModel()
+        {
+            if (!stickyRaycastHitColliderModel)
+                stickyRaycastHitColliderModel =
+                    LoadModel<StickyRaycastHitColliderModel>(StickyRaycastHitColliderModelPath);
+        }
+
+        private void LoadRightStickyRaycastHitColliderModel()
+        {
+            if (!rightStickyRaycastHitColliderModel)
+                rightStickyRaycastHitColliderModel =
+                    LoadModel<RightStickyRaycastHitColliderModel>(RightStickyRaycastHitColliderModelPath);
+        }
+
+        private void LoadLeftStickyRaycastHitColliderModel()
+        {
+            if (!leftStickyRaycastHitColliderModel)
+                leftStickyRaycastHitColliderModel =
+                    LoadModel<LeftStickyRaycastHitColliderModel>(LeftStickyRaycastHitColliderModelPath);
+        }
+
+        #endregion
+
+        #region initialize data
+
+        private void InitializeRaycastHitColliderData()
+        {
+            raycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeUpRaycastHitColliderData()
+        {
+            upRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeRightRaycastHitColliderData()
+        {
+            rightRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeDownRaycastHitColliderData()
+        {
+            downRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeLeftRaycastHitColliderData()
+        {
+            leftRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeDistanceToGroundRaycastHitColliderData()
+        {
+            distanceToGroundRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeStickyRaycastHitColliderData()
+        {
+            stickyRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeRightStickyRaycastHitColliderData()
+        {
+            rightStickyRaycastHitColliderModel.OnInitializeData();
+        }
+
+        private void InitializeLeftStickyRaycastHitColliderData()
+        {
+            leftStickyRaycastHitColliderModel.OnInitializeData();
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        public GameObject Character => character;
+        public RaycastHitColliderModel RaycastHitColliderModel => raycastHitColliderModel;
+        public UpRaycastHitColliderModel UpRaycastHitColliderModel => upRaycastHitColliderModel;
+        public RightRaycastHitColliderModel RightRaycastHitColliderModel => rightRaycastHitColliderModel;
+        public DownRaycastHitColliderModel DownRaycastHitColliderModel => downRaycastHitColliderModel;
+        public LeftRaycastHitColliderModel LeftRaycastHitColliderModel => leftRaycastHitColliderModel;
+
+        public DistanceToGroundRaycastHitColliderModel DistanceToGroundRaycastHitColliderModel =>
+            distanceToGroundRaycastHitColliderModel;
+
+        public StickyRaycastHitColliderModel StickyRaycastHitColliderModel => stickyRaycastHitColliderModel;
+
+        public RightStickyRaycastHitColliderModel RightStickyRaycastHitColliderModel =>
+            rightStickyRaycastHitColliderModel;
+
+        public LeftStickyRaycastHitColliderModel LeftStickyRaycastHitColliderModel => leftStickyRaycastHitColliderModel;
+
+        #region public methods
+
+        #region platformer
+
+        public void OnPlatformerInitializeData()
+        {
+            PlatformerInitializeData();
+        }
+
+        #endregion
 
         #region right raycast model
 
@@ -198,30 +240,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         }
 
         #endregion
-
-        #endregion
-
-        #endregion
-
-        #region properties
-
-        public RaycastHitColliderModel RaycastHitColliderModel => raycastHitColliderModel;
-        public UpRaycastHitColliderModel UpRaycastHitColliderModel => upRaycastHitColliderModel;
-        public RightRaycastHitColliderModel RightRaycastHitColliderModel => rightRaycastHitColliderModel;
-        public DownRaycastHitColliderModel DownRaycastHitColliderModel => downRaycastHitColliderModel;
-        public LeftRaycastHitColliderModel LeftRaycastHitColliderModel => leftRaycastHitColliderModel;
-
-        public DistanceToGroundRaycastHitColliderModel DistanceToGroundRaycastHitColliderModel =>
-            distanceToGroundRaycastHitColliderModel;
-
-        public StickyRaycastHitColliderModel StickyRaycastHitColliderModel => stickyRaycastHitColliderModel;
-
-        public RightStickyRaycastHitColliderModel RightStickyRaycastHitColliderModel =>
-            rightStickyRaycastHitColliderModel;
-
-        public LeftStickyRaycastHitColliderModel LeftStickyRaycastHitColliderModel => leftStickyRaycastHitColliderModel;
-
-        #region public methods
 
         #region raycast hit collider model
 

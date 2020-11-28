@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private RaycastModel raycastModel;
         [SerializeField] private UpRaycastModel upRaycastModel;
         [SerializeField] private RightRaycastModel rightRaycastModel;
@@ -46,123 +47,126 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        private void Awake()
+        private void PlatformerInitializeData()
         {
-            InitializeData();
+            LoadCharacter();
+            LoadRaycastModel();
+            LoadUpRaycastModel();
+            LoadRightRaycastModel();
+            LoadDownRaycastModel();
+            LoadLeftRaycastModel();
+            LoadDistanceToGroundRaycastModel();
+            LoadStickyRaycastModel();
+            LoadRightStickyRaycastModel();
+            LoadLeftStickyRaycastModel();
+            InitializeRaycastData();
+            InitializeUpRaycastData();
+            InitializeRightRaycastData();
+            InitializeDownRaycastData();
+            InitializeLeftRaycastData();
+            InitializeDistanceToGroundRaycastData();
+            InitializeStickyRaycastData();
+            InitializeRightStickyRaycastData();
+            InitializeLeftStickyRaycastData();
         }
 
-        private void Start()
+        private void LoadCharacter()
         {
-            Async(InitializeModels());
+            if (!character) character = transform.parent.gameObject;
         }
 
-        private void InitializeData()
+        private void LoadRaycastModel()
         {
-            Async(LoadModels());
-            Async(InitializeModelsData());
+            if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
         }
 
-        private async UniTaskVoid LoadModels()
+        private void LoadUpRaycastModel()
         {
-            var t1 = Async(LoadRaycastModel());
-            var t2 = Async(LoadUpRaycastModel());
-            var t3 = Async(LoadRightRaycastModel());
-            var t4 = Async(LoadDownRaycastModel());
-            var t5 = Async(LoadLeftRaycastModel());
-            var t6 = Async(LoadDistanceToGroundRaycastModel());
-            var t7 = Async(LoadStickyRaycastModel());
-            var t8 = Async(LoadRightStickyRaycastModel());
-            var t9 = Async(LoadLeftStickyRaycastModel());
-            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadRaycastModel()
-            {
-                if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadUpRaycastModel()
-            {
-                if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadRightRaycastModel()
-            {
-                if (!rightRaycastModel) rightRaycastModel = LoadModel<RightRaycastModel>(RightRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadDownRaycastModel()
-            {
-                if (!downRaycastModel) downRaycastModel = LoadModel<DownRaycastModel>(DownRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadLeftRaycastModel()
-            {
-                if (!leftRaycastModel) leftRaycastModel = LoadModel<LeftRaycastModel>(LeftRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadDistanceToGroundRaycastModel()
-            {
-                if (!distanceToGroundRaycastModel)
-                    distanceToGroundRaycastModel =
-                        LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadStickyRaycastModel()
-            {
-                if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadRightStickyRaycastModel()
-            {
-                if (!rightStickyRaycastModel)
-                    rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadLeftStickyRaycastModel()
-            {
-                if (!leftStickyRaycastModel)
-                    leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
+            if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
         }
 
-        private async UniTaskVoid InitializeModelsData()
+        private void LoadRightRaycastModel()
         {
-            var t1 = Async(raycastModel.OnInitializeData());
-            var t3 = Async(upRaycastModel.OnInitializeData());
-            var t4 = Async(rightRaycastModel.OnInitializeData());
-            var t5 = Async(downRaycastModel.OnInitializeData());
-            var t6 = Async(leftRaycastModel.OnInitializeData());
-            var t2 = Async(distanceToGroundRaycastModel.OnInitializeData());
-            var t7 = Async(stickyRaycastModel.OnInitializeData());
-            var t8 = Async(rightStickyRaycastModel.OnInitializeData());
-            var t9 = Async(leftStickyRaycastModel.OnInitializeData());
-            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!rightRaycastModel) rightRaycastModel = LoadModel<RightRaycastModel>(RightRaycastModelPath);
         }
 
-        private async UniTaskVoid InitializeModels()
+        private void LoadDownRaycastModel()
         {
-            var t1 = Async(raycastModel.OnInitializeModel());
-            var t2 = Async(distanceToGroundRaycastModel.OnInitializeModel());
-            var t3 = Async(upRaycastModel.OnInitializeModel());
-            var t4 = Async(rightRaycastModel.OnInitializeModel());
-            var t5 = Async(downRaycastModel.OnInitializeModel());
-            var t6 = Async(leftRaycastModel.OnInitializeModel());
-            var t7 = Async(stickyRaycastModel.OnInitializeModel());
-            var t8 = Async(rightStickyRaycastModel.OnInitializeModel());
-            var t9 = Async(leftStickyRaycastModel.OnInitializeModel());
-            var task1 = await (t1, t2, t3, t4, t5, t6, t7, t8, t9);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!downRaycastModel) downRaycastModel = LoadModel<DownRaycastModel>(DownRaycastModelPath);
+        }
+
+        private void LoadLeftRaycastModel()
+        {
+            if (!leftRaycastModel) leftRaycastModel = LoadModel<LeftRaycastModel>(LeftRaycastModelPath);
+        }
+
+        private void LoadDistanceToGroundRaycastModel()
+        {
+            if (!distanceToGroundRaycastModel)
+                distanceToGroundRaycastModel =
+                    LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
+        }
+
+        private void LoadStickyRaycastModel()
+        {
+            if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
+        }
+
+        private void LoadRightStickyRaycastModel()
+        {
+            if (!rightStickyRaycastModel)
+                rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
+        }
+
+        private void LoadLeftStickyRaycastModel()
+        {
+            if (!leftStickyRaycastModel)
+                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
+        }
+
+        private void InitializeRaycastData()
+        {
+            raycastModel.OnInitializeData();
+        }
+
+        private void InitializeUpRaycastData()
+        {
+            upRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeRightRaycastData()
+        {
+            rightRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeDownRaycastData()
+        {
+            downRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeLeftRaycastData()
+        {
+            leftRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeDistanceToGroundRaycastData()
+        {
+            distanceToGroundRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeStickyRaycastData()
+        {
+            stickyRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeRightStickyRaycastData()
+        {
+            rightStickyRaycastModel.OnInitializeData();
+        }
+
+        private void InitializeLeftStickyRaycastData()
+        {
+            leftStickyRaycastModel.OnInitializeData();
         }
 
         #endregion
@@ -171,6 +175,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
+        public GameObject Character => character;
         public RaycastModel RaycastModel => raycastModel;
         public DistanceToGroundRaycastModel DistanceToGroundRaycastModel => distanceToGroundRaycastModel;
         public DownRaycastModel DownRaycastModel => downRaycastModel;
@@ -182,6 +187,15 @@ namespace VFEngine.Platformer.Event.Raycast
         public UpRaycastModel UpRaycastModel => upRaycastModel;
 
         #region public methods
+
+        #region platformer
+
+        public void OnPlatformerInitializeData()
+        {
+            PlatformerInitializeData();
+        }
+
+        #endregion
 
         #region raycast model
 

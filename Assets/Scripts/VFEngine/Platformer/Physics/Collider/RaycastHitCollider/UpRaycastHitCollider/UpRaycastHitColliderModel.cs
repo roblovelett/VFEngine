@@ -22,6 +22,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         [LabelText("Up Raycast Hit Collider Data")] [SerializeField] private UpRaycastHitColliderData u;
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private RaycastController raycastController;
         private RaycastData raycast;
         private UpRaycastData upRaycast;
@@ -33,6 +34,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void InitializeData()
         {
             if (!u) u = CreateInstance<UpRaycastHitColliderData>();
+            if (!raycastHitColliderController && character)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             u.UpHitsStorageLength = u.UpHitsStorage.Length;
         }
@@ -118,10 +122,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

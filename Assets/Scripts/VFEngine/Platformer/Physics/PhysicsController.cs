@@ -15,48 +15,34 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsModel physicsModel;
 
         #endregion
 
         #region private methods
 
-        /*
-        private async void Awake()
+       private void LoadCharacter()
         {
-            await Async(LoadModels());
-            await Async(InitializeModelsData());
+            if (!character) character = transform.parent.gameObject;
         }
 
-        private async void Start()
+        private void LoadPhysicsModel()
         {
-            await Async(InitializeModels());
-        }
-        */
-
-        /*private async UniTaskVoid LoadModels()
-        {
-            await Async(LoadPlatformerModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadPlatformerModel()
-            {
-                if (!physicsModel) physicsModel = LoadModel<PhysicsModel>(PhysicsModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
+            if (!physicsModel) physicsModel = LoadModel<PhysicsModel>(PhysicsModelPath);
         }
 
-        private async UniTaskVoid InitializeModelsData()
+        private void InitializePhysicsData()
         {
-            await Async(physicsModel.OnInitializeData());
-            await SetYieldOrSwitchToThreadPoolAsync();
+            physicsModel.OnInitializeData();
         }
-
-        private async UniTaskVoid InitializeModels()
+        
+        private void PlatformerInitializeData()
         {
-            await Async(physicsModel.OnInitializeModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
+            LoadCharacter();
+            LoadPhysicsModel();
+            InitializePhysicsData();
+        }
 
         #endregion
 
@@ -64,6 +50,7 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
+        public GameObject Character => character;
         public PhysicsModel PhysicsModel => physicsModel;
 
         #region public methods
@@ -72,7 +59,7 @@ namespace VFEngine.Platformer.Physics
 
         public void OnPlatformerInitializeData()
         {
-            physicsModel.OnInitializeData();
+            PlatformerInitializeData();
         }
         
         #endregion

@@ -36,6 +36,7 @@ namespace VFEngine.Platformer.Physics
 
         [LabelText("Physics Data")] [SerializeField] private PhysicsData p;
         [SerializeField] private GameObject character;
+        [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private BoxcastController boxcastController;
@@ -57,9 +58,12 @@ namespace VFEngine.Platformer.Physics
         private void InitializeData()
         {
             if (!p) p = CreateInstance<PhysicsData>();
+            if (character && !physicsController) physicsController = character.GetComponent<PhysicsController>();
+            else if (physicsController && !character) character = physicsController.Character;
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
+            
             p.Transform = character.transform;
             if (p.AutomaticGravityControl) p.Transform.rotation = identity;
             p.IsJumping = false;
@@ -68,6 +72,7 @@ namespace VFEngine.Platformer.Physics
             p.MovementDirectionThreshold = p.SmallValue;
             p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
                                                p.CurrentHitRigidBody.bodyType != Static;
+            
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
 

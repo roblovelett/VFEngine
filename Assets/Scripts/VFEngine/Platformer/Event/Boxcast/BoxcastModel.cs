@@ -43,10 +43,9 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

@@ -39,8 +39,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RightStickyRaycastData>();
+            if (!raycastController && character)
+                raycastController = character.GetComponent<RaycastController>();
+            else if (raycastController && !character)
+            {
+                character = raycastController.Character;
+                raycastController = character.GetComponent<RaycastController>();
+            }
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
@@ -90,10 +96,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

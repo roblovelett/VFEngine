@@ -25,6 +25,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [LabelText("Raycast Data")] [SerializeField] private RaycastData r;
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastController raycastController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private BoxCollider2D boxCollider;
         private PhysicsData physics;
@@ -36,9 +37,16 @@ namespace VFEngine.Platformer.Event.Raycast
         private void InitializeData()
         {
             if (!r) r = CreateInstance<RaycastData>();
+            if (!raycastController && character)
+                raycastController = character.GetComponent<RaycastController>();
+            else if (raycastController && !character)
+            {
+                character = raycastController.Character;
+                raycastController = character.GetComponent<RaycastController>();
+            }
+            if (!r.Settings) r.Settings = CreateInstance<RaycastSettings>();
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!boxCollider) boxCollider = character.GetComponent<BoxCollider2D>();
-            if (!r.Settings) r.Settings = CreateInstance<RaycastSettings>();
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             if (r.DisplayWarningsControl) GetWarningMessages();
@@ -229,10 +237,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

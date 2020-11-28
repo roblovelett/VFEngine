@@ -22,8 +22,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [LabelText("Left Raycast Hit Collider Data")] [SerializeField] private LeftRaycastHitColliderData l;
+        [LabelText("Left Raycast Hit Collider Data")] [SerializeField]
+        private LeftRaycastHitColliderData l;
+
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         private PhysicsData physics;
@@ -37,6 +40,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void InitializeData()
         {
             if (!l) l = CreateInstance<LeftRaycastHitColliderData>();
+            if (!raycastHitColliderController && character)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
@@ -157,10 +163,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

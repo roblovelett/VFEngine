@@ -26,8 +26,8 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         [LabelText("Safety Boxcast Data")] [SerializeField]
         private SafetyBoxcastData s;
-
         [SerializeField] private GameObject character;
+        [SerializeField] private BoxcastController boxcastController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
@@ -43,6 +43,8 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         private void InitializeData()
         {
             if (!s) s = CreateInstance<SafetyBoxcastData>();
+            if (!boxcastController && character) boxcastController = character.GetComponent<BoxcastController>();
+            else if (boxcastController && !character) character = boxcastController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
@@ -92,10 +94,9 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             SetSafetyBoxcast();
         }
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

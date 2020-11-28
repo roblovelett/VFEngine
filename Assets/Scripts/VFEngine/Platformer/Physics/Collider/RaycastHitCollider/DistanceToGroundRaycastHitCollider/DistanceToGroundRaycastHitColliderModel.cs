@@ -20,8 +20,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region dependencies
 
-        [LabelText("Distance To Ground Raycast Hit Collider Data")] [SerializeField] private DistanceToGroundRaycastHitColliderData d;
+        [LabelText("Distance To Ground Raycast Hit Collider Data")] [SerializeField]
+        private DistanceToGroundRaycastHitColliderData d;
+
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private RaycastController raycastController;
         private RaycastData raycast;
         private DistanceToGroundRaycastData distanceToGroundRaycast;
@@ -33,6 +36,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         private void InitializeData()
         {
             if (!d) d = CreateInstance<DistanceToGroundRaycastHitColliderData>();
+            if (!raycastHitColliderController && character)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
         }
 
@@ -79,10 +85,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

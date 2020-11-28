@@ -24,7 +24,9 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [LabelText("Distance To Ground Raycast Data")] [SerializeField] private DistanceToGroundRaycastData d;
+        [LabelText("Distance To Ground Raycast Data")] [SerializeField]
+        private DistanceToGroundRaycastData d;
+
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
@@ -42,9 +44,19 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         private void InitializeData()
         {
             if (!d) d = CreateInstance<DistanceToGroundRaycastData>();
+            if (!raycastController && character)
+            {
+                raycastController = character.GetComponent<RaycastController>();
+            }
+            else if (raycastController && !character)
+            {
+                character = raycastController.Character;
+                raycastController = character.GetComponent<RaycastController>();
+            }
+
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
@@ -84,10 +96,9 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

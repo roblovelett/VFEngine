@@ -43,8 +43,11 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [LabelText("Platformer Data")] [SerializeField] private PlatformerData p;
+        [LabelText("Platformer Data")] [SerializeField]
+        private PlatformerData p;
+
         [SerializeField] private GameObject character;
+        [SerializeField] private PlatformerController platformerController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private BoxcastController boxcastController;
         [SerializeField] private RaycastController raycastController;
@@ -77,10 +80,14 @@ namespace VFEngine.Platformer
         private void InitializeData()
         {
             if (!p) p = CreateInstance<PlatformerData>();
+            if (!platformerController && character)
+                platformerController = character.GetComponent<PlatformerController>();
+            else if (platformerController && !character) character = platformerController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
             physicsController.OnPlatformerInitializeData();
             boxcastController.OnPlatformerInitializeData();
@@ -107,7 +114,8 @@ namespace VFEngine.Platformer
             leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
             leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
             rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            distanceToGroundRaycastHitCollider = raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
+            distanceToGroundRaycastHitCollider =
+                raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 

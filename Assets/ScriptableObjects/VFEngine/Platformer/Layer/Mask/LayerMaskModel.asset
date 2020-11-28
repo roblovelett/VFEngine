@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   l: {fileID: 11400000, guid: b369a8789d2c5f9448c31bc1a97f87b6, type: 2}
   character: {fileID: 0}
+  layerMaskController: {fileID: 0}
   raycastHitColliderController: {fileID: 0}

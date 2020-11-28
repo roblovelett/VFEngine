@@ -5,8 +5,6 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics.Movement.PathMovement;
-using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -28,8 +26,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        [LabelText("Down Raycast Hit Collider Data")] [SerializeField] private DownRaycastHitColliderData d;
+        [LabelText("Down Raycast Hit Collider Data")] [SerializeField]
+        private DownRaycastHitColliderData d;
+
         [SerializeField] private GameObject character;
+        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
@@ -45,6 +46,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void InitializeData()
         {
             if (!d) d = CreateInstance<DownRaycastHitColliderData>();
+            if (!raycastHitColliderController && character)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
@@ -281,10 +285,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region public methods
 
-        public async UniTaskVoid OnInitializeData()
+        public void OnInitializeData()
         {
             InitializeData();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public async UniTaskVoid OnInitializeModel()

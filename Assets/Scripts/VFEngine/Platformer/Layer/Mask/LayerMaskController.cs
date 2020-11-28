@@ -15,51 +15,33 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskModel layerMaskModel;
 
         #endregion
 
         #region private methods
 
-        private async void Awake()
+        private void PlatformerInitializeData()
         {
-            await Async(InitializeData());
+            LoadCharacter();
+            LoadLayerMaskModel();
+            InitializeLayerMaskData();
         }
 
-        private async UniTaskVoid InitializeData()
+        private void LoadCharacter()
         {
-            await Async(LoadModels());
-            await Async(InitializeModelsData());
-            await SetYieldOrSwitchToThreadPoolAsync();
+            if (!character) character = transform.parent.gameObject;
         }
 
-        private async void Start()
+        private void LoadLayerMaskModel()
         {
-            await Async(InitializeModels());
+            if (!layerMaskModel) layerMaskModel = LoadModel<LayerMaskModel>(LayerMaskModelPath);
         }
 
-        private async UniTaskVoid LoadModels()
+        private void InitializeLayerMaskData()
         {
-            await Async(LoadLayerMaskModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadLayerMaskModel()
-            {
-                if (!layerMaskModel) layerMaskModel = LoadModel<LayerMaskModel>(LayerMaskModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-        }
-
-        private async UniTaskVoid InitializeModelsData()
-        {
-            await Async(layerMaskModel.OnInitializeData());
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        private async UniTaskVoid InitializeModels()
-        {
-            await Async(layerMaskModel.OnInitializeModel());
-            await SetYieldOrSwitchToThreadPoolAsync();
+            layerMaskModel.OnInitializeData();
         }
 
         #endregion
@@ -68,10 +50,15 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
+        public GameObject Character => character;
         public LayerMaskModel LayerMaskModel => layerMaskModel;
 
         #region public methods
 
+        public void OnPlatformerInitializeData()
+        {
+            PlatformerInitializeData();
+        }
         public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()
         {
             layerMaskModel.OnSetRaysBelowLayerMaskPlatforms();

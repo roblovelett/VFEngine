@@ -1,12 +1,10 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable Unity.RedundantEventFunction
 namespace VFEngine.Platformer
 {
     using static ScriptableObjectExtensions;
-    using static UniTaskExtensions;
 
     public class PlatformerController : MonoBehaviour, IController
     {
@@ -14,8 +12,8 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private PlatformerModel platformerModel;
-        private readonly PlatformerController controller;
 
         #endregion
 
@@ -23,18 +21,34 @@ namespace VFEngine.Platformer
 
         private void Awake()
         {
-            LoadModels();
+            InitializeData();
+        }
+
+        private void InitializeData()
+        {
+            LoadCharacter();
+            LoadPlatformerModel();
+            InitializePlatformerData();
+        }
+
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.parent.gameObject;
+        }
+
+        private void LoadPlatformerModel()
+        {
+            if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
+        }
+
+        private void InitializePlatformerData()
+        {
             platformerModel.OnInitializeData();
         }
 
         private void Start()
         {
-            platformerModel.OnInitializeModel();
-        }
-
-        private void LoadModels()
-        {
-            if (!platformerModel) platformerModel = LoadModel<PlatformerModel>(PlatformerModelPath);
+            //platformerModel.OnInitializeModel();
         }
 
         private void FixedUpdate()
@@ -48,6 +62,7 @@ namespace VFEngine.Platformer
 
         #region properties
 
+        public GameObject Character => character;
         public PlatformerModel PlatformerModel => platformerModel;
 
         #endregion

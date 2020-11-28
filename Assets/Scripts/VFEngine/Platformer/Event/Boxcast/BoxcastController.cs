@@ -1,8 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Boxcast
@@ -10,7 +8,6 @@ namespace VFEngine.Platformer.Event.Boxcast
     using static SafetyBoxcastData;
     using static BoxcastData;
     using static ScriptableObjectExtensions;
-    using static UniTaskExtensions;
 
     public class BoxcastController : MonoBehaviour, IController
     {
@@ -18,6 +15,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private BoxcastModel boxcastModel;
         [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
 
@@ -25,56 +23,38 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region private methods
 
-        private void Awake()
+        private void LoadCharacter()
         {
-            InitializeData();
+            if (!character) character = transform.parent.gameObject;
         }
 
-        private void Start()
+        private void LoadBoxcastModel()
         {
-            Async(InitializeModels());
+            if (!boxcastModel) boxcastModel = LoadModel<BoxcastModel>(BoxcastModelPath);
         }
 
-        private void InitializeData()
+        private void LoadSafetyBoxcastModel()
         {
-            Async(LoadModels());
-            Async(InitializeModelsData());
+            if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
         }
 
-        private async UniTaskVoid LoadModels()
+        private void InitializeBoxcastData()
         {
-            var t1 = Async(LoadBoxcastModel());
-            var t2 = Async(LoadSafetyBoxcastModel());
-            var task1 = await (t1, t2);
-            await SetYieldOrSwitchToThreadPoolAsync();
-
-            async UniTaskVoid LoadBoxcastModel()
-            {
-                if (!boxcastModel) boxcastModel = LoadModel<BoxcastModel>(BoxcastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
-
-            async UniTaskVoid LoadSafetyBoxcastModel()
-            {
-                if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
-                await SetYieldOrSwitchToThreadPoolAsync();
-            }
+            boxcastModel.OnInitializeData();
         }
 
-        private async UniTaskVoid InitializeModelsData()
+        private void InitializeSafetyBoxcastData()
         {
-            var t1 = Async(boxcastModel.OnInitializeData());
-            var t2 = Async(safetyBoxcastModel.OnInitializeData());
-            var task1 = await (t1, t2);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            safetyBoxcastModel.OnInitializeData();
         }
 
-        private async UniTaskVoid InitializeModels()
+        private void PlatformerInitializeData()
         {
-            var t1 = Async(boxcastModel.OnInitializeModel());
-            var t2 = Async(safetyBoxcastModel.OnInitializeModel());
-            var task1 = await (t1, t2);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            LoadCharacter();
+            LoadBoxcastModel();
+            LoadSafetyBoxcastModel();
+            InitializeBoxcastData();
+            InitializeSafetyBoxcastData();
         }
 
         #endregion
@@ -83,10 +63,20 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         #region properties
 
+        public GameObject Character => character;
         public BoxcastModel BoxcastModel => boxcastModel;
         public SafetyBoxcastModel SafetyBoxcastModel => safetyBoxcastModel;
 
         #region public methods
+
+        #region platformer
+
+        public void OnPlatformerInitializeData()
+        {
+            PlatformerInitializeData();
+        }
+
+        #endregion
 
         #region safety boxcast model
 
