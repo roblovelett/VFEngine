@@ -1,9 +1,28 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
+using VFEngine.Platformer.Event.Raycast.UpRaycast;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
+using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
+    using static DebugExtensions;
+    using static Quaternion;
+    using static Time;
+    using static Mathf;
+    using static Vector2;
+    using static RigidbodyType2D;
+    using static ScriptableObject;
     using static UniTaskExtensions;
 
     public class PhysicsController : MonoBehaviour, IController
@@ -13,32 +32,372 @@ namespace VFEngine.Platformer.Physics
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsModel physicsModel;
+        [SerializeField] private PhysicsSettings settings;
+        private RaycastController raycastController;
+        private RaycastHitColliderController raycastHitColliderController;
+        private UpRaycastController upRaycastController;
+        private LeftStickyRaycastController leftStickyRaycastController;
+        private RightStickyRaycastController rightStickyRaycastController;
+        private SafetyBoxcastController safetyBoxcastController;
+        private LeftRaycastHitColliderController leftRaycastHitColliderController;
+        private RightRaycastHitColliderController rightRaycastHitColliderController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
+        private StickyRaycastHitColliderController stickyRaycastHitColliderController;
+        private PhysicsData p;
+        private RaycastData raycast;
+        private UpRaycastData upRaycast;
+        private LeftStickyRaycastData leftStickyRaycast;
+        private RightStickyRaycastData rightStickyRaycast;
+        private SafetyBoxcastData safetyBoxcast;
+        private RaycastHitColliderData raycastHitCollider;
+        private LeftRaycastHitColliderData leftRaycastHitCollider;
+        private RightRaycastHitColliderData rightRaycastHitCollider;
+        private DownRaycastHitColliderData downRaycastHitCollider;
+        private StickyRaycastHitColliderData stickyRaycastHitCollider;
 
         #endregion
 
         #region private methods
+
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+            if (p.DisplayWarningsControl) GetWarningMessages();
+        }
+
+        private void Start()
+        {
+            InitializeModel();
+        }
 
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
 
-        private void LoadPhysicsModel()
+        private void InitializeData()
         {
-            physicsModel = new PhysicsModel();
+            if (!settings) settings = CreateInstance<PhysicsSettings>();
+            p = new PhysicsData();
+            p.ApplySettings(settings);
+            p.Transform = character.transform;
+            if (p.AutomaticGravityControl) p.Transform.rotation = identity;
+            p.IsJumping = false;
+            p.FallSlowFactor = 0f;
+            p.SmallValue = 0.0001f;
+            p.MovementDirectionThreshold = p.SmallValue;
+            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
+                                               p.CurrentHitRigidBody.bodyType != Static;
         }
 
-        private void InitializePhysicsData()
+        private void SetControllers()
         {
-            PhysicsModel.OnInitializeData();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
+            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
+            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
+            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
+            ;
+            safetyBoxcastController = character.GetComponentNoAllocation<SafetyBoxcastController>();
+            ;
+            leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
+            ;
+            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
+            ;
+            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
+            ;
+            stickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
+            ;
         }
 
-        private void PlatformerInitializeData()
+        private void GetWarningMessages()
         {
-            LoadCharacter();
-            LoadPhysicsModel();
-            InitializePhysicsData();
+            const string ph = "Physics";
+            var physicsSettings = $"{ph} Settings";
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!settings) warningMessage += FieldString($"{physicsSettings}", $"{physicsSettings}");
+            if (!p.Transform) warningMessage += FieldParentString("Transform", $"{physicsSettings}");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldString(string field, string scriptableObject)
+            {
+                AddWarningMessageCount();
+                return FieldMessage(field, scriptableObject);
+            }
+
+            string FieldParentString(string field, string scriptableObject)
+            {
+                AddWarningMessageCount();
+                return FieldParentMessage(field, scriptableObject);
+            }
+
+            void AddWarningMessageCount()
+            {
+                warningMessageCount++;
+            }
+        }
+
+        private void InitializeModel()
+        {
+            raycast = raycastController.Data;
+            upRaycast = upRaycastController.Data;
+            leftStickyRaycast = leftStickyRaycastController.Data;
+            rightStickyRaycast = rightStickyRaycastController.Data;
+            safetyBoxcast = safetyBoxcastController.Data;
+            raycastHitCollider = raycastHitColliderController.Data;
+            leftRaycastHitCollider = leftRaycastHitColliderController.Data;
+            rightRaycastHitCollider = rightRaycastHitColliderController.Data;
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
+            stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
+            ResetState();
+        }
+
+        private void SetCurrentGravity()
+        {
+            p.CurrentGravity = p.Gravity;
+        }
+
+        private void ApplyAscentMultiplierToCurrentGravity()
+        {
+            p.CurrentGravity /= p.AscentMultiplier;
+        }
+
+        private void ApplyFallMultiplierToCurrentGravity()
+        {
+            p.CurrentGravity *= p.FallMultiplier;
+        }
+
+        private void ApplyGravityToVerticalSpeed()
+        {
+            var gravity = p.CurrentGravity + downRaycastHitCollider.MovingPlatformCurrentGravity;
+            p.SpeedY += gravity * deltaTime;
+        }
+
+        private void ApplyFallSlowFactorToVerticalSpeed()
+        {
+            p.SpeedY *= p.FallSlowFactor;
+        }
+
+        private void SetNewPosition()
+        {
+            p.NewPosition = p.Speed * deltaTime;
+        }
+
+        private void ResetState()
+        {
+            p.GravityActive = true;
+        }
+
+        private void TranslatePlatformSpeedToTransform()
+        {
+            p.Transform.Translate(downRaycastHitCollider.MovingPlatformCurrentSpeed * deltaTime);
+        }
+
+        private void DisableGravity()
+        {
+            p.GravityActive = false;
+        }
+
+        private void ApplyMovingPlatformSpeedToNewPosition()
+        {
+            p.NewPositionY = downRaycastHitCollider.MovingPlatformCurrentSpeed.y * deltaTime;
+        }
+
+        private void StopHorizontalSpeedOnPlatformTest()
+        {
+            p.Speed = -p.NewPosition / deltaTime;
+            p.SpeedX = -p.SpeedX;
+        }
+
+        private void SetForcesApplied()
+        {
+            p.ForcesApplied = p.Speed;
+        }
+
+        private void SetHorizontalMovementDirectionToStored()
+        {
+            p.HorizontalMovementDirection = p.StoredHorizontalMovementDirection;
+        }
+
+        private void SetNegativeHorizontalMovementDirection()
+        {
+            p.HorizontalMovementDirection = -1;
+        }
+
+        private void SetPositiveHorizontalMovementDirection()
+        {
+            p.HorizontalMovementDirection = 1;
+        }
+
+        private void ApplyPlatformSpeedToHorizontalMovementDirection()
+        {
+            p.HorizontalMovementDirection = (int) Sign(downRaycastHitCollider.MovingPlatformCurrentSpeed.x);
+        }
+
+        private void SetStoredHorizontalMovementDirection()
+        {
+            p.StoredHorizontalMovementDirection = p.HorizontalMovementDirection;
+        }
+
+        private void SetNewPositiveHorizontalPosition()
+        {
+            p.NewPositionX = SetNewHorizontalPosition(true,
+                rightRaycastHitCollider.DistanceBetweenRightHitAndRaycastOrigin, raycast.BoundsWidth,
+                raycast.RayOffset);
+        }
+
+        private void SetNewNegativeHorizontalPosition()
+        {
+            p.NewPositionX = SetNewHorizontalPosition(false,
+                leftRaycastHitCollider.DistanceBetweenLeftHitAndRaycastOrigin, raycast.BoundsWidth, raycast.RayOffset);
+        }
+
+        private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)
+        {
+            var positiveX = -distance + width / 2 + offset * 2;
+            var negativeX = distance - width / 2 - offset * 2;
+            return positiveDirection ? positiveX : negativeX;
+        }
+
+        private void StopHorizontalSpeed()
+        {
+            p.SpeedX = 0;
+        }
+
+        private void StopNewHorizontalPosition()
+        {
+            p.NewPositionX = 0;
+        }
+
+        private void SetIsFalling()
+        {
+            p.IsFalling = true;
+        }
+
+        private void SetIsNotFalling()
+        {
+            p.IsFalling = false;
+        }
+
+        private void ApplySpeedToHorizontalNewPosition()
+        {
+            p.NewPositionY = p.SpeedY * deltaTime;
+        }
+
+        private void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
+        {
+            p.NewPositionY = -downRaycastHitCollider.CurrentDownHitSmallestDistance + raycast.BoundsHeight / 2 +
+                             raycast.RayOffset;
+        }
+
+        private void ApplySpeedToVerticalNewPosition()
+        {
+            p.NewPositionY = p.NewPosition.y + p.Speed.y * deltaTime;
+        }
+
+        private void StopNewVerticalPosition()
+        {
+            p.NewPositionY = 0;
+        }
+
+        private void SetGravityActive()
+        {
+            p.GravityActive = true;
+        }
+
+        private void ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
+        {
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(safetyBoxcast.SafetyBoxcastHit.point.y,
+                rightStickyRaycast.RightStickyRaycastOrigin.y, raycast.BoundsHeight);
+        }
+
+        private void ApplyLeftStickyRaycastToNewVerticalPosition()
+        {
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(
+                leftStickyRaycast.LeftStickyRaycastHit.point.y, leftStickyRaycast.LeftStickyRaycastOrigin.y,
+                raycast.BoundsHeight);
+        }
+
+        private void ApplyRightStickyRaycastToNewVerticalPosition()
+        {
+            p.NewPositionY = SetNewVerticalPositionWithSafetyAndStickyRaycasts(
+                rightStickyRaycast.RightStickyRaycastHit.point.y, rightStickyRaycast.RightStickyRaycastOrigin.y,
+                raycast.BoundsHeight);
+        }
+
+        private static float SetNewVerticalPositionWithSafetyAndStickyRaycasts(float pointY, float originY,
+            float boundsHeight)
+        {
+            return -Abs(pointY - originY) + boundsHeight / 2;
+        }
+
+        private void StopVerticalSpeed()
+        {
+            p.Speed = new Vector2(p.SpeedX, 0f);
+        }
+
+        private void SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
+        {
+            p.NewPositionY = upRaycast.UpRaycastSmallestDistance - raycast.BoundsHeight / 2;
+        }
+
+        private void StopVerticalForce()
+        {
+            p.SpeedY = 0f;
+            p.ExternalForceY = 0f;
+        }
+
+        private void StopNewPosition()
+        {
+            p.NewPosition = zero;
+        }
+
+        private void SetNewSpeed()
+        {
+            p.Speed = p.NewPosition / deltaTime;
+        }
+
+        private void ApplySlopeAngleSpeedFactorToHorizontalSpeed()
+        {
+            p.SpeedX *= p.SlopeAngleSpeedFactor.Evaluate(
+                Abs(stickyRaycastHitCollider.BelowSlopeAngle) * Sign(p.Speed.y));
+        }
+
+        private void ClampSpeedToMaxVelocity()
+        {
+            p.SpeedX = Clamp(p.Speed.x, -p.MaximumVelocity.x, p.MaximumVelocity.x);
+            p.SpeedY = Clamp(p.Speed.y, -p.MaximumVelocity.y, p.MaximumVelocity.y);
+        }
+
+        private void ContactListHit()
+        {
+            if (!p.Physics2DInteractionControl) return;
+            foreach (var hit in raycastHitCollider.ContactList.List)
+            {
+                p.CurrentHitRigidBody = hit.collider.attachedRigidbody;
+                if (!p.CurrentHitRigidBodyCanBePushed) return;
+                p.CurrentPushDirection = new Vector2(p.ExternalForce.x, 0);
+                p.CurrentHitRigidBody.velocity = p.CurrentPushDirection.normalized * p.Physics2DPushForce;
+            }
+        }
+
+        private void StopExternalForce()
+        {
+            p.ExternalForce = zero;
+        }
+
+        private void SetWorldSpeedToSpeed()
+        {
+            p.WorldSpeed = p.Speed;
+        }
+
+        private void SlowFall()
+        {
+            p.FallSlowFactor = p.CurrentVerticalSpeedFactor;
         }
 
         #endregion
@@ -47,239 +406,234 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public GameObject Character => character;
-        public PhysicsModel PhysicsModel => physicsModel;
+        public PhysicsData Data => p;
 
         #region public methods
 
-        #region platformer
-
-        public void OnPlatformerInitializeData()
-        {
-            PlatformerInitializeData();
-        }
-
-        #endregion
-
         #region physics model
 
-        public void SetCurrentGravity()
+        public void OnSetCurrentCurrentGravity()
         {
-            PhysicsModel.OnSetCurrentCurrentGravity();
+            SetCurrentGravity();
         }
 
-        public void ApplyAscentMultiplierToCurrentGravity()
+        public void OnApplyAscentMultiplierToCurrentGravity()
         {
-            PhysicsModel.OnApplyAscentMultiplierToCurrentGravity();
+            ApplyAscentMultiplierToCurrentGravity();
         }
 
-        public void ApplyFallMultiplierToCurrentGravity()
+        public void OnApplyFallMultiplierToCurrentGravity()
         {
-            PhysicsModel.OnApplyFallMultiplierToCurrentGravity();
+            ApplyFallMultiplierToCurrentGravity();
         }
 
-        public void ApplyGravityToVerticalSpeed()
+        public void OnApplyGravityToVerticalSpeed()
         {
-            PhysicsModel.OnApplyGravityToVerticalSpeed();
+            ApplyGravityToVerticalSpeed();
         }
 
-        public void ApplyFallSlowFactorToVerticalSpeed()
+        public void OnApplyFallSlowFactorToVerticalSpeed()
         {
-            PhysicsModel.OnApplyFallSlowFactorToVerticalSpeed();
+            ApplyFallSlowFactorToVerticalSpeed();
         }
 
-        public async UniTaskVoid SetNewPosition()
+        public async UniTaskVoid OnSetNewPosition()
         {
-            PhysicsModel.OnSetNewPosition();
+            SetNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ResetState()
+        public async UniTaskVoid OnResetState()
         {
-            PhysicsModel.OnResetState();
+            ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void TranslatePlatformSpeedToTransform()
+        public void OnTranslatePlatformSpeedToTransform()
         {
-            PhysicsModel.OnTranslatePlatformSpeedToTransform();
+            TranslatePlatformSpeedToTransform();
         }
 
-        public async UniTaskVoid DisableGravity()
+        public async UniTaskVoid OnDisableGravity()
         {
-            PhysicsModel.OnDisableGravity();
+            DisableGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ApplyMovingPlatformSpeedToNewPosition()
+        public async UniTaskVoid OnApplyMovingPlatformSpeedToNewPosition()
         {
-            PhysicsModel.OnApplyMovingPlatformSpeedToNewPosition();
+            ApplyMovingPlatformSpeedToNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void StopHorizontalSpeedOnPlatformTest()
+        public void OnStopHorizontalSpeedOnPlatformTest()
         {
-            PhysicsModel.OnStopHorizontalSpeedOnPlatformTest();
+            StopHorizontalSpeedOnPlatformTest();
         }
 
-        public void SetForcesApplied()
+        public void OnSetForcesApplied()
         {
-            PhysicsModel.OnSetForcesApplied();
+            SetForcesApplied();
         }
 
-        public void SetHorizontalMovementDirectionToStored()
+        public void OnSetHorizontalMovementDirectionToStored()
         {
-            PhysicsModel.OnSetHorizontalMovementDirectionToStored();
+            SetHorizontalMovementDirectionToStored();
         }
 
-        public void SetNegativeHorizontalMovementDirection()
+        public void OnSetNegativeHorizontalMovementDirection()
         {
-            PhysicsModel.OnSetNegativeHorizontalMovementDirection();
+            SetNegativeHorizontalMovementDirection();
         }
 
-        public void SetPositiveHorizontalMovementDirection()
+        public void OnSetPositiveHorizontalMovementDirection()
         {
-            PhysicsModel.OnSetPositiveHorizontalMovementDirection();
+            SetPositiveHorizontalMovementDirection();
         }
 
-        public void ApplyPlatformSpeedToHorizontalMovementDirection()
+        public void OnApplyPlatformSpeedToHorizontalMovementDirection()
         {
-            PhysicsModel.OnApplyPlatformSpeedToHorizontalMovementDirection();
+            ApplyPlatformSpeedToHorizontalMovementDirection();
         }
 
-        public void SetStoredHorizontalMovementDirection()
+        public void OnSetStoredHorizontalMovementDirection()
         {
-            PhysicsModel.OnSetStoredHorizontalMovementDirection();
+            SetStoredHorizontalMovementDirection();
         }
 
-        public void SetNewPositiveHorizontalPosition()
+        public void OnSetNewPositiveHorizontalPosition()
         {
-            PhysicsModel.OnSetNewPositiveHorizontalPosition();
+            SetNewPositiveHorizontalPosition();
         }
 
-        public void SetNewNegativeHorizontalPosition()
+        public void OnSetNewNegativeHorizontalPosition()
         {
-            PhysicsModel.OnSetNewNegativeHorizontalPosition();
+            SetNewNegativeHorizontalPosition();
         }
 
-        public async UniTaskVoid StopHorizontalSpeed()
+        public async UniTaskVoid OnStopHorizontalSpeed()
         {
-            PhysicsModel.OnStopHorizontalSpeed();
+            StopHorizontalSpeed();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void StopNewHorizontalPosition()
+        public void OnStopNewHorizontalPosition()
         {
-            PhysicsModel.OnStopNewHorizontalPosition();
+            StopNewHorizontalPosition();
         }
 
-        public void SetIsFalling()
+        public void OnSetIsFalling()
         {
-            PhysicsModel.OnSetIsFalling();
+            SetIsFalling();
         }
 
-        public async UniTaskVoid SetIsNotFalling()
+        public async UniTaskVoid OnSetIsNotFalling()
         {
-            PhysicsModel.OnSetIsNotFalling();
+            SetIsNotFalling();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ApplySpeedToHorizontalNewPosition()
+        public async UniTaskVoid OnApplySpeedToHorizontalNewPosition()
         {
-            PhysicsModel.OnApplySpeedToHorizontalNewPosition();
+            ApplySpeedToHorizontalNewPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
+        public void OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
         {
-            PhysicsModel.OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
+            ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
         }
 
-        public void ApplySpeedToVerticalNewPosition()
+        public void OnApplySpeedToVerticalNewPosition()
         {
-            PhysicsModel.OnApplySpeedToVerticalNewPosition();
+            ApplySpeedToVerticalNewPosition();
         }
 
-        public void StopNewVerticalPosition()
+        public void OnStopNewVerticalPosition()
         {
-            PhysicsModel.OnStopNewVerticalPosition();
+            StopNewVerticalPosition();
         }
 
-        public async UniTaskVoid SetGravityActive()
+        public async UniTaskVoid OnSetGravityActive()
         {
-            PhysicsModel.OnSetGravityActive();
+            SetGravityActive();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
+        public async UniTaskVoid OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition()
         {
-            PhysicsModel.OnApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
+            ApplySafetyBoxcastAndRightStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ApplyLeftStickyRaycastToNewVerticalPosition()
+        public async UniTaskVoid OnApplyLeftStickyRaycastToNewVerticalPosition()
         {
-            PhysicsModel.OnApplyLeftStickyRaycastToNewVerticalPosition();
+            ApplyLeftStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid ApplyRightStickyRaycastToNewVerticalPosition()
+        public async UniTaskVoid OnApplyRightStickyRaycastToNewVerticalPosition()
         {
-            PhysicsModel.OnApplyRightStickyRaycastToNewVerticalPosition();
+            ApplyRightStickyRaycastToNewVerticalPosition();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void StopVerticalSpeed()
+        public void OnStopVerticalSpeed()
         {
-            PhysicsModel.OnStopVerticalSpeed();
+            StopVerticalSpeed();
         }
 
-        public async UniTaskVoid SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
+        public async UniTaskVoid OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight()
         {
-            PhysicsModel.OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
+            SetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void StopVerticalForce()
+        public void OnStopVerticalForce()
         {
-            PhysicsModel.OnStopVerticalForce();
+            StopVerticalForce();
         }
 
-        public void StopNewPosition()
+        public void OnStopNewPosition()
         {
-            PhysicsModel.OnStopNewPosition();
+            StopNewPosition();
         }
 
-        public void SetNewSpeed()
+        public void OnSetNewSpeed()
         {
-            PhysicsModel.OnSetNewSpeed();
+            SetNewSpeed();
         }
 
-        public void ApplySlopeAngleSpeedFactorToHorizontalSpeed()
+        public void OnApplySlopeAngleSpeedFactorToHorizontalSpeed()
         {
-            PhysicsModel.OnApplySlopeAngleSpeedFactorToHorizontalSpeed();
+            ApplySlopeAngleSpeedFactorToHorizontalSpeed();
         }
 
-        public void ClampSpeedToMaxVelocity()
+        public void OnClampSpeedToMaxVelocity()
         {
-            PhysicsModel.OnClampSpeedToMaxVelocity();
+            ClampSpeedToMaxVelocity();
         }
 
         public void OnContactListHit()
         {
-            PhysicsModel.OnContactListHit();
+            ContactListHit();
         }
 
-        public async UniTaskVoid StopExternalForce()
+        public async UniTaskVoid OnStopExternalForce()
         {
-            PhysicsModel.OnStopExternalForce();
+            StopExternalForce();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid SetWorldSpeedToSpeed()
+        public async UniTaskVoid OnSetWorldSpeedToSpeed()
         {
-            PhysicsModel.OnSetWorldSpeedToSpeed();
+            SetWorldSpeedToSpeed();
             await SetYieldOrSwitchToThreadPoolAsync();
+        }
+
+        public void OnSlowFall()
+        {
+            SlowFall();
         }
 
         #endregion
