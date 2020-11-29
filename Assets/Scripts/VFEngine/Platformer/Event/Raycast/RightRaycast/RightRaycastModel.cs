@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -8,28 +8,27 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCol
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "RightRaycastModel", menuName = PlatformerRightRaycastModelPath, order = 0)]
-    [InlineEditor]
-    public class RightRaycastModel : ScriptableObject, IModel
+    [Serializable]
+    public class RightRaycastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Right Raycast Data")] [SerializeField] private RightRaycastData r;
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private RightRaycastData r;
         private PhysicsData physics;
         private RaycastData raycast;
         private RightRaycastHitColliderData rightRaycastHitCollider;
@@ -41,16 +40,20 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void InitializeData()
         {
-            if (!r) r = CreateInstance<RightRaycastData>();
+            r = new RightRaycastData();
             if (!raycastController && character)
+            {
                 raycastController = character.GetComponent<RaycastController>();
+            }
             else if (raycastController && !character)
             {
                 character = raycastController.Character;
                 raycastController = character.GetComponent<RaycastController>();
             }
+
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 

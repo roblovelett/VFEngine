@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
@@ -8,30 +8,26 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static DebugExtensions;
     using static Color;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "DistanceToGroundRaycastModel", menuName = PlatformerDistanceToGroundRaycastModelPath,
-        order = 0)]
-    [InlineEditor]
-    public class DistanceToGroundRaycastModel : ScriptableObject, IModel
+    [Serializable]
+    public class DistanceToGroundRaycastModel
     {
         #region fields
 
         #region dependencies
-
-        [LabelText("Distance To Ground Raycast Data")] [SerializeField]
-        private DistanceToGroundRaycastData d;
 
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private DistanceToGroundRaycastData d;
         private PhysicsData physics;
         private RaycastData raycast;
         private StickyRaycastHitColliderData stickyRaycastHitCollider;
@@ -43,7 +39,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void InitializeData()
         {
-            if (!d) d = CreateInstance<DistanceToGroundRaycastData>();
+            d = new DistanceToGroundRaycastData();
             if (!raycastController && character)
             {
                 raycastController = character.GetComponent<RaycastController>();

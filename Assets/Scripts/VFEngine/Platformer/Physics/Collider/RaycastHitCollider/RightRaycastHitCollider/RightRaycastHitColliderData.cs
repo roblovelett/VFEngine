@@ -1,37 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using UnityEngine;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider
 {
-    using static RaycastHitColliderData;
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "RightRaycastHitColliderData", menuName = PlatformerRightRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class RightRaycastHitColliderData : ScriptableObject
+    public class RightRaycastHitColliderData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private static readonly string RightRaycastHitColliderPath =
-            $"{RaycastHitColliderPath}RightRaycastHitCollider/";
-
-        private static readonly string ModelAssetPath =
-            $"{RightRaycastHitColliderPath}RightRaycastHitColliderModel.asset";
-
-        #endregion
-
         #region properties
-
-        #region dependencies
-
-        #endregion
 
         public bool RightHitConnected { get; set; }
         public bool IsCollidingRight { get; set; }
@@ -46,9 +20,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public GameObject CurrentRightWallCollider { get; set; }
         public float DistanceToRightCollider { get; set; }
         public float RightLateralSlopeAngle { get; set; }
-
-        public static readonly string RightRaycastHitColliderModelPath =
-            $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

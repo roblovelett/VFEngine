@@ -1,32 +1,31 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 {
     using static StickyRaycastModel;
     using static DebugExtensions;
     using static Color;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "RightStickyRaycastModel", menuName = PlatformerRightStickyRaycastModelPath, order = 0)]
-    [InlineEditor]
-    public class RightStickyRaycastModel : ScriptableObject, IModel
+    [Serializable]
+    public class RightStickyRaycastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Right Sticky Raycast Data")] [SerializeField] private RightStickyRaycastData r;
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private RightStickyRaycastData r;
         private PhysicsData physics;
         private RaycastData raycast;
         private StickyRaycastData stickyRaycast;
@@ -38,14 +37,17 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         private void InitializeData()
         {
-            if (!r) r = CreateInstance<RightStickyRaycastData>();
+            r = new RightStickyRaycastData();
             if (!raycastController && character)
+            {
                 raycastController = character.GetComponent<RaycastController>();
+            }
             else if (raycastController && !character)
             {
                 character = raycastController.Character;
                 raycastController = character.GetComponent<RaycastController>();
             }
+
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }

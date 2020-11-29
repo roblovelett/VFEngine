@@ -1,39 +1,36 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Physics.Movement.PathMovement;
+using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
     using static MathsExtensions;
     using static LayerMask;
     using static Vector3;
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
     using static Single;
 
-    [CreateAssetMenu(fileName = "DownRaycastHitColliderModel", menuName = PlatformerDownRaycastHitColliderModelPath,
-        order = 0)]
-    [InlineEditor]
-    public class DownRaycastHitColliderModel : ScriptableObject, IModel
+    [Serializable]
+    public class DownRaycastHitColliderModel
     {
         #region fields
 
         #region dependencies
-
-        [LabelText("Down Raycast Hit Collider Data")] [SerializeField]
-        private DownRaycastHitColliderData d;
 
         [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private DownRaycastHitColliderData d;
         private PhysicsData physics;
         private RaycastData raycast;
         private DownRaycastData downRaycast;
@@ -45,7 +42,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializeData()
         {
-            if (!d) d = CreateInstance<DownRaycastHitColliderData>();
+            d = new DownRaycastHitColliderData();
             if (!raycastHitColliderController && character)
                 raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
@@ -54,11 +51,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
             d.DownHitWithSmallestDistance = new RaycastHit2D();
             d.StandingOnWithSmallestDistance = new GameObject();
-            //d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
-            //d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PhysicsMaterialData>();
-            //d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
-            //d.PathMovementClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
-            //d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
+            d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
+            d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
+                .GetComponentNoAllocation<PhysicsMaterialData>();
+            d.HasPhysicsMaterialClosestToDownHit = d.PhysicsMaterialClosestToDownHit != null;
+            d.PathMovementClosestToDownHit =
+                d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
+            d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
             d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;

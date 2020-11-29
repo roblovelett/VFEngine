@@ -1,33 +1,30 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static UniTaskExtensions;
     using static Vector3;
     using static Mathf;
-    using static ScriptableObjectExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "RaycastHitColliderModel", menuName = PlatformerRaycastHitColliderModelPath, order = 0)]
-    [InlineEditor]
-    public class RaycastHitColliderModel : ScriptableObject, IModel
+    [Serializable]
+    public class RaycastHitColliderModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Raycast Hit Collider Data")] [SerializeField]
-        private RaycastHitColliderData r;
-
         [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private RaycastController raycastController;
+        private RaycastHitColliderData r;
         private RightRaycastData rightRaycast;
         private LeftRaycastData leftRaycast;
 
@@ -37,7 +34,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void InitializeData()
         {
-            if (!r) r = CreateInstance<RaycastHitColliderData>();
+            r = new RaycastHitColliderData();
             if (!raycastHitColliderController && character)
                 raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;

@@ -1,34 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using UnityEngine;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
-    using static RaycastHitColliderData;
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "UpRaycastHitColliderData", menuName = PlatformerUpRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class UpRaycastHitColliderData : ScriptableObject
+    public class UpRaycastHitColliderData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private static readonly string UpRaycastHitColliderPath = $"{RaycastHitColliderPath}UpRaycastHitCollider/";
-        private static readonly string ModelAssetPath = $"{UpRaycastHitColliderPath}UpRaycastHitColliderModel.asset";
-
-        #endregion
-
         #region properties
-
-        #region dependencies
-
-        #endregion
 
         public bool UpHitConnected { get; set; }
         public bool IsCollidingAbove { get; set; }
@@ -38,9 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public int CurrentUpHitsStorageIndex { get; set; }
         public RaycastHit2D RaycastUpHitAt { get; set; }
         public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
-
-        public static readonly string UpRaycastHitColliderModelPath =
-            $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

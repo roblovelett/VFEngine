@@ -9,8 +9,7 @@ namespace VFEngine.Platformer.Physics
         #region properties
 
         #region dependencies
-
-        public Transform Transform { get; set; }
+        
         public float Physics2DPushForce { get; private set; }
         public bool Physics2DInteractionControl { get; private set; }
         public Vector2 MaximumVelocity { get; private set; }
@@ -27,6 +26,7 @@ namespace VFEngine.Platformer.Physics
 
         #endregion
 
+        public Transform Transform { get; set; }
         public float CurrentVerticalSpeedFactor { get; set; }
         public bool IsJumping { get; set; }
         public bool IsFalling { get; set; }

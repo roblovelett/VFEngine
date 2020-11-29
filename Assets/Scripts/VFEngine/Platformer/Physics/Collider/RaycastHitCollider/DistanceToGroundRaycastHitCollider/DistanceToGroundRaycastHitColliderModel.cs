@@ -1,31 +1,26 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "DistanceToGroundRaycastHitColliderModel",
-        menuName = PlatformerDistanceToGroundRaycastHitColliderModelPath, order = 0)]
-    [InlineEditor]
-    public class DistanceToGroundRaycastHitColliderModel : ScriptableObject, IModel
+    [Serializable]
+    public class DistanceToGroundRaycastHitColliderModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Distance To Ground Raycast Hit Collider Data")] [SerializeField]
-        private DistanceToGroundRaycastHitColliderData d;
-
         [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private RaycastController raycastController;
+        private DistanceToGroundRaycastHitColliderData d;
         private RaycastData raycast;
         private DistanceToGroundRaycastData distanceToGroundRaycast;
 
@@ -35,7 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void InitializeData()
         {
-            if (!d) d = CreateInstance<DistanceToGroundRaycastHitColliderData>();
+            d = new DistanceToGroundRaycastHitColliderData();
             if (!raycastHitColliderController && character)
                 raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;

@@ -1,38 +1,13 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
-using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
-    using static RaycastHitColliderData;
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "DownRaycastHitColliderData", menuName = PlatformerDownRaycastHitColliderDataPath,
-        order = 0)]
-    [InlineEditor]
-    public class DownRaycastHitColliderData : ScriptableObject
+    public class DownRaycastHitColliderData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private static readonly string DownRaycastHitColliderPath = $"{RaycastHitColliderPath}DownRaycastHitCollider/";
-
-        private static readonly string ModelAssetPath =
-            $"{DownRaycastHitColliderPath}DownRaycastHitColliderModel.asset";
-
-        #endregion
-
         #region properties
-
-        #region dependencies
-
-        #endregion
 
         public bool HasPhysicsMaterialClosestToDownHit { get; set; }
         public bool HasPathMovementClosestToDownHit { get; set; }
@@ -65,9 +40,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public float MovingPlatformGravity { get; } = -500f;
         public GameObject StandingOn { get; set; }
         public GameObject StandingOnWithSmallestDistance { get; set; }
-
-        public static readonly string DownRaycastHitColliderModelPath =
-            $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

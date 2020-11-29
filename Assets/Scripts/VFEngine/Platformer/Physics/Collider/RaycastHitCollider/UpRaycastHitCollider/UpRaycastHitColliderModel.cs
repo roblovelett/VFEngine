@@ -1,29 +1,26 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
 
-    [CreateAssetMenu(fileName = "UpRaycastHitColliderModel", menuName = PlatformerUpRaycastHitColliderModelPath,
-        order = 0)]
-    [InlineEditor]
-    public class UpRaycastHitColliderModel : ScriptableObject, IModel
+    [Serializable]
+    public class UpRaycastHitColliderModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Up Raycast Hit Collider Data")] [SerializeField] private UpRaycastHitColliderData u;
         [SerializeField] private GameObject character;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private RaycastController raycastController;
+        private UpRaycastHitColliderData u;
         private RaycastData raycast;
         private UpRaycastData upRaycast;
 
@@ -33,7 +30,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void InitializeData()
         {
-            if (!u) u = CreateInstance<UpRaycastHitColliderData>();
+            u = new UpRaycastHitColliderData();
             if (!raycastHitColliderController && character)
                 raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;

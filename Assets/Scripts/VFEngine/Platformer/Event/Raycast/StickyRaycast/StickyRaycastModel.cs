@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
@@ -11,26 +11,27 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static Mathf;
     using static DebugExtensions;
     using static UniTaskExtensions;
-    using static ScriptableObjectExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "StickyRaycastModel", menuName = PlatformerStickyRaycastModelPath, order = 0)]
-    [InlineEditor]
-    public class StickyRaycastModel : ScriptableObject, IModel
+    [Serializable]
+    public class StickyRaycastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Sticky Raycast Data")] [SerializeField] private StickyRaycastData s;
+        [SerializeField] private StickyRaycastSettings settings;
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        private StickyRaycastData s;
         private PhysicsData physics;
         private RaycastData raycast;
         private RightStickyRaycastData rightStickyRaycast;
@@ -45,16 +46,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void InitializeData()
         {
-            if (!s) s = CreateInstance<StickyRaycastData>();
+            if (!settings) settings = CreateInstance<StickyRaycastSettings>();
+            s = new StickyRaycastData();
+            s.ApplySettings(settings);
             if (!raycastController && character)
+            {
                 raycastController = character.GetComponent<RaycastController>();
+            }
             else if (raycastController && !character)
             {
                 character = raycastController.Character;
                 raycastController = character.GetComponent<RaycastController>();
             }
+
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
         }
 
         private void InitializeModel()
@@ -73,7 +80,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         {
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!s.Settings) warningMessage += FieldMessage("Settings", "Raycast Settings");
+            if (!settings) warningMessage += FieldMessage("Settings", "Raycast Settings");
             if (!physics.StickToSlopesControl)
                 warningMessage += FieldMessage("Sticky Raycast Control", "Bool Reference");
             DebugLogWarning(warningMessageCount, warningMessage);
