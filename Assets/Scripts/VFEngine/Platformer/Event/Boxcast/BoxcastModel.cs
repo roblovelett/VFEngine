@@ -1,23 +1,20 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Boxcast
 {
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "BoxcastModel", menuName = PlatformerBoxcastModelPath, order = 0)]
-    [InlineEditor]
-    public class BoxcastModel : ScriptableObject, IModel
+    [Serializable]
+    public class BoxcastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Boxcast Data")] [SerializeField] private BoxcastData b;
+        private BoxcastData b;
 
         #endregion
 
@@ -25,7 +22,7 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void InitializeData()
         {
-            if (!b) b = CreateInstance<BoxcastData>();
+            b = new BoxcastData();
         }
 
         private void InitializeModel()

@@ -8,22 +8,11 @@ using VFEngine.Platformer.Event.Raycast.StickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Raycast
 {
-    using static RaycastData;
-    using static UpRaycastData;
-    using static RightRaycastData;
-    using static DownRaycastData;
-    using static LeftRaycastData;
-    using static DistanceToGroundRaycastData;
-    using static StickyRaycastData;
-    using static RightStickyRaycastData;
-    using static LeftStickyRaycastData;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
     public class RaycastController : MonoBehaviour
@@ -72,56 +61,52 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         private void LoadRaycastModel()
         {
-            if (!raycastModel) raycastModel = LoadModel<RaycastModel>(RaycastModelPath);
+            raycastModel = new RaycastModel();
         }
 
         private void LoadUpRaycastModel()
         {
-            if (!upRaycastModel) upRaycastModel = LoadModel<UpRaycastModel>(UpRaycastModelPath);
+            raycastModel = new RaycastModel();
         }
 
         private void LoadRightRaycastModel()
         {
-            if (!rightRaycastModel) rightRaycastModel = LoadModel<RightRaycastModel>(RightRaycastModelPath);
+            rightRaycastModel = new RightRaycastModel();
         }
 
         private void LoadDownRaycastModel()
         {
-            if (!downRaycastModel) downRaycastModel = LoadModel<DownRaycastModel>(DownRaycastModelPath);
+            downRaycastModel = new DownRaycastModel();
         }
 
         private void LoadLeftRaycastModel()
         {
-            if (!leftRaycastModel) leftRaycastModel = LoadModel<LeftRaycastModel>(LeftRaycastModelPath);
+            leftRaycastModel = new LeftRaycastModel();
         }
 
         private void LoadDistanceToGroundRaycastModel()
         {
-            if (!distanceToGroundRaycastModel)
-                distanceToGroundRaycastModel =
-                    LoadModel<DistanceToGroundRaycastModel>(DistanceToGroundRaycastModelPath);
+            distanceToGroundRaycastModel = new DistanceToGroundRaycastModel();
         }
 
         private void LoadStickyRaycastModel()
         {
-            if (!stickyRaycastModel) stickyRaycastModel = LoadModel<StickyRaycastModel>(StickyRaycastModelPath);
+            stickyRaycastModel = new StickyRaycastModel();
         }
 
         private void LoadRightStickyRaycastModel()
         {
-            if (!rightStickyRaycastModel)
-                rightStickyRaycastModel = LoadModel<RightStickyRaycastModel>(RightStickyRaycastModelPath);
+            rightStickyRaycastModel = new RightStickyRaycastModel();
         }
 
         private void LoadLeftStickyRaycastModel()
         {
-            if (!leftStickyRaycastModel)
-                leftStickyRaycastModel = LoadModel<LeftStickyRaycastModel>(LeftStickyRaycastModelPath);
+            leftStickyRaycastModel = new LeftStickyRaycastModel();
         }
 
         private void InitializeRaycastData()

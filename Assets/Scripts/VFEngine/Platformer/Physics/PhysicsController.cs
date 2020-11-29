@@ -21,7 +21,7 @@ namespace VFEngine.Platformer.Physics
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         private void LoadPhysicsModel()

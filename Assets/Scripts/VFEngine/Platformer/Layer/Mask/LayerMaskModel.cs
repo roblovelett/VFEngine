@@ -1,30 +1,31 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static LayerMask;
     using static DebugExtensions;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "LayerMaskModel", menuName = PlatformerLayerMaskModelPath, order = 0)]
-    [InlineEditor]
-    public class LayerMaskModel : ScriptableObject, IModel
+    [Serializable]
+    public class LayerMaskModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Layer Mask Data")][SerializeField] private LayerMaskData l;
+        [SerializeField] private LayerMaskSettings settings;
         [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskController layerMaskController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        private LayerMaskData l;
         private DownRaycastHitColliderData downRaycastHitCollider;
 
         #endregion
@@ -33,16 +34,18 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeData()
         {
-            if (!l) l = CreateInstance<LayerMaskData>();
-            if (!l.Settings) l.Settings = CreateInstance<LayerMaskSettings>();
-            if (!layerMaskController && character) layerMaskController = character.GetComponent<LayerMaskController>();
-            else if (layerMaskController && !character) character = layerMaskController.Character;
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!settings) settings = CreateInstance<LayerMaskSettings>();
+            l = new LayerMaskData();
+            l.ApplySettings(settings);
             l.SavedPlatformMask = l.PlatformMask;
             l.PlatformMask |= l.OneWayPlatformMask;
             l.PlatformMask |= l.MovingPlatformMask;
             l.PlatformMask |= l.MovingOneWayPlatformMask;
             l.PlatformMask |= l.MidHeightOneWayPlatformMask;
+            if (!layerMaskController && character) layerMaskController = character.GetComponent<LayerMaskController>();
+            else if (layerMaskController && !character) character = layerMaskController.Character;
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (l.DisplayWarningsControl) GetWarningMessages();
         }
 
@@ -77,17 +80,16 @@ namespace VFEngine.Platformer.Layer.Mask
                 l.PlatformMask, l.MovingPlatformMask, l.OneWayPlatformMask, l.MovingOneWayPlatformMask,
                 l.MidHeightOneWayPlatformMask, l.StairsMask
             };
-            var settings = $"{lM} Settings";
+            var layerMaskSettings = $"{lM} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            
-            if (!l.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!settings) warningMessage += FieldString($"{layerMaskSettings}", $"{layerMaskSettings}");
             for (var i = 0; i < layers.Length; i++)
             {
                 if (layers[i].value == layerMasks[i].value) continue;
                 var mask = LayerToName(layerMasks[i]);
                 var layer = LayerToName(layers[i]);
-                warningMessage += FieldPropertyString($"{mask}", $"{layer}", $"{settings}");
+                warningMessage += FieldPropertyString($"{mask}", $"{layer}", $"{layerMaskSettings}");
             }
 
             string FieldString(string field, string scriptableObject)

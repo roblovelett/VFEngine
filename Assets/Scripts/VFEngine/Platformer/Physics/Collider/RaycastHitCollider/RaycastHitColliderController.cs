@@ -8,22 +8,11 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
-    using static RaycastHitColliderData;
-    using static UpRaycastHitColliderData;
-    using static RightRaycastHitColliderData;
-    using static DownRaycastHitColliderData;
-    using static LeftRaycastHitColliderData;
-    using static DistanceToGroundRaycastHitColliderData;
-    using static StickyRaycastHitColliderData;
-    using static LeftStickyRaycastHitColliderData;
-    using static RightStickyRaycastHitColliderData;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
     public class RaycastHitColliderController : MonoBehaviour
@@ -72,68 +61,54 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         #region load models
 
         private void LoadRaycastHitColliderModel()
         {
-            if (!raycastHitColliderModel)
-                raycastHitColliderModel = LoadModel<RaycastHitColliderModel>(RaycastHitColliderModelPath);
+            raycastHitColliderModel = new RaycastHitColliderModel();
         }
 
         private void LoadUpRaycastHitColliderModel()
         {
-            if (!upRaycastHitColliderModel)
-                upRaycastHitColliderModel = LoadModel<UpRaycastHitColliderModel>(UpRaycastHitColliderModelPath);
+            upRaycastHitColliderModel = new UpRaycastHitColliderModel();
         }
 
         private void LoadRightRaycastHitColliderModel()
         {
-            if (!rightRaycastHitColliderModel)
-                rightRaycastHitColliderModel =
-                    LoadModel<RightRaycastHitColliderModel>(RightRaycastHitColliderModelPath);
+            rightRaycastHitColliderModel = new RightRaycastHitColliderModel();
         }
 
         private void LoadDownRaycastHitColliderModel()
         {
-            if (!downRaycastHitColliderModel)
-                downRaycastHitColliderModel = LoadModel<DownRaycastHitColliderModel>(DownRaycastHitColliderModelPath);
+            downRaycastHitColliderModel = new DownRaycastHitColliderModel();
         }
 
         private void LoadLeftRaycastHitColliderModel()
         {
-            if (!leftRaycastHitColliderModel)
-                leftRaycastHitColliderModel = LoadModel<LeftRaycastHitColliderModel>(LeftRaycastHitColliderModelPath);
+            leftRaycastHitColliderModel = new LeftRaycastHitColliderModel();
         }
 
         private void LoadDistanceToGroundRaycastHitColliderModel()
         {
-            if (!distanceToGroundRaycastHitColliderModel)
-                distanceToGroundRaycastHitColliderModel =
-                    LoadModel<DistanceToGroundRaycastHitColliderModel>(DistanceToGroundRaycastHitColliderModelPath);
+            distanceToGroundRaycastHitColliderModel = new DistanceToGroundRaycastHitColliderModel();
         }
 
         private void LoadStickyRaycastHitColliderModel()
         {
-            if (!stickyRaycastHitColliderModel)
-                stickyRaycastHitColliderModel =
-                    LoadModel<StickyRaycastHitColliderModel>(StickyRaycastHitColliderModelPath);
+            stickyRaycastHitColliderModel = new StickyRaycastHitColliderModel();
         }
 
         private void LoadRightStickyRaycastHitColliderModel()
         {
-            if (!rightStickyRaycastHitColliderModel)
-                rightStickyRaycastHitColliderModel =
-                    LoadModel<RightStickyRaycastHitColliderModel>(RightStickyRaycastHitColliderModelPath);
+            rightStickyRaycastHitColliderModel = new RightStickyRaycastHitColliderModel();
         }
 
         private void LoadLeftStickyRaycastHitColliderModel()
         {
-            if (!leftStickyRaycastHitColliderModel)
-                leftStickyRaycastHitColliderModel =
-                    LoadModel<LeftStickyRaycastHitColliderModel>(LeftStickyRaycastHitColliderModelPath);
+            leftStickyRaycastHitColliderModel = new LeftStickyRaycastHitColliderModel();
         }
 
         #endregion

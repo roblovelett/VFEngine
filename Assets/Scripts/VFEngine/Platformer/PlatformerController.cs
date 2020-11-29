@@ -30,7 +30,7 @@ namespace VFEngine.Platformer
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         private void LoadPlatformerModel()

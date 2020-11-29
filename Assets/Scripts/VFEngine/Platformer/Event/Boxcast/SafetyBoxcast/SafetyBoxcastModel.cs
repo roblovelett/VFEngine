@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
@@ -8,29 +8,27 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static DebugExtensions;
     using static Vector2;
     using static Color;
-    using static ScriptableObjectExtensions;
     using static UniTaskExtensions;
 
-    [CreateAssetMenu(fileName = "SafetyBoxcastModel", menuName = PlatformerSafetyBoxcastModelPath, order = 0)]
-    [InlineEditor]
-    public class SafetyBoxcastModel : ScriptableObject, IModel
+    [Serializable]
+    public class SafetyBoxcastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Safety Boxcast Data")] [SerializeField]
-        private SafetyBoxcastData s;
         [SerializeField] private GameObject character;
         [SerializeField] private BoxcastController boxcastController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private LayerMaskController layerMaskController;
+        private SafetyBoxcastData s;
         private PhysicsData physics;
         private RaycastData raycast;
         private StickyRaycastData stickyRaycast;
@@ -42,7 +40,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void InitializeData()
         {
-            if (!s) s = CreateInstance<SafetyBoxcastData>();
+            s = new SafetyBoxcastData();
             if (!boxcastController && character) boxcastController = character.GetComponent<BoxcastController>();
             else if (boxcastController && !character) character = boxcastController.Character;
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();

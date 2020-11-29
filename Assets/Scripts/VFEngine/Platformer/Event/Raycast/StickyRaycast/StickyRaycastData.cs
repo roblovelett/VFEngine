@@ -1,44 +1,28 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
-
-namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
+﻿namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
-    using static ScriptableObjectExtensions;
-    using static RaycastData;
-
-    [CreateAssetMenu(fileName = "StickyRaycastData", menuName = PlatformerStickyRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class StickyRaycastData : ScriptableObject
+    public class StickyRaycastData
     {
-        #region fields
-
-        #region dependencies
-
-        [SerializeField] private StickyRaycastSettings settings;
-
-        #endregion
-
-        private const string ModelAssetPath = "StickyRaycastModel.asset";
-
-        #endregion
-
         #region properties
 
         #region dependencies
 
-        public StickyRaycastSettings Settings => settings;
-        public bool DisplayWarningsControl => settings.displayWarningsControl;
-        public float StickToSlopesOffsetY => settings.stickToSlopesOffsetY;
+        public bool DisplayWarningsControl { get; private set; }
+        public float StickToSlopesOffsetY { get; private set; }
 
         #endregion
 
         public bool IsCastingLeft { get; set; }
         public float StickyRaycastLength { get; set; }
-        public static string StickyRaycastPath { get; } = $"{RaycastPath}StickyRaycast/";
 
-        public static readonly string StickyRaycastModelPath =
-            $"{PlatformerScriptableObjectsPath}{StickyRaycastPath}{ModelAssetPath}";
+        #region public methods
+
+        public void ApplySettings(StickyRaycastSettings settings)
+        {
+            DisplayWarningsControl = settings.displayWarningsControl;
+            StickToSlopesOffsetY = settings.stickToSlopesOffsetY;
+        }
+
+        #endregion
 
         #endregion
     }

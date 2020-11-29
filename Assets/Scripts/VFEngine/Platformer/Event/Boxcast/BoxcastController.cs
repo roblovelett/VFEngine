@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
-using VFEngine.Tools;
 
 // ReSharper disable UnusedVariable
 namespace VFEngine.Platformer.Event.Boxcast
 {
-    using static SafetyBoxcastData;
-    using static BoxcastData;
-    using static ScriptableObjectExtensions;
-
     public class BoxcastController : MonoBehaviour, IController
     {
         #region fields
@@ -25,17 +20,17 @@ namespace VFEngine.Platformer.Event.Boxcast
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         private void LoadBoxcastModel()
         {
-            if (!boxcastModel) boxcastModel = LoadModel<BoxcastModel>(BoxcastModelPath);
+            boxcastModel = new BoxcastModel();
         }
 
         private void LoadSafetyBoxcastModel()
         {
-            if (!safetyBoxcastModel) safetyBoxcastModel = LoadModel<SafetyBoxcastModel>(SafetyBoxcastModelPath);
+            safetyBoxcastModel = new SafetyBoxcastModel();
         }
 
         private void InitializeBoxcastData()

@@ -1,31 +1,16 @@
 ﻿using UnityEngine;
-using VFEngine.Tools;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Platformer.Physics
 {
-    using static ScriptableObjectExtensions;
-
     public class PhysicsData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private const string PhPath = "Physics/";
-        private static readonly string ModelAssetPath = $"{PhPath}PhysicsModel.asset";
-
-        #endregion
-
         #region properties
 
         #region dependencies
 
         public Transform Transform { get; set; }
-        public PhysicsSettings Settings { get; private set; }
         public float Physics2DPushForce { get; private set; }
         public bool Physics2DInteractionControl { get; private set; }
         public Vector2 MaximumVelocity { get; private set; }
@@ -90,13 +75,10 @@ namespace VFEngine.Platformer.Physics
             set => value = Speed.y;
         }
 
-        public static readonly string PhysicsModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
         #region public methods
 
         public void ApplySettings(PhysicsSettings settings)
         {
-            Settings = settings;
             Physics2DPushForce = settings.physics2DPushForce;
             Physics2DInteractionControl = settings.physics2DInteractionControl;
             MaximumVelocity = settings.maximumVelocity;

@@ -1,52 +1,21 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using UnityEngine;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
-    [InlineEditor]
-    public class LayerMaskData : ScriptableObject
+    public class LayerMaskData
     {
-        #region fields
-
-        #region dependencies
-
-        [SerializeField] private LayerMaskSettings settings;
-
-        #endregion
-
-        private const string LmPath = "Layer/Mask/";
-        private static readonly string ModelAssetPath = $"{LmPath}LayerMaskModel.asset";
-
-        #endregion
-
         #region properties
 
         #region dependencies
 
-        public LayerMaskSettings Settings
-        {
-            get => settings;
-            set => settings = value;
-        }
-
-        public bool DisplayWarningsControl => settings.displayWarningsControl;
-
-        public LayerMask PlatformMask
-        {
-            get => settings.platformMask;
-            set => settings.platformMask = value;
-        }
-
-        public LayerMask MovingPlatformMask => settings.movingPlatformMask;
-        public LayerMask OneWayPlatformMask => settings.oneWayPlatformMask;
-        public LayerMask MovingOneWayPlatformMask => settings.movingOneWayPlatformMask;
-        public LayerMask MidHeightOneWayPlatformMask => settings.midHeightOneWayPlatformMask;
-        public LayerMask StairsMask => settings.stairsMask;
+        public bool DisplayWarningsControl { get; private set; }
+        public LayerMask PlatformMask { get; set; }
+        public LayerMask MovingPlatformMask { get; private set; }
+        public LayerMask OneWayPlatformMask { get; private set; }
+        public LayerMask MovingOneWayPlatformMask { get; private set; }
+        public LayerMask MidHeightOneWayPlatformMask { get; private set; }
+        public LayerMask StairsMask { get; private set; }
 
         #endregion
 
@@ -55,7 +24,21 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
         public int SavedBelowLayer { get; set; }
         public LayerMask SavedPlatformMask { get; set; }
-        public static readonly string LayerMaskModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #region public methods
+
+        public void ApplySettings(LayerMaskSettings settings)
+        {
+            DisplayWarningsControl = settings.displayWarningsControl;
+            PlatformMask = settings.platformMask;
+            MovingPlatformMask = settings.movingPlatformMask;
+            OneWayPlatformMask = settings.oneWayPlatformMask;
+            MovingOneWayPlatformMask = settings.movingOneWayPlatformMask;
+            MidHeightOneWayPlatformMask = settings.midHeightOneWayPlatformMask;
+            StairsMask = settings.stairsMask;
+        }
+
+        #endregion
 
         #endregion
     }

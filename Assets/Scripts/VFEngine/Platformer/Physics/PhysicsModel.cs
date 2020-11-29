@@ -1,6 +1,5 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
@@ -35,9 +34,7 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [LabelText("Physics Settings")] [SerializeField]
-        private PhysicsSettings settings;
-
+        [SerializeField] private PhysicsSettings settings;
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
@@ -70,11 +67,13 @@ namespace VFEngine.Platformer.Physics
             p.FallSlowFactor = 0f;
             p.SmallValue = 0.0001f;
             p.MovementDirectionThreshold = p.SmallValue;
-            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic && p.CurrentHitRigidBody.bodyType != Static;
+            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
+                                               p.CurrentHitRigidBody.bodyType != Static;
             if (character && !physicsController) physicsController = character.GetComponent<PhysicsController>();
             else if (physicsController && !character) character = physicsController.Character;
             if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController) raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
+            if (!raycastHitColliderController)
+                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!boxcastController) boxcastController = character.GetComponent<BoxcastController>();
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
@@ -100,7 +99,7 @@ namespace VFEngine.Platformer.Physics
             var physicsSettings = $"{ph} Settings";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!p.Settings) warningMessage += FieldString($"{physicsSettings}", $"{physicsSettings}");
+            if (!settings) warningMessage += FieldString($"{physicsSettings}", $"{physicsSettings}");
             if (!p.Transform) warningMessage += FieldParentString("Transform", $"{physicsSettings}");
             DebugLogWarning(warningMessageCount, warningMessage);
 

@@ -1,12 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
-    using static ScriptableObjectExtensions;
-    using static LayerMaskData;
     using static UniTaskExtensions;
 
     public class LayerMaskController : MonoBehaviour, IController
@@ -31,12 +28,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void LoadCharacter()
         {
-            if (!character) character = transform.parent.gameObject;
+            if (!character) character = transform.root.gameObject;
         }
 
         private void LoadLayerMaskModel()
         {
-            if (!layerMaskModel) layerMaskModel = LoadModel<LayerMaskModel>(LayerMaskModelPath);
+            layerMaskModel = new LayerMaskModel();
         }
 
         private void InitializeLayerMaskData()
@@ -59,6 +56,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             PlatformerInitializeData();
         }
+
         public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()
         {
             layerMaskModel.OnSetRaysBelowLayerMaskPlatforms();

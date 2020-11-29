@@ -1,45 +1,21 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using UnityEngine;
 
 namespace VFEngine.Platformer.Event.Raycast
 {
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "RaycastData", menuName = PlatformerRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class RaycastData : ScriptableObject
+    public class RaycastData
     {
-        #region fields
-
-        #region dependencies
-
-        [SerializeField] private RaycastSettings settings;
-
-        #endregion
-
-        private static readonly string ModelAssetPath = $"{RaycastPath}RaycastModel.asset";
-
-        #endregion
-
         #region properties
 
         #region dependencies
 
-        public RaycastSettings Settings
-        {
-            get => settings;
-            set => settings = value;
-        }
-
-        public bool DisplayWarningsControl => settings.displayWarningsControl;
-        public bool DrawRaycastGizmosControl => settings.drawRaycastGizmosControl;
-        public bool CastRaysOnBothSides => settings.castRaysOnBothSides;
-        public bool PerformSafetyBoxcast => settings.performSafetyBoxcast;
-        public int NumberOfHorizontalRays => settings.numberOfHorizontalRays;
-        public int NumberOfVerticalRays => settings.numberOfVerticalRays;
-        public float RayOffset => settings.rayOffset;
-        public float DistanceToGroundRayMaximumLength => settings.distanceToGroundRayMaximumLength;
+        public bool DisplayWarningsControl { get; private set; }
+        public bool DrawRaycastGizmosControl { get; private set; }
+        public bool CastRaysOnBothSides { get; private set; }
+        public bool PerformSafetyBoxcast { get; private set; }
+        public int NumberOfHorizontalRays { get; private set; }
+        public int NumberOfVerticalRays { get; private set; }
+        public float RayOffset { get; private set; }
+        public float DistanceToGroundRayMaximumLength { get; private set; }
 
         #endregion
 
@@ -55,8 +31,22 @@ namespace VFEngine.Platformer.Event.Raycast
         public int NumberOfHorizontalRaysPerSide { get; set; }
         public int NumberOfVerticalRaysPerSide => NumberOfVerticalRays / 2;
         public float ObstacleHeightTolerance => RayOffset;
-        public const string RaycastPath = "Event/Raycast/";
-        public static readonly string RaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
+
+        #region public methods
+
+        public void ApplySettings(RaycastSettings settings)
+        {
+            DisplayWarningsControl = settings.displayWarningsControl;
+            DrawRaycastGizmosControl = settings.drawRaycastGizmosControl;
+            CastRaysOnBothSides = settings.castRaysOnBothSides;
+            PerformSafetyBoxcast = settings.performSafetyBoxcast;
+            NumberOfHorizontalRays = settings.numberOfHorizontalRays;
+            NumberOfVerticalRays = settings.numberOfVerticalRays;
+            RayOffset = settings.rayOffset;
+            DistanceToGroundRayMaximumLength = settings.distanceToGroundRayMaximumLength;
+        }
+
+        #endregion
 
         #endregion
     }

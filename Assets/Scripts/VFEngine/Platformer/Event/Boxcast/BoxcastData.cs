@@ -1,34 +1,6 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
-
-namespace VFEngine.Platformer.Event.Boxcast
+﻿namespace VFEngine.Platformer.Event.Boxcast
 {
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "BoxcastData", menuName = PlatformerBoxcastDataPath, order = 0)]
-    [InlineEditor]
-    public class BoxcastData : ScriptableObject
+    public class BoxcastData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private const string BcPath = "Event/Boxcast/";
-        private static readonly string ModelAssetPath = $"{BcPath}BoxcastModel.asset";
-
-        #endregion
-
-        #region properties
-
-        #region dependencies
-
-        #endregion
-
-        public static readonly string BoxcastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
-
-        #endregion
     }
 }

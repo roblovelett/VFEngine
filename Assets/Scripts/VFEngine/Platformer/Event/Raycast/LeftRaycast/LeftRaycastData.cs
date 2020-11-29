@@ -1,39 +1,16 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
+﻿using UnityEngine;
 
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
-    using static RaycastData;
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "LeftRaycastData", menuName = PlatformerLeftRaycastDataPath, order = 0)]
-    [InlineEditor]
-    public class LeftRaycastData : ScriptableObject
+    public class LeftRaycastData
     {
-        #region fields
-
-        #region dependencies
-
-        #endregion
-
-        private static readonly string LeftRaycastPath = $"{RaycastPath}RightRaycast/";
-        private static readonly string ModelAssetPath = $"{LeftRaycastPath}LeftRaycastModel.asset";
-
-        #endregion
-
         #region properties
-
-        #region dependencies
-
-        #endregion
 
         public float LeftRayLength { get; set; }
         public Vector2 LeftRaycastFromBottomOrigin { get; set; }
         public Vector2 LeftRaycastToTopOrigin { get; set; }
         public RaycastHit2D CurrentLeftRaycastHit { get; set; }
         public Vector2 CurrentLeftRaycastOrigin { get; set; }
-        public static readonly string LeftRaycastModelPath = $"{PlatformerScriptableObjectsPath}{ModelAssetPath}";
 
         #endregion
     }

@@ -1,10 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static DebugExtensions;
@@ -13,21 +14,21 @@ namespace VFEngine.Platformer.Event.Raycast
     using static MathsExtensions;
     using static Mathf;
     using static Time;
-    using static ScriptableObjectExtensions;
+    using static ScriptableObject;
 
-    [CreateAssetMenu(fileName = "RaycastModel", menuName = PlatformerRaycastModelPath, order = 0)]
-    [InlineEditor]
-    public class RaycastModel : ScriptableObject, IModel
+    [Serializable]
+    public class RaycastModel
     {
         #region fields
 
         #region dependencies
 
-        [LabelText("Raycast Data")] [SerializeField] private RaycastData r;
+        [SerializeField] private RaycastSettings settings;
         [SerializeField] private GameObject character;
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private BoxCollider2D boxCollider;
+        private RaycastData r;
         private PhysicsData physics;
 
         #endregion
@@ -36,19 +37,23 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeData()
         {
-            if (!r) r = CreateInstance<RaycastData>();
+            if (!settings) settings = CreateInstance<RaycastSettings>();
+            r = new RaycastData();
+            r.ApplySettings(settings);
+            if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
+            else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             if (!raycastController && character)
+            {
                 raycastController = character.GetComponent<RaycastController>();
+            }
             else if (raycastController && !character)
             {
                 character = raycastController.Character;
                 raycastController = character.GetComponent<RaycastController>();
             }
-            if (!r.Settings) r.Settings = CreateInstance<RaycastSettings>();
+
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
             if (!boxCollider) boxCollider = character.GetComponent<BoxCollider2D>();
-            if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
-            else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
             if (r.DisplayWarningsControl) GetWarningMessages();
         }
 
@@ -67,26 +72,30 @@ namespace VFEngine.Platformer.Event.Raycast
             const string ch = "Character";
             const string diGrRa = "Distance To Ground Ray Maximum Length";
             const string colliderWarning = "This may cause issues near walls on direction change.";
-            var settings = $"{rc} Settings";
+            var raycastSettings = $"{rc} Settings";
             var rcOf = $"{rc} Offset";
             var nuOfHoRa = $"{nuOf} Horizontal {ra}";
             var nuOfVeRa = $"{nuOf} Vertical {ra}";
             var warningMessage = "";
             var warningMessageCount = 0;
-            if (!r.Settings) warningMessage += FieldString($"{settings}", $"{settings}");
+            if (!settings) warningMessage += FieldString($"{raycastSettings}", $"{raycastSettings}");
             if (!boxCollider) warningMessage += FieldParentGameObjectString($"{bc}", $"{ch}");
             if (boxCollider.offset.x != 0)
-                warningMessage += PropertyNtZeroParentString($"{bc}", "x offset", $"{settings}", $"{colliderWarning}");
-            if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{settings}");
-            if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{settings}");
+                warningMessage +=
+                    PropertyNtZeroParentString($"{bc}", "x offset", $"{raycastSettings}", $"{colliderWarning}");
+            if (r.NumberOfHorizontalRays < 0) warningMessage += LtZeroString($"{nuOfHoRa}", $"{raycastSettings}");
+            if (r.NumberOfVerticalRays < 0) warningMessage += LtZeroString($"{nuOfVeRa}", $"{raycastSettings}");
             if (r.CastRaysOnBothSides)
             {
-                if (!IsEven(r.NumberOfHorizontalRays)) warningMessage += IsOddString($"{nuOfHoRa}", $"{settings}");
-                else if (!IsEven(r.NumberOfVerticalRays)) warningMessage += IsOddString($"{nuOfVeRa}", $"{settings}");
+                if (!IsEven(r.NumberOfHorizontalRays))
+                    warningMessage += IsOddString($"{nuOfHoRa}", $"{raycastSettings}");
+                else if (!IsEven(r.NumberOfVerticalRays))
+                    warningMessage += IsOddString($"{nuOfVeRa}", $"{raycastSettings}");
             }
 
-            if (r.DistanceToGroundRayMaximumLength <= 0) warningMessage += LtEqZeroString($"{diGrRa}", $"{settings}");
-            if (r.RayOffset <= 0) warningMessage += LtEqZeroString($"{rcOf}", $"{settings}");
+            if (r.DistanceToGroundRayMaximumLength <= 0)
+                warningMessage += LtEqZeroString($"{diGrRa}", $"{raycastSettings}");
+            if (r.RayOffset <= 0) warningMessage += LtEqZeroString($"{rcOf}", $"{raycastSettings}");
             DebugLogWarning(warningMessageCount, warningMessage);
 
             string FieldString(string field, string scriptableObject)
