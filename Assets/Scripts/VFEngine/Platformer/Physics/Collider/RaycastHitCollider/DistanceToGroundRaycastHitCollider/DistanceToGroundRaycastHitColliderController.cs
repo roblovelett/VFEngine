@@ -10,8 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 {
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class DistanceToGroundRaycastHitColliderModel
+   
+    public class DistanceToGroundRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
 

@@ -13,8 +13,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static UniTaskExtensions;
     using static MathsExtensions;
 
-    [Serializable]
-    public class RightRaycastHitColliderModel
+    
+    public class RightRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
 

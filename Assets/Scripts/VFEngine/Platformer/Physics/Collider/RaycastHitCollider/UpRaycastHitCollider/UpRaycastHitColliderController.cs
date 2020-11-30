@@ -10,8 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 {
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class UpRaycastHitColliderModel
+   
+    public class UpRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
 

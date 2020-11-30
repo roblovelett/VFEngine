@@ -148,8 +148,7 @@ namespace VFEngine.Platformer
             leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
             leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
             rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            distanceToGroundRaycastHitCollider =
-                raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
+            distanceToGroundRaycastHitCollider = raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 

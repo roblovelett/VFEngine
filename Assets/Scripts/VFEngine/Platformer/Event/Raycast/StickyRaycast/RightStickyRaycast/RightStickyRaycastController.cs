@@ -14,8 +14,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static Color;
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class RightStickyRaycastModel
+  
+    public class RightStickyRaycastController : MonoBehaviour, IController
     {
         #region fields
 

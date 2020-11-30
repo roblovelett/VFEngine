@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast;
@@ -8,16 +7,14 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
     using static DebugExtensions;
     using static Vector2;
     using static Color;
     using static UniTaskExtensions;
-
-    [Serializable]
-    public class SafetyBoxcastModel
+    
+    public class SafetyBoxcastController : MonoBehaviour, IController
     {
         #region fields
 

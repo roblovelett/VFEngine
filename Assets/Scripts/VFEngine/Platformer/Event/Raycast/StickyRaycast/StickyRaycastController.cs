@@ -19,8 +19,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     using static UniTaskExtensions;
     using static ScriptableObject;
 
-    [Serializable]
-    public class StickyRaycastModel
+   
+    public class StickyRaycastController : MonoBehaviour, IController
     {
         #region fields
 

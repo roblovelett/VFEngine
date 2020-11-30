@@ -11,9 +11,7 @@ namespace VFEngine.Platformer.Event.Boxcast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private BoxcastModel boxcastModel;
-        [SerializeField] private SafetyBoxcastModel safetyBoxcastModel;
-
+        
         #endregion
 
         #region private methods

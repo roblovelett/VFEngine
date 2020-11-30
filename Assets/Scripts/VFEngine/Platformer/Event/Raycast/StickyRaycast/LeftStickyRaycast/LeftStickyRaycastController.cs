@@ -3,20 +3,19 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
+namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
+    using static StickyRaycastModel;
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class DistanceToGroundRaycastModel
+    
+    public class LeftStickyRaycastController : MonoBehaviour, IController
     {
         #region fields
 
@@ -25,12 +24,11 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsController physicsController;
         [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
-        private DistanceToGroundRaycastData d;
+        private LeftStickyRaycastData l;
         private PhysicsData physics;
         private RaycastData raycast;
-        private StickyRaycastHitColliderData stickyRaycastHitCollider;
+        private StickyRaycastData stickyRaycast;
         private LayerMaskData layerMask;
 
         #endregion
@@ -39,7 +37,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void InitializeData()
         {
-            d = new DistanceToGroundRaycastData();
+            l = new LeftStickyRaycastData();
             if (!raycastController && character)
             {
                 raycastController = character.GetComponent<RaycastController>();
@@ -51,8 +49,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
             }
 
             if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
             if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
@@ -60,25 +56,35 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         {
             physics = physicsController.PhysicsModel.Data;
             raycast = raycastController.RaycastModel.Data;
-            stickyRaycastHitCollider = raycastHitColliderController.StickyRaycastHitColliderModel.Data;
+            stickyRaycast = raycastController.StickyRaycastModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
-        private void SetDistanceToGroundRaycastOrigin()
+        private void SetLeftStickyRaycastLength()
         {
-            d.DistanceToGroundRaycastOrigin = new Vector2
-            {
-                x = stickyRaycastHitCollider.BelowSlopeAngle < 0
-                    ? raycast.BoundsBottomLeftCorner.x
-                    : raycast.BoundsBottomRightCorner.x,
-                y = raycast.BoundsCenter.y
-            };
+            l.LeftStickyRaycastLength = OnSetStickyRaycastLength(raycast.BoundsWidth, physics.MaximumSlopeAngle,
+                raycast.BoundsHeight, raycast.RayOffset);
         }
 
-        private void SetDistanceToGroundRaycast()
+        private void SetLeftStickyRaycastLengthToStickyRaycastLength()
         {
-            d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -physics.Transform.up,
-                raycast.DistanceToGroundRayMaximumLength, layerMask.RaysBelowLayerMaskPlatforms, blue,
+            l.LeftStickyRaycastLength = stickyRaycast.StickyRaycastLength;
+        }
+
+        private void SetLeftStickyRaycastOriginX()
+        {
+            l.LeftStickyRaycastOriginX = raycast.BoundsBottomLeftCorner.x * 2 + physics.NewPosition.x;
+        }
+
+        private void SetLeftStickyRaycastOriginY()
+        {
+            l.LeftStickyRaycastOriginY = raycast.BoundsCenter.y;
+        }
+
+        private void SetLeftStickyRaycast()
+        {
+            l.LeftStickyRaycastHit = Raycast(l.LeftStickyRaycastOrigin, -physics.Transform.up,
+                l.LeftStickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, cyan,
                 raycast.DrawRaycastGizmosControl);
         }
 
@@ -88,7 +94,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region properties
 
-        public DistanceToGroundRaycastData Data => d;
+        public LeftStickyRaycastData Data => l;
 
         #region public methods
 
@@ -103,14 +109,29 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetDistanceToGroundRaycastOrigin()
+        public void OnSetLeftStickyRaycastLength()
         {
-            SetDistanceToGroundRaycastOrigin();
+            SetLeftStickyRaycastLength();
         }
 
-        public void OnSetDistanceToGroundRaycast()
+        public void OnSetLeftStickyRaycastLengthToStickyRaycastLength()
         {
-            SetDistanceToGroundRaycast();
+            SetLeftStickyRaycastLengthToStickyRaycastLength();
+        }
+
+        public void OnSetLeftStickyRaycastOriginX()
+        {
+            SetLeftStickyRaycastOriginX();
+        }
+
+        public void OnSetLeftStickyRaycastOriginY()
+        {
+            SetLeftStickyRaycastOriginY();
+        }
+
+        public void OnSetLeftStickyRaycast()
+        {
+            SetLeftStickyRaycast();
         }
 
         #endregion

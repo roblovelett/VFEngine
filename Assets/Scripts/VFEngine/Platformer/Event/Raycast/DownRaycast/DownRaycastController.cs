@@ -5,21 +5,20 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace VFEngine.Platformer.Event.Raycast.UpRaycast
+namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
-    using static Single;
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
+    using static Mathf;
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class UpRaycastModel
+    
+    public class DownRaycastController : MonoBehaviour, IController
     {
         #region fields
 
@@ -30,10 +29,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
-        private UpRaycastData u;
+        private DownRaycastData d;
         private PhysicsData physics;
         private RaycastData raycast;
-        private UpRaycastHitColliderData upRaycastHitCollider;
         private DownRaycastHitColliderData downRaycastHitCollider;
         private LayerMaskData layerMask;
 
@@ -41,9 +39,15 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeData();
+            InitializeModel();
+        }
+
         private void InitializeData()
         {
-            u = new UpRaycastData();
+            d = new DownRaycastData();
             if (!raycastController && character)
             {
                 raycastController = character.GetComponent<RaycastController>();
@@ -64,54 +68,53 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         {
             physics = physicsController.PhysicsModel.Data;
             raycast = raycastController.RaycastModel.Data;
-            upRaycastHitCollider = raycastHitColliderController.UpRaycastHitColliderModel.Data;
             downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
-        private void InitializeUpRaycastLength()
+        private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            u.UpRayLength = downRaycastHitCollider.GroundedEvent ? raycast.RayOffset : physics.NewPosition.y;
+            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
+                layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);
         }
 
-        private void InitializeUpRaycastStart()
+        private void SetCurrentDownRaycast()
         {
-            u.UpRaycastStart = SetPoint(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner, physics.Transform,
-                physics.NewPosition.x);
+            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
+                layerMask.RaysBelowLayerMaskPlatforms, blue, raycast.DrawRaycastGizmosControl);
         }
 
-        private void InitializeUpRaycastEnd()
+        private void InitializeDownRayLength()
         {
-            u.UpRaycastEnd = SetPoint(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner, physics.Transform,
-                physics.NewPosition.y);
+            d.DownRayLength = raycast.BoundsHeight / 2 + raycast.RayOffset;
         }
 
-        private static Vector2 SetPoint(Vector2 bounds1, Vector2 bounds2, Transform t, float axis)
+        private void DoubleDownRayLength()
         {
-            return OnSetBounds(bounds1, bounds2) * 2 + (Vector2) t.right * axis;
+            d.DownRayLength *= 2;
         }
 
-        private void InitializeUpRaycastSmallestDistance()
+        private void SetDownRayLengthToVerticalNewPosition()
         {
-            u.UpRaycastSmallestDistance = MaxValue;
+            d.DownRayLength += Abs(physics.NewPosition.y);
         }
 
-        private void SetCurrentUpRaycastOrigin()
+        private void SetDownRaycastFromLeft()
         {
-            u.CurrentUpRaycastOrigin = OnSetCurrentRaycastOrigin(u.UpRaycastStart, u.UpRaycastEnd,
-                upRaycastHitCollider.CurrentUpHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
+            d.DownRaycastFromLeft = OnSetVerticalRaycast(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner,
+                physics.Transform, raycast.RayOffset, physics.NewPosition.x);
         }
 
-        private void SetCurrentUpRaycast()
+        private void SetDownRaycastToRight()
         {
-            u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, physics.Transform.up, u.UpRayLength,
-                layerMask.PlatformMask & ~ layerMask.OneWayPlatformMask & ~ layerMask.MovingOneWayPlatformMask, cyan,
-                raycast.DrawRaycastGizmosControl);
+            d.DownRaycastToRight = OnSetVerticalRaycast(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner,
+                physics.Transform, raycast.RayOffset, physics.NewPosition.x);
         }
 
-        private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()
+        private void SetCurrentDownRaycastOriginPoint()
         {
-            u.UpRaycastSmallestDistance = upRaycastHitCollider.RaycastUpHitAt.distance;
+            d.CurrentDownRaycastOrigin = OnSetCurrentRaycastOrigin(d.DownRaycastFromLeft, d.DownRaycastToRight,
+                downRaycastHitCollider.CurrentDownHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
         }
 
         #endregion
@@ -120,7 +123,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region properties
 
-        public UpRaycastData Data => u;
+        public DownRaycastData Data => d;
 
         #region public methods
 
@@ -135,39 +138,50 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpRaycastLength()
+        public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            InitializeUpRaycastLength();
+            SetCurrentDownRaycastToIgnoreOneWayPlatform();
         }
 
-        public void OnInitializeUpRaycastStart()
+        public void OnSetCurrentDownRaycast()
         {
-            InitializeUpRaycastStart();
+            SetCurrentDownRaycast();
         }
 
-        public void OnInitializeUpRaycastEnd()
+        public void OnInitializeDownRayLength()
         {
-            InitializeUpRaycastEnd();
+            InitializeDownRayLength();
         }
 
-        public void OnInitializeUpRaycastSmallestDistance()
+        public void OnDoubleDownRayLength()
         {
-            InitializeUpRaycastSmallestDistance();
+            DoubleDownRayLength();
         }
 
-        public void OnSetCurrentUpRaycastOrigin()
+        public void OnSetDownRayLengthToVerticalNewPosition()
         {
-            SetCurrentUpRaycastOrigin();
+            SetDownRayLengthToVerticalNewPosition();
         }
 
-        public void OnSetCurrentUpRaycast()
+        public void OnSetDownRaycastFromLeft()
         {
-            SetCurrentUpRaycast();
+            SetDownRaycastFromLeft();
         }
 
-        public void OnSetUpRaycastSmallestDistanceToRaycastUpHitAt()
+        public void OnSetDownRaycastToRight()
         {
-            SetUpRaycastSmallestDistanceToRaycastUpHitAt();
+            SetDownRaycastToRight();
+        }
+
+        public void OnSetCurrentDownRaycastOriginPoint()
+        {
+            SetCurrentDownRaycastOriginPoint();
+        }
+
+        public async UniTaskVoid OnInitialize()
+        {
+            Initialize();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

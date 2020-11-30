@@ -11,8 +11,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
     using static Vector3;
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class RightStickyRaycastHitColliderModel
+    
+    public class RightStickyRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
 

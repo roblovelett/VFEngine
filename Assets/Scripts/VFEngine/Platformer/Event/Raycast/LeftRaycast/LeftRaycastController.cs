@@ -4,20 +4,19 @@ using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-namespace VFEngine.Platformer.Event.Raycast.RightRaycast
+namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static RaycastModel;
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
 
-    [Serializable]
-    public class RightRaycastModel
+   public class LeftRaycastController : MonoBehaviour, IController
     {
         #region fields
 
@@ -28,10 +27,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         [SerializeField] private RaycastController raycastController;
         [SerializeField] private RaycastHitColliderController raycastHitColliderController;
         [SerializeField] private LayerMaskController layerMaskController;
-        private RightRaycastData r;
+        private LeftRaycastData l;
         private PhysicsData physics;
         private RaycastData raycast;
-        private RightRaycastHitColliderData rightRaycastHitCollider;
+        private LeftRaycastHitColliderData leftRaycastHitCollider;
         private LayerMaskData layerMask;
 
         #endregion
@@ -40,7 +39,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void InitializeData()
         {
-            r = new RightRaycastData();
+            l = new LeftRaycastData();
             if (!raycastController && character)
             {
                 raycastController = character.GetComponent<RaycastController>();
@@ -61,43 +60,43 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         {
             physics = physicsController.PhysicsModel.Data;
             raycast = raycastController.RaycastModel.Data;
-            rightRaycastHitCollider = raycastHitColliderController.RightRaycastHitColliderModel.Data;
+            leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
-        private void SetRightRaycastFromBottomOrigin()
+        private void SetLeftRaycastFromBottomOrigin()
         {
-            r.RightRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(raycast.BoundsBottomRightCorner,
+            l.LeftRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(raycast.BoundsBottomRightCorner,
                 raycast.BoundsBottomLeftCorner, physics.Transform, raycast.ObstacleHeightTolerance);
         }
 
-        private void SetRightRaycastToTopOrigin()
+        private void SetLeftRaycastToTopOrigin()
         {
-            r.RightRaycastToTopOrigin = OnSetRaycastToTopOrigin(raycast.BoundsTopLeftCorner,
+            l.LeftRaycastToTopOrigin = OnSetRaycastToTopOrigin(raycast.BoundsTopLeftCorner,
                 raycast.BoundsTopRightCorner, physics.Transform, raycast.ObstacleHeightTolerance);
         }
 
-        private void InitializeRightRaycastLength()
+        private void SetCurrentLeftRaycastOrigin()
         {
-            r.RightRayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
-        }
-
-        private void SetCurrentRightRaycastOrigin()
-        {
-            r.CurrentRightRaycastOrigin = OnSetCurrentRaycastOrigin(r.RightRaycastFromBottomOrigin,
-                r.RightRaycastToTopOrigin, rightRaycastHitCollider.CurrentRightHitsStorageIndex,
+            l.CurrentLeftRaycastOrigin = OnSetCurrentRaycastOrigin(l.LeftRaycastFromBottomOrigin,
+                l.LeftRaycastToTopOrigin, leftRaycastHitCollider.CurrentLeftHitsStorageIndex,
                 raycast.NumberOfHorizontalRaysPerSide);
         }
 
-        private void SetCurrentRightRaycastToIgnoreOneWayPlatform()
+        private void InitializeLeftRaycastLength()
         {
-            r.CurrentRightRaycastHit = Raycast(r.CurrentRightRaycastOrigin, physics.Transform.right, r.RightRayLength,
+            l.LeftRayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
+        }
+
+        private void SetCurrentLeftRaycastToIgnoreOneWayPlatform()
+        {
+            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -physics.Transform.right, l.LeftRayLength,
                 layerMask.PlatformMask, red, raycast.DrawRaycastGizmosControl);
         }
 
-        private void SetCurrentRightRaycast()
+        private void SetCurrentLeftRaycast()
         {
-            r.CurrentRightRaycastHit = Raycast(r.CurrentRightRaycastOrigin, physics.Transform.right, r.RightRayLength,
+            l.CurrentLeftRaycastHit = Raycast(l.CurrentLeftRaycastOrigin, -physics.Transform.right, l.LeftRayLength,
                 layerMask.PlatformMask & ~layerMask.OneWayPlatformMask & ~layerMask.MovingOneWayPlatformMask, red,
                 raycast.DrawRaycastGizmosControl);
         }
@@ -108,7 +107,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region properties
 
-        public RightRaycastData Data => r;
+        public LeftRaycastData Data => l;
 
         #region public methods
 
@@ -123,34 +122,34 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetRightRaycastFromBottomOrigin()
+        public void OnSetLeftRaycastFromBottomOrigin()
         {
-            SetRightRaycastFromBottomOrigin();
+            SetLeftRaycastFromBottomOrigin();
         }
 
-        public void OnSetRightRaycastToTopOrigin()
+        public void OnSetLeftRaycastToTopOrigin()
         {
-            SetRightRaycastToTopOrigin();
+            SetLeftRaycastToTopOrigin();
         }
 
-        public void OnInitializeRightRaycastLength()
+        public void OnInitializeLeftRaycastLength()
         {
-            InitializeRightRaycastLength();
+            InitializeLeftRaycastLength();
         }
 
-        public void OnSetCurrentRightRaycastOrigin()
+        public void OnSetCurrentLeftRaycastOrigin()
         {
-            SetCurrentRightRaycastOrigin();
+            SetCurrentLeftRaycastOrigin();
         }
 
-        public void OnSetCurrentRightRaycastToIgnoreOneWayPlatform()
+        public void OnSetCurrentLeftRaycastToIgnoreOneWayPlatform()
         {
-            SetCurrentRightRaycastToIgnoreOneWayPlatform();
+            SetCurrentLeftRaycastToIgnoreOneWayPlatform();
         }
 
-        public void OnSetCurrentRightRaycast()
+        public void OnSetCurrentLeftRaycast()
         {
-            SetCurrentRightRaycast();
+            SetCurrentLeftRaycast();
         }
 
         #endregion
