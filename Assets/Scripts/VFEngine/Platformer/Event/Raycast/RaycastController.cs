@@ -52,6 +52,17 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+            //if (p.DisplayWarningsControl) GetWarningMessages();
+        }private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
+        
         private void PlatformerInitializeData()
         {
             LoadCharacter();
@@ -75,10 +86,7 @@ namespace VFEngine.Platformer.Event.Raycast
             InitializeLeftStickyRaycastData();
         }
 
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
+        
 
         private void LoadRaycastModel()
         {

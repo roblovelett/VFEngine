@@ -1,23 +1,17 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
-    using static RaycastModel;
     using static DebugExtensions;
     using static Color;
     using static Mathf;
-    using static UniTaskExtensions;
+    using static Raycast;
 
-    
     public class DownRaycastController : MonoBehaviour, IController
     {
         #region fields
@@ -25,10 +19,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
+        private LayerMaskController layerMaskController;
         private DownRaycastData d;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -39,36 +33,41 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region private methods
 
-        private void Initialize()
+        private void Awake()
         {
+            LoadCharacter();
             InitializeData();
-            InitializeModel();
+            SetControllers();
+        }
+
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
         }
 
         private void InitializeData()
         {
             d = new DownRaycastData();
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
+            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
@@ -127,17 +126,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region public methods
 
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
             SetCurrentDownRaycastToIgnoreOneWayPlatform();
@@ -176,12 +164,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         public void OnSetCurrentDownRaycastOriginPoint()
         {
             SetCurrentDownRaycastOriginPoint();
-        }
-
-        public async UniTaskVoid OnInitialize()
-        {
-            Initialize();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

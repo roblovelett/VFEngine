@@ -27,7 +27,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #endregion
 
         #region private methods
-
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+            //if (p.DisplayWarningsControl) GetWarningMessages();
+        }
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
         private void InitializeData()
         {
             u = new UpRaycastHitColliderData();

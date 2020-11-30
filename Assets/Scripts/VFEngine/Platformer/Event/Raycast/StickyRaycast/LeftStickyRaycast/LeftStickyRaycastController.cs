@@ -35,6 +35,18 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region private methods
 
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+            //if (p.DisplayWarningsControl) GetWarningMessages();
+        }
+        
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
         private void InitializeData()
         {
             l = new LeftStickyRaycastData();

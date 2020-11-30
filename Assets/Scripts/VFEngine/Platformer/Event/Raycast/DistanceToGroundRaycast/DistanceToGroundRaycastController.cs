@@ -1,19 +1,14 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static DebugExtensions;
     using static Color;
-    using static UniTaskExtensions;
 
     public class DistanceToGroundRaycastController : MonoBehaviour, IController
     {
@@ -22,10 +17,10 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private StickyRaycastHitColliderController stickyRaycastHitColliderController;
+        private LayerMaskController layerMaskController;
         private DistanceToGroundRaycastData d;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -36,30 +31,41 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region private methods
 
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+        }
+
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
+
         private void InitializeData()
         {
             d = new DistanceToGroundRaycastData();
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            stickyRaycastHitCollider = raycastHitColliderController.StickyRaycastHitColliderModel.Data;
+            physicsController = character.GetComponent<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            stickyRaycastHitColliderController = character.GetComponent<StickyRaycastHitColliderController>();
+            layerMaskController = character.GetComponent<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
@@ -90,17 +96,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
         public DistanceToGroundRaycastData Data => d;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetDistanceToGroundRaycastOrigin()
         {

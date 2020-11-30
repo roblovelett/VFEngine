@@ -44,6 +44,18 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region private methods
 
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+            //if (p.DisplayWarningsControl) GetWarningMessages();
+        }
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
+        
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<StickyRaycastSettings>();

@@ -1,32 +1,27 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
-    using static RaycastModel;
+    using static Raycast;
     using static DebugExtensions;
     using static Color;
-    using static UniTaskExtensions;
 
-   public class LeftRaycastController : MonoBehaviour, IController
+    public class LeftRaycastController : MonoBehaviour, IController
     {
         #region fields
 
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private LeftRaycastHitColliderController leftRaycastHitColliderController;
+        private LayerMaskController layerMaskController;
         private LeftRaycastData l;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -37,31 +32,42 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region private methods
 
+        private void Awake()
+        {
+            LoadCharacter();
+            InitializeData();
+            SetControllers();
+        }
+
+        private void LoadCharacter()
+        {
+            if (!character) character = transform.root.gameObject;
+        }
+
         private void InitializeData()
         {
             l = new LeftRaycastData();
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            raycastController = character.GetComponent<RaycastController>();
+            physicsController = character.GetComponent<PhysicsController>();
+            leftRaycastHitColliderController = character.GetComponent<LeftRaycastHitColliderController>();
+            layerMaskController = character.GetComponent<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            leftRaycastHitCollider = leftRaycastHitColliderController.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void SetLeftRaycastFromBottomOrigin()
@@ -110,17 +116,6 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public LeftRaycastData Data => l;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetLeftRaycastFromBottomOrigin()
         {
