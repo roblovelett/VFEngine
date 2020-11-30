@@ -1,22 +1,16 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
-    using static RaycastModel;
+    using static Raycast;
     using static DebugExtensions;
     using static Color;
-    using static UniTaskExtensions;
 
-    
     public class RightRaycastController : MonoBehaviour, IController
     {
         #region fields
@@ -24,10 +18,10 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private RightRaycastHitColliderController rightRaycastHitColliderController;
+        private LayerMaskController layerMaskController;
         private RightRaycastData r;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -37,7 +31,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         #endregion
 
         #region private methods
-        
+
         private void Awake()
         {
             LoadCharacter();
@@ -45,34 +39,35 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             SetControllers();
             //if (p.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
             r = new RightRaycastData();
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            rightRaycastHitCollider = raycastHitColliderController.RightRaycastHitColliderModel.Data;
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
+            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            rightRaycastHitCollider = rightRaycastHitColliderController.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
@@ -122,17 +117,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public RightRaycastData Data => r;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetRightRaycastFromBottomOrigin()
         {

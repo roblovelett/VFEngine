@@ -1,25 +1,19 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 {
     using static Mathf;
     using static DebugExtensions;
-    using static UniTaskExtensions;
     using static ScriptableObject;
 
-   
     public class StickyRaycastController : MonoBehaviour, IController
     {
         #region fields
@@ -27,10 +21,14 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         #region dependencies
 
         [SerializeField] private StickyRaycastSettings settings;
-        [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        private GameObject character;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private RightStickyRaycastController rightStickyRaycastController;
+        private LeftStickyRaycastController leftStickyRaycastController;
+        private StickyRaycastHitColliderController stickyRaycastHitColliderController;
+        private LeftStickyRaycastHitColliderController leftStickyRaycastHitColliderController;
+        private RightStickyRaycastHitColliderController rightStickyRaycastHitColliderController;
         private StickyRaycastData s;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -49,43 +47,33 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
+            if (s.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
-        
+
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<StickyRaycastSettings>();
             s = new StickyRaycastData();
             s.ApplySettings(settings);
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            rightStickyRaycast = raycastController.RightStickyRaycastModel.Data;
-            leftStickyRaycast = raycastController.LeftStickyRaycastModel.Data;
-            stickyRaycastHitCollider = raycastHitColliderController.StickyRaycastHitColliderModel.Data;
-            leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
-            rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            if (s.DisplayWarningsControl) GetWarningMessages();
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
+            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
+            stickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
+            leftStickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<LeftStickyRaycastHitColliderController>();
+            rightStickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<RightStickyRaycastHitColliderController>();
         }
 
         private void GetWarningMessages()
@@ -102,6 +90,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 warningMessageCount++;
                 return $"{field} field not set to {scriptableObject} ScriptableObject.@";
             }
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            rightStickyRaycast = rightStickyRaycastController.Data;
+            leftStickyRaycast = leftStickyRaycastController.Data;
+            stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
+            leftStickyRaycastHitCollider = leftStickyRaycastHitColliderController.Data;
+            rightStickyRaycastHitCollider = rightStickyRaycastHitColliderController.Data;
         }
 
         private void SetStickyRaycastLength()
@@ -168,17 +172,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region public methods
 
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
         public void OnSetStickyRaycastLength()
         {
             SetStickyRaycastLength();
@@ -217,12 +210,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         public void OnSetCastFromLeftWithLeftDistanceLtRightDistance()
         {
             SetCastFromLeftWithLeftDistanceLtRightDistance();
-        }
-
-        public static float OnSetStickyRaycastLength(float boundsWidth, float slopeAngle, float boundsHeight,
-            float offset)
-        {
-            return SetStickyRaycastLength(boundsWidth, slopeAngle, boundsHeight, offset);
         }
 
         public void OnResetState()

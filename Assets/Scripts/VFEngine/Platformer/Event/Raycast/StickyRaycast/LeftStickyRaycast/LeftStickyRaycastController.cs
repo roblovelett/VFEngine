@@ -1,20 +1,15 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 {
-    using static StickyRaycastModel;
+    using static StickyRaycast;
     using static DebugExtensions;
     using static Color;
-    using static UniTaskExtensions;
 
-    
     public class LeftStickyRaycastController : MonoBehaviour, IController
     {
         #region fields
@@ -22,9 +17,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private StickyRaycastController stickyRaycastController;
+        private LayerMaskController layerMaskController;
         private LeftStickyRaycastData l;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -40,35 +36,36 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
         }
-        
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
             l = new LeftStickyRaycastData();
-            if (!raycastController && character)
-            {
-                raycastController = character.GetComponent<RaycastController>();
-            }
-            else if (raycastController && !character)
-            {
-                character = raycastController.Character;
-                raycastController = character.GetComponent<RaycastController>();
-            }
-
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            stickyRaycast = raycastController.StickyRaycastModel.Data;
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
+            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            stickyRaycast = stickyRaycastController.Data;
             layerMask = layerMaskController.LayerMaskModel.Data;
         }
 
@@ -109,17 +106,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
         public LeftStickyRaycastData Data => l;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetLeftStickyRaycastLength()
         {

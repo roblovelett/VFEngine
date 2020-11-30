@@ -88,6 +88,16 @@ namespace VFEngine.Platformer.Event.Raycast
             return SetBounds(bounds1, bounds2);
         }
 
+        public static float OnSetPositiveBounds(float offset, float size)
+        {
+            return SetPositiveBounds(offset, size);
+        }
+
+        public static float OnSetNegativeBounds(float offset, float size)
+        {
+            return SetNegativeBounds(offset, size);
+        }
+
         public static float OnSetHorizontalRayLength(float x, float width, float offset)
         {
             return SetHorizontalRayLength(x, width, offset);
