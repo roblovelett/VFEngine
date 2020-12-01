@@ -1,10 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+﻿using UnityEngine;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Tools;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
 {
-    using static UniTaskExtensions;
+    using static ScriptableObject;
+    using static LayerMask;
+    using static DebugExtensions;
 
     public class LayerMaskController : MonoBehaviour, IController
     {
@@ -13,49 +17,28 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private LayerMaskModel layerMaskModel;
-        /*----------------------------------------------------------------------*/
         [SerializeField] private LayerMaskSettings settings;
-        [SerializeField] private GameObject character;
-        [SerializeField] private LayerMaskController layerMaskController;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
+        private RaycastHitColliderController raycastHitColliderController;
         private LayerMaskData l;
         private DownRaycastHitColliderData downRaycastHitCollider;
+
         #endregion
 
         #region private methods
-        
+
         private void Awake()
         {
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
+            if (l.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
-        private void PlatformerInitializeData()
-        {
-            LoadCharacter();
-            LoadLayerMaskModel();
-            InitializeLayerMaskData();
-        }
 
-        
-
-        private void LoadLayerMaskModel()
-        {
-            layerMaskModel = new LayerMaskModel();
-        }
-
-        private void InitializeLayerMaskData()
-        {
-            layerMaskModel.OnInitializeData();
-        }
-        
-        /*----------------------------------------------------------------------------*/
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
@@ -66,16 +49,11 @@ namespace VFEngine.Platformer.Layer.Mask
             l.PlatformMask |= l.MovingPlatformMask;
             l.PlatformMask |= l.MovingOneWayPlatformMask;
             l.PlatformMask |= l.MidHeightOneWayPlatformMask;
-            if (!layerMaskController && character) layerMaskController = character.GetComponent<LayerMaskController>();
-            else if (layerMaskController && !character) character = layerMaskController.Character;
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (l.DisplayWarningsControl) GetWarningMessages();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
+            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
         }
 
         private void GetWarningMessages()
@@ -136,6 +114,16 @@ namespace VFEngine.Platformer.Layer.Mask
             DebugLogWarning(warningMessageCount, warningMessage);
         }
 
+        private void Start()
+        {
+            SetDependencies();
+        }
+
+        private void SetDependencies()
+        {
+            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
+        }
+
         private void SetRaysBelowLayerMaskPlatforms()
         {
             l.RaysBelowLayerMaskPlatforms = l.PlatformMask;
@@ -179,67 +167,9 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        public GameObject Character => character;
-        public LayerMaskModel LayerMaskModel => layerMaskModel;
-        //--------------------------------------------------------------------------------------//
         public LayerMaskData Data => l;
 
         #region public methods
-
-        public void OnPlatformerInitializeData()
-        {
-            PlatformerInitializeData();
-        }
-
-        public async UniTaskVoid SetRaysBelowLayerMaskPlatforms()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatforms();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid SetRaysBelowLayerMaskPlatformsWithoutOneWay()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsWithoutOneWay();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void SetRaysBelowLayerMaskPlatformsWithoutMidHeight()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight();
-        }
-
-        public void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
-        }
-
-        public void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
-        }
-
-        public void SetRaysBelowLayerMaskPlatformsToOneWay()
-        {
-            layerMaskModel.OnSetRaysBelowLayerMaskPlatformsToOneWay();
-        }
-
-        public void SetSavedBelowLayerToStandingOnLastFrameLayer()
-        {
-            layerMaskModel.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
-        }
-        
-        // --------------------------------------------------------------------------------------------
-        
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetRaysBelowLayerMaskPlatforms()
         {

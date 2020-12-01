@@ -99,18 +99,11 @@ namespace VFEngine.Platformer.Physics
             upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
             leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
             rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
-            ;
             safetyBoxcastController = character.GetComponentNoAllocation<SafetyBoxcastController>();
-            ;
             leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
-            ;
             rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
-            ;
             downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            ;
-            stickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
-            ;
+            stickyRaycastHitColliderController = character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
         }
 
         private void GetWarningMessages()

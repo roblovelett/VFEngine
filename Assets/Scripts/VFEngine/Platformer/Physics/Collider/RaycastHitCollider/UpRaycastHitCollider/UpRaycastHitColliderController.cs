@@ -1,16 +1,11 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
-    using static UniTaskExtensions;
-
-   
     public class UpRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -18,8 +13,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private RaycastController raycastController;
+        private RaycastController raycastController;
+        private UpRaycastController upRaycastController;
         private UpRaycastHitColliderData u;
         private RaycastData raycast;
         private UpRaycastData upRaycast;
@@ -27,34 +22,48 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         #endregion
 
         #region private methods
+
         private void Awake()
         {
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
             u = new UpRaycastHitColliderData();
-            if (!raycastHitColliderController && character)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            u.UpHitsStorageLength = u.UpHitsStorage.Length;
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            raycast = raycastController.RaycastModel.Data;
-            upRaycast = raycastController.UpRaycastModel.Data;
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+            InitializeFrame();
+        }
+
+        private void SetDependencies()
+        {
+            raycast = raycastController.Data;
+            upRaycast = upRaycastController.Data;
+        }
+
+        private void InitializeFrame()
+        {
+            InitializeUpHitsStorage();
+            u.UpHitsStorageLength = u.UpHitsStorage.Length;
             InitializeUpHitsStorageCollidingIndex();
             InitializeUpHitsStorageCurrentIndex();
-            InitializeUpHitsStorage();
             ResetState();
         }
 
@@ -128,17 +137,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public UpRaycastHitColliderData Data => u;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnInitializeUpHitConnected()
         {

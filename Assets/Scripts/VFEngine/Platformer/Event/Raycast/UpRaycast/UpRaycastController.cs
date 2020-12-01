@@ -74,7 +74,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             raycast = raycastController.Data;
             upRaycastHitCollider = upRaycastHitColliderController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void InitializeUpRaycastLength()

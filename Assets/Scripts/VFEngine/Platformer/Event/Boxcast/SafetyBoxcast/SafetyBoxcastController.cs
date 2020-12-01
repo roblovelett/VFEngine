@@ -68,7 +68,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
             physics = physicsController.Data;
             raycast = raycastController.Data;
             stickyRaycast = stickyRaycastController.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void SetSafetyBoxcastForImpassableAngle()

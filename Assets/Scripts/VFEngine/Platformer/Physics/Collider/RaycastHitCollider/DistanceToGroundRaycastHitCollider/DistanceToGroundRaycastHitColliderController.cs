@@ -1,16 +1,11 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
-    using static UniTaskExtensions;
-
-   
     public class DistanceToGroundRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -18,8 +13,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private RaycastController raycastController;
+        private RaycastController raycastController;
+        private DistanceToGroundRaycastController distanceToGroundRaycastController;
         private DistanceToGroundRaycastHitColliderData d;
         private RaycastData raycast;
         private DistanceToGroundRaycastData distanceToGroundRaycast;
@@ -27,31 +22,40 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         #endregion
 
         #region private methods
+
         private void Awake()
         {
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
             d = new DistanceToGroundRaycastHitColliderData();
-            if (!raycastHitColliderController && character)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            raycast = raycastController.RaycastModel.Data;
-            distanceToGroundRaycast = raycastController.DistanceToGroundRaycastModel.Data;
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            distanceToGroundRaycastController = character.GetComponentNoAllocation<DistanceToGroundRaycastController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
             ResetState();
+        }
+
+        private void SetDependencies()
+        {
+            raycast = raycastController.Data;
+            distanceToGroundRaycast = distanceToGroundRaycastController.Data;
         }
 
         private void SetDistanceToGroundRaycastHit()
@@ -89,17 +93,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         public DistanceToGroundRaycastHitColliderData Data => d;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetDistanceToGroundRaycastHit()
         {

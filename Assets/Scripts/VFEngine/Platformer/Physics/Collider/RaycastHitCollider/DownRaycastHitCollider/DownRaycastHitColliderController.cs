@@ -1,5 +1,4 @@
 ﻿using System;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
@@ -7,7 +6,6 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
@@ -15,10 +13,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static MathsExtensions;
     using static LayerMask;
     using static Vector3;
-    using static UniTaskExtensions;
     using static Single;
 
-   
     public class DownRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -26,10 +22,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
-        [SerializeField] private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
+        private DownRaycastController downRaycastController;
+        private LayerMaskController layerMaskController;
         private DownRaycastHitColliderData d;
         private PhysicsData physics;
         private RaycastData raycast;
@@ -39,28 +35,25 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #endregion
 
         #region private methods
+
         private void Awake()
         {
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
-            d = new DownRaycastHitColliderData();
-            if (!raycastHitColliderController && character)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
-            d.DownHitWithSmallestDistance = new RaycastHit2D();
-            d.StandingOnWithSmallestDistance = new GameObject();
+            d = new DownRaycastHitColliderData
+            {
+                DownHitWithSmallestDistance = new RaycastHit2D(), StandingOnWithSmallestDistance = new GameObject()
+            };
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
             d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
@@ -73,12 +66,30 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.HasMovingPlatform = d.MovingPlatform != null;
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            downRaycast = raycastController.DownRaycastModel.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            downRaycastController = character.GetComponentNoAllocation<DownRaycastController>();
+            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+            InitializeFrame();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
+            downRaycast = downRaycastController.Data;
+            layerMask = layerMaskController.Data;
+        }
+
+        private void InitializeFrame()
+        {
             d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
             d.DownHitsStorageLength = d.DownHitsStorage.Length;
             StopMovingPlatformCurrentGravity();
@@ -293,17 +304,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public DownRaycastHitColliderData Data => d;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnSetOnMovingPlatform()
         {

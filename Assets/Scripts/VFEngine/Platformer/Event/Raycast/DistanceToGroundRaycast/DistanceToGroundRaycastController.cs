@@ -66,7 +66,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
             physics = physicsController.Data;
             raycast = raycastController.Data;
             stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void SetDistanceToGroundRaycastOrigin()

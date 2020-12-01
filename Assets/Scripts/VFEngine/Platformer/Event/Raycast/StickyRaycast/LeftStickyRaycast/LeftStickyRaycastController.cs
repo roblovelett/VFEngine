@@ -66,7 +66,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             physics = physicsController.Data;
             raycast = raycastController.Data;
             stickyRaycast = stickyRaycastController.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void SetLeftStickyRaycastLength()

@@ -68,7 +68,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             physics = physicsController.Data;
             raycast = raycastController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
