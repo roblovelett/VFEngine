@@ -67,11 +67,6 @@ namespace VFEngine.Platformer.Physics
             if (p.DisplayWarningsControl) GetWarningMessages();
         }
 
-        private void Start()
-        {
-            InitializeModel();
-        }
-
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
@@ -103,7 +98,8 @@ namespace VFEngine.Platformer.Physics
             leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
             rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
             downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            stickyRaycastHitColliderController = character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
+            stickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
         }
 
         private void GetWarningMessages()
@@ -134,7 +130,13 @@ namespace VFEngine.Platformer.Physics
             }
         }
 
-        private void InitializeModel()
+        private void Start()
+        {
+            SetDependencies();
+            InitializeFrame();
+        }
+
+        private void SetDependencies()
         {
             raycast = raycastController.Data;
             upRaycast = upRaycastController.Data;
@@ -146,6 +148,10 @@ namespace VFEngine.Platformer.Physics
             rightRaycastHitCollider = rightRaycastHitColliderController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
             stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
+        }
+
+        private void InitializeFrame()
+        {
             ResetState();
         }
 

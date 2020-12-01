@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
 
@@ -18,7 +17,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskSettings settings;
-        private RaycastHitColliderController raycastHitColliderController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
         private LayerMaskData l;
         private DownRaycastHitColliderData downRaycastHitCollider;
 
@@ -53,7 +52,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetControllers()
         {
-            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
+            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
         }
 
         private void GetWarningMessages()
@@ -121,7 +120,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetDependencies()
         {
-            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
         }
 
         private void SetRaysBelowLayerMaskPlatforms()

@@ -20,8 +20,6 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollid
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
-// ReSharper disable Unity.RedundantEventFunction
 namespace VFEngine.Platformer
 {
     using static UniTaskExtensions;
@@ -43,8 +41,21 @@ namespace VFEngine.Platformer
         [SerializeField] private GameObject character;
         [SerializeField] private PlatformerSettings settings;
         private PhysicsController physicsController;
+        private SafetyBoxcastController safetyBoxcastController;
         private RaycastController raycastController;
+        private UpRaycastController upRaycastController;
+        private DistanceToGroundRaycastController distanceToGroundRaycastController;
+        private StickyRaycastController stickyRaycastController;
+        private RightStickyRaycastController rightStickyRaycastController;
+        private LeftStickyRaycastController leftStickyRaycastController;
         private RaycastHitColliderController raycastHitColliderController;
+        private UpRaycastHitColliderController upRaycastHitColliderController;
+        private RightRaycastHitColliderController rightRaycastHitColliderController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
+        private LeftRaycastHitColliderController leftRaycastHitColliderController;
+        private LeftStickyRaycastHitColliderController leftStickyRaycastHitColliderController;
+        private RightStickyRaycastHitColliderController rightStickyRaycastHitColliderController;
+        private DistanceToGroundRaycastHitColliderController distanceToGroundRaycastHitColliderController;
         private LayerMaskController layerMaskController;
         private PlatformerData p;
         private PhysicsData physics;
@@ -66,8 +77,6 @@ namespace VFEngine.Platformer
         private LayerMaskData layerMask;
 
         #endregion
-
-        private const float Tolerance = 0;
 
         #region private methods
 
@@ -98,11 +107,26 @@ namespace VFEngine.Platformer
 
         private void SetControllers()
         {
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
-            if (!raycastHitColliderController)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            if (!layerMaskController) layerMaskController = character.GetComponent<LayerMaskController>();
+            physicsController = character.GetComponentNoAllocation<PhysicsController>();
+            safetyBoxcastController = character.GetComponentNoAllocation<SafetyBoxcastController>();
+            raycastController = character.GetComponentNoAllocation<RaycastController>();
+            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
+            distanceToGroundRaycastController = character.GetComponentNoAllocation<DistanceToGroundRaycastController>();
+            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
+            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
+            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
+            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
+            upRaycastHitColliderController = character.GetComponentNoAllocation<UpRaycastHitColliderController>();
+            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
+            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
+            leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
+            leftStickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<LeftStickyRaycastHitColliderController>();
+            rightStickyRaycastHitColliderController =
+                character.GetComponentNoAllocation<RightStickyRaycastHitColliderController>();
+            distanceToGroundRaycastHitColliderController =
+                character.GetComponentNoAllocation<DistanceToGroundRaycastHitColliderController>();
+            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
         }
 
         private void GetWarningMessages()
@@ -134,22 +158,22 @@ namespace VFEngine.Platformer
         private void Initialize()
         {
             physics = physicsController.Data;
-            safetyBoxcast = boxcastController.SafetyBoxcastModel.Data;
-            raycast = raycastController.RaycastModel.Data;
-            upRaycast = raycastController.UpRaycastModel.Data;
-            distanceToGroundRaycast = raycastController.DistanceToGroundRaycastModel.Data;
-            stickyRaycast = raycastController.StickyRaycastModel.Data;
-            rightStickyRaycast = raycastController.RightStickyRaycastModel.Data;
-            leftStickyRaycast = raycastController.LeftStickyRaycastModel.Data;
-            raycastHitCollider = raycastHitColliderController.RaycastHitColliderModel.Data;
-            upRaycastHitCollider = raycastHitColliderController.UpRaycastHitColliderModel.Data;
-            rightRaycastHitCollider = raycastHitColliderController.RightRaycastHitColliderModel.Data;
-            downRaycastHitCollider = raycastHitColliderController.DownRaycastHitColliderModel.Data;
-            leftRaycastHitCollider = raycastHitColliderController.LeftRaycastHitColliderModel.Data;
-            leftStickyRaycastHitCollider = raycastHitColliderController.LeftStickyRaycastHitColliderModel.Data;
-            rightStickyRaycastHitCollider = raycastHitColliderController.RightStickyRaycastHitColliderModel.Data;
-            distanceToGroundRaycastHitCollider = raycastHitColliderController.DistanceToGroundRaycastHitColliderModel.Data;
-            layerMask = layerMaskController.LayerMaskModel.Data;
+            safetyBoxcast = safetyBoxcastController.Data;
+            raycast = raycastController.Data;
+            upRaycast = upRaycastController.Data;
+            distanceToGroundRaycast = distanceToGroundRaycastController.Data;
+            stickyRaycast = stickyRaycastController.Data;
+            rightStickyRaycast = rightStickyRaycastController.Data;
+            leftStickyRaycast = leftStickyRaycastController.Data;
+            raycastHitCollider = raycastHitColliderController.Data;
+            upRaycastHitCollider = upRaycastHitColliderController.Data;
+            rightRaycastHitCollider = rightRaycastHitColliderController.Data;
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
+            leftRaycastHitCollider = leftRaycastHitColliderController.Data;
+            leftStickyRaycastHitCollider = leftStickyRaycastHitColliderController.Data;
+            rightStickyRaycastHitCollider = rightStickyRaycastHitColliderController.Data;
+            distanceToGroundRaycastHitCollider = distanceToGroundRaycastHitColliderController.Data;
+            layerMask = layerMaskController.Data;
         }
 
         private async UniTaskVoid RunPlatformer()
@@ -552,7 +576,7 @@ namespace VFEngine.Platformer
                 raycastController.SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
                 var srTask17 = Async(raycastHitColliderController.SetBelowSlopeAngleToBelowSlopeAngleLeft());
                 if (Abs(leftStickyRaycastHitCollider.BelowSlopeAngleLeft -
-                        rightStickyRaycastHitCollider.BelowSlopeAngleRight) < Tolerance)
+                        rightStickyRaycastHitCollider.BelowSlopeAngleRight) < p.Tolerance)
                 {
                     var srTask18 = Async(raycastController.SetCastFromLeftWithBelowSlopeAngleLtZero());
                     var task5 = await (srTask17, srTask18);

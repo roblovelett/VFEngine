@@ -1,17 +1,12 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
+using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider
 {
     using static Vector3;
-    using static UniTaskExtensions;
 
-    
     public class RightStickyRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -19,9 +14,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #region dependencies
 
         [SerializeField] private GameObject character;
-        [SerializeField] private RaycastHitColliderController raycastHitColliderController;
-        [SerializeField] private PhysicsController physicsController;
-        [SerializeField] private RaycastController raycastController;
+        private PhysicsController physicsController;
+        private RightStickyRaycastController rightStickyRaycastController;
         private RightStickyRaycastHitColliderData r;
         private PhysicsData physics;
         private RightStickyRaycastData rightStickyRaycast;
@@ -29,31 +23,44 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         #endregion
 
         #region private methods
+
         private void Awake()
         {
             LoadCharacter();
             InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
         }
+
         private void LoadCharacter()
         {
             if (!character) character = transform.root.gameObject;
         }
+
         private void InitializeData()
         {
             r = new RightStickyRaycastHitColliderData();
-            if (!raycastHitColliderController && character)
-                raycastHitColliderController = character.GetComponent<RaycastHitColliderController>();
-            else if (raycastHitColliderController && !character) character = raycastHitColliderController.Character;
-            if (!physicsController) physicsController = character.GetComponent<PhysicsController>();
-            if (!raycastController) raycastController = character.GetComponent<RaycastController>();
         }
 
-        private void InitializeModel()
+        private void SetControllers()
         {
-            physics = physicsController.PhysicsModel.Data;
-            rightStickyRaycast = raycastController.RightStickyRaycastModel.Data;
+            physicsController = character.GetComponent<PhysicsController>();
+            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
+            InitializeFrame();
+        }
+
+        private void SetDependencies()
+        {
+            physics = physicsController.Data;
+            rightStickyRaycast = rightStickyRaycastController.Data;
+        }
+
+        private void InitializeFrame()
+        {
             ResetState();
         }
 
@@ -88,17 +95,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         public RightStickyRaycastHitColliderData Data => r;
 
         #region public methods
-
-        public void OnInitializeData()
-        {
-            InitializeData();
-        }
-
-        public async UniTaskVoid OnInitializeModel()
-        {
-            InitializeModel();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         public void OnResetState()
         {

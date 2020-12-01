@@ -10,6 +10,8 @@
 
         #endregion
 
+        public float Tolerance { get; } = 0f;
+
         #region public methods
 
         public void ApplySettings(PlatformerSettings settings)
