@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider
 {
     using static MathsExtensions;
     using static RaycastHitCollider;
+    using static UniTaskExtensions;
 
     public class RightRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -207,14 +210,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             SetCurrentRightHitAngle();
         }
 
-        public void OnSetIsCollidingRight()
+        public async UniTaskVoid OnSetIsCollidingRight()
         {
             SetIsCollidingRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetRightDistanceToRightCollider()
+        public async UniTaskVoid OnSetRightDistanceToRightCollider()
         {
             SetRightDistanceToRightCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetRightCurrentWallCollider()
@@ -252,14 +257,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
         }
 
-        public void OnSetCurrentWallColliderNull()
+        public async UniTaskVoid OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

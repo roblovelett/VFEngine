@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
@@ -6,6 +7,7 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
@@ -14,6 +16,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static LayerMask;
     using static Vector3;
     using static Single;
+    using static UniTaskExtensions;
 
     public class DownRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -305,34 +308,40 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region public methods
 
-        public void OnSetOnMovingPlatform()
+        public async UniTaskVoid OnSetOnMovingPlatform()
         {
             SetOnMovingPlatform();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetMovingPlatformCurrentGravity()
+        public async UniTaskVoid OnSetMovingPlatformCurrentGravity()
         {
             SetMovingPlatformCurrentGravity();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetWasGroundedLastFrame()
+        public async UniTaskVoid OnSetWasGroundedLastFrame()
         {
             SetWasGroundedLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetStandingOnLastFrame()
+        public async UniTaskVoid OnSetStandingOnLastFrame()
         {
             SetStandingOnLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCurrentDownHitsStorage()
+        public async UniTaskVoid OnSetCurrentDownHitsStorage()
         {
             SetCurrentDownHitsStorage();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeFriction()
+        public async UniTaskVoid OnInitializeFriction()
         {
             InitializeFriction();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnInitializeDownHitsStorage()
@@ -340,19 +349,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             InitializeDownHitsStorage();
         }
 
-        public void OnInitializeDownHitsStorageSmallestDistanceIndex()
+        public async UniTaskVoid OnInitializeDownHitsStorageSmallestDistanceIndex()
         {
             InitializeDownHitsStorageSmallestDistanceIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeDownHitConnected()
+        public async UniTaskVoid OnInitializeDownHitConnected()
         {
             InitializeDownHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeDownHitsStorageIndex()
+        public async UniTaskVoid OnInitializeDownHitsStorageIndex()
         {
             InitializeDownHitsStorageIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnAddDownHitsStorageIndex()
@@ -360,29 +372,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             AddDownHitsStorageIndex();
         }
 
-        public void OnSetRaycastDownHitAt()
+        public async UniTaskVoid OnSetRaycastDownHitAt()
         {
             SetRaycastDownHitAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetDownHitConnected()
+        public async UniTaskVoid OnSetDownHitConnected()
         {
             SetDownHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetBelowSlopeAngleAt()
+        public async UniTaskVoid OnSetBelowSlopeAngleAt()
         {
             SetBelowSlopeAngleAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCrossBelowSlopeAngleAt()
+        public async UniTaskVoid OnSetCrossBelowSlopeAngleAt()
         {
             SetCrossBelowSlopeAngleAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetSmallestDistanceIndexAt()
+        public async UniTaskVoid OnSetSmallestDistanceIndexAt()
         {
             SetSmallestDistanceIndexAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetNegativeBelowSlopeAngle()
@@ -390,19 +407,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             SetNegativeBelowSlopeAngle();
         }
 
-        public void OnSetDownHitWithSmallestDistance()
+        public async UniTaskVoid OnSetDownHitWithSmallestDistance()
         {
             SetDownHitWithSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetIsCollidingBelow()
+        public async UniTaskVoid OnSetIsCollidingBelow()
         {
             SetIsCollidingBelow();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetIsNotCollidingBelow()
+        public async UniTaskVoid OnSetIsNotCollidingBelow()
         {
             SetIsNotCollidingBelow();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetFrictionToDownHitWithSmallestDistancesFriction()
@@ -415,34 +435,40 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             SetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
         }
 
-        public void OnSetMovingPlatformToNull()
+        public async UniTaskVoid OnSetMovingPlatformToNull()
         {
             SetMovingPlatformToNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnStopMovingPlatformCurrentGravity()
+        public async UniTaskVoid OnStopMovingPlatformCurrentGravity()
         {
             StopMovingPlatformCurrentGravity();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnStopMovingPlatformCurrentSpeed()
+        public async UniTaskVoid OnStopMovingPlatformCurrentSpeed()
         {
             StopMovingPlatformCurrentSpeed();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCurrentDownHitSmallestDistance()
+        public async UniTaskVoid OnSetCurrentDownHitSmallestDistance()
         {
             SetCurrentDownHitSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeSmallestDistanceToDownHit()
+        public async UniTaskVoid OnInitializeSmallestDistanceToDownHit()
         {
             InitializeSmallestDistanceToDownHit();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetSmallestDistanceToDownHitDistance()
+        public async UniTaskVoid OnSetSmallestDistanceToDownHitDistance()
         {
             SetSmallestDistanceToDownHitDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetGroundedEvent()
@@ -460,24 +486,28 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             SetStandingOnLastFrameLayerToSavedBelowLayer();
         }
 
-        public void OnSetStandingOn()
+        public async UniTaskVoid OnSetStandingOn()
         {
             SetStandingOn();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetStandingOnCollider()
+        public async UniTaskVoid OnSetStandingOnCollider()
         {
             SetStandingOnCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetNotOnMovingPlatform()
+        public async UniTaskVoid OnSetNotOnMovingPlatform()
         {
             SetNotOnMovingPlatform();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetMovingPlatformCurrentSpeed()

@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider
 {
     using static MathsExtensions;
     using static RaycastHitCollider;
+    using static UniTaskExtensions;
 
     public class LeftRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -198,14 +201,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetCurrentLeftHitAngle();
         }
 
-        public void OnSetIsCollidingLeft()
+        public async UniTaskVoid OnSetIsCollidingLeft()
         {
             SetIsCollidingLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetLeftDistanceToLeftCollider()
+        public async UniTaskVoid OnSetLeftDistanceToLeftCollider()
         {
             SetLeftDistanceToLeftCollider();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetLeftCurrentWallCollider()
@@ -213,9 +218,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetLeftCurrentWallCollider();
         }
 
-        public void OnSetCurrentWallColliderNull()
+        public async UniTaskVoid OnSetCurrentWallColliderNull()
         {
             SetCurrentWallColliderNull();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetLeftFailedSlopeAngle()
@@ -258,9 +264,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

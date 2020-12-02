@@ -6,7 +6,6 @@ using UnityEngine;
 // ReSharper disable MemberCanBePrivate.Global
 namespace VFEngine.Tools
 {
-    using static Debug;
     using static AssetDatabase;
 
     public static class ScriptableObjectExtensions

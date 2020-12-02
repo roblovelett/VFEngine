@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
     using static ScriptableObject;
+    using static UniTaskExtensions;
 
     public class RaycastHitColliderController : MonoBehaviour
     {
@@ -95,11 +98,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region public methods
 
-        public void OnClearContactList()
-        {
-            ClearContactList();
-        }
-
         public void OnAddRightHitToContactList()
         {
             AddRightHitToContactList();
@@ -110,9 +108,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             AddLeftHitToContactList();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

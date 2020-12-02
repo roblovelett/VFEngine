@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
@@ -8,6 +10,7 @@ namespace VFEngine.Platformer.Layer.Mask
     using static ScriptableObject;
     using static LayerMask;
     using static DebugExtensions;
+    using static UniTaskExtensions;
 
     public class LayerMaskController : MonoBehaviour, IController
     {
@@ -170,14 +173,16 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region public methods
 
-        public void OnSetRaysBelowLayerMaskPlatforms()
+        public async UniTaskVoid OnSetRaysBelowLayerMaskPlatforms()
         {
             SetRaysBelowLayerMaskPlatforms();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetRaysBelowLayerMaskPlatformsWithoutOneWay()
+        public async UniTaskVoid OnSetRaysBelowLayerMaskPlatformsWithoutOneWay()
         {
             SetRaysBelowLayerMaskPlatformsWithoutOneWay();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight()

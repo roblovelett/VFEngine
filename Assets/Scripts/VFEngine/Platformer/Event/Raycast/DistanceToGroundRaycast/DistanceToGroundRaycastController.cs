@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 {
     using static DebugExtensions;
     using static Color;
+    using static UniTaskExtensions;
 
     public class DistanceToGroundRaycastController : MonoBehaviour, IController
     {
@@ -102,9 +105,10 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
             SetDistanceToGroundRaycastOrigin();
         }
 
-        public void OnSetDistanceToGroundRaycast()
+        public async UniTaskVoid OnSetDistanceToGroundRaycast()
         {
             SetDistanceToGroundRaycast();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

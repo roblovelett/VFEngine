@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider
 {
+    using static UniTaskExtensions;
+
     public class StickyRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -95,24 +99,28 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region public methods
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeBelowSlopeAngle()
+        public async UniTaskVoid OnInitializeBelowSlopeAngle()
         {
             InitializeBelowSlopeAngle();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetBelowSlopeAngleToBelowSlopeAngleLeft()
+        public async UniTaskVoid OnSetBelowSlopeAngleToBelowSlopeAngleLeft()
         {
             SetBelowSlopeAngleToBelowSlopeAngleLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetBelowSlopeAngleToBelowSlopeAngleRight()
+        public async UniTaskVoid OnSetBelowSlopeAngleToBelowSlopeAngleRight()
         {
             SetBelowSlopeAngleToBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

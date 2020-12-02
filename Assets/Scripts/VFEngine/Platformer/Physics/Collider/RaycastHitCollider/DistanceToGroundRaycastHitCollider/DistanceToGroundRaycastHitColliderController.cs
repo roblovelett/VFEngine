@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGroundRaycastHitCollider
 {
+    using static UniTaskExtensions;
+
     public class DistanceToGroundRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -94,14 +98,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region public methods
 
-        public void OnSetDistanceToGroundRaycastHit()
+        public async UniTaskVoid OnSetDistanceToGroundRaycastHit()
         {
             SetDistanceToGroundRaycastHit();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeDistanceToGround()
+        public async UniTaskVoid OnInitializeDistanceToGround()
         {
             InitializeDistanceToGround();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnDecreaseDistanceToGround()
@@ -114,9 +120,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
             ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

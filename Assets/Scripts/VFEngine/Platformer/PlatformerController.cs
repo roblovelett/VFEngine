@@ -24,6 +24,8 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollid
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedVariable
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer
 {
@@ -237,10 +239,10 @@ namespace VFEngine.Platformer
                 var task1 = await (srTask1, srhTask1, srhTask2, srhTask3);
             }
 
-            var rTask1 = Async(raycastController.SetRaysParameters());
-            var rhcTask1 = Async(downRaycastHitColliderController.SetWasGroundedLastFrame());
-            var rhcTask2 = Async(downRaycastHitColliderController.SetStandingOnLastFrame());
-            var rhcTask3 = Async(upRaycastHitColliderController.SetWasTouchingCeilingLastFrame());
+            var rTask1 = Async(raycastController.OnSetRaysParameters());
+            var rhcTask1 = Async(downRaycastHitColliderController.OnSetWasGroundedLastFrame());
+            var rhcTask2 = Async(downRaycastHitColliderController.OnSetStandingOnLastFrame());
+            var rhcTask3 = Async(upRaycastHitColliderController.OnSetWasTouchingCeilingLastFrame());
             var rhcTask4 = Async(rightRaycastHitColliderController.OnSetCurrentWallColliderNull());
             var rhcTask5 = Async(leftRaycastHitColliderController.OnSetCurrentWallColliderNull());
             var rhcTask6 = Async(raycastHitColliderController.OnResetState());
@@ -260,16 +262,16 @@ namespace VFEngine.Platformer
         {
             if (downRaycastHitCollider.HasMovingPlatform)
             {
-                downRaycastHitColliderController.SetMovingPlatformCurrentSpeed();
+                downRaycastHitColliderController.OnSetMovingPlatformCurrentSpeed();
                 if (!SpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed))
                     physicsController.OnTranslatePlatformSpeedToTransform();
                 var platformTest = !TimeLteZero() || !AxisSpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed) ||
                                    !upRaycastHitCollider.WasTouchingCeilingLastFrame;
                 if (platformTest)
                 {
-                    var rTask1 = Async(raycastController.SetRaysParameters());
-                    var rhcTask1 = Async(downRaycastHitColliderController.SetOnMovingPlatform());
-                    var rhcTask2 = Async(downRaycastHitColliderController.SetMovingPlatformCurrentGravity());
+                    var rTask1 = Async(raycastController.OnSetRaysParameters());
+                    var rhcTask1 = Async(downRaycastHitColliderController.OnSetOnMovingPlatform());
+                    var rhcTask2 = Async(downRaycastHitColliderController.OnSetMovingPlatformCurrentGravity());
                     var phTask1 = Async(physicsController.OnDisableGravity());
                     var phTask2 = Async(physicsController.OnApplyMovingPlatformSpeedToNewPosition());
                     var task1 = await (rTask1, rhcTask1, rhcTask2, phTask1, phTask2);
@@ -324,37 +326,37 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid CastRaysUp()
         {
-            var rTask1 = Async(upRaycastController.InitializeUpRaycastLength());
-            var rTask2 = Async(upRaycastController.InitializeUpRaycastStart());
-            var rTask3 = Async(upRaycastController.InitializeUpRaycastEnd());
-            var rTask4 = Async(upRaycastController.InitializeUpRaycastSmallestDistance());
-            var rhcTask1 = Async(upRaycastHitColliderController.InitializeUpHitConnected());
-            var rhcTask2 = Async(upRaycastHitColliderController.InitializeUpHitsStorageCollidingIndex());
-            var rhcTask3 = Async(upRaycastHitColliderController.InitializeUpHitsStorageCurrentIndex());
+            var rTask1 = Async(upRaycastController.OnInitializeUpRaycastLength());
+            var rTask2 = Async(upRaycastController.OnInitializeUpRaycastStart());
+            var rTask3 = Async(upRaycastController.OnInitializeUpRaycastEnd());
+            var rTask4 = Async(upRaycastController.OnInitializeUpRaycastSmallestDistance());
+            var rhcTask1 = Async(upRaycastHitColliderController.OnInitializeUpHitConnected());
+            var rhcTask2 = Async(upRaycastHitColliderController.OnInitializeUpHitsStorageCollidingIndex());
+            var rhcTask3 = Async(upRaycastHitColliderController.OnInitializeUpHitsStorageCurrentIndex());
             var task1 = await (rTask1, rTask2, rTask3, rTask4, rhcTask1, rhcTask2, rhcTask3);
             if (upRaycastHitCollider.UpHitsStorageLength != raycast.NumberOfVerticalRaysPerSide)
-                upRaycastHitColliderController.InitializeUpHitsStorage();
+                upRaycastHitColliderController.OnInitializeUpHitsStorage();
             for (var i = 0; i < raycast.NumberOfVerticalRaysPerSide; i++)
             {
-                upRaycastController.SetCurrentUpRaycastOrigin();
-                upRaycastController.SetCurrentUpRaycast();
-                upRaycastHitColliderController.SetCurrentUpHitsStorage();
-                upRaycastHitColliderController.SetRaycastUpHitAt();
+                upRaycastController.OnSetCurrentUpRaycastOrigin();
+                upRaycastController.OnSetCurrentUpRaycast();
+                upRaycastHitColliderController.OnSetCurrentUpHitsStorage();
+                upRaycastHitColliderController.OnSetRaycastUpHitAt();
                 if (upRaycastHitCollider.RaycastUpHitAt)
                 {
-                    var rhcTask4 = Async(upRaycastHitColliderController.SetUpHitConnected());
-                    var rhcTask5 = Async(upRaycastHitColliderController.SetUpHitsStorageCollidingIndexAt());
+                    var rhcTask4 = Async(upRaycastHitColliderController.OnSetUpHitConnected());
+                    var rhcTask5 = Async(upRaycastHitColliderController.OnSetUpHitsStorageCollidingIndexAt());
                     var task2 = await (rhcTask4, rhcTask5);
                     if (upRaycastHitCollider.RaycastUpHitAt.collider == raycastHitCollider.IgnoredCollider) break;
                     if (upRaycastHitCollider.RaycastUpHitAt.distance < upRaycast.UpRaycastSmallestDistance)
-                        upRaycastController.SetUpRaycastSmallestDistanceToRaycastUpHitAt();
+                        upRaycastController.OnSetUpRaycastSmallestDistanceToRaycastUpHitAt();
                 }
 
                 if (upRaycastHitCollider.UpHitConnected)
                 {
                     var phTask1 = Async(physicsController
                         .OnSetNewVerticalPositionWithUpRaycastSmallestDistanceAndBoundsHeight());
-                    var rhcTask6 = Async(upRaycastHitColliderController.SetIsCollidingAbove());
+                    var rhcTask6 = Async(upRaycastHitColliderController.OnSetIsCollidingAbove());
                     var task3 = await (phTask1, rhcTask6);
                     if (downRaycastHitCollider.GroundedEvent && physics.NewPosition.y < 0)
                         physicsController.OnStopNewVerticalPosition();
@@ -362,7 +364,7 @@ namespace VFEngine.Platformer
                     physicsController.OnStopVerticalForce();
                 }
 
-                upRaycastHitColliderController.AddToUpHitsStorageCurrentIndex();
+                upRaycastHitColliderController.OnAddToUpHitsStorageCurrentIndex();
             }
 
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -370,26 +372,26 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid CastRaysDown()
         {
-            var rhcTask1 = Async(downRaycastHitColliderController.SetIsNotCollidingBelow());
+            var rhcTask1 = Async(downRaycastHitColliderController.OnSetIsNotCollidingBelow());
             var phTask1 = Async(DetachFromMovingPlatform());
             var task1 = await (rhcTask1, phTask1);
             if (physics.NewPosition.y < physics.SmallValue) physicsController.OnSetIsFalling();
             else await Async(physicsController.OnSetIsNotFalling());
             if (!(physics.Gravity > 0) || physics.IsFalling)
             {
-                var rhcTask2 = Async(downRaycastHitColliderController.InitializeFriction());
+                var rhcTask2 = Async(downRaycastHitColliderController.OnInitializeFriction());
                 var rhcTask3 = Async(InitializeDownHitsStorage());
                 var rTask1 = Async(downRaycastController.OnInitializeDownRayLength());
                 var rTask2 = Async(SetVerticalRaycast());
                 var lmTask1 = Async(SetRaysBelowLayerMask());
                 var task2 = await (rhcTask2, rhcTask3, rTask1, rTask2, lmTask1);
-                if (downRaycastHitCollider.OnMovingPlatform) downRaycastController.DoubleDownRayLength();
-                if (physics.NewPosition.y < 0) downRaycastController.SetDownRayLengthToVerticalNewPosition();
+                if (downRaycastHitCollider.OnMovingPlatform) downRaycastController.OnDoubleDownRayLength();
+                if (physics.NewPosition.y < 0) downRaycastController.OnSetDownRayLengthToVerticalNewPosition();
                 var midHeightOneWayPlatformMaskContains = LayerMaskContains(layerMask.MidHeightOneWayPlatformMask,
                     downRaycastHitCollider.StandingOnLastFrame.layer);
                 if (downRaycastHitCollider.HasStandingOnLastFrame)
                 {
-                    layerMaskController.SetSavedBelowLayerToStandingOnLastFrameLayer();
+                    layerMaskController.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
                     if (midHeightOneWayPlatformMaskContains)
                         downRaycastHitColliderController.OnSetStandingOnLastFrameLayerToPlatform();
                 }
@@ -400,52 +402,52 @@ namespace VFEngine.Platformer
                         downRaycastHitCollider.OnMovingPlatform, layerMask.StairsMask,
                         downRaycastHitCollider.StandingOnLastFrame.layer, downRaycastHitCollider.StandingOnCollider,
                         raycast.BoundsBottomCenterPosition, physics.NewPosition.y));
-                    var rTask3 = Async(downRaycastHitColliderController.InitializeSmallestDistanceToDownHit());
-                    var rhcTask4 = Async(downRaycastHitColliderController.InitializeDownHitsStorageIndex());
-                    var rhcTask5 =
-                        Async(downRaycastHitColliderController.InitializeDownHitsStorageSmallestDistanceIndex());
-                    var rhcTask6 = Async(downRaycastHitColliderController.InitializeDownHitConnected());
+                    var rTask3 = Async(downRaycastHitColliderController.OnInitializeSmallestDistanceToDownHit());
+                    var rhcTask4 = Async(downRaycastHitColliderController.OnInitializeDownHitsStorageIndex());
+                    var rhcTask5 = Async(downRaycastHitColliderController
+                        .OnInitializeDownHitsStorageSmallestDistanceIndex());
+                    var rhcTask6 = Async(downRaycastHitColliderController.OnInitializeDownHitConnected());
                     var task3 = await (pTask1, rTask3, rhcTask4, rhcTask5, rhcTask6);
                     for (var i = 0; i < raycast.NumberOfVerticalRaysPerSide; i++)
                     {
-                        downRaycastController.SetCurrentDownRaycastOriginPoint();
+                        downRaycastController.OnSetCurrentDownRaycastOriginPoint();
                         if (physics.NewPosition.y > 0 && !downRaycastHitCollider.HasGroundedLastFrame)
-                            downRaycastController.SetCurrentDownRaycastToIgnoreOneWayPlatform();
-                        else downRaycastController.SetCurrentDownRaycast();
-                        var rhcTask7 = Async(downRaycastHitColliderController.SetCurrentDownHitsStorage());
-                        var rhcTask8 = Async(downRaycastHitColliderController.SetRaycastDownHitAt());
-                        var rhcTask9 = Async(downRaycastHitColliderController.SetCurrentDownHitSmallestDistance());
+                            downRaycastController.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
+                        else downRaycastController.OnSetCurrentDownRaycast();
+                        var rhcTask7 = Async(downRaycastHitColliderController.OnSetCurrentDownHitsStorage());
+                        var rhcTask8 = Async(downRaycastHitColliderController.OnSetRaycastDownHitAt());
+                        var rhcTask9 = Async(downRaycastHitColliderController.OnSetCurrentDownHitSmallestDistance());
                         var task4 = await (rhcTask7, rhcTask8, rhcTask9);
                         if (downRaycastHitCollider.RaycastDownHitAt)
                         {
                             if (downRaycastHitCollider.RaycastDownHitAt.collider == raycastHitCollider.IgnoredCollider)
                                 continue;
-                            var rhcTask10 = Async(downRaycastHitColliderController.SetDownHitConnected());
-                            var rhcTask11 = Async(downRaycastHitColliderController.SetBelowSlopeAngleAt());
-                            var rhcTask12 = Async(downRaycastHitColliderController.SetCrossBelowSlopeAngleAt());
+                            var rhcTask10 = Async(downRaycastHitColliderController.OnSetDownHitConnected());
+                            var rhcTask11 = Async(downRaycastHitColliderController.OnSetBelowSlopeAngleAt());
+                            var rhcTask12 = Async(downRaycastHitColliderController.OnSetCrossBelowSlopeAngleAt());
                             var task5 = await (rhcTask10, rhcTask11, rhcTask12);
                             if (downRaycastHitCollider.CrossBelowSlopeAngle.z < 0)
-                                downRaycastHitColliderController.SetNegativeBelowSlopeAngle();
+                                downRaycastHitColliderController.OnSetNegativeBelowSlopeAngle();
                             if (downRaycastHitCollider.RaycastDownHitAt.distance <
                                 downRaycastHitCollider.SmallestDistanceToDownHit)
                             {
-                                var rhcTask13 = Async(downRaycastHitColliderController.SetSmallestDistanceIndexAt());
+                                var rhcTask13 = Async(downRaycastHitColliderController.OnSetSmallestDistanceIndexAt());
                                 var rhcTask14 =
-                                    Async(downRaycastHitColliderController.SetDownHitWithSmallestDistance());
-                                var rTask4 =
-                                    Async(downRaycastHitColliderController.SetSmallestDistanceToDownHitDistance());
+                                    Async(downRaycastHitColliderController.OnSetDownHitWithSmallestDistance());
+                                var rTask4 = Async(downRaycastHitColliderController
+                                    .OnSetSmallestDistanceToDownHitDistance());
                                 var task6 = await (rhcTask13, rhcTask14, rTask4);
                             }
                         }
 
                         if (downRaycastHitCollider.CurrentDownHitSmallestDistance < physics.SmallValue) break;
-                        downRaycastHitColliderController.AddDownHitsStorageIndex();
+                        downRaycastHitColliderController.OnAddDownHitsStorageIndex();
                     }
 
                     if (downRaycastHitCollider.DownHitConnected)
                     {
-                        var rhcTask15 = Async(downRaycastHitColliderController.SetStandingOn());
-                        var rhcTask16 = Async(downRaycastHitColliderController.SetStandingOnCollider());
+                        var rhcTask15 = Async(downRaycastHitColliderController.OnSetStandingOn());
+                        var rhcTask16 = Async(downRaycastHitColliderController.OnSetStandingOnCollider());
                         var task7 = await (rhcTask15, rhcTask16);
                         var highEnoughForOneWayPlatform =
                             !((downRaycastHitCollider.HasGroundedLastFrame ||
@@ -461,7 +463,7 @@ namespace VFEngine.Platformer
                         }
 
                         var phTask2 = Async(physicsController.OnSetIsNotFalling());
-                        var rhcTask17 = Async(downRaycastHitColliderController.SetIsCollidingBelow());
+                        var rhcTask17 = Async(downRaycastHitColliderController.OnSetIsCollidingBelow());
                         var task8 = await (phTask2, rhcTask17);
                         if (physics.ExternalForce.y > 0 && physics.Speed.y > 0)
                         {
@@ -470,7 +472,6 @@ namespace VFEngine.Platformer
                         }
                         else
                         {
-                            downRaycastHitColliderController.OnSetCurrentDownHitSmallestDistance();
                             physicsController.OnApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition();
                         }
 
@@ -479,11 +480,11 @@ namespace VFEngine.Platformer
                         if (Abs(physics.NewPosition.y) < physics.SmallValue)
                             physicsController.OnStopNewVerticalPosition();
                         if (downRaycastHitCollider.HasPhysicsMaterialClosestToDownHit)
-                            downRaycastHitColliderController.SetFrictionToDownHitWithSmallestDistancesFriction();
+                            downRaycastHitColliderController.OnSetFrictionToDownHitWithSmallestDistancesFriction();
                         if (downRaycastHitCollider.HasPathMovementClosestToDownHit &&
                             downRaycastHitCollider.GroundedEvent)
                             downRaycastHitColliderController
-                                .SetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
+                                .OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
                         else await phTask1;
                     }
                     else
@@ -504,10 +505,10 @@ namespace VFEngine.Platformer
                 if (downRaycastHitCollider.HasMovingPlatform)
                 {
                     var t1 = Async(physicsController.OnSetGravityActive());
-                    var t2 = Async(downRaycastHitColliderController.SetNotOnMovingPlatform());
-                    var t3 = Async(downRaycastHitColliderController.SetMovingPlatformToNull());
-                    var t4 = Async(downRaycastHitColliderController.StopMovingPlatformCurrentGravity());
-                    var t5 = Async(downRaycastHitColliderController.StopMovingPlatformCurrentSpeed());
+                    var t2 = Async(downRaycastHitColliderController.OnSetNotOnMovingPlatform());
+                    var t3 = Async(downRaycastHitColliderController.OnSetMovingPlatformToNull());
+                    var t4 = Async(downRaycastHitColliderController.OnStopMovingPlatformCurrentGravity());
+                    var t5 = Async(downRaycastHitColliderController.OnStopMovingPlatformCurrentSpeed());
                     var t = await (t1, t2, t3, t4);
                 }
 
@@ -519,37 +520,37 @@ namespace VFEngine.Platformer
                 Vector2 colliderBottomCenterPosition, float newPositionY)
             {
                 if (!midHeightOneWayPlatformContains)
-                    layerMaskController.SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
+                    layerMaskController.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
                 var stairsContains = LayerMaskContains(stairsMask, standingOnLastFrame);
                 var colliderBoundsContains = standingOnCollider.bounds.Contains(colliderBottomCenterPosition);
                 if (stairsContains && colliderBoundsContains)
-                    layerMaskController.SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
+                    layerMaskController.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
                 var newPositionYGtZero = newPositionY > 0;
                 if (onMovingPlatform && newPositionYGtZero)
-                    layerMaskController.SetRaysBelowLayerMaskPlatformsToOneWay();
+                    layerMaskController.OnSetRaysBelowLayerMaskPlatformsToOneWay();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid InitializeDownHitsStorage()
             {
                 if (downRaycastHitCollider.DownHitsStorageLength != raycast.NumberOfVerticalRaysPerSide)
-                    downRaycastHitColliderController.InitializeDownHitsStorage();
+                    downRaycastHitColliderController.OnInitializeDownHitsStorage();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetRaysBelowLayerMask()
             {
-                var t1 = Async(layerMaskController.SetRaysBelowLayerMaskPlatforms());
-                var t2 = Async(layerMaskController.SetRaysBelowLayerMaskPlatformsWithoutOneWay());
+                var t1 = Async(layerMaskController.OnSetRaysBelowLayerMaskPlatforms());
+                var t2 = Async(layerMaskController.OnSetRaysBelowLayerMaskPlatformsWithoutOneWay());
                 var t = await (t1, t2);
-                layerMaskController.SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
+                layerMaskController.OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetVerticalRaycast()
             {
-                var t1 = Async(downRaycastController.SetDownRaycastFromLeft());
-                var t2 = Async(downRaycastController.SetDownRaycastToRight());
+                var t1 = Async(downRaycastController.OnSetDownRaycastFromLeft());
+                var t2 = Async(downRaycastController.OnSetDownRaycastToRight());
                 var t = await (t1, t2);
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
@@ -564,72 +565,74 @@ namespace VFEngine.Platformer
                                physics.StickToSlopesControl && downRaycastHitCollider.HasGroundedLastFrame &&
                                !(physics.ExternalForce.y > 0) && !downRaycastHitCollider.HasMovingPlatform ||
                                !downRaycastHitCollider.HasGroundedLastFrame &&
-                               downRaycastHitCollider.HasStandingOnLastFrame && LayerMaskContains(layerMask.StairsMask,
-                                   downRaycastHitCollider.StandingOnLastFrame.layer) && !physics.IsJumping;
+                               downRaycastHitCollider.HasStandingOnLastFrame &&
+                               LayerMaskContains(layerMask.StairsMask,
+                                   downRaycastHitCollider.StandingOnLastFrame.layer) &&
+                               !physics.IsJumping;
             if (stickToSlope)
             {
                 await Async(stickyRaycast.StickyRaycastLength == 0
-                    ? stickyRaycastController.SetStickyRaycastLength()
-                    : stickyRaycastController.SetStickyRaycastLengthToSelf());
+                    ? stickyRaycastController.OnSetStickyRaycastLength()
+                    : stickyRaycastController.OnSetStickyRaycastLengthToSelf());
                 var srTask1 = Async(SetLeftStickyRaycastLength(leftStickyRaycast.LeftStickyRaycastLength));
                 var srTask2 = Async(SetRightStickyRaycastLength(rightStickyRaycast.RightStickyRaycastLength));
-                var srTask3 = Async(leftStickyRaycastController.SetLeftStickyRaycastOriginY());
-                var srTask4 = Async(leftStickyRaycastController.SetLeftStickyRaycastOriginX());
-                var srTask5 = Async(rightStickyRaycastController.SetRightStickyRaycastOriginY());
-                var srTask6 = Async(rightStickyRaycastController.SetRightStickyRaycastOriginX());
-                var srTask7 = Async(stickyRaycastController.SetDoNotCastFromLeft());
-                var srTask8 = Async(stickyRaycastHitColliderController.InitializeBelowSlopeAngle());
+                var srTask3 = Async(leftStickyRaycastController.OnSetLeftStickyRaycastOriginY());
+                var srTask4 = Async(leftStickyRaycastController.OnSetLeftStickyRaycastOriginX());
+                var srTask5 = Async(rightStickyRaycastController.OnSetRightStickyRaycastOriginY());
+                var srTask6 = Async(rightStickyRaycastController.OnSetRightStickyRaycastOriginX());
+                var srTask7 = Async(stickyRaycastController.OnSetDoNotCastFromLeft());
+                var srTask8 = Async(stickyRaycastHitColliderController.OnInitializeBelowSlopeAngle());
                 var task1 = await (srTask1, srTask2, srTask3, srTask4, srTask5, srTask6, srTask7, srTask8);
-                var srTask9 = Async(leftStickyRaycastController.SetLeftStickyRaycast());
-                var srTask10 = Async(rightStickyRaycastController.SetRightStickyRaycast());
+                var srTask9 = Async(leftStickyRaycastController.OnSetLeftStickyRaycast());
+                var srTask10 = Async(rightStickyRaycastController.OnSetRightStickyRaycast());
                 var task2 = await (srTask9, srTask10);
-                var srTask11 = Async(leftStickyRaycastHitColliderController.SetBelowSlopeAngleLeft());
-                var srTask12 = Async(leftStickyRaycastHitColliderController.SetCrossBelowSlopeAngleLeft());
-                var srTask13 = Async(rightStickyRaycastHitColliderController.SetBelowSlopeAngleRight());
-                var srTask14 = Async(rightStickyRaycastHitColliderController.SetCrossBelowSlopeAngleRight());
+                var srTask11 = Async(leftStickyRaycastHitColliderController.OnSetBelowSlopeAngleLeft());
+                var srTask12 = Async(leftStickyRaycastHitColliderController.OnSetCrossBelowSlopeAngleLeft());
+                var srTask13 = Async(rightStickyRaycastHitColliderController.OnSetBelowSlopeAngleRight());
+                var srTask14 = Async(rightStickyRaycastHitColliderController.OnSetCrossBelowSlopeAngleRight());
                 var task3 = await (srTask11, srTask12, srTask13, srTask14);
                 var srTask15 =
                     Async(SetBelowSlopeAngleLeftToNegative(leftStickyRaycastHitCollider.CrossBelowSlopeAngleLeft.z));
                 var srTask16 =
                     Async(SetBelowSlopeAngleRightToNegative(rightStickyRaycastHitCollider.CrossBelowSlopeAngleRight.z));
                 var task4 = await (srTask15, srTask16);
-                stickyRaycastController.SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
-                var srTask17 = Async(stickyRaycastHitColliderController.SetBelowSlopeAngleToBelowSlopeAngleLeft());
+                stickyRaycastController.OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
+                var srTask17 = Async(stickyRaycastHitColliderController.OnSetBelowSlopeAngleToBelowSlopeAngleLeft());
                 if (Abs(leftStickyRaycastHitCollider.BelowSlopeAngleLeft -
                         rightStickyRaycastHitCollider.BelowSlopeAngleRight) < p.Tolerance)
                 {
-                    var srTask18 = Async(stickyRaycastController.SetCastFromLeftWithBelowSlopeAngleLtZero());
+                    var srTask18 = Async(stickyRaycastController.OnSetCastFromLeftWithBelowSlopeAngleLtZero());
                     var task5 = await (srTask17, srTask18);
                 }
 
                 if (leftStickyRaycastHitCollider.BelowSlopeAngleLeft == 0f &&
                     rightStickyRaycastHitCollider.BelowSlopeAngleRight != 0f)
                 {
-                    var srTask19 = Async(stickyRaycastController.SetCastFromLeftWithBelowSlopeAngleRightLtZero());
+                    var srTask19 = Async(stickyRaycastController.OnSetCastFromLeftWithBelowSlopeAngleRightLtZero());
                     var task6 = await (srTask17, srTask19);
                 }
 
-                var srTask20 = Async(stickyRaycastHitColliderController.SetBelowSlopeAngleToBelowSlopeAngleRight());
+                var srTask20 = Async(stickyRaycastHitColliderController.OnSetBelowSlopeAngleToBelowSlopeAngleRight());
                 if (leftStickyRaycastHitCollider.BelowSlopeAngleLeft != 0f &&
                     rightStickyRaycastHitCollider.BelowSlopeAngleRight == 0f)
                 {
-                    var srTask21 = Async(stickyRaycastController.SetCastFromLeftWithBelowSlopeAngleLeftLtZero());
+                    var srTask21 = Async(stickyRaycastController.OnSetCastFromLeftWithBelowSlopeAngleLeftLtZero());
                     var task7 = await (srTask20, srTask21);
                 }
 
                 if (leftStickyRaycastHitCollider.BelowSlopeAngleLeft != 0f &&
                     rightStickyRaycastHitCollider.BelowSlopeAngleRight != 0f)
                 {
-                    stickyRaycastController.SetCastFromLeftWithLeftDistanceLtRightDistance();
+                    stickyRaycastController.OnSetCastFromLeftWithLeftDistanceLtRightDistance();
                     if (stickyRaycast.IsCastingLeft) await srTask17;
                     else await srTask20;
                 }
 
-                var rhcTask1 = Async(downRaycastHitColliderController.SetIsCollidingBelow());
+                var rhcTask1 = Async(downRaycastHitColliderController.OnSetIsCollidingBelow());
                 if (leftStickyRaycastHitCollider.BelowSlopeAngleLeft > 0f &&
                     rightStickyRaycastHitCollider.BelowSlopeAngleRight < 0f && physics.SafetyBoxcastControl)
                 {
-                    safetyBoxcastController.SetSafetyBoxcastForImpassableAngle();
+                    safetyBoxcastController.OnSetSafetyBoxcastForImpassableAngle();
                     if (!safetyBoxcast.SafetyBoxcastHit ||
                         safetyBoxcast.SafetyBoxcastHit.collider == raycastHitCollider.IgnoredCollider) return;
                     var phTask1 =
@@ -658,27 +661,27 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetBelowSlopeAngleLeftToNegative(float crossZ)
             {
-                if (crossZ < 0) leftStickyRaycastHitColliderController.SetBelowSlopeAngleLeftToNegative();
+                if (crossZ < 0) leftStickyRaycastHitColliderController.OnSetBelowSlopeAngleLeftToNegative();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetBelowSlopeAngleRightToNegative(float crossZ)
             {
-                if (crossZ < 0) rightStickyRaycastHitColliderController.SetBelowSlopeAngleRightToNegative();
+                if (crossZ < 0) rightStickyRaycastHitColliderController.OnSetBelowSlopeAngleRightToNegative();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetLeftStickyRaycastLength(float leftRaycastLength)
             {
-                if (leftRaycastLength == 0) leftStickyRaycastController.SetLeftStickyRaycastLength();
-                else leftStickyRaycastController.SetLeftStickyRaycastLengthToStickyRaycastLength();
+                if (leftRaycastLength == 0) leftStickyRaycastController.OnSetLeftStickyRaycastLength();
+                else leftStickyRaycastController.OnSetLeftStickyRaycastLengthToStickyRaycastLength();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetRightStickyRaycastLength(float rightRaycastLength)
             {
-                if (rightRaycastLength == 0) rightStickyRaycastController.SetRightStickyRaycastLength();
-                else rightStickyRaycastController.SetRightStickyRaycastLengthToStickyRaycastLength();
+                if (rightRaycastLength == 0) rightStickyRaycastController.OnSetRightStickyRaycastLength();
+                else rightStickyRaycastController.OnSetRightStickyRaycastLengthToStickyRaycastLength();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -727,14 +730,15 @@ namespace VFEngine.Platformer
                     {
                         if (direction == Left)
                         {
-                            var rhcTask10 = Async(leftRaycastHitColliderController.SetIsCollidingLeft());
-                            var rhcTask11 = Async(leftRaycastHitColliderController.SetLeftDistanceToLeftCollider());
+                            var rhcTask10 = Async(leftRaycastHitColliderController.OnSetIsCollidingLeft());
+                            var rhcTask11 = Async(leftRaycastHitColliderController.OnSetLeftDistanceToLeftCollider());
                             var task5 = await (rhcTask10, rhcTask11);
                         }
                         else
                         {
-                            var rhcTask12 = Async(rightRaycastHitColliderController.SetIsCollidingRight());
-                            var rhcTask13 = Async(rightRaycastHitColliderController.SetRightDistanceToRightCollider());
+                            var rhcTask12 = Async(rightRaycastHitColliderController.OnSetIsCollidingRight());
+                            var rhcTask13 =
+                                Async(rightRaycastHitColliderController.OnSetRightDistanceToRightCollider());
                             var task6 = await (rhcTask12, rhcTask13);
                         }
 
@@ -756,15 +760,15 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetCurrentDistanceBetweenHorizontalHitAndRaycastOrigin(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
-                else leftRaycastHitColliderController.SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
+                else leftRaycastHitColliderController.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid AddHorizontalHitToContactList(RaycastDirection d)
             {
-                if (d == Right) raycastHitColliderController.AddRightHitToContactList();
-                else raycastHitColliderController.AddLeftHitToContactList();
+                if (d == Right) raycastHitColliderController.OnAddRightHitToContactList();
+                else raycastHitColliderController.OnAddLeftHitToContactList();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -777,35 +781,35 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetFailedSlopeAngle(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetRightFailedSlopeAngle();
-                else leftRaycastHitColliderController.SetLeftFailedSlopeAngle();
+                if (d == Right) rightRaycastHitColliderController.OnSetRightFailedSlopeAngle();
+                else leftRaycastHitColliderController.OnSetLeftFailedSlopeAngle();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetCurrentWallCollider(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetRightCurrentWallCollider();
-                else leftRaycastHitColliderController.SetLeftCurrentWallCollider();
+                if (d == Right) rightRaycastHitColliderController.OnSetRightCurrentWallCollider();
+                else leftRaycastHitColliderController.OnSetLeftCurrentWallCollider();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             void SetCurrentHorizontalLateralSlopeAngle(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentRightLateralSlopeAngle();
-                else leftRaycastHitColliderController.SetCurrentLeftLateralSlopeAngle();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightLateralSlopeAngle();
+                else leftRaycastHitColliderController.OnSetCurrentLeftLateralSlopeAngle();
             }
 
             async UniTaskVoid SetCurrentHorizontalHitAngle(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentRightHitAngle();
-                else leftRaycastHitColliderController.SetCurrentLeftHitAngle();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitAngle();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitAngle();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetCurrentHorizontalHitCollider(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentRightHitCollider();
-                else leftRaycastHitColliderController.SetCurrentLeftHitCollider();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitCollider();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitCollider();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -834,15 +838,15 @@ namespace VFEngine.Platformer
 
             async UniTaskVoid SetCurrentSideHitsStorage(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentRightHitsStorage();
-                else leftRaycastHitColliderController.SetCurrentLeftHitsStorage();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitsStorage();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitsStorage();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetCurrentHorizontalHitDistance(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.SetCurrentRightHitDistance();
-                else leftRaycastHitColliderController.SetCurrentLeftHitDistance();
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitDistance();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitDistance();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -850,75 +854,75 @@ namespace VFEngine.Platformer
             {
                 if (distance > 0)
                 {
-                    if (d == Right) rightRaycastHitColliderController.SetRightRaycastHitConnected();
-                    else leftRaycastHitColliderController.SetLeftRaycastHitConnected();
+                    if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitConnected();
+                    else leftRaycastHitColliderController.OnSetLeftRaycastHitConnected();
                 }
                 else
                 {
-                    if (d == Right) rightRaycastHitColliderController.SetRightRaycastHitMissed();
-                    else leftRaycastHitColliderController.SetLeftRaycastHitMissed();
+                    if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitMissed();
+                    else leftRaycastHitColliderController.OnSetLeftRaycastHitMissed();
                 }
             }
 
             void SetCurrentHorizontalRaycast(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.SetCurrentRightRaycast();
-                else leftRaycastController.SetCurrentLeftRaycast();
+                if (d == Right) rightRaycastController.OnSetCurrentRightRaycast();
+                else leftRaycastController.OnSetCurrentLeftRaycast();
             }
 
             void SetCurrentHorizontalRaycastToIgnoreOneWayPlatform(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.SetCurrentRightRaycastToIgnoreOneWayPlatform();
-                else leftRaycastController.SetCurrentLeftRaycastToIgnoreOneWayPlatform();
+                if (d == Right) rightRaycastController.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
+                else leftRaycastController.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
             }
 
             void SetCurrentHorizontalRaycastOrigin(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.SetCurrentRightRaycastOrigin();
-                else leftRaycastController.SetCurrentLeftRaycastOrigin();
+                if (d == Right) rightRaycastController.OnSetCurrentRightRaycastOrigin();
+                else leftRaycastController.OnSetCurrentLeftRaycastOrigin();
             }
 
             void AddToCurrentHorizontalHitsStorageIndex(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.AddToCurrentRightHitsStorageIndex();
-                leftRaycastHitColliderController.AddToCurrentLeftHitsStorageIndex();
+                if (d == Right) rightRaycastHitColliderController.OnAddToCurrentRightHitsStorageIndex();
+                leftRaycastHitColliderController.OnAddToCurrentLeftHitsStorageIndex();
             }
 
             async UniTaskVoid SetHorizontalHitsStorageSize(RaycastDirection d)
             {
                 if (d == Right && rightRaycastHitCollider.RightHitsStorageLength !=
                     raycast.NumberOfHorizontalRaysPerSide)
-                    rightRaycastHitColliderController.InitializeRightHitsStorage();
+                    rightRaycastHitColliderController.OnInitializeRightHitsStorage();
                 else if (leftRaycastHitCollider.LeftHitsStorageLength != raycast.NumberOfHorizontalRaysPerSide)
-                    leftRaycastHitColliderController.InitializeLeftHitsStorage();
+                    leftRaycastHitColliderController.OnInitializeLeftHitsStorage();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetHorizontalRaycastLength(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.InitializeRightRaycastLength();
-                else leftRaycastController.InitializeLeftRaycastLength();
+                if (d == Right) rightRaycastController.OnInitializeRightRaycastLength();
+                else leftRaycastController.OnInitializeLeftRaycastLength();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetHorizontalRaycastToTopOrigin(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.SetRightRaycastToTopOrigin();
-                else leftRaycastController.SetLeftRaycastToTopOrigin();
+                if (d == Right) rightRaycastController.OnSetRightRaycastToTopOrigin();
+                else leftRaycastController.OnSetLeftRaycastToTopOrigin();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid SetHorizontalRaycastFromBottomOrigin(RaycastDirection d)
             {
-                if (d == Right) rightRaycastController.SetRightRaycastFromBottomOrigin();
-                else leftRaycastController.SetLeftRaycastFromBottomOrigin();
+                if (d == Right) rightRaycastController.OnSetRightRaycastFromBottomOrigin();
+                else leftRaycastController.OnSetLeftRaycastFromBottomOrigin();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
             async UniTaskVoid InitializeCurrentHorizontalHitsStorageIndex(RaycastDirection d)
             {
-                if (d == Right) rightRaycastHitColliderController.InitializeCurrentRightHitsStorageIndex();
-                else leftRaycastHitColliderController.InitializeCurrentLeftHitsStorageIndex();
+                if (d == Right) rightRaycastHitColliderController.OnInitializeCurrentRightHitsStorageIndex();
+                else leftRaycastHitColliderController.OnInitializeCurrentLeftHitsStorageIndex();
                 await SetYieldOrSwitchToThreadPoolAsync();
             }
 
@@ -929,7 +933,7 @@ namespace VFEngine.Platformer
         {
             if (physics.SafetyBoxcastControl)
             {
-                safetyBoxcastController.SetSafetyBoxcast();
+                safetyBoxcastController.OnSetSafetyBoxcast();
                 if (safetyBoxcast.SafetyBoxcastHit &&
                     Abs(safetyBoxcast.SafetyBoxcastHit.distance - physics.NewPosition.magnitude) < 0.002f)
                 {
@@ -952,7 +956,7 @@ namespace VFEngine.Platformer
         private async UniTaskVoid SetStates()
         {
             if (!downRaycastHitCollider.HasGroundedLastFrame && downRaycastHitCollider.IsCollidingBelow)
-                downRaycastHitColliderController.SetGroundedEvent();
+                downRaycastHitColliderController.OnSetGroundedEvent();
             if (leftRaycastHitCollider.IsCollidingLeft || rightRaycastHitCollider.IsCollidingRight ||
                 downRaycastHitCollider.IsCollidingBelow ||
                 upRaycastHitCollider.IsCollidingAbove) physicsController.OnContactListHit();
@@ -963,26 +967,26 @@ namespace VFEngine.Platformer
         {
             if (raycast.DistanceToGroundRayMaximumLength > 0)
             {
-                distanceToGroundRaycastController.SetDistanceToGroundRaycastOrigin();
-                var rTask1 = Async(distanceToGroundRaycastController.SetDistanceToGroundRaycast());
-                var rTask2 = Async(distanceToGroundRaycastHitColliderController.SetDistanceToGroundRaycastHit());
-                var rhcTask2 = Async(distanceToGroundRaycastHitColliderController.InitializeDistanceToGround());
+                distanceToGroundRaycastController.OnSetDistanceToGroundRaycastOrigin();
+                var rTask1 = Async(distanceToGroundRaycastController.OnSetDistanceToGroundRaycast());
+                var rTask2 = Async(distanceToGroundRaycastHitColliderController.OnSetDistanceToGroundRaycastHit());
+                var rhcTask2 = Async(distanceToGroundRaycastHitColliderController.OnInitializeDistanceToGround());
                 var task1 = await (rTask1, rTask2, rhcTask2);
                 if (distanceToGroundRaycastHitCollider.DistanceToGroundRaycastHitConnected)
                 {
                     if (distanceToGroundRaycast.DistanceToGroundRaycastHit.collider ==
                         raycastHitCollider.IgnoredCollider)
                     {
-                        distanceToGroundRaycastHitColliderController.DecreaseDistanceToGround();
+                        distanceToGroundRaycastHitColliderController.OnDecreaseDistanceToGround();
                         return;
                     }
 
                     distanceToGroundRaycastHitColliderController
-                        .ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
+                        .OnApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
                 }
                 else
                 {
-                    distanceToGroundRaycastHitColliderController.DecreaseDistanceToGround();
+                    distanceToGroundRaycastHitColliderController.OnDecreaseDistanceToGround();
                 }
             }
 
@@ -992,7 +996,7 @@ namespace VFEngine.Platformer
         private async UniTaskVoid SetStandingOnLastFrameToSavedBelowLayer()
         {
             if (downRaycastHitCollider.HasStandingOnLastFrame)
-                downRaycastHitColliderController.SetStandingOnLastFrameLayerToSavedBelowLayer();
+                downRaycastHitColliderController.OnSetStandingOnLastFrameLayerToSavedBelowLayer();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 

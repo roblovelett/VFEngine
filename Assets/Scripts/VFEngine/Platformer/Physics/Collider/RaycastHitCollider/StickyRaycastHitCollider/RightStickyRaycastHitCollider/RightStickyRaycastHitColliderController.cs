@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider
 {
     using static Vector3;
+    using static UniTaskExtensions;
 
     public class RightStickyRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -96,19 +99,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region public methods
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetBelowSlopeAngleRight()
+        public async UniTaskVoid OnSetBelowSlopeAngleRight()
         {
             SetBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCrossBelowSlopeAngleRight()
+        public async UniTaskVoid OnSetCrossBelowSlopeAngleRight()
         {
             SetCrossBelowSlopeAngleRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetBelowSlopeAngleRightToNegative()

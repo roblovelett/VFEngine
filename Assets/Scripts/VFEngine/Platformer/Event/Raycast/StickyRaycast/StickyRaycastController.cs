@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast;
 using VFEngine.Platformer.Physics;
@@ -6,6 +7,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
@@ -13,6 +15,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     using static Mathf;
     using static DebugExtensions;
     using static ScriptableObject;
+    using static UniTaskExtensions;
 
     public class StickyRaycastController : MonoBehaviour, IController
     {
@@ -172,19 +175,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         #region public methods
 
-        public void OnSetStickyRaycastLength()
+        public async UniTaskVoid OnSetStickyRaycastLength()
         {
             SetStickyRaycastLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetStickyRaycastLengthToSelf()
+        public async UniTaskVoid OnSetStickyRaycastLengthToSelf()
         {
             SetStickyRaycastLengthToSelf();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetDoNotCastFromLeft()
+        public async UniTaskVoid OnSetDoNotCastFromLeft()
         {
             SetDoNotCastFromLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight()
@@ -192,19 +198,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             SetCastFromLeftWithBelowSlopeAngleLeftGtBelowSlopeAngleRight();
         }
 
-        public void OnSetCastFromLeftWithBelowSlopeAngleLtZero()
+        public async UniTaskVoid OnSetCastFromLeftWithBelowSlopeAngleLtZero()
         {
             SetCastFromLeftWithBelowSlopeAngleLtZero();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCastFromLeftWithBelowSlopeAngleRightLtZero()
+        public async UniTaskVoid OnSetCastFromLeftWithBelowSlopeAngleRightLtZero()
         {
             SetCastFromLeftWithBelowSlopeAngleRightLtZero();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetCastFromLeftWithBelowSlopeAngleLeftLtZero()
+        public async UniTaskVoid OnSetCastFromLeftWithBelowSlopeAngleLeftLtZero()
         {
             SetCastFromLeftWithBelowSlopeAngleLeftLtZero();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetCastFromLeftWithLeftDistanceLtRightDistance()
@@ -212,9 +221,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             SetCastFromLeftWithLeftDistanceLtRightDistance();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

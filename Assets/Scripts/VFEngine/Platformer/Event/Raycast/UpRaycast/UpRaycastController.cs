@@ -1,10 +1,12 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.UpRaycast
@@ -13,6 +15,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static Raycast;
     using static DebugExtensions;
     using static Color;
+    using static UniTaskExtensions;
 
     public class UpRaycastController : MonoBehaviour, IController
     {
@@ -132,24 +135,28 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region public methods
 
-        public void OnInitializeUpRaycastLength()
+        public async UniTaskVoid OnInitializeUpRaycastLength()
         {
             InitializeUpRaycastLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpRaycastStart()
+        public async UniTaskVoid OnInitializeUpRaycastStart()
         {
             InitializeUpRaycastStart();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpRaycastEnd()
+        public async UniTaskVoid OnInitializeUpRaycastEnd()
         {
             InitializeUpRaycastEnd();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpRaycastSmallestDistance()
+        public async UniTaskVoid OnInitializeUpRaycastSmallestDistance()
         {
             InitializeUpRaycastSmallestDistance();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetCurrentUpRaycastOrigin()

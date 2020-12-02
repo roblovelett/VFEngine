@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
@@ -11,6 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static Color;
     using static Mathf;
     using static Raycast;
+    using static UniTaskExtensions;
 
     public class DownRaycastController : MonoBehaviour, IController
     {
@@ -136,9 +139,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             SetCurrentDownRaycast();
         }
 
-        public void OnInitializeDownRayLength()
+        public async UniTaskVoid OnInitializeDownRayLength()
         {
             InitializeDownRayLength();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnDoubleDownRayLength()
@@ -151,14 +155,16 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             SetDownRayLengthToVerticalNewPosition();
         }
 
-        public void OnSetDownRaycastFromLeft()
+        public async UniTaskVoid OnSetDownRaycastFromLeft()
         {
             SetDownRaycastFromLeft();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetDownRaycastToRight()
+        public async UniTaskVoid OnSetDownRaycastToRight()
         {
             SetDownRaycastToRight();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnSetCurrentDownRaycastOriginPoint()

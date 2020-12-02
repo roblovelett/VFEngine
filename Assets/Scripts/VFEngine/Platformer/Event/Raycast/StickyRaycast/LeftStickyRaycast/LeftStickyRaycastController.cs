@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
@@ -9,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static StickyRaycast;
     using static DebugExtensions;
     using static Color;
+    using static UniTaskExtensions;
 
     public class LeftStickyRaycastController : MonoBehaviour, IController
     {
@@ -117,19 +120,22 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
             SetLeftStickyRaycastLengthToStickyRaycastLength();
         }
 
-        public void OnSetLeftStickyRaycastOriginX()
+        public async UniTaskVoid OnSetLeftStickyRaycastOriginX()
         {
             SetLeftStickyRaycastOriginX();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetLeftStickyRaycastOriginY()
+        public async UniTaskVoid OnSetLeftStickyRaycastOriginY()
         {
             SetLeftStickyRaycastOriginY();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetLeftStickyRaycast()
+        public async UniTaskVoid OnSetLeftStickyRaycast()
         {
             SetLeftStickyRaycast();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

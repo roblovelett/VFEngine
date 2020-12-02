@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
 using VFEngine.Tools;
+using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider
 {
+    using static UniTaskExtensions;
+
     public class UpRaycastHitColliderController : MonoBehaviour, IController
     {
         #region fields
@@ -138,19 +142,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region public methods
 
-        public void OnInitializeUpHitConnected()
+        public async UniTaskVoid OnInitializeUpHitConnected()
         {
             InitializeUpHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpHitsStorageCollidingIndex()
+        public async UniTaskVoid OnInitializeUpHitsStorageCollidingIndex()
         {
             InitializeUpHitsStorageCollidingIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnInitializeUpHitsStorageCurrentIndex()
+        public async UniTaskVoid OnInitializeUpHitsStorageCurrentIndex()
         {
             InitializeUpHitsStorageCurrentIndex();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         public void OnInitializeUpHitsStorage()
@@ -173,29 +180,34 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             SetRaycastUpHitAt();
         }
 
-        public void OnSetUpHitConnected()
+        public async UniTaskVoid OnSetUpHitConnected()
         {
             SetUpHitConnected();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetUpHitsStorageCollidingIndexAt()
+        public async UniTaskVoid OnSetUpHitsStorageCollidingIndexAt()
         {
             SetUpHitsStorageCollidingIndexAt();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetIsCollidingAbove()
+        public async UniTaskVoid OnSetIsCollidingAbove()
         {
             SetIsCollidingAbove();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnSetWasTouchingCeilingLastFrame()
+        public async UniTaskVoid OnSetWasTouchingCeilingLastFrame()
         {
             SetWasTouchingCeilingLastFrame();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public void OnResetState()
+        public async UniTaskVoid OnResetState()
         {
             ResetState();
+            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion
