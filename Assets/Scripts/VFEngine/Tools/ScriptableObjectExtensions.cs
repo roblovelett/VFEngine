@@ -47,12 +47,6 @@ namespace VFEngine.Tools
             return LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
         }
 
-        public static T LoadModel<T>(string path) where T : class
-        {
-            Assert(LoadData(path) is T model, nameof(model) + " != null");
-            return LoadAssetAtPath(path, typeof(T)) as T;
-        }
-
         #endregion
 
         #endregion
