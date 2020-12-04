@@ -20,7 +20,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         [SerializeField] private RaycastSettings settings;
         private PhysicsController physicsController;
         private BoxCollider2D boxCollider;
@@ -33,33 +32,30 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-            if (r.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
         }
 
-        private void LoadCharacter()
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            physicsController = GetComponent<PhysicsController>();
+            boxCollider = GetComponent<BoxCollider2D>();
         }
-
+        
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            r = new RaycastData();
+            r = new RaycastData
+            {
+                OriginalColliderSize = boxCollider.size,
+                OriginalColliderOffset = boxCollider.offset
+            };
             r.ApplySettings(settings);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
         }
 
-        private void SetControllers()
-        {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            boxCollider = character.GetComponentNoAllocation<BoxCollider2D>();
-        }
-
-        private void GetWarningMessages()
+        /*private void GetWarningMessages()
         {
             const string ra = "Rays";
             const string rc = "Raycasts";
@@ -134,17 +130,22 @@ namespace VFEngine.Platformer.Event.Raycast
             {
                 warningMessageCount++;
             }
-        }
+        }*/
 
         private void Start()
         {
             SetDependencies();
-            SetRaysParameters();
+            Initialize();
         }
 
         private void SetDependencies()
         {
             physics = physicsController.Data;
+        }
+
+        private void Initialize()
+        {
+            SetRaysParameters();
         }
 
         private void SetRaysParameters()
@@ -162,7 +163,7 @@ namespace VFEngine.Platformer.Event.Raycast
             r.BoundsBottomCenterPosition = new Vector2(bounds.center.x, bounds.min.y);
             r.BoundsWidth = Distance(r.BoundsBottomLeftCorner, r.BoundsBottomRightCorner);
             r.BoundsHeight = Distance(r.BoundsBottomLeftCorner, r.BoundsTopLeftCorner);
-            r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
+            r.Bounds= new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
         }
 
         private Vector2 SetBoundsCorner(float x, float y)

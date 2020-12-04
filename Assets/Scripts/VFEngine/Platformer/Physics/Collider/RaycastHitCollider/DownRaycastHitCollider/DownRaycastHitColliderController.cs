@@ -4,8 +4,6 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Physics.Movement.PathMovement;
-using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
@@ -24,7 +22,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private DownRaycastController downRaycastController;
@@ -41,22 +38,25 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
+            InitializeData();
         }
 
-        private void LoadCharacter()
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            downRaycastController = GetComponent<DownRaycastController>();
+            layerMaskController = GetComponent<LayerMaskController>();
         }
-
+        
         private void InitializeData()
         {
-            d = new DownRaycastHitColliderData
-            {
-                DownHitWithSmallestDistance = new RaycastHit2D(), StandingOnWithSmallestDistance = new GameObject()
-            };
+            d = new DownRaycastHitColliderData();
+
+            /*
+            d.StandingOnLastFrame = d.StandingOn;
+            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
             d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
@@ -67,20 +67,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
             d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;
-        }
-
-        private void SetControllers()
-        {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            downRaycastController = character.GetComponentNoAllocation<DownRaycastController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            */
         }
 
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            Initialize();
         }
 
         private void SetDependencies()
@@ -91,15 +84,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             layerMask = layerMaskController.Data;
         }
 
-        private void InitializeFrame()
+        private void Initialize()
         {
-            d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
-            d.DownHitsStorageLength = d.DownHitsStorage.Length;
-            StopMovingPlatformCurrentGravity();
-            InitializeFriction();
             InitializeDownHitsStorage();
-            InitializeDownHitsStorageSmallestDistanceIndex();
-            InitializeDownHitsStorageIndex();
+            //InitializeDownHitsStorageSmallestDistanceIndex();
+            //InitializeDownHitsStorageIndex();
+            //StopMovingPlatformCurrentGravity();
+            //InitializeFriction();
+            //d.DownHitsStorageLength = d.DownHitsStorage.Length;
             ResetState();
         }
 

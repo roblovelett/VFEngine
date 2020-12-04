@@ -9,15 +9,14 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static Raycast;
     using static DebugExtensions;
-    using static Color;
-
+    using static Color;    
+    using static Vector2;
     public class LeftRaycastController : MonoBehaviour, IController
     {
         #region fields
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private LeftRaycastHitColliderController leftRaycastHitColliderController;
@@ -33,30 +32,29 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         #region private methods
 
         private void Awake()
-        {
-            LoadCharacter();
-            InitializeData();
+        { 
             SetControllers();
+            InitializeData();
         }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            l = new LeftRaycastData();
-        }
-
+        
         private void SetControllers()
         {
-            raycastController = character.GetComponent<RaycastController>();
-            physicsController = character.GetComponent<PhysicsController>();
-            leftRaycastHitColliderController = character.GetComponent<LeftRaycastHitColliderController>();
-            layerMaskController = character.GetComponent<LayerMaskController>();
+            raycastController = GetComponent<RaycastController>();
+            physicsController = GetComponent<PhysicsController>();
+            leftRaycastHitColliderController = GetComponent<LeftRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
         }
-
+        
+        private void InitializeData()
+        {
+            l = new LeftRaycastData
+            {
+                CurrentLeftRaycastOrigin = zero,
+                LeftRaycastFromBottomOrigin = zero,
+                LeftRaycastToTopOrigin = zero
+            };
+        }
+        
         private void Start()
         {
             SetDependencies();

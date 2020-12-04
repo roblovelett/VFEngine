@@ -2,7 +2,6 @@
 using UnityEngine;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.LeftStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private RightStickyRaycastHitColliderController rightStickyRaycastHitColliderController;
         private LeftStickyRaycastHitColliderController leftStickyRaycastHitColliderController;
         private StickyRaycastHitColliderData s;
@@ -29,33 +27,25 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
+            InitializeData();
         }
 
-        private void LoadCharacter()
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            rightStickyRaycastHitColliderController = GetComponent<RightStickyRaycastHitColliderController>();
+            leftStickyRaycastHitColliderController = GetComponent<LeftStickyRaycastHitColliderController>();
         }
-
+        
         private void InitializeData()
         {
             s = new StickyRaycastHitColliderData();
         }
 
-        private void SetControllers()
-        {
-            rightStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<RightStickyRaycastHitColliderController>();
-            leftStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<LeftStickyRaycastHitColliderController>();
-        }
-
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            //InitializeFrame();
         }
 
         private void SetDependencies()
@@ -66,7 +56,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void InitializeFrame()
         {
-            InitializeBelowSlopeAngle();
+            //InitializeBelowSlopeAngle();
         }
 
         private void ResetState()

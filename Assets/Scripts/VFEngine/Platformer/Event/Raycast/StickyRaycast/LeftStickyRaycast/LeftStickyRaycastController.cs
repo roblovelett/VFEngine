@@ -12,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
+    using static Vector2;
 
     public class LeftStickyRaycastController : MonoBehaviour, IController
     {
@@ -19,7 +20,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private StickyRaycastController stickyRaycastController;
@@ -36,27 +36,24 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            l = new LeftStickyRaycastData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            stickyRaycastController = GetComponent<StickyRaycastController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+        
+        private void InitializeData()
+        {
+            l = new LeftStickyRaycastData
+            {
+                LeftStickyRaycastOrigin = zero
+            };
         }
 
         private void Start()

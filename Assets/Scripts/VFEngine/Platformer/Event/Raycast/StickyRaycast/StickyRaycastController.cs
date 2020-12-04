@@ -24,7 +24,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
         #region dependencies
 
         [SerializeField] private StickyRaycastSettings settings;
-        private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private RightStickyRaycastController rightStickyRaycastController;
@@ -47,17 +46,21 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-            if (s.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
         }
 
-        private void LoadCharacter()
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            rightStickyRaycastController = GetComponent<RightStickyRaycastController>();
+            leftStickyRaycastController = GetComponent<LeftStickyRaycastController>();
+            stickyRaycastHitColliderController = GetComponent<StickyRaycastHitColliderController>();
+            leftStickyRaycastHitColliderController = GetComponent<LeftStickyRaycastHitColliderController>();
+            rightStickyRaycastHitColliderController = GetComponent<RightStickyRaycastHitColliderController>();
         }
-
+        
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<StickyRaycastSettings>();
@@ -65,21 +68,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             s.ApplySettings(settings);
         }
 
-        private void SetControllers()
-        {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
-            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
-            stickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
-            leftStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<LeftStickyRaycastHitColliderController>();
-            rightStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<RightStickyRaycastHitColliderController>();
-        }
-
-        private void GetWarningMessages()
+        /*private void GetWarningMessages()
         {
             var warningMessage = "";
             var warningMessageCount = 0;
@@ -93,7 +82,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                 warningMessageCount++;
                 return $"{field} field not set to {scriptableObject} ScriptableObject.@";
             }
-        }
+        }*/
 
         private void Start()
         {

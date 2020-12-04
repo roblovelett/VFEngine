@@ -21,6 +21,9 @@ namespace VFEngine.Tools
         #region properties
 
         public const string PlatformerSettingsPath = "VFEngine/Platformer/Platformer Settings";
+
+        public const string PlatformerSafetyBoxcastSettingsPath =
+            "VFEngine/Platformer/Event/Boxcast/Safety Boxcast/Safety Boxcast Settings";
         public const string PlatformerRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/Raycast Settings";
 
         public const string PlatformerStickyRaycastSettingsPath =

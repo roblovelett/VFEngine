@@ -12,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
+    using static Vector2;
 
     public class DistanceToGroundRaycastController : MonoBehaviour, IController
     {
@@ -19,7 +20,6 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private StickyRaycastHitColliderController stickyRaycastHitColliderController;
@@ -36,29 +36,25 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
+            InitializeData();
         }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            d = new DistanceToGroundRaycastData();
-        }
-
+        
         private void SetControllers()
         {
-            physicsController = character.GetComponent<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            stickyRaycastHitColliderController = character.GetComponent<StickyRaycastHitColliderController>();
-            layerMaskController = character.GetComponent<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            stickyRaycastHitColliderController = GetComponent<StickyRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
         }
-
+        
+        private void InitializeData()
+        {
+            d = new DistanceToGroundRaycastData
+            {
+                DistanceToGroundRaycastOrigin = zero
+            };
+        }
         private void Start()
         {
             SetDependencies();

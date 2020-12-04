@@ -18,7 +18,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private RightRaycastController rightRaycastController;
@@ -33,26 +32,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            r = new RightRaycastHitColliderData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            rightRaycastController = character.GetComponentNoAllocation<RightRaycastController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            rightRaycastController = GetComponent<RightRaycastController>();
+        }
+        
+        private void InitializeData()
+        {
+            r = new RightRaycastHitColliderData
+            {
+                CurrentRightWallCollider = null
+            };
         }
 
         private void Start()
@@ -71,7 +67,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private void InitializeFrame()
         {
             InitializeRightHitsStorage();
-            InitializeCurrentRightHitsStorageIndex();
+            //InitializeCurrentRightHitsStorageIndex();
+            //r.RightHitsStorageLength = r.RightHitsStorage.Length;
             ResetState();
         }
 

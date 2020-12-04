@@ -6,8 +6,8 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
     {
         #region properties
 
+        public Vector2 DistanceToGroundRaycastOrigin { get; set; }
         public RaycastHit2D DistanceToGroundRaycastHit { get; set; }
-        public Vector2 DistanceToGroundRaycastOrigin { get; set; } = Vector2.zero;
 
         #endregion
     }

@@ -2,7 +2,6 @@
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private RaycastController raycastController;
         private DistanceToGroundRaycastController distanceToGroundRaycastController;
         private DistanceToGroundRaycastHitColliderData d;
@@ -29,25 +27,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            d = new DistanceToGroundRaycastHitColliderData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            distanceToGroundRaycastController = character.GetComponentNoAllocation<DistanceToGroundRaycastController>();
+            raycastController = GetComponent<RaycastController>();
+            distanceToGroundRaycastController = GetComponent<DistanceToGroundRaycastController>();
+        }
+        
+        private void InitializeData()
+        {
+            d = new DistanceToGroundRaycastHitColliderData();
         }
 
         private void Start()

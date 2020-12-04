@@ -1,8 +1,8 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -17,7 +17,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private RightRaycastController rightRaycastController;
         private LeftRaycastController leftRaycastController;
         private RaycastHitColliderData r;
@@ -30,31 +29,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            r = new RaycastHitColliderData {ContactList = CreateInstance<RaycastHitColliderContactList>()};
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            rightRaycastController = character.GetComponentNoAllocation<RightRaycastController>();
-            leftRaycastController = character.GetComponentNoAllocation<LeftRaycastController>();
+            rightRaycastController = GetComponent<RightRaycastController>();
+            leftRaycastController = GetComponent<LeftRaycastController>();
+        }
+        
+        private void InitializeData()
+        {
+            r = new RaycastHitColliderData
+            {
+                ContactList = new List<RaycastHit2D>()
+            };
         }
 
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
         }
 
         private void SetDependencies()
@@ -63,7 +58,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftRaycast = leftRaycastController.Data;
         }
 
-        private void InitializeFrame()
+        /*private void InitializeFrame()
+        {
+            ClearContactList();
+        }*/
+
+        private void PlatformerInitializeFrame()
         {
             ClearContactList();
         }
@@ -83,11 +83,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             r.ContactList.Clear();
         }
 
-        private void ResetState()
-        {
-            ClearContactList();
-        }
-
         #endregion
 
         #endregion
@@ -98,6 +93,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region public methods
 
+        #region platformer
+
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
         public void OnAddRightHitToContactList()
         {
             AddRightHitToContactList();
@@ -108,11 +111,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             AddLeftHitToContactList();
         }
 
-        public async UniTaskVoid OnResetState()
+        /*public async UniTaskVoid OnResetState()
         {
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         #endregion
 

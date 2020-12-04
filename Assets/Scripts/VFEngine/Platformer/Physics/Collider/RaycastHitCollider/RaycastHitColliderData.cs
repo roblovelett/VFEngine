@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
@@ -7,7 +8,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
     {
         #region properties
 
-        public RaycastHitColliderContactList ContactList { get; set; }
+        public List<RaycastHit2D> ContactList { get; set; }
         public Collider2D IgnoredCollider { get; set; }
 
         #endregion

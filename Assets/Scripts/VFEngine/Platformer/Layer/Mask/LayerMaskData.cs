@@ -9,13 +9,13 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        public bool DisplayWarningsControl { get; private set; }
+        public bool DisplayWarningsControl { get; set; }
         public LayerMask PlatformMask { get; set; }
-        public LayerMask MovingPlatformMask { get; private set; }
-        public LayerMask OneWayPlatformMask { get; private set; }
-        public LayerMask MovingOneWayPlatformMask { get; private set; }
-        public LayerMask MidHeightOneWayPlatformMask { get; private set; }
-        public LayerMask StairsMask { get; private set; }
+        public LayerMask MovingPlatformMask { get; set; }
+        public LayerMask OneWayPlatformMask { get; set; }
+        public LayerMask MovingOneWayPlatformMask { get; set; }
+        public LayerMask MidHeightOneWayPlatformMask { get; set; }
+        public LayerMask StairsMask { get; set; }
 
         #endregion
 
@@ -24,6 +24,7 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask RaysBelowLayerMaskPlatforms { get; set; }
         public int SavedBelowLayer { get; set; }
         public LayerMask SavedPlatformMask { get; set; }
+        public bool MidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer { get; set; }
 
         #region public methods
 

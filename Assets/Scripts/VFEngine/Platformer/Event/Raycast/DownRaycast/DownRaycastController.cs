@@ -14,6 +14,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
     using static Mathf;
     using static Raycast;
     using static UniTaskExtensions;
+    using static Vector2;
 
     public class DownRaycastController : MonoBehaviour, IController
     {
@@ -21,7 +22,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private DownRaycastHitColliderController downRaycastHitColliderController;
@@ -38,27 +38,26 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            d = new DownRaycastData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+        
+        private void InitializeData()
+        {
+            d = new DownRaycastData
+            {
+                CurrentDownRaycastOrigin = zero,
+                DownRaycastFromLeft = zero,
+                DownRaycastToRight = zero
+            };
         }
 
         private void Start()

@@ -2,7 +2,6 @@
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.UpRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private RaycastController raycastController;
         private UpRaycastController upRaycastController;
         private UpRaycastHitColliderData u;
@@ -29,25 +27,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
+            InitializeData();
         }
-
-        private void LoadCharacter()
+        
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            raycastController = GetComponent<RaycastController>();
+            upRaycastController = GetComponent<UpRaycastController>();
         }
-
+        
         private void InitializeData()
         {
             u = new UpRaycastHitColliderData();
-        }
-
-        private void SetControllers()
-        {
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
         }
 
         private void Start()
@@ -65,9 +57,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void InitializeFrame()
         {
             InitializeUpHitsStorage();
-            u.UpHitsStorageLength = u.UpHitsStorage.Length;
-            InitializeUpHitsStorageCollidingIndex();
-            InitializeUpHitsStorageCurrentIndex();
+            //InitializeUpHitsStorageCollidingIndex();
+            //InitializeUpHitsStorageCurrentIndex();
+            //u.UpHitsStorageLength = u.UpHitsStorage.Length;
             ResetState();
         }
 

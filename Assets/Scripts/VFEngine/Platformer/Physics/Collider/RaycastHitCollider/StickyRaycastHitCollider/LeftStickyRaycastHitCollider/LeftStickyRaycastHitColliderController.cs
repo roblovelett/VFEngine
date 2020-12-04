@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -16,7 +15,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private LeftStickyRaycastController leftStickyRaycastController;
         private LeftStickyRaycastHitColliderData l;
@@ -29,27 +27,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
+            InitializeData();
         }
-
-        private void LoadCharacter()
+        
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            physicsController = GetComponent<PhysicsController>();
+            leftStickyRaycastController = GetComponent<LeftStickyRaycastController>();
         }
 
         private void InitializeData()
         {
             l = new LeftStickyRaycastHitColliderData();
         }
-
-        private void SetControllers()
-        {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
-        }
-
+        
         private void Start()
         {
             SetDependencies();

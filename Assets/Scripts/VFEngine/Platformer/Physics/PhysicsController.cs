@@ -13,6 +13,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedMember.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
@@ -24,6 +25,7 @@ namespace VFEngine.Platformer.Physics
     using static RigidbodyType2D;
     using static ScriptableObject;
     using static UniTaskExtensions;
+    using static GameObject;
 
     public class PhysicsController : MonoBehaviour, IController
     {
@@ -31,8 +33,8 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsSettings settings;
+        private GameObject character;
         private RaycastController raycastController;
         private RaycastHitColliderController raycastHitColliderController;
         private UpRaycastController upRaycastController;
@@ -61,48 +63,41 @@ namespace VFEngine.Platformer.Physics
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-            if (p.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
         }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            if (!settings) settings = CreateInstance<PhysicsSettings>();
-            p = new PhysicsData();
-            p.ApplySettings(settings);
-            p.Transform = character.transform;
-            if (p.AutomaticGravityControl) p.Transform.rotation = identity;
-            p.IsJumping = false;
-            p.FallSlowFactor = 0f;
-            p.SmallValue = 0.0001f;
-            p.MovementDirectionThreshold = p.SmallValue;
-            p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic &&
-                                               p.CurrentHitRigidBody.bodyType != Static;
-        }
-
+        
         private void SetControllers()
         {
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
-            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
-            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
-            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
-            safetyBoxcastController = character.GetComponentNoAllocation<SafetyBoxcastController>();
-            leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
-            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
-            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            stickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
+            raycastController = GetComponent<RaycastController>();
+            raycastHitColliderController = GetComponent<RaycastHitColliderController>();
+            upRaycastController = GetComponent<UpRaycastController>();
+            leftStickyRaycastController = GetComponent<LeftStickyRaycastController>();
+            rightStickyRaycastController = GetComponent<RightStickyRaycastController>();
+            safetyBoxcastController = GetComponent<SafetyBoxcastController>();
+            leftRaycastHitColliderController = GetComponent<LeftRaycastHitColliderController>();
+            rightRaycastHitColliderController = GetComponent<RightRaycastHitColliderController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
+            stickyRaycastHitColliderController = GetComponent<StickyRaycastHitColliderController>();
+        }
+        
+        private void InitializeData()
+        {
+            character = Find("Character");
+            if (!settings) settings = CreateInstance<PhysicsSettings>();
+            p = new PhysicsData
+            {
+                Transform = character.transform,
+                GravityActive = true,
+                StoredHorizontalMovementDirection = 1,
+                MovementDirectionThreshold = 0.0001f
+            };
+            p.ApplySettings(settings);
+            if (p.AutomaticGravityControl) p.Transform.rotation = identity;
+            /*p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic && p.CurrentHitRigidBody.bodyType != Static;*/
         }
 
-        private void GetWarningMessages()
+        /*private void GetWarningMessages()
         {
             const string ph = "Physics";
             var physicsSettings = $"{ph} Settings";
@@ -128,12 +123,12 @@ namespace VFEngine.Platformer.Physics
             {
                 warningMessageCount++;
             }
-        }
+        }*/
 
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            Initialize();
         }
 
         private void SetDependencies()
@@ -150,9 +145,23 @@ namespace VFEngine.Platformer.Physics
             stickyRaycastHitCollider = stickyRaycastHitColliderController.Data;
         }
 
-        private void InitializeFrame()
+        private void Initialize()
         {
             ResetState();
+        }
+        
+        private void ResetState()
+        {
+            p.IsFalling = true;
+        }
+
+        private void PlatformerApplyGravity()
+        {
+            SetCurrentGravity();
+            if (p.Speed.y > 0) ApplyAscentMultiplierToCurrentGravity();
+            if (p.Speed.y < 0) ApplyFallMultiplierToCurrentGravity();
+            if (p.GravityActive) ApplyGravityToVerticalSpeed();
+            if (p.FallSlowFactor != 0) ApplyFallSlowFactorToVerticalSpeed();
         }
 
         private void SetCurrentGravity()
@@ -181,14 +190,15 @@ namespace VFEngine.Platformer.Physics
             p.SpeedY *= p.FallSlowFactor;
         }
 
+        private void PlatformerInitializeFrame()
+        {
+            SetNewPosition();
+            ResetState();
+        }
+
         private void SetNewPosition()
         {
             p.NewPosition = p.Speed * deltaTime;
-        }
-
-        private void ResetState()
-        {
-            p.GravityActive = true;
         }
 
         private void TranslatePlatformSpeedToTransform()
@@ -375,7 +385,7 @@ namespace VFEngine.Platformer.Physics
         private void ContactListHit()
         {
             if (!p.Physics2DInteractionControl) return;
-            foreach (var hit in raycastHitCollider.ContactList.List)
+            foreach (var hit in raycastHitCollider.ContactList)
             {
                 p.CurrentHitRigidBody = hit.collider.attachedRigidbody;
                 if (!p.CurrentHitRigidBodyCanBePushed) return;
@@ -408,13 +418,27 @@ namespace VFEngine.Platformer.Physics
         public PhysicsData Data => p;
 
         #region public methods
+        
+        #region platformer
+
+        public void OnPlatformerApplyGravity()
+        {
+            PlatformerApplyGravity();
+        }
+
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
 
         #region physics model
 
-        public void OnSetCurrentCurrentGravity()
+        /*public void OnSetCurrentCurrentGravity()
         {
             SetCurrentGravity();
-        }
+        }*/
 
         public void OnApplyAscentMultiplierToCurrentGravity()
         {

@@ -14,9 +14,7 @@ namespace VFEngine.Platformer.Physics
         public bool Physics2DInteractionControl { get; private set; }
         public Vector2 MaximumVelocity { get; private set; }
         public AnimationCurve SlopeAngleSpeedFactor { get; private set; }
-        public bool SafetyBoxcastControl { get; private set; }
         public float MaximumSlopeAngle { get; private set; }
-        public bool StickToSlopesControl { get; private set; }
         public bool SafeSetTransformControl { get; set; }
         public bool DisplayWarningsControl { get; private set; }
         public bool AutomaticGravityControl { get; private set; }
@@ -55,11 +53,11 @@ namespace VFEngine.Platformer.Physics
             set => value = ExternalForce.y;
         }
 
-        public Vector2 WorldSpeed { get; set; } = Vector2.zero;
-        public Vector2 ForcesApplied { get; set; } = Vector2.zero;
+        public Vector2 WorldSpeed { get; set; }
+        public Vector2 ForcesApplied { get; set; }
         public Rigidbody2D CurrentHitRigidBody { get; set; }
         public bool CurrentHitRigidBodyCanBePushed { get; set; }
-        public Vector2 CurrentPushDirection { get; set; } = Vector2.zero;
+        public Vector2 CurrentPushDirection { get; set; }
         public float CurrentGravity { get; set; }
         public int StoredHorizontalMovementDirection { get; set; }
 
@@ -83,9 +81,7 @@ namespace VFEngine.Platformer.Physics
             Physics2DInteractionControl = settings.physics2DInteractionControl;
             MaximumVelocity = settings.maximumVelocity;
             SlopeAngleSpeedFactor = settings.slopeAngleSpeedFactor;
-            SafetyBoxcastControl = settings.safetyBoxcastControl;
             MaximumSlopeAngle = settings.maximumSlopeAngle;
-            StickToSlopesControl = settings.stickToSlopeControl;
             SafeSetTransformControl = settings.safeSetTransformControl;
             DisplayWarningsControl = settings.displayWarningsControl;
             AutomaticGravityControl = settings.automaticGravityControl;

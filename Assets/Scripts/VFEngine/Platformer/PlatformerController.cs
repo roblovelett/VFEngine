@@ -24,6 +24,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollid
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedVariable
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -45,7 +46,6 @@ namespace VFEngine.Platformer
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         [SerializeField] private PlatformerSettings settings;
         private PhysicsController physicsController;
         private SafetyBoxcastController safetyBoxcastController;
@@ -93,15 +93,8 @@ namespace VFEngine.Platformer
 
         private void Awake()
         {
-            LoadCharacter();
             InitializeData();
             SetControllers();
-            if (p.DisplayWarningsControl) GetWarningMessages();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
         }
 
         private void InitializeData()
@@ -113,34 +106,30 @@ namespace VFEngine.Platformer
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            safetyBoxcastController = character.GetComponentNoAllocation<SafetyBoxcastController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            upRaycastController = character.GetComponentNoAllocation<UpRaycastController>();
-            rightRaycastController = character.GetComponentNoAllocation<RightRaycastController>();
-            downRaycastController = character.GetComponentNoAllocation<DownRaycastController>();
-            leftRaycastController = character.GetComponentNoAllocation<LeftRaycastController>();
-            distanceToGroundRaycastController = character.GetComponentNoAllocation<DistanceToGroundRaycastController>();
-            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
-            rightStickyRaycastController = character.GetComponentNoAllocation<RightStickyRaycastController>();
-            leftStickyRaycastController = character.GetComponentNoAllocation<LeftStickyRaycastController>();
-            raycastHitColliderController = character.GetComponentNoAllocation<RaycastHitColliderController>();
-            upRaycastHitColliderController = character.GetComponentNoAllocation<UpRaycastHitColliderController>();
-            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
-            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            leftRaycastHitColliderController = character.GetComponentNoAllocation<LeftRaycastHitColliderController>();
-            stickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<StickyRaycastHitColliderController>();
-            leftStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<LeftStickyRaycastHitColliderController>();
-            rightStickyRaycastHitColliderController =
-                character.GetComponentNoAllocation<RightStickyRaycastHitColliderController>();
-            distanceToGroundRaycastHitColliderController =
-                character.GetComponentNoAllocation<DistanceToGroundRaycastHitColliderController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            safetyBoxcastController = GetComponent<SafetyBoxcastController>();
+            raycastController = GetComponent<RaycastController>();
+            upRaycastController = GetComponent<UpRaycastController>();
+            rightRaycastController = GetComponent<RightRaycastController>();
+            downRaycastController = GetComponent<DownRaycastController>();
+            leftRaycastController = GetComponent<LeftRaycastController>();
+            distanceToGroundRaycastController = GetComponent<DistanceToGroundRaycastController>();
+            stickyRaycastController = GetComponent<StickyRaycastController>();
+            rightStickyRaycastController = GetComponent<RightStickyRaycastController>();
+            leftStickyRaycastController = GetComponent<LeftStickyRaycastController>();
+            raycastHitColliderController = GetComponent<RaycastHitColliderController>();
+            upRaycastHitColliderController = GetComponent<UpRaycastHitColliderController>();
+            rightRaycastHitColliderController = GetComponent<RightRaycastHitColliderController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
+            leftRaycastHitColliderController = GetComponent<LeftRaycastHitColliderController>();
+            stickyRaycastHitColliderController = GetComponent<StickyRaycastHitColliderController>();
+            leftStickyRaycastHitColliderController = GetComponent<LeftStickyRaycastHitColliderController>();
+            rightStickyRaycastHitColliderController = GetComponent<RightStickyRaycastHitColliderController>();
+            distanceToGroundRaycastHitColliderController = GetComponent<DistanceToGroundRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
         }
 
-        private void GetWarningMessages()
+        /*private void GetWarningMessages()
         {
             const string rc = "Raycast";
             const string ctr = "Controller";
@@ -164,7 +153,7 @@ namespace VFEngine.Platformer
             {
                 warningMessageCount++;
             }
-        }
+        }*/
 
         private void Start()
         {
@@ -192,13 +181,16 @@ namespace VFEngine.Platformer
             layerMask = layerMaskController.Data;
         }
 
-        private async void FixedUpdate()
+        private void FixedUpdate()
         {
-            await Async(RunPlatformer());
+            RunPlatformer();
         }
 
-        private async UniTaskVoid RunPlatformer()
+        private void RunPlatformer()
         {
+            ApplyGravity();
+            InitializeFrame();
+            /*
             var pTask1 = Async(ApplyGravity());
             var pTask2 = Async(InitializeFrame());
             var task1 = await (pTask1, pTask2);
@@ -215,28 +207,25 @@ namespace VFEngine.Platformer
             var pTask9 = Async(SetStandingOnLastFrameToSavedBelowLayer());
             var pTask10 = Async(physicsController.OnSetWorldSpeedToSpeed());
             var task3 = await (pTask6, pTask7, pTask8, pTask9, pTask10);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            */
         }
 
-        private async UniTaskVoid ApplyGravity()
+        private void ApplyGravity()
         {
-            physicsController.OnSetCurrentCurrentGravity();
-            if (physics.Speed.y > 0) physicsController.OnApplyAscentMultiplierToCurrentGravity();
-            if (physics.Speed.y < 0) physicsController.OnApplyFallMultiplierToCurrentGravity();
-            if (physics.GravityActive) physicsController.OnApplyGravityToVerticalSpeed();
-            if (physics.FallSlowFactor != 0) physicsController.OnApplyFallSlowFactorToVerticalSpeed();
-            await SetYieldOrSwitchToThreadPoolAsync();
+            physicsController.OnPlatformerApplyGravity();
         }
 
-        private async UniTaskVoid InitializeFrame()
+        private void InitializeFrame()
         {
-            if (physics.StickToSlopesControl)
+            raycastHitColliderController.OnPlatformerInitializeFrame();
+            physicsController.OnPlatformerInitializeFrame();
+            
+            /*if (stickyRaycast.StickToSlopesControl)
             {
                 var srTask1 = Async(stickyRaycastController.OnResetState());
                 var srhTask1 = Async(stickyRaycastHitColliderController.OnResetState());
                 var srhTask2 = Async(leftStickyRaycastHitColliderController.OnResetState());
                 var srhTask3 = Async(rightStickyRaycastHitColliderController.OnResetState());
-                var task1 = await (srTask1, srhTask1, srhTask2, srhTask3);
             }
 
             var rTask1 = Async(raycastController.OnSetRaysParameters());
@@ -245,19 +234,22 @@ namespace VFEngine.Platformer
             var rhcTask3 = Async(upRaycastHitColliderController.OnSetWasTouchingCeilingLastFrame());
             var rhcTask4 = Async(rightRaycastHitColliderController.OnSetCurrentWallColliderNull());
             var rhcTask5 = Async(leftRaycastHitColliderController.OnSetCurrentWallColliderNull());
-            var rhcTask6 = Async(raycastHitColliderController.OnResetState());
             var rhcTask7 = Async(upRaycastHitColliderController.OnResetState());
             var rhcTask8 = Async(rightRaycastHitColliderController.OnResetState());
             var rhcTask9 = Async(downRaycastHitColliderController.OnResetState());
             var rhcTask10 = Async(leftRaycastHitColliderController.OnResetState());
             var rhcTask11 = Async(distanceToGroundRaycastHitColliderController.OnResetState());
             var phTask1 = Async(physicsController.OnSetNewPosition());
-            var phTask2 = Async(physicsController.OnResetState());
-            var task2 = await (rTask1, rhcTask1, rhcTask2, rhcTask3, rhcTask4, rhcTask5, rhcTask6, rhcTask7, rhcTask8,
-                rhcTask9, rhcTask10, rhcTask11, phTask1, phTask2);
-            await SetYieldOrSwitchToThreadPoolAsync();
+            var phTask2 = Async(physicsController.OnResetState());*/
         }
+        
+        #endregion
+        
+        #endregion
 
+        
+        #region old code
+        /*
         private async UniTaskVoid TestMovingPlatform()
         {
             if (downRaycastHitCollider.HasMovingPlatform)
@@ -387,18 +379,18 @@ namespace VFEngine.Platformer
                 var task2 = await (rhcTask2, rhcTask3, rTask1, rTask2, lmTask1);
                 if (downRaycastHitCollider.OnMovingPlatform) downRaycastController.OnDoubleDownRayLength();
                 if (physics.NewPosition.y < 0) downRaycastController.OnSetDownRayLengthToVerticalNewPosition();
-                var midHeightOneWayPlatformMaskContains = LayerMaskContains(layerMask.MidHeightOneWayPlatformMask,
-                    downRaycastHitCollider.StandingOnLastFrame.layer);
+                layerMaskController.OnSetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer();
                 if (downRaycastHitCollider.HasStandingOnLastFrame)
                 {
                     layerMaskController.OnSetSavedBelowLayerToStandingOnLastFrameLayer();
-                    if (midHeightOneWayPlatformMaskContains)
+                    if (layerMask.MidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer)
                         downRaycastHitColliderController.OnSetStandingOnLastFrameLayerToPlatform();
                 }
 
                 if (downRaycastHitCollider.HasGroundedLastFrame && downRaycastHitCollider.HasStandingOnLastFrame)
                 {
-                    var pTask1 = Async(ApplyToRaysBelowLayerMask(midHeightOneWayPlatformMaskContains,
+                    var pTask1 = Async(ApplyToRaysBelowLayerMask(
+                        layerMask.MidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer,
                         downRaycastHitCollider.OnMovingPlatform, layerMask.StairsMask,
                         downRaycastHitCollider.StandingOnLastFrame.layer, downRaycastHitCollider.StandingOnCollider,
                         raycast.BoundsBottomCenterPosition, physics.NewPosition.y));
@@ -449,13 +441,15 @@ namespace VFEngine.Platformer
                         var rhcTask15 = Async(downRaycastHitColliderController.OnSetStandingOn());
                         var rhcTask16 = Async(downRaycastHitColliderController.OnSetStandingOnCollider());
                         var task7 = await (rhcTask15, rhcTask16);
-                        var highEnoughForOneWayPlatform =
-                            !((downRaycastHitCollider.HasGroundedLastFrame ||
-                               !(downRaycastHitCollider.SmallestDistanceToDownHit < raycast.BoundsHeight / 2) ||
-                               !LayerMaskContains(layerMask.OneWayPlatformMask,
-                                   downRaycastHitCollider.StandingOnWithSmallestDistanceLayer)) &&
-                              !LayerMaskContains(layerMask.MovingOneWayPlatformMask,
-                                  downRaycastHitCollider.StandingOnWithSmallestDistanceLayer));
+                        var highEnoughForOneWayPlatform = !(downRaycastHitCollider.HasGroundedLastFrame ||
+                                                            !(downRaycastHitCollider.SmallestDistanceToDownHit <
+                                                              raycast.BoundsHeight / 2) ||
+                                                            !layerMask.OneWayPlatformMask.Contains(
+                                                                downRaycastHitCollider
+                                                                    .StandingOnWithSmallestDistanceLayer) &&
+                                                            !layerMask.MovingOneWayPlatformMask.Contains(
+                                                                downRaycastHitCollider
+                                                                    .StandingOnWithSmallestDistanceLayer));
                         if (!highEnoughForOneWayPlatform)
                         {
                             await rhcTask1;
@@ -492,7 +486,7 @@ namespace VFEngine.Platformer
                         var task10 = await (rhcTask1, phTask1);
                     }
 
-                    if (physics.StickToSlopesControl) await Async(StickToSlope());
+                    if (stickyRaycast.StickToSlopesControl) await Async(StickToSlope());
                 }
             }
             else
@@ -521,7 +515,7 @@ namespace VFEngine.Platformer
             {
                 if (!midHeightOneWayPlatformContains)
                     layerMaskController.OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
-                var stairsContains = LayerMaskContains(stairsMask, standingOnLastFrame);
+                var stairsContains = stairsMask.Contains(standingOnLastFrame);
                 var colliderBoundsContains = standingOnCollider.bounds.Contains(colliderBottomCenterPosition);
                 if (stairsContains && colliderBoundsContains)
                     layerMaskController.OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
@@ -562,12 +556,11 @@ namespace VFEngine.Platformer
         {
             var stickToSlope = !(physics.NewPosition.y >= stickyRaycast.StickToSlopesOffsetY) &&
                                !(physics.NewPosition.y <= -stickyRaycast.StickToSlopesOffsetY) && !physics.IsJumping &&
-                               physics.StickToSlopesControl && downRaycastHitCollider.HasGroundedLastFrame &&
+                               stickyRaycast.StickToSlopesControl && downRaycastHitCollider.HasGroundedLastFrame &&
                                !(physics.ExternalForce.y > 0) && !downRaycastHitCollider.HasMovingPlatform ||
                                !downRaycastHitCollider.HasGroundedLastFrame &&
                                downRaycastHitCollider.HasStandingOnLastFrame &&
-                               LayerMaskContains(layerMask.StairsMask,
-                                   downRaycastHitCollider.StandingOnLastFrame.layer) &&
+                               layerMask.StairsMask.Contains(downRaycastHitCollider.StandingOnLastFrame.layer) &&
                                !physics.IsJumping;
             if (stickToSlope)
             {
@@ -630,7 +623,7 @@ namespace VFEngine.Platformer
 
                 var rhcTask1 = Async(downRaycastHitColliderController.OnSetIsCollidingBelow());
                 if (leftStickyRaycastHitCollider.BelowSlopeAngleLeft > 0f &&
-                    rightStickyRaycastHitCollider.BelowSlopeAngleRight < 0f && physics.SafetyBoxcastControl)
+                    rightStickyRaycastHitCollider.BelowSlopeAngleRight < 0f && safetyBoxcast.PerformSafetyBoxcast)
                 {
                     safetyBoxcastController.OnSetSafetyBoxcastForImpassableAngle();
                     if (!safetyBoxcast.SafetyBoxcastHit ||
@@ -931,7 +924,7 @@ namespace VFEngine.Platformer
 
         private async UniTaskVoid MoveTransform()
         {
-            if (physics.SafetyBoxcastControl)
+            if (safetyBoxcast.PerformSafetyBoxcast)
             {
                 safetyBoxcastController.OnSetSafetyBoxcast();
                 if (safetyBoxcast.SafetyBoxcastHit &&
@@ -1003,6 +996,9 @@ namespace VFEngine.Platformer
         #endregion
 
         #endregion
+        */
+        #endregion
+        
 
         #region properties
 

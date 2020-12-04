@@ -16,6 +16,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
+    using static Vector2;
 
     public class UpRaycastController : MonoBehaviour, IController
     {
@@ -23,7 +24,6 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private UpRaycastHitColliderController upRaycastHitColliderController;
@@ -42,28 +42,27 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            u = new UpRaycastData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            upRaycastHitColliderController = character.GetComponentNoAllocation<UpRaycastHitColliderController>();
-            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            upRaycastHitColliderController = GetComponent<UpRaycastHitColliderController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+        
+        private void InitializeData()
+        {
+            u = new UpRaycastData
+            {
+                CurrentUpRaycastOrigin = zero,
+                UpRaycastStart = zero,
+                UpRaycastEnd = zero
+            };
         }
 
         private void Start()

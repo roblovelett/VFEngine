@@ -6,19 +6,23 @@
 
         #region dependencies
 
-        public bool DisplayWarningsControl { get; private set; }
-        public float StickToSlopesOffsetY { get; private set; }
+        public bool StickToSlopesControl { get; set; }
+        public bool DisplayWarningsControl { get; set; }
+        public float StickyRaycastLength { get; set; }
+        public float StickToSlopesOffsetY { get; set; }
+        
 
         #endregion
 
         public bool IsCastingLeft { get; set; }
-        public float StickyRaycastLength { get; set; }
 
         #region public methods
 
         public void ApplySettings(StickyRaycastSettings settings)
         {
+            StickToSlopesControl = settings.stickToSlopeControl;
             DisplayWarningsControl = settings.displayWarningsControl;
+            StickyRaycastLength = settings.stickyRaycastLength;
             StickToSlopesOffsetY = settings.stickToSlopesOffsetY;
         }
 

@@ -4,6 +4,7 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitColl
 using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
+// ReSharper disable UnusedMember.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -11,6 +12,7 @@ namespace VFEngine.Platformer.Layer.Mask
     using static LayerMask;
     using static DebugExtensions;
     using static UniTaskExtensions;
+    using static LayerMaskExtensions;
 
     public class LayerMaskController : MonoBehaviour, IController
     {
@@ -18,7 +20,6 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskSettings settings;
         private DownRaycastHitColliderController downRaycastHitColliderController;
         private LayerMaskData l;
@@ -30,21 +31,27 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-            if (l.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
         }
-
-        private void LoadCharacter()
+        
+        private void SetControllers()
         {
-            if (!character) character = transform.root.gameObject;
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
         }
 
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            l = new LayerMaskData();
+            l = new LayerMaskData
+            {
+                PlatformMask = 0,
+                MovingPlatformMask = 0,
+                OneWayPlatformMask = 0,
+                MovingOneWayPlatformMask = 0,
+                MidHeightOneWayPlatformMask =  0,
+                StairsMask = 0
+            };
             l.ApplySettings(settings);
             l.SavedPlatformMask = l.PlatformMask;
             l.PlatformMask |= l.OneWayPlatformMask;
@@ -53,12 +60,7 @@ namespace VFEngine.Platformer.Layer.Mask
             l.PlatformMask |= l.MidHeightOneWayPlatformMask;
         }
 
-        private void SetControllers()
-        {
-            downRaycastHitColliderController = character.GetComponentNoAllocation<DownRaycastHitColliderController>();
-        }
-
-        private void GetWarningMessages()
+        /*private void GetWarningMessages()
         {
             const string lM = "Layer Mask";
             const string player = "Player";
@@ -114,7 +116,7 @@ namespace VFEngine.Platformer.Layer.Mask
             }
 
             DebugLogWarning(warningMessageCount, warningMessage);
-        }
+        }*/
 
         private void Start()
         {
@@ -163,6 +165,11 @@ namespace VFEngine.Platformer.Layer.Mask
             l.SavedBelowLayer = downRaycastHitCollider.StandingOnLastFrame.layer;
         }
 
+        private void SetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer()
+        {
+            l.MidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer = l.MidHeightOneWayPlatformMask.Contains(downRaycastHitCollider.StandingOnLastFrame);
+        }
+
         #endregion
 
         #endregion
@@ -208,6 +215,11 @@ namespace VFEngine.Platformer.Layer.Mask
         public void OnSetSavedBelowLayerToStandingOnLastFrameLayer()
         {
             SetSavedBelowLayerToStandingOnLastFrameLayer();
+        }
+
+        public void OnSetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer()
+        {
+            SetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer();
         }
 
         #endregion

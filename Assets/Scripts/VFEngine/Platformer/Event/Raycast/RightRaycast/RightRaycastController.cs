@@ -10,6 +10,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
     using static Raycast;
     using static DebugExtensions;
     using static Color;
+    using static Vector2;
 
     public class RightRaycastController : MonoBehaviour, IController
     {
@@ -17,7 +18,6 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private RightRaycastHitColliderController rightRaycastHitColliderController;
@@ -34,28 +34,26 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-            //if (p.DisplayWarningsControl) GetWarningMessages();
+            InitializeData();
         }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            r = new RightRaycastData();
-        }
-
+        
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            rightRaycastHitColliderController = character.GetComponentNoAllocation<RightRaycastHitColliderController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            rightRaycastHitColliderController = GetComponent<RightRaycastHitColliderController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+        
+        private void InitializeData()
+        {
+            r = new RightRaycastData
+            {
+                CurrentRightRaycastOrigin = zero,
+                RightRaycastFromBottomOrigin = zero,
+                RightRaycastToTopOrigin = zero
+            };
         }
 
         private void Start()

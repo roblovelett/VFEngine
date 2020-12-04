@@ -18,7 +18,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private LeftRaycastController leftRaycastController;
@@ -33,26 +32,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            l = new LeftRaycastHitColliderData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            leftRaycastController = character.GetComponentNoAllocation<LeftRaycastController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            leftRaycastController = GetComponent<LeftRaycastController>();
+        }
+        
+        private void InitializeData()
+        {
+            l = new LeftRaycastHitColliderData
+            {
+                CurrentLeftWallCollider = null
+            };
         }
 
         private void Start()
@@ -71,8 +67,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void InitializeFrame()
         {
             InitializeLeftHitsStorage();
-            InitializeCurrentLeftHitsStorageIndex();
-            l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
+            //InitializeCurrentLeftHitsStorageIndex();
+            //l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
             ResetState();
         }
 

@@ -8,6 +8,7 @@ using VFEngine.Tools;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 {
+    using static ScriptableObject;
     using static DebugExtensions;
     using static Vector2;
     using static Color;
@@ -18,7 +19,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
+        [SerializeField] private SafetyBoxcastSettings settings;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private StickyRaycastController stickyRaycastController;
@@ -35,27 +36,23 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            s = new SafetyBoxcastData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            physicsController = character.GetComponentNoAllocation<PhysicsController>();
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
-            layerMaskController = character.GetComponentNoAllocation<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
+            stickyRaycastController = GetComponent<StickyRaycastController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+        
+        private void InitializeData()
+        {
+            if (!settings) settings = CreateInstance<SafetyBoxcastSettings>();
+            s = new SafetyBoxcastData();
+            s.ApplySettings(settings);
         }
 
         private void Start()

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfHorizontalRays: 8
   numberOfVerticalRays: 8
-  distanceToGroundRayMaximumLength: 100
-  castRaysOnBothSides: 1
   rayOffset: 0.05
-  performSafetyBoxcast: 1
+  crouchedRaycastLengthMultiplier: 1
+  castRaysOnBothSides: 1
+  distanceToGroundRayMaximumLength: 100
   drawRaycastGizmosControl: 1
   displayWarningsControl: 1

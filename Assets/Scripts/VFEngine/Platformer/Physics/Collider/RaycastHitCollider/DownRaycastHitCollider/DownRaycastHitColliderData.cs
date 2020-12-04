@@ -20,26 +20,26 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public bool GroundedEvent { get; set; }
         public int DownHitsStorageLength { get; set; }
         public int CurrentDownHitsStorageIndex { get; set; }
+        public int DownHitsStorageSmallestDistanceIndex { get; set; }
         public float SmallestDistanceToDownHit { get; set; }
         public float MovingPlatformCurrentGravity { get; set; }
         public float CurrentDownHitSmallestDistance { get; set; }
+        public float Friction { get; set; }
+        public float BelowSlopeAngle { get; set; }
+        public float MovingPlatformGravity { get; } = -500f;
         public Vector2 MovingPlatformCurrentSpeed { get; set; }
         public Vector3 CrossBelowSlopeAngle { get; set; }
-        public RaycastHit2D RaycastDownHitAt { get; set; }
-        public RaycastHit2D[] DownHitsStorage { get; set; }
-        public Collider2D StandingOnCollider { get; set; }
-        public LayerMask StandingOnWithSmallestDistanceLayer { get; set; }
         public GameObject StandingOnLastFrame { get; set; }
-        public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
-        public PathMovementData PathMovementClosestToDownHit { get; set; }
-        public float Friction { get; set; }
-        public int DownHitsStorageSmallestDistanceIndex { get; set; }
-        public RaycastHit2D DownHitWithSmallestDistance { get; set; }
-        public float BelowSlopeAngle { get; set; }
-        public PathMovementData MovingPlatform { get; set; }
-        public float MovingPlatformGravity { get; } = -500f;
         public GameObject StandingOn { get; set; }
         public GameObject StandingOnWithSmallestDistance { get; set; }
+        public Collider2D StandingOnCollider { get; set; }
+        public LayerMask StandingOnWithSmallestDistanceLayer { get; set; }
+        public RaycastHit2D RaycastDownHitAt { get; set; }
+        public RaycastHit2D DownHitWithSmallestDistance { get; set; }
+        public RaycastHit2D[] DownHitsStorage { get; set; }
+        public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
+        public PathMovementData PathMovementClosestToDownHit { get; set; }
+        public PathMovementData MovingPlatform { get; set; }
 
         #endregion
     }

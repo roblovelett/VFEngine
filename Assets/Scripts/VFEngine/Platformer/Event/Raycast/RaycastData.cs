@@ -11,16 +11,17 @@ namespace VFEngine.Platformer.Event.Raycast
         public bool DisplayWarningsControl { get; private set; }
         public bool DrawRaycastGizmosControl { get; private set; }
         public bool CastRaysOnBothSides { get; private set; }
-        public bool PerformSafetyBoxcast { get; private set; }
         public int NumberOfHorizontalRays { get; private set; }
         public int NumberOfVerticalRays { get; private set; }
         public float RayOffset { get; private set; }
         public float DistanceToGroundRayMaximumLength { get; private set; }
 
         #endregion
-
+        
         public float BoundsWidth { get; set; }
         public float BoundsHeight { get; set; }
+        public Vector2 OriginalColliderSize { get; set; }
+        public Vector2 OriginalColliderOffset { get; set; }
         public Vector2 Bounds { get; set; }
         public Vector2 BoundsCenter { get; set; }
         public Vector2 BoundsBottomLeftCorner { get; set; }
@@ -39,7 +40,6 @@ namespace VFEngine.Platformer.Event.Raycast
             DisplayWarningsControl = settings.displayWarningsControl;
             DrawRaycastGizmosControl = settings.drawRaycastGizmosControl;
             CastRaysOnBothSides = settings.castRaysOnBothSides;
-            PerformSafetyBoxcast = settings.performSafetyBoxcast;
             NumberOfHorizontalRays = settings.numberOfHorizontalRays;
             NumberOfVerticalRays = settings.numberOfVerticalRays;
             RayOffset = settings.rayOffset;

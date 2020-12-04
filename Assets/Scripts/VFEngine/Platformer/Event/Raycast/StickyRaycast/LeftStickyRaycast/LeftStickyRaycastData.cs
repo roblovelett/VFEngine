@@ -7,9 +7,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
     {
         #region properties
 
-        public RaycastHit2D LeftStickyRaycastHit { get; set; }
         public float LeftStickyRaycastLength { get; set; }
-        public Vector2 LeftStickyRaycastOrigin { get; } = Vector2.zero;
+        public Vector2 LeftStickyRaycastOrigin { get; set; }
+        public RaycastHit2D LeftStickyRaycastHit { get; set; }
 
         public float LeftStickyRaycastOriginX
         {

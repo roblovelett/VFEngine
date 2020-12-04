@@ -12,6 +12,8 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
     {
         #region properties
 
+        [SerializeField] public bool stickToSlopeControl;
+        [SerializeField] public float stickyRaycastLength;
         [SerializeField] public float stickToSlopesOffsetY = 0.2f;
         [SerializeField] public bool displayWarningsControl;
 

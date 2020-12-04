@@ -14,16 +14,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] public int numberOfHorizontalRays = 8;
         [SerializeField] public int numberOfVerticalRays = 8;
-        [SerializeField] public float distanceToGroundRayMaximumLength = 100f;
-        [SerializeField] public bool castRaysOnBothSides = true;
         [SerializeField] public float rayOffset = 0.05f;
-        [SerializeField] public bool performSafetyBoxcast = true;
-
-        [LabelText("Draw Raycast Gizmos")] [SerializeField]
-        public bool drawRaycastGizmosControl = true;
-
-        [LabelText("Display Warnings")] [SerializeField]
-        public bool displayWarningsControl = true;
+        [SerializeField] public float crouchedRaycastLengthMultiplier = 1f;
+        [SerializeField] public bool castRaysOnBothSides;
+        [SerializeField] public float distanceToGroundRayMaximumLength = 100f;
+        [SerializeField] public bool drawRaycastGizmosControl = true;
+        [SerializeField] public bool displayWarningsControl = true;
 
         #endregion
     }

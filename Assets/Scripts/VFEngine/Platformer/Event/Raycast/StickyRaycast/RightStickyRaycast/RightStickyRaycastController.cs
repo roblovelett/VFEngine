@@ -12,6 +12,7 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
     using static DebugExtensions;
     using static Color;
     using static UniTaskExtensions;
+    using static Vector2;
 
     public class RightStickyRaycastController : MonoBehaviour, IController
     {
@@ -19,7 +20,6 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         #region dependencies
 
-        [SerializeField] private GameObject character;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private StickyRaycastController stickyRaycastController;
@@ -36,27 +36,24 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.RightStickyRaycast
 
         private void Awake()
         {
-            LoadCharacter();
-            InitializeData();
             SetControllers();
-        }
-
-        private void LoadCharacter()
-        {
-            if (!character) character = transform.root.gameObject;
-        }
-
-        private void InitializeData()
-        {
-            r = new RightStickyRaycastData();
+            InitializeData();
         }
 
         private void SetControllers()
         {
-            raycastController = character.GetComponentNoAllocation<RaycastController>();
-            stickyRaycastController = character.GetComponentNoAllocation<StickyRaycastController>();
-            physicsController = character.GetComponent<PhysicsController>();
-            layerMaskController = character.GetComponent<LayerMaskController>();
+            raycastController = GetComponent<RaycastController>();
+            stickyRaycastController = GetComponent<StickyRaycastController>();
+            physicsController = GetComponent<PhysicsController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+        }
+
+        private void InitializeData()
+        {
+            r = new RightStickyRaycastData
+            {
+                RightStickyRaycastOrigin = zero
+            };
         }
 
         private void Start()
