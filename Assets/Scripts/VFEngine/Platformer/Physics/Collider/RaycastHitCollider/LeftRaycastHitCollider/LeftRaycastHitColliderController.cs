@@ -54,7 +54,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            Initialize();
         }
 
         private void SetDependencies()
@@ -64,17 +64,54 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             leftRaycast = leftRaycastController.Data;
         }
 
-        private void InitializeFrame()
+        private void Initialize()
         {
             InitializeLeftHitsStorage();
-            //InitializeCurrentLeftHitsStorageIndex();
-            //l.LeftHitsStorageLength = l.LeftHitsStorage.Length;
             ResetState();
         }
 
         private void InitializeLeftHitsStorage()
         {
             l.LeftHitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
+        }
+        
+        private void ResetState()
+        {
+            SetIsNotCollidingLeft();
+            InitializeDistanceToLeftCollider();
+            SetLeftFailedSlopeAngle();
+            InitializeLeftLateralSlopeAngle();
+        }
+
+        private void SetIsNotCollidingLeft()
+        {
+            l.IsCollidingLeft = false;
+        }
+
+        private void InitializeDistanceToLeftCollider()
+        {
+            l.DistanceToLeftCollider = -1;
+        }
+        
+        private void SetLeftFailedSlopeAngle()
+        {
+            l.PassedLeftSlopeAngle = false;
+        }
+
+        private void InitializeLeftLateralSlopeAngle()
+        {
+            l.LeftLateralSlopeAngle = 0;
+        }
+
+        private void PlatformerInitializeFrame()
+        {
+            SetCurrentWallColliderNull();
+            ResetState();
+        }
+        
+        private void SetCurrentWallColliderNull()
+        {
+            l.CurrentLeftWallCollider = null;
         }
 
         private void InitializeCurrentLeftHitsStorageIndex()
@@ -133,16 +170,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.CurrentLeftWallCollider = l.CurrentLeftHitCollider.gameObject;
         }
 
-        private void SetCurrentWallColliderNull()
-        {
-            l.CurrentLeftWallCollider = null;
-        }
-
-        private void SetLeftFailedSlopeAngle()
-        {
-            l.PassedLeftSlopeAngle = false;
-        }
-
         private void SetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
         {
             l.DistanceBetweenLeftHitAndRaycastOrigin = DistanceBetweenPointAndLine(
@@ -155,18 +182,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.CurrentLeftHitsStorageIndex++;
         }
 
-        private void ResetState()
-        {
-            l.LeftHitConnected = false;
-            l.PassedLeftSlopeAngle = false;
-            l.IsCollidingLeft = false;
-            l.CurrentLeftHitCollider = null;
-            l.CurrentLeftWallCollider = null;
-            l.CurrentLeftHitAngle = 0f;
-            l.LeftLateralSlopeAngle = 0f;
-            l.DistanceToLeftCollider = -1f;
-        }
-
         #endregion
 
         #endregion
@@ -176,6 +191,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public LeftRaycastHitColliderData Data => l;
 
         #region public methods
+        
+        #region platformer
+
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
 
         public void OnInitializeLeftHitsStorage()
         {

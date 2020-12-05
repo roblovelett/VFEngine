@@ -29,17 +29,17 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public float MovingPlatformGravity { get; } = -500f;
         public Vector2 MovingPlatformCurrentSpeed { get; set; }
         public Vector3 CrossBelowSlopeAngle { get; set; }
-        public GameObject StandingOnLastFrame { get; set; }
-        public GameObject StandingOn { get; set; }
-        public GameObject StandingOnWithSmallestDistance { get; set; }
         public Collider2D StandingOnCollider { get; set; }
         public LayerMask StandingOnWithSmallestDistanceLayer { get; set; }
         public RaycastHit2D RaycastDownHitAt { get; set; }
         public RaycastHit2D DownHitWithSmallestDistance { get; set; }
+        public GameObject StandingOnLastFrame { get; set; }
+        public GameObject StandingOn { get; set; }
+        public GameObject StandingOnWithSmallestDistance { get; set; }
         public RaycastHit2D[] DownHitsStorage { get; set; }
-        public PhysicsMaterialData PhysicsMaterialClosestToDownHit { get; set; }
-        public PathMovementData PathMovementClosestToDownHit { get; set; }
-        public PathMovementData MovingPlatform { get; set; }
+        public PhysicsMaterialController PhysicsMaterialClosestToDownHit { get; set; }
+        public PathMovementController PathMovementClosestToDownHit { get; set; }
+        public PathMovementController MovingPlatform { get; set; }
 
         #endregion
     }

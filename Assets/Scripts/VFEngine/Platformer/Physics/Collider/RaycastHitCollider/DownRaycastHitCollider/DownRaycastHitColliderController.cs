@@ -87,12 +87,29 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void Initialize()
         {
             InitializeDownHitsStorage();
-            //InitializeDownHitsStorageSmallestDistanceIndex();
-            //InitializeDownHitsStorageIndex();
-            //StopMovingPlatformCurrentGravity();
-            //InitializeFriction();
-            //d.DownHitsStorageLength = d.DownHitsStorage.Length;
             ResetState();
+        }
+        
+        private void ResetState()
+        {
+            d.GroundedEvent = false;
+        }
+
+        private void PlatformerInitializeFrame()
+        {
+            SetHasGroundedLastFrameToCollidingBelow();
+            SetStandingOnLastFrameToStandingOn();
+            ResetState();
+        }
+        
+        private void SetHasGroundedLastFrameToCollidingBelow()
+        {
+            d.HasGroundedLastFrame = d.IsCollidingBelow;
+        }
+        
+        private void SetStandingOnLastFrameToStandingOn()
+        {
+            d.StandingOnLastFrame = d.StandingOn;
         }
 
         private void SetCurrentDownHitsStorage()
@@ -170,7 +187,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void SetFrictionToDownHitWithSmallestDistancesFriction()
         {
             if (d.PhysicsMaterialClosestToDownHit is null) return;
-            d.Friction = d.PhysicsMaterialClosestToDownHit.Friction;
+            //d.Friction = d.PhysicsMaterialClosestToDownHit.Friction;
         }
 
         private void SetIsCollidingBelow()
@@ -236,30 +253,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.StandingOnCollider = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider;
         }
 
-        private void ResetState()
-        {
-            d.IsCollidingBelow = false;
-            d.GroundedEvent = false;
-            d.BelowSlopeAngle = 0f;
-            d.CrossBelowSlopeAngle = zero;
-            d.StandingOn = null;
-            d.OnMovingPlatform = false;
-            d.StandingOnCollider = null;
-            d.DownHitConnected = false;
-            StopMovingPlatformCurrentGravity();
-            StopMovingPlatformCurrentSpeed();
-        }
-
-        private void SetWasGroundedLastFrame()
-        {
-            d.HasGroundedLastFrame = d.IsCollidingBelow;
-        }
-
-        private void SetStandingOnLastFrame()
-        {
-            d.StandingOnLastFrame = d.StandingOn;
-        }
-
         private void SetOnMovingPlatform()
         {
             d.OnMovingPlatform = true;
@@ -277,7 +270,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetMovingPlatformCurrentSpeed()
         {
-            d.MovingPlatformCurrentSpeed = d.MovingPlatform.CurrentSpeed;
+            //d.MovingPlatformCurrentSpeed = d.MovingPlatform.CurrentSpeed;
         }
 
         private void InitializeSmallestDistanceToDownHit()
@@ -299,7 +292,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public DownRaycastHitColliderData Data => d;
 
         #region public methods
+        
+        #region platformer
 
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
         public async UniTaskVoid OnSetOnMovingPlatform()
         {
             SetOnMovingPlatform();
@@ -312,7 +313,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnSetWasGroundedLastFrame()
+        /*public async UniTaskVoid OnSetWasGroundedLastFrame()
         {
             SetWasGroundedLastFrame();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -322,7 +323,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             SetStandingOnLastFrame();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         public async UniTaskVoid OnSetCurrentDownHitsStorage()
         {

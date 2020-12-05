@@ -54,7 +54,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            Initialize();
         }
 
         private void SetDependencies()
@@ -64,17 +64,54 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             rightRaycast = rightRaycastController.Data;
         }
 
-        private void InitializeFrame()
+        private void Initialize()
         {
             InitializeRightHitsStorage();
-            //InitializeCurrentRightHitsStorageIndex();
-            //r.RightHitsStorageLength = r.RightHitsStorage.Length;
             ResetState();
         }
 
         private void InitializeRightHitsStorage()
         {
             r.RightHitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
+        }
+        
+        private void ResetState()
+        {
+            SetIsNotCollidingRight();
+            InitializeDistanceToRightCollider();
+            SetRightFailedSlopeAngle();
+            InitializeRightLateralSlopeAngle();
+        }
+
+        private void SetIsNotCollidingRight()
+        {
+            r.IsCollidingRight = false;
+        }
+
+        private void InitializeDistanceToRightCollider()
+        {
+            r.DistanceToRightCollider = -1;
+        }
+        
+        private void SetRightFailedSlopeAngle()
+        {
+            r.PassedRightSlopeAngle = false;
+        }
+
+        private void InitializeRightLateralSlopeAngle()
+        {
+            r.RightLateralSlopeAngle = 0;
+        }
+
+        private void PlatformerInitializeFrame()
+        {
+            SetCurrentWallColliderNull();
+            ResetState();
+        }
+        
+        private void SetCurrentWallColliderNull()
+        {
+            r.CurrentRightWallCollider = null;
         }
 
         private void InitializeCurrentRightHitsStorageIndex()
@@ -118,11 +155,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.CurrentRightWallCollider = r.CurrentRightHitCollider.gameObject;
         }
 
-        private void SetCurrentWallColliderNull()
-        {
-            r.CurrentRightWallCollider = null;
-        }
-
         private void AddToCurrentRightHitsStorageIndex()
         {
             r.CurrentRightHitsStorageIndex++;
@@ -143,28 +175,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.RightLateralSlopeAngle = r.CurrentRightHitAngle;
         }
 
-        private void SetRightFailedSlopeAngle()
-        {
-            r.PassedRightSlopeAngle = false;
-        }
-
         private void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
         {
             r.DistanceBetweenRightHitAndRaycastOrigin = DistanceBetweenPointAndLine(
                 r.RightHitsStorage[r.CurrentRightHitsStorageIndex].point, rightRaycast.RightRaycastFromBottomOrigin,
                 rightRaycast.RightRaycastToTopOrigin);
-        }
-
-        private void ResetState()
-        {
-            SetRightRaycastHitMissed();
-            SetRightFailedSlopeAngle();
-            SetCurrentWallColliderNull();
-            r.IsCollidingRight = false;
-            r.CurrentRightHitCollider = null;
-            r.CurrentRightHitAngle = 0f;
-            r.RightLateralSlopeAngle = 0f;
-            r.DistanceToRightCollider = -1f;
         }
 
         #endregion
@@ -176,6 +191,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public RightRaycastHitColliderData Data => r;
 
         #region public methods
+        
+        #region platformer
+
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
 
         public void OnInitializeRightHitsStorage()
         {

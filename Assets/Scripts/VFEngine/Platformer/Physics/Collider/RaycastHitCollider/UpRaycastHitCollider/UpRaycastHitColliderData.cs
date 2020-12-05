@@ -14,7 +14,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public int UpHitsStorageCollidingIndex { get; set; }
         public int CurrentUpHitsStorageIndex { get; set; }
         public RaycastHit2D RaycastUpHitAt { get; set; }
-        public RaycastHit2D[] UpHitsStorage { get; set; } = new RaycastHit2D[0];
+        public RaycastHit2D[] UpHitsStorage { get; set; }
 
         #endregion
     }

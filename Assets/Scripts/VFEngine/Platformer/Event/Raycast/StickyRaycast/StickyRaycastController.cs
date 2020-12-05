@@ -149,10 +149,10 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
                               rightStickyRaycast.RightStickyRaycastHit.distance;
         }
 
-        private void ResetState()
+        /*private void ResetState()
         {
             s.IsCastingLeft = false;
-        }
+        }*/
 
         #endregion
 
@@ -210,11 +210,11 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast
             SetCastFromLeftWithLeftDistanceLtRightDistance();
         }
 
-        public async UniTaskVoid OnResetState()
+        /*public async UniTaskVoid OnResetState()
         {
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         #endregion
 

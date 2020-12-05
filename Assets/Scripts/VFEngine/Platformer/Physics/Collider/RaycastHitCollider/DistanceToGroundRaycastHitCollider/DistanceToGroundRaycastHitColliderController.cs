@@ -45,7 +45,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
         private void Start()
         {
             SetDependencies();
-            ResetState();
         }
 
         private void SetDependencies()
@@ -59,11 +58,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
             d.DistanceToGroundRaycastHitConnected = true;
         }
 
-        private void ResetState()
+        /*private void ResetState()
         {
             d.DistanceToGroundRaycastHitConnected = false;
             InitializeDistanceToGround();
-        }
+        }*/
 
         private void InitializeDistanceToGround()
         {
@@ -112,11 +111,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DistanceToGrou
             ApplyDistanceToGroundRaycastAndBoundsHeightToDistanceToGround();
         }
 
-        public async UniTaskVoid OnResetState()
+        /*public async UniTaskVoid OnResetState()
         {
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         #endregion
 

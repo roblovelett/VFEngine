@@ -190,6 +190,7 @@ namespace VFEngine.Platformer
         {
             ApplyGravity();
             InitializeFrame();
+            TestMovingPlatform();
             /*
             var pTask1 = Async(ApplyGravity());
             var pTask2 = Async(InitializeFrame());
@@ -219,39 +220,17 @@ namespace VFEngine.Platformer
         {
             raycastHitColliderController.OnPlatformerInitializeFrame();
             physicsController.OnPlatformerInitializeFrame();
-            
-            /*if (stickyRaycast.StickToSlopesControl)
-            {
-                var srTask1 = Async(stickyRaycastController.OnResetState());
-                var srhTask1 = Async(stickyRaycastHitColliderController.OnResetState());
-                var srhTask2 = Async(leftStickyRaycastHitColliderController.OnResetState());
-                var srhTask3 = Async(rightStickyRaycastHitColliderController.OnResetState());
-            }
-
-            var rTask1 = Async(raycastController.OnSetRaysParameters());
-            var rhcTask1 = Async(downRaycastHitColliderController.OnSetWasGroundedLastFrame());
-            var rhcTask2 = Async(downRaycastHitColliderController.OnSetStandingOnLastFrame());
-            var rhcTask3 = Async(upRaycastHitColliderController.OnSetWasTouchingCeilingLastFrame());
-            var rhcTask4 = Async(rightRaycastHitColliderController.OnSetCurrentWallColliderNull());
-            var rhcTask5 = Async(leftRaycastHitColliderController.OnSetCurrentWallColliderNull());
-            var rhcTask7 = Async(upRaycastHitColliderController.OnResetState());
-            var rhcTask8 = Async(rightRaycastHitColliderController.OnResetState());
-            var rhcTask9 = Async(downRaycastHitColliderController.OnResetState());
-            var rhcTask10 = Async(leftRaycastHitColliderController.OnResetState());
-            var rhcTask11 = Async(distanceToGroundRaycastHitColliderController.OnResetState());
-            var phTask1 = Async(physicsController.OnSetNewPosition());
-            var phTask2 = Async(physicsController.OnResetState());*/
+            downRaycastHitColliderController.OnPlatformerInitializeFrame();
+            upRaycastHitColliderController.OnPlatformerInitializeFrame();
+            rightRaycastHitColliderController.OnPlatformerInitializeFrame();
+            leftRaycastHitColliderController.OnPlatformerInitializeFrame();
+            raycastController.OnPlatformerInitializeFrame();
         }
-        
-        #endregion
-        
-        #endregion
 
-        
-        #region old code
-        /*
-        private async UniTaskVoid TestMovingPlatform()
+        private void TestMovingPlatform()
         {
+            
+            /*
             if (downRaycastHitCollider.HasMovingPlatform)
             {
                 downRaycastHitColliderController.OnSetMovingPlatformCurrentSpeed();
@@ -271,9 +250,16 @@ namespace VFEngine.Platformer
                     physicsController.OnSetForcesApplied();
                 }
             }
-
-            await SetYieldOrSwitchToThreadPoolAsync();
+            */
         }
+        
+        #endregion
+        
+        #endregion
+
+        
+        #region old code
+        /*
 
         private async UniTaskVoid SetHorizontalMovementDirection()
         {

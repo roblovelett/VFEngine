@@ -45,7 +45,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void Start()
         {
             SetDependencies();
-            InitializeFrame();
+            Initialize();
         }
 
         private void SetDependencies()
@@ -54,13 +54,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             upRaycast = upRaycastController.Data;
         }
 
-        private void InitializeFrame()
+        private void Initialize()
         {
             InitializeUpHitsStorage();
-            //InitializeUpHitsStorageCollidingIndex();
-            //InitializeUpHitsStorageCurrentIndex();
-            //u.UpHitsStorageLength = u.UpHitsStorage.Length;
             ResetState();
+        }
+        
+        private void InitializeUpHitsStorage()
+        {
+            u.UpHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
+        }
+        
+        private void ResetState()
+        {
+            u.IsCollidingAbove = false;
+        }
+
+        private void PlatformerInitializeFrame()
+        {
+            SetWasTouchingCeilingLastFrameToCollidingAbove();
+            ResetState();
+        }
+        
+        
+        private void SetWasTouchingCeilingLastFrameToCollidingAbove()
+        {
+            u.WasTouchingCeilingLastFrame = u.IsCollidingAbove;
         }
 
         private void InitializeUpHitConnected()
@@ -76,11 +95,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         private void InitializeUpHitsStorageCurrentIndex()
         {
             u.CurrentUpHitsStorageIndex = 0;
-        }
-
-        private void InitializeUpHitsStorage()
-        {
-            u.UpHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
         }
 
         private void AddToUpHitsStorageCurrentIndex()
@@ -113,17 +127,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             u.IsCollidingAbove = true;
         }
 
-        private void SetWasTouchingCeilingLastFrame()
-        {
-            u.WasTouchingCeilingLastFrame = u.IsCollidingAbove;
-        }
-
-        private void ResetState()
-        {
-            InitializeUpHitConnected();
-            u.IsCollidingAbove = false;
-        }
-
         #endregion
 
         #endregion
@@ -133,6 +136,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
         public UpRaycastHitColliderData Data => u;
 
         #region public methods
+        
+        #region platformer
+
+        public void OnPlatformerInitializeFrame()
+        {
+            PlatformerInitializeFrame();
+        }
+        
+        #endregion
 
         public async UniTaskVoid OnInitializeUpHitConnected()
         {
@@ -190,11 +202,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnSetWasTouchingCeilingLastFrame()
+        /*public async UniTaskVoid OnSetWasTouchingCeilingLastFrame()
         {
             SetWasTouchingCeilingLastFrame();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         public async UniTaskVoid OnResetState()
         {

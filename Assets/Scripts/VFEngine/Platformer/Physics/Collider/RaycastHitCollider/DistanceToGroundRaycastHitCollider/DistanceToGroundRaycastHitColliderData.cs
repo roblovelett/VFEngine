@@ -4,8 +4,8 @@
     {
         #region properties
 
-        public float DistanceToGround { get; set; }
         public bool DistanceToGroundRaycastHitConnected { get; set; }
+        public float DistanceToGround { get; set; }
 
         #endregion
     }

@@ -181,7 +181,16 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region raycast model
+        #region platformer
+
+        public void OnPlatformerInitializeFrame()
+        {
+            SetRaysParameters();
+        }
+        
+        #endregion
+        
+        #region raycast
 
         public async UniTaskVoid OnSetRaysParameters()
         {

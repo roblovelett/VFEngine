@@ -58,11 +58,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftRaycast = leftRaycastController.Data;
         }
 
-        /*private void InitializeFrame()
-        {
-            ClearContactList();
-        }*/
-
         private void PlatformerInitializeFrame()
         {
             ClearContactList();

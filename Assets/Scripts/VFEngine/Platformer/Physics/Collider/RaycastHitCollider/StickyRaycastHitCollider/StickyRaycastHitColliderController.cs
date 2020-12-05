@@ -45,7 +45,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
         private void Start()
         {
             SetDependencies();
-            //InitializeFrame();
         }
 
         private void SetDependencies()
@@ -54,15 +53,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
             leftStickyRaycastHitCollider = leftStickyRaycastHitColliderController.Data;
         }
 
-        private void InitializeFrame()
-        {
-            //InitializeBelowSlopeAngle();
-        }
-
-        private void ResetState()
+        /*private void ResetState()
         {
             InitializeBelowSlopeAngle();
-        }
+        }*/
 
         private void InitializeBelowSlopeAngle()
         {
@@ -89,11 +83,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastH
 
         #region public methods
 
-        public async UniTaskVoid OnResetState()
+        /*public async UniTaskVoid OnResetState()
         {
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         public async UniTaskVoid OnInitializeBelowSlopeAngle()
         {
