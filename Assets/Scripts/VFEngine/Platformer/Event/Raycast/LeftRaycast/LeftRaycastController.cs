@@ -68,6 +68,12 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             layerMask = layerMaskController.Data;
         }
 
+        private void PlatformerSetRaycastOrigin()
+        {
+            SetLeftRaycastFromBottomOrigin();
+            SetLeftRaycastToTopOrigin();
+        }
+
         private void SetLeftRaycastFromBottomOrigin()
         {
             l.LeftRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(raycast.BoundsBottomRightCorner,
@@ -87,7 +93,12 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
                 raycast.NumberOfHorizontalRaysPerSide);
         }
 
-        private void InitializeLeftRaycastLength()
+        private void PlatformerSetRaycastLength()
+        {
+            SetRaycastLength();
+        }
+
+        private void SetRaycastLength()
         {
             l.LeftRayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
         }
@@ -114,8 +125,22 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public LeftRaycastData Data => l;
 
         #region public methods
+        
+        #region platformer
 
-        public void OnSetLeftRaycastFromBottomOrigin()
+        public void OnPlatformerSetRaycastOrigin()
+        {
+            PlatformerSetRaycastOrigin();
+        }
+        
+        public void OnPlatformerSetRaycastLength()
+        {
+            PlatformerSetRaycastLength();
+        }
+        
+        #endregion
+
+        /*public void OnSetLeftRaycastFromBottomOrigin()
         {
             SetLeftRaycastFromBottomOrigin();
         }
@@ -123,12 +148,9 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public void OnSetLeftRaycastToTopOrigin()
         {
             SetLeftRaycastToTopOrigin();
-        }
+        }*/
 
-        public void OnInitializeLeftRaycastLength()
-        {
-            InitializeLeftRaycastLength();
-        }
+        
 
         public void OnSetCurrentLeftRaycastOrigin()
         {

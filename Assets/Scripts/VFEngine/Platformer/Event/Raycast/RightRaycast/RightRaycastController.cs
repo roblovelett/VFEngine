@@ -69,6 +69,12 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
             layerMask = layerMaskController.Data;
         }
 
+        private void PlatformerSetRaycastOrigin()
+        {
+            SetRightRaycastFromBottomOrigin();
+            SetRightRaycastToTopOrigin();
+        }
+
         private void SetRightRaycastFromBottomOrigin()
         {
             r.RightRaycastFromBottomOrigin = OnSetRaycastFromBottomOrigin(raycast.BoundsBottomRightCorner,
@@ -81,7 +87,12 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
                 raycast.BoundsTopRightCorner, physics.Transform, raycast.ObstacleHeightTolerance);
         }
 
-        private void InitializeRightRaycastLength()
+        private void PlatformerSetRaycastLength()
+        {
+            SetRaycastLength();
+        }
+
+        private void SetRaycastLength()
         {
             r.RightRayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
         }
@@ -115,8 +126,22 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public RightRaycastData Data => r;
 
         #region public methods
+        
+        #region platformer
 
-        public void OnSetRightRaycastFromBottomOrigin()
+        public void OnPlatformerSetRaycastOrigin()
+        {
+            PlatformerSetRaycastOrigin();
+        }
+        
+        public void OnPlatformerSetRaycastLength()
+        {
+            PlatformerSetRaycastLength();
+        }
+        
+        #endregion
+
+        /*public void OnSetRightRaycastFromBottomOrigin()
         {
             SetRightRaycastFromBottomOrigin();
         }
@@ -124,12 +149,13 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         public void OnSetRightRaycastToTopOrigin()
         {
             SetRightRaycastToTopOrigin();
-        }
+        }*/
 
+        /*
         public void OnInitializeRightRaycastLength()
         {
             InitializeRightRaycastLength();
-        }
+        }*/
 
         public void OnSetCurrentRightRaycastOrigin()
         {
