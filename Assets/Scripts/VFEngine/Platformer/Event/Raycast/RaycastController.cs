@@ -181,21 +181,11 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region platformer
-
-        public void OnPlatformerInitializeFrame()
-        {
-            SetRaysParameters();
-        }
-        
-        #endregion
-        
         #region raycast
 
-        public async UniTaskVoid OnSetRaysParameters()
+        public void OnSetRaysParameters()
         {
             SetRaysParameters();
-            await SetYieldOrSwitchToThreadPoolAsync();
         }
 
         #endregion

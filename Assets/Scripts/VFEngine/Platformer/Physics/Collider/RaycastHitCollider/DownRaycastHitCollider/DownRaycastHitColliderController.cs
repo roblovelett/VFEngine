@@ -52,7 +52,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         
         private void InitializeData()
         {
-            d = new DownRaycastHitColliderData();
+            d = new DownRaycastHitColliderData
+            {
+                PhysicsMaterialClosestToDownHit = null,
+                PathMovementClosestToDownHit = null,
+                MovingPlatform = null
+            };
 
             /*
             d.StandingOnLastFrame = d.StandingOn;
@@ -87,7 +92,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void Initialize()
         {
             InitializeDownHitsStorage();
+            InitializeHasMovingPlatform();
             ResetState();
+        }
+        
+        private void InitializeDownHitsStorage()
+        {
+            d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
+        }
+
+        private void InitializeHasMovingPlatform()
+        {
+            d.HasMovingPlatform = d.MovingPlatform != null;
         }
         
         private void ResetState()
@@ -112,6 +128,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.StandingOnLastFrame = d.StandingOn;
         }
 
+        private void PlatformerTestMovingPlatform()
+        {
+            SetOnMovingPlatform();
+            SetMovingPlatformCurrentGravity();
+        }
+        
+        private void SetOnMovingPlatform()
+        {
+            d.OnMovingPlatform = true;
+        }
+        
+        private void SetMovingPlatformCurrentGravity()
+        {
+            d.MovingPlatformCurrentGravity = d.MovingPlatformGravity;
+        }
+
         private void SetCurrentDownHitsStorage()
         {
             d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = downRaycast.CurrentDownRaycastHit;
@@ -120,11 +152,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void InitializeFriction()
         {
             d.Friction = 0;
-        }
-
-        private void InitializeDownHitsStorage()
-        {
-            d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
         }
 
         private void InitializeDownHitsStorageSmallestDistanceIndex()
@@ -253,19 +280,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.StandingOnCollider = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider;
         }
 
-        private void SetOnMovingPlatform()
-        {
-            d.OnMovingPlatform = true;
-        }
-
         private void SetNotOnMovingPlatform()
         {
             d.OnMovingPlatform = false;
-        }
-
-        private void SetMovingPlatformCurrentGravity()
-        {
-            d.MovingPlatformCurrentGravity = d.MovingPlatformGravity;
         }
 
         private void SetMovingPlatformCurrentSpeed()
@@ -299,9 +316,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             PlatformerInitializeFrame();
         }
+
+        public void OnPlatformerTestMovingPlatform()
+        {
+            PlatformerTestMovingPlatform();
+        }
         
         #endregion
-        public async UniTaskVoid OnSetOnMovingPlatform()
+        
+        /*public async UniTaskVoid OnSetOnMovingPlatform()
         {
             SetOnMovingPlatform();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -311,7 +334,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             SetMovingPlatformCurrentGravity();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         /*public async UniTaskVoid OnSetWasGroundedLastFrame()
         {

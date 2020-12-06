@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Boxcast.SafetyBoxcast;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast;
@@ -22,22 +21,13 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCo
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider.RightStickyRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
-// ReSharper disable UnusedMember.Local
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedVariable
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer
 {
-    using static UniTaskExtensions;
-    using static DebugExtensions;
     using static PhysicsExtensions;
     using static TimeExtensions;
     using static Mathf;
-    using static LayerMaskExtensions;
-    using static Time;
-    using static RaycastDirection;
     using static ScriptableObject;
 
     public class PlatformerController : MonoBehaviour, IController
@@ -68,7 +58,6 @@ namespace VFEngine.Platformer
         private RightStickyRaycastHitColliderController rightStickyRaycastHitColliderController;
         private DistanceToGroundRaycastHitColliderController distanceToGroundRaycastHitColliderController;
         private LayerMaskController layerMaskController;
-        private PlatformerData p;
         private PhysicsData physics;
         private SafetyBoxcastData safetyBoxcast;
         private RaycastData raycast;
@@ -100,8 +89,8 @@ namespace VFEngine.Platformer
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<PlatformerSettings>();
-            p = new PlatformerData();
-            p.ApplySettings(settings);
+            Data = new PlatformerData();
+            Data.ApplySettings(settings);
         }
 
         private void SetControllers()
@@ -128,32 +117,6 @@ namespace VFEngine.Platformer
             distanceToGroundRaycastHitColliderController = GetComponent<DistanceToGroundRaycastHitColliderController>();
             layerMaskController = GetComponent<LayerMaskController>();
         }
-
-        /*private void GetWarningMessages()
-        {
-            const string rc = "Raycast";
-            const string ctr = "Controller";
-            const string ch = "Character";
-            var warningMessage = "";
-            var warningMessageCount = 0;
-            if (!physicsController) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
-            if (!raycastController) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
-            if (!raycastHitColliderController)
-                warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
-            if (!layerMaskController) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
-            DebugLogWarning(warningMessageCount, warningMessage);
-
-            string FieldParentGameObjectString(string field, string obj)
-            {
-                AddWarningMessage();
-                return FieldParentGameObjectMessage(field, obj);
-            }
-
-            void AddWarningMessage()
-            {
-                warningMessageCount++;
-            }
-        }*/
 
         private void Start()
         {
@@ -191,24 +154,9 @@ namespace VFEngine.Platformer
             ApplyGravity();
             InitializeFrame();
             TestMovingPlatform();
-            /*
-            var pTask1 = Async(ApplyGravity());
-            var pTask2 = Async(InitializeFrame());
-            var task1 = await (pTask1, pTask2);
-            await Async(TestMovingPlatform());
-            await Async(SetHorizontalMovementDirection());
-            await Async(StartRaycasts());
-            var pTask3 = Async(MoveTransform());
-            var pTask4 = Async(raycastController.OnSetRaysParameters());
-            var pTask5 = Async(SetNewSpeed());
-            var task2 = await (pTask3, pTask4, pTask5);
-            var pTask6 = Async(SetStates());
-            var pTask7 = Async(SetDistanceToGround());
-            var pTask8 = Async(physicsController.OnStopExternalForce());
-            var pTask9 = Async(SetStandingOnLastFrameToSavedBelowLayer());
-            var pTask10 = Async(physicsController.OnSetWorldSpeedToSpeed());
-            var task3 = await (pTask6, pTask7, pTask8, pTask9, pTask10);
-            */
+            SetForcesApplied();
+            SetHorizontalMovementDirection();
+            CastRays();
         }
 
         private void ApplyGravity()
@@ -224,56 +172,123 @@ namespace VFEngine.Platformer
             upRaycastHitColliderController.OnPlatformerInitializeFrame();
             rightRaycastHitColliderController.OnPlatformerInitializeFrame();
             leftRaycastHitColliderController.OnPlatformerInitializeFrame();
-            raycastController.OnPlatformerInitializeFrame();
+            raycastController.OnSetRaysParameters();
         }
+
+        private bool MovingPlatform => downRaycastHitCollider.HasMovingPlatform;
+        private bool MovingPlatformHasSpeed => !SpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed);
+        private static bool TimeIsActive => !TimeLteZero();
+        private bool MovingPlatformHasSpeedOnAxis => !AxisSpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed);
+        private bool NotTouchingCeilingLastFrame => !upRaycastHitCollider.WasTouchingCeilingLastFrame;
+        private bool TestPlatform => TimeIsActive && MovingPlatformHasSpeedOnAxis && NotTouchingCeilingLastFrame;
 
         private void TestMovingPlatform()
         {
-            
-            /*
-            if (downRaycastHitCollider.HasMovingPlatform)
-            {
-                downRaycastHitColliderController.OnSetMovingPlatformCurrentSpeed();
-                if (!SpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed))
-                    physicsController.OnTranslatePlatformSpeedToTransform();
-                var platformTest = !TimeLteZero() || !AxisSpeedNan(downRaycastHitCollider.MovingPlatformCurrentSpeed) ||
-                                   !upRaycastHitCollider.WasTouchingCeilingLastFrame;
-                if (platformTest)
-                {
-                    var rTask1 = Async(raycastController.OnSetRaysParameters());
-                    var rhcTask1 = Async(downRaycastHitColliderController.OnSetOnMovingPlatform());
-                    var rhcTask2 = Async(downRaycastHitColliderController.OnSetMovingPlatformCurrentGravity());
-                    var phTask1 = Async(physicsController.OnDisableGravity());
-                    var phTask2 = Async(physicsController.OnApplyMovingPlatformSpeedToNewPosition());
-                    var task1 = await (rTask1, rhcTask1, rhcTask2, phTask1, phTask2);
-                    physicsController.OnStopHorizontalSpeedOnPlatformTest();
-                    physicsController.OnSetForcesApplied();
-                }
-            }
-            */
+            if (!MovingPlatform) return;
+            if (MovingPlatformHasSpeed) physicsController.OnTranslatePlatformSpeedToTransform();
+            if (!TestPlatform) return;
+            downRaycastHitColliderController.OnPlatformerTestMovingPlatform();
+            physicsController.OnPlatformerTestMovingPlatform();
+            raycastController.OnSetRaysParameters();
         }
-        
-        #endregion
-        
+
+        private void SetForcesApplied()
+        {
+            physicsController.OnSetForcesApplied();
+        }
+
+        private bool SpeedLessThanNegativeMovementDirectionThreshold =>
+            physics.Speed.x < -physics.MovementDirectionThreshold;
+
+        private bool ExternalForceLessThanNegativeMovementDirectionThreshold =>
+            physics.ExternalForce.x < -physics.MovementDirectionThreshold;
+
+        private bool LeftMovementDirection => SpeedLessThanNegativeMovementDirectionThreshold ||
+                                              ExternalForceLessThanNegativeMovementDirectionThreshold;
+
+        private bool SpeedMoreThanMovementDirectionThreshold => physics.Speed.x > physics.MovementDirectionThreshold;
+
+        private bool ExternalForceMoreThanMovementDirectionThreshold =>
+            physics.ExternalForce.x > physics.MovementDirectionThreshold;
+
+        private bool RightMovementDirection => SpeedMoreThanMovementDirectionThreshold ||
+                                               ExternalForceMoreThanMovementDirectionThreshold;
+
+        private bool PlatformSpeedMoreThanSpeed =>
+            Abs(downRaycastHitCollider.MovingPlatformCurrentSpeed.x) > Abs(physics.Speed.x);
+
+        private bool ApplyPlatformSpeedToMovementDirection => MovingPlatform && PlatformSpeedMoreThanSpeed;
+
+        private void SetHorizontalMovementDirection()
+        {
+            physicsController.OnSetHorizontalMovementDirectionToStored();
+            if (LeftMovementDirection) physicsController.OnSetLeftMovementDirection();
+            else if (RightMovementDirection) physicsController.OnSetRightMovementDirection();
+            if (ApplyPlatformSpeedToMovementDirection)
+                physicsController.OnApplyPlatformSpeedToHorizontalMovementDirection();
+            physicsController.OnSetStoredHorizontalMovementDirection();
+        }
+
+        private void CastRays()
+        {
+            // do this
+        }
+
         #endregion
 
-        
+        #endregion
+
+        #region properties
+
+        public PlatformerData Data { get; private set; }
+
+        #endregion
+
         #region old code
+
         /*
+
+        private void GetWarningMessages()
+        {
+            const string rc = "Raycast";
+            const string ctr = "Controller";
+            const string ch = "Character";
+            var warningMessage = "";
+            var warningMessageCount = 0;
+            if (!physicsController) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
+            if (!raycastController) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
+            if (!raycastHitColliderController)
+                warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
+            if (!layerMaskController) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
+            DebugLogWarning(warningMessageCount, warningMessage);
+
+            string FieldParentGameObjectString(string field, string obj)
+            {
+                AddWarningMessage();
+                return FieldParentGameObjectMessage(field, obj);
+            }
+
+            void AddWarningMessage()
+            {
+                warningMessageCount++;
+            }
+        }
+        
+        await Async(StartRaycasts());
+        var pTask3 = Async(MoveTransform());
+        var pTask4 = Async(raycastController.OnSetRaysParameters());
+        var pTask5 = Async(SetNewSpeed());
+        var task2 = await (pTask3, pTask4, pTask5);
+        var pTask6 = Async(SetStates());
+        var pTask7 = Async(SetDistanceToGround());
+        var pTask8 = Async(physicsController.OnStopExternalForce());
+        var pTask9 = Async(SetStandingOnLastFrameToSavedBelowLayer());
+        var pTask10 = Async(physicsController.OnSetWorldSpeedToSpeed());
+        var task3 = await (pTask6, pTask7, pTask8, pTask9, pTask10);
 
         private async UniTaskVoid SetHorizontalMovementDirection()
         {
-            physicsController.OnSetHorizontalMovementDirectionToStored();
-            if (physics.Speed.x < -physics.MovementDirectionThreshold ||
-                physics.ExternalForce.x < -physics.MovementDirectionThreshold)
-                physicsController.OnSetNegativeHorizontalMovementDirection();
-            else if (physics.Speed.x > physics.MovementDirectionThreshold ||
-                     physics.ExternalForce.x > physics.MovementDirectionThreshold)
-                physicsController.OnSetPositiveHorizontalMovementDirection();
-            if (downRaycastHitCollider.OnMovingPlatform &&
-                Abs(downRaycastHitCollider.MovingPlatformCurrentSpeed.x) > Abs(physics.Speed.x))
-                physicsController.OnApplyPlatformSpeedToHorizontalMovementDirection();
-            physicsController.OnSetStoredHorizontalMovementDirection();
+            
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
@@ -983,12 +998,6 @@ namespace VFEngine.Platformer
 
         #endregion
         */
-        #endregion
-        
-
-        #region properties
-
-        public PlatformerData Data => p;
 
         #endregion
     }

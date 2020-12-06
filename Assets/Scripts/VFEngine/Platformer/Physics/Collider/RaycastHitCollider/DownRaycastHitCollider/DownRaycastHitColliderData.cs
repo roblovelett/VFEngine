@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 
@@ -37,9 +38,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public GameObject StandingOn { get; set; }
         public GameObject StandingOnWithSmallestDistance { get; set; }
         public RaycastHit2D[] DownHitsStorage { get; set; }
-        public PhysicsMaterialController PhysicsMaterialClosestToDownHit { get; set; }
-        public PathMovementController PathMovementClosestToDownHit { get; set; }
-        public PathMovementController MovingPlatform { get; set; }
+        [CanBeNull] public PhysicsMaterialController PhysicsMaterialClosestToDownHit { get; set; }
+        [CanBeNull] public PathMovementController PathMovementClosestToDownHit { get; set; }
+        [CanBeNull] public PathMovementController MovingPlatform { get; set; }
 
         #endregion
     }

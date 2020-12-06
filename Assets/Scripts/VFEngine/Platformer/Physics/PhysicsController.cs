@@ -206,6 +206,13 @@ namespace VFEngine.Platformer.Physics
             p.Transform.Translate(downRaycastHitCollider.MovingPlatformCurrentSpeed * deltaTime);
         }
 
+        private void PlatformerTestMovingPlatform()
+        {
+            DisableGravity();
+            ApplyMovingPlatformSpeedToNewPosition();
+            StopHorizontalSpeedOnPlatformTest();
+        }
+
         private void DisableGravity()
         {
             p.GravityActive = false;
@@ -226,31 +233,44 @@ namespace VFEngine.Platformer.Physics
         {
             p.ForcesApplied = p.Speed;
         }
-
         private void SetHorizontalMovementDirectionToStored()
         {
             p.HorizontalMovementDirection = p.StoredHorizontalMovementDirection;
         }
-
-        private void SetNegativeHorizontalMovementDirection()
+        private void SetLeftMovementDirection()
         {
             p.HorizontalMovementDirection = -1;
         }
 
-        private void SetPositiveHorizontalMovementDirection()
+        private void SetRightMovementDirection()
         {
             p.HorizontalMovementDirection = 1;
         }
-
         private void ApplyPlatformSpeedToHorizontalMovementDirection()
         {
             p.HorizontalMovementDirection = (int) Sign(downRaycastHitCollider.MovingPlatformCurrentSpeed.x);
         }
-
         private void SetStoredHorizontalMovementDirection()
         {
             p.StoredHorizontalMovementDirection = p.HorizontalMovementDirection;
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
 
         private void SetNewPositiveHorizontalPosition()
         {
@@ -430,6 +450,46 @@ namespace VFEngine.Platformer.Physics
         {
             PlatformerInitializeFrame();
         }
+
+        public void OnTranslatePlatformSpeedToTransform()
+        {
+            TranslatePlatformSpeedToTransform();
+        }
+        
+        public void OnPlatformerTestMovingPlatform()
+        {
+            PlatformerTestMovingPlatform();
+        }
+        
+        public void OnSetForcesApplied()
+        {
+            SetForcesApplied();
+        }
+        
+        public void OnSetHorizontalMovementDirectionToStored()
+        {
+            SetHorizontalMovementDirectionToStored();
+        }
+
+        public void OnSetLeftMovementDirection()
+        {
+            SetLeftMovementDirection();
+        }
+
+        public void OnSetRightMovementDirection()
+        {
+            SetRightMovementDirection();
+        }
+
+        public void OnApplyPlatformSpeedToHorizontalMovementDirection()
+        {
+            ApplyPlatformSpeedToHorizontalMovementDirection();
+        }
+
+        public void OnSetStoredHorizontalMovementDirection()
+        {
+            SetStoredHorizontalMovementDirection();
+        }
         
         #endregion
 
@@ -471,12 +531,7 @@ namespace VFEngine.Platformer.Physics
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-
-        public void OnTranslatePlatformSpeedToTransform()
-        {
-            TranslatePlatformSpeedToTransform();
-        }
-
+        
         public async UniTaskVoid OnDisableGravity()
         {
             DisableGravity();
@@ -492,36 +547,6 @@ namespace VFEngine.Platformer.Physics
         public void OnStopHorizontalSpeedOnPlatformTest()
         {
             StopHorizontalSpeedOnPlatformTest();
-        }
-
-        public void OnSetForcesApplied()
-        {
-            SetForcesApplied();
-        }
-
-        public void OnSetHorizontalMovementDirectionToStored()
-        {
-            SetHorizontalMovementDirectionToStored();
-        }
-
-        public void OnSetNegativeHorizontalMovementDirection()
-        {
-            SetNegativeHorizontalMovementDirection();
-        }
-
-        public void OnSetPositiveHorizontalMovementDirection()
-        {
-            SetPositiveHorizontalMovementDirection();
-        }
-
-        public void OnApplyPlatformSpeedToHorizontalMovementDirection()
-        {
-            ApplyPlatformSpeedToHorizontalMovementDirection();
-        }
-
-        public void OnSetStoredHorizontalMovementDirection()
-        {
-            SetStoredHorizontalMovementDirection();
         }
 
         public void OnSetNewPositiveHorizontalPosition()
