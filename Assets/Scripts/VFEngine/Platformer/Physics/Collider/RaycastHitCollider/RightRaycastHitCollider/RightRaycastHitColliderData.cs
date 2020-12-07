@@ -7,19 +7,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     {
         #region properties
 
-        public bool RightHitConnected { get; set; }
-        public bool IsCollidingRight { get; set; }
-        public bool PassedRightSlopeAngle { get; set; }
-        public int RightHitsStorageLength { get; set; }
-        public int CurrentRightHitsStorageIndex { get; set; }
-        public float CurrentRightHitAngle { get; set; }
-        public float CurrentRightHitDistance { get; set; }
-        public float DistanceBetweenRightHitAndRaycastOrigin { get; set; }
-        public float DistanceToRightCollider { get; set; }
-        public float RightLateralSlopeAngle { get; set; }
-        public Collider2D CurrentRightHitCollider { get; set; }
-        public GameObject CurrentRightWallCollider { get; set; }
-        public RaycastHit2D[] RightHitsStorage { get; set; }
+        public bool HitConnected { get; set; }
+        public bool IsColliding { get; set; }
+        public bool PassedSlopeAngle { get; set; }
+        public int HitsStorageLength { get; set; }
+        public int CurrentHitsStorageIndex { get; set; }
+        public float CurrentHitAngle { get; set; }
+        public float CurrentHitDistance { get; set; }
+        public float DistanceBetweenHitAndRaycastOrigin { get; set; }
+        public float DistanceToCollider { get; set; }
+        public float LateralSlopeAngle { get; set; }
+        public Collider2D CurrentHitCollider { get; set; }
+        public GameObject CurrentWallCollider { get; set; }
+        public RaycastHit2D[] HitsStorage { get; set; }
 
         #endregion
     }

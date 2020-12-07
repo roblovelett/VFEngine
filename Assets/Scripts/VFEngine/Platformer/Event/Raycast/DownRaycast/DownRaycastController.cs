@@ -100,7 +100,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             d.DownRayLength += Abs(physics.NewPosition.y);
         }
 
-        private void SetDownRaycastFromLeft()
+        /*private void SetDownRaycastFromLeft()
         {
             d.DownRaycastFromLeft = OnSetVerticalRaycast(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner,
                 physics.Transform, raycast.RayOffset, physics.NewPosition.x);
@@ -110,7 +110,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         {
             d.DownRaycastToRight = OnSetVerticalRaycast(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner,
                 physics.Transform, raycast.RayOffset, physics.NewPosition.x);
-        }
+        }*/
 
         private void SetCurrentDownRaycastOriginPoint()
         {
@@ -154,7 +154,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             SetDownRayLengthToVerticalNewPosition();
         }
 
-        public async UniTaskVoid OnSetDownRaycastFromLeft()
+        /*public async UniTaskVoid OnSetDownRaycastFromLeft()
         {
             SetDownRaycastFromLeft();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -164,7 +164,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         {
             SetDownRaycastToRight();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         public void OnSetCurrentDownRaycastOriginPoint()
         {

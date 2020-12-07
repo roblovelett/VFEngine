@@ -277,266 +277,271 @@ namespace VFEngine.Platformer
         #endregion
 
         #region cast rays horizontally
+
         private void CastRaysHorizontally(RaycastDirection direction)
         {
-            SetRaycastOrigin(direction);
-            SetHorizontalRayLength(direction);
+            SetRaycast(direction);
+            SetHitStorage(direction);
+            CastRaysToSide(direction);
             
-            // we resize our storage if needed
-            //if (_sideHitsStorage.Length != NumberOfHorizontalRays) _sideHitsStorage = new RaycastHit2D[NumberOfHorizontalRays];
-
-            /*
-            private async UniTaskVoid CastHorizontalRays(RaycastDirection direction)
+            void SetRaycast(RaycastDirection d)
             {
-                Collider2D currentHitCollider;
-                var movementIsRayDirection = false;
-                float currentHitAngle;
-                var rhcTask1 = Async(InitializeCurrentHorizontalHitsStorageIndex(direction));
-                var rhcTask2 = Async(SetHorizontalHitsStorageSize(direction));
-                var task1 = await (rTask1, rTask2, rTask3, rhcTask1, rhcTask2);
+                if (d == Left) leftRaycastController.OnPlatformerSetRaycast();
+                else rightRaycastController.OnPlatformerSetRaycast();
+            }
+            void SetHitStorage(RaycastDirection d)
+            {
+                if (d == Left) leftRaycastHitColliderController.OnPlatformerSetHitsStorage();
+                else rightRaycastHitColliderController.OnPlatformerSetHitsStorage();
+            }
+            
+            void CastRaysToSide(RaycastDirection d)
+            {
                 for (var i = 0; i < raycast.NumberOfHorizontalRaysPerSide; i++)
                 {
-                    var currentHitDistance = direction == Right
-                        ? rightRaycastHitCollider.CurrentRightHitDistance
-                        : leftRaycastHitCollider.CurrentLeftHitDistance;
-                    var hitConnected = direction == Right
-                        ? rightRaycastHitCollider.RightHitConnected
-                        : leftRaycastHitCollider.LeftHitConnected;
-                    SetCurrentHorizontalRaycastOrigin(direction);
-                    if (downRaycastHitCollider.HasGroundedLastFrame && i == 0)
-                        SetCurrentHorizontalRaycastToIgnoreOneWayPlatform(direction);
-                    else SetCurrentHorizontalRaycast(direction);
-                    var rhcTask3 = Async(SetCurrentSideHitsStorage(direction));
-                    var rhcTask4 = Async(SetCurrentHorizontalHitDistance(direction));
-                    var task2 = await (rhcTask3, rhcTask4);
-                    SetHitConnected(currentHitDistance, direction);
-                    if (hitConnected)
-                    {
-                        var rhcTask6 = Async(SetCurrentHorizontalHitCollider(direction));
-                        var rhcTask7 = Async(SetCurrentHorizontalHitAngle(direction));
-                        var task3 = await (rhcTask6, rhcTask7);
-                        var rhcTask8 = Async(GetCurrentHitCollider(direction));
-                        var rhcTask9 = Async(GetCurrentHitAngle(direction));
-                        var phTask1 = Async(GetMovementIsRayDirection(physics.HorizontalMovementDirection, direction));
-                        var task4 = await (rhcTask8, rhcTask9, phTask1);
-                        if (currentHitCollider == raycastHitCollider.IgnoredCollider) break;
-                        if (movementIsRayDirection) SetCurrentHorizontalLateralSlopeAngle(direction);
-                        if (currentHitAngle > physics.MaximumSlopeAngle)
-                        {
-                            if (direction == Left)
-                            {
-                                var rhcTask10 = Async(leftRaycastHitColliderController.OnSetIsCollidingLeft());
-                                var rhcTask11 = Async(leftRaycastHitColliderController.OnSetLeftDistanceToLeftCollider());
-                                var task5 = await (rhcTask10, rhcTask11);
-                            }
-                            else
-                            {
-                                var rhcTask12 = Async(rightRaycastHitColliderController.OnSetIsCollidingRight());
-                                var rhcTask13 =
-                                    Async(rightRaycastHitColliderController.OnSetRightDistanceToRightCollider());
-                                var task6 = await (rhcTask12, rhcTask13);
-                            }
+                    SetCurrentRaycast(d);
+                    SetCurrentHitsStorage(d);
+                    
+                    // if hit connected
+                    
+                    AddToCurrentHitsStorageIndex(d);
+                }
+            }
+            
+            void SetCurrentRaycast(RaycastDirection d)
+            {
+                if (d == Left) leftRaycastController.OnPlatformerSetCurrentRaycast();
+                else rightRaycastController.OnPlatformerSetCurrentRaycast();
+            }
 
-                            if (movementIsRayDirection)
-                            {
-                                var rchTask14 = Async(SetCurrentDistanceBetweenHorizontalHitAndRaycastOrigin(direction));
-                                var rchTask15 = Async(SetCurrentWallCollider(direction));
-                                var rchTask16 = Async(SetFailedSlopeAngle(direction));
-                                var rchTask17 = Async(AddHorizontalHitToContactList(direction));
-                                var phTask2 = Async(physicsController.OnStopHorizontalSpeed());
-                                var task7 = await (rchTask14, rchTask15, rchTask16, rchTask17, phTask2);
-                                SetNewHorizontalPosition(direction, downRaycastHitCollider.GroundedEvent, physics.Speed.y);
-                            }
+            void SetCurrentHitsStorage(RaycastDirection d)
+            {
+                if (d == Left) leftRaycastHitColliderController.OnPlatformerSetCurrentHitsStorage();
+                else rightRaycastHitColliderController.OnPlatformerSetCurrentHitsStorage();
+            }
+
+            void AddToCurrentHitsStorageIndex(RaycastDirection d)
+            {
+                if (d == Left) leftRaycastHitColliderController.OnPlatformerAddToCurrentHitsStorageIndex();
+                else rightRaycastHitColliderController.OnPlatformerAddToCurrentHitsStorageIndex();
+            }
+        }
+
+
+        /*
+        private async UniTaskVoid CastHorizontalRays(RaycastDirection direction)
+        {
+            for (var i = 0; i < raycast.NumberOfHorizontalRaysPerSide; i++)
+            {
+                var currentHitDistance = direction == Right
+                    ? rightRaycastHitCollider.CurrentRightHitDistance
+                    : leftRaycastHitCollider.CurrentLeftHitDistance;
+                var hitConnected = direction == Right
+                    ? rightRaycastHitCollider.RightHitConnected
+                    : leftRaycastHitCollider.LeftHitConnected;
+                SetCurrentHorizontalRaycastOrigin(direction);
+                if (downRaycastHitCollider.HasGroundedLastFrame && i == 0)
+                    SetCurrentHorizontalRaycastToIgnoreOneWayPlatform(direction);
+                else SetCurrentHorizontalRaycast(direction);
+                var rhcTask3 = Async(SetCurrentSideHitsStorage(direction));
+                var rhcTask4 = Async(SetCurrentHorizontalHitDistance(direction));
+                var task2 = await (rhcTask3, rhcTask4);
+                SetHitConnected(currentHitDistance, direction);
+                if (hitConnected)
+                {
+                    var rhcTask6 = Async(SetCurrentHorizontalHitCollider(direction));
+                    var rhcTask7 = Async(SetCurrentHorizontalHitAngle(direction));
+                    var task3 = await (rhcTask6, rhcTask7);
+                    var rhcTask8 = Async(GetCurrentHitCollider(direction));
+                    var rhcTask9 = Async(GetCurrentHitAngle(direction));
+                    var phTask1 = Async(GetMovementIsRayDirection(physics.HorizontalMovementDirection, direction));
+                    var task4 = await (rhcTask8, rhcTask9, phTask1);
+                    if (currentHitCollider == raycastHitCollider.IgnoredCollider) break;
+                    if (movementIsRayDirection) SetCurrentHorizontalLateralSlopeAngle(direction);
+                    if (currentHitAngle > physics.MaximumSlopeAngle)
+                    {
+                        if (direction == Left)
+                        {
+                            var rhcTask10 = Async(leftRaycastHitColliderController.OnSetIsCollidingLeft());
+                            var rhcTask11 = Async(leftRaycastHitColliderController.OnSetLeftDistanceToLeftCollider());
+                            var task5 = await (rhcTask10, rhcTask11);
+                        }
+                        else
+                        {
+                            var rhcTask12 = Async(rightRaycastHitColliderController.OnSetIsCollidingRight());
+                            var rhcTask13 =
+                                Async(rightRaycastHitColliderController.OnSetRightDistanceToRightCollider());
+                            var task6 = await (rhcTask12, rhcTask13);
+                        }
+
+                        if (movementIsRayDirection)
+                        {
+                            var rchTask14 = Async(SetCurrentDistanceBetweenHorizontalHitAndRaycastOrigin(direction));
+                            var rchTask15 = Async(SetCurrentWallCollider(direction));
+                            var rchTask16 = Async(SetFailedSlopeAngle(direction));
+                            var rchTask17 = Async(AddHorizontalHitToContactList(direction));
+                            var phTask2 = Async(physicsController.OnStopHorizontalSpeed());
+                            var task7 = await (rchTask14, rchTask15, rchTask16, rchTask17, phTask2);
+                            SetNewHorizontalPosition(direction, downRaycastHitCollider.GroundedEvent, physics.Speed.y);
                         }
                     }
-
-                    AddToCurrentHorizontalHitsStorageIndex(direction);
                 }
 
-                async UniTaskVoid SetCurrentDistanceBetweenHorizontalHitAndRaycastOrigin(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
-                    else leftRaycastHitColliderController.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
+                AddToCurrentHorizontalHitsStorageIndex(direction);
+            }
 
-                async UniTaskVoid AddHorizontalHitToContactList(RaycastDirection d)
-                {
-                    if (d == Right) raycastHitColliderController.OnAddRightHitToContactList();
-                    else raycastHitColliderController.OnAddLeftHitToContactList();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                void SetNewHorizontalPosition(RaycastDirection d, bool isGrounded, float speedY)
-                {
-                    if (d == Right) physicsController.OnSetNewPositiveHorizontalPosition();
-                    else physicsController.OnSetNewNegativeHorizontalPosition();
-                    if (!isGrounded && speedY != 0) physicsController.OnStopNewHorizontalPosition();
-                }
-
-                async UniTaskVoid SetFailedSlopeAngle(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetRightFailedSlopeAngle();
-                    else leftRaycastHitColliderController.OnSetLeftFailedSlopeAngle();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetCurrentWallCollider(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetRightCurrentWallCollider();
-                    else leftRaycastHitColliderController.OnSetLeftCurrentWallCollider();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                void SetCurrentHorizontalLateralSlopeAngle(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightLateralSlopeAngle();
-                    else leftRaycastHitColliderController.OnSetCurrentLeftLateralSlopeAngle();
-                }
-
-                async UniTaskVoid SetCurrentHorizontalHitAngle(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitAngle();
-                    else leftRaycastHitColliderController.OnSetCurrentLeftHitAngle();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetCurrentHorizontalHitCollider(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitCollider();
-                    else leftRaycastHitColliderController.OnSetCurrentLeftHitCollider();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid GetCurrentHitCollider(RaycastDirection d)
-                {
-                    currentHitCollider = d == Right
-                        ? rightRaycastHitCollider.CurrentRightHitCollider
-                        : leftRaycastHitCollider.CurrentLeftHitCollider;
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid GetMovementIsRayDirection(int movementDirection, RaycastDirection d)
-                {
-                    if (d == Right && movementDirection == 1 || d == Left && movementDirection == -1)
-                        movementIsRayDirection = true;
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid GetCurrentHitAngle(RaycastDirection d)
-                {
-                    currentHitAngle = d == Right
-                        ? rightRaycastHitCollider.CurrentRightHitAngle
-                        : leftRaycastHitCollider.CurrentLeftHitAngle;
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetCurrentSideHitsStorage(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitsStorage();
-                    else leftRaycastHitColliderController.OnSetCurrentLeftHitsStorage();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetCurrentHorizontalHitDistance(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitDistance();
-                    else leftRaycastHitColliderController.OnSetCurrentLeftHitDistance();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                void SetHitConnected(float distance, RaycastDirection d)
-                {
-                    if (distance > 0)
-                    {
-                        if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitConnected();
-                        else leftRaycastHitColliderController.OnSetLeftRaycastHitConnected();
-                    }
-                    else
-                    {
-                        if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitMissed();
-                        else leftRaycastHitColliderController.OnSetLeftRaycastHitMissed();
-                    }
-                }
-
-                void SetCurrentHorizontalRaycast(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnSetCurrentRightRaycast();
-                    else leftRaycastController.OnSetCurrentLeftRaycast();
-                }
-
-                void SetCurrentHorizontalRaycastToIgnoreOneWayPlatform(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
-                    else leftRaycastController.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
-                }
-
-                void SetCurrentHorizontalRaycastOrigin(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnSetCurrentRightRaycastOrigin();
-                    else leftRaycastController.OnSetCurrentLeftRaycastOrigin();
-                }
-
-                void AddToCurrentHorizontalHitsStorageIndex(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnAddToCurrentRightHitsStorageIndex();
-                    leftRaycastHitColliderController.OnAddToCurrentLeftHitsStorageIndex();
-                }
-
-                async UniTaskVoid SetHorizontalHitsStorageSize(RaycastDirection d)
-                {
-                    if (d == Right && rightRaycastHitCollider.RightHitsStorageLength !=
-                        raycast.NumberOfHorizontalRaysPerSide)
-                        rightRaycastHitColliderController.OnInitializeRightHitsStorage();
-                    else if (leftRaycastHitCollider.LeftHitsStorageLength != raycast.NumberOfHorizontalRaysPerSide)
-                        leftRaycastHitColliderController.OnInitializeLeftHitsStorage();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetHorizontalRaycastLength(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnInitializeRightRaycastLength();
-                    else leftRaycastController.OnInitializeLeftRaycastLength();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetHorizontalRaycastToTopOrigin(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnSetRightRaycastToTopOrigin();
-                    else leftRaycastController.OnSetLeftRaycastToTopOrigin();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid SetHorizontalRaycastFromBottomOrigin(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastController.OnSetRightRaycastFromBottomOrigin();
-                    else leftRaycastController.OnSetLeftRaycastFromBottomOrigin();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
-                async UniTaskVoid InitializeCurrentHorizontalHitsStorageIndex(RaycastDirection d)
-                {
-                    if (d == Right) rightRaycastHitColliderController.OnInitializeCurrentRightHitsStorageIndex();
-                    else leftRaycastHitColliderController.OnInitializeCurrentLeftHitsStorageIndex();
-                    await SetYieldOrSwitchToThreadPoolAsync();
-                }
-
+            async UniTaskVoid SetCurrentDistanceBetweenHorizontalHitAndRaycastOrigin(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin();
+                else leftRaycastHitColliderController.OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
                 await SetYieldOrSwitchToThreadPoolAsync();
-            }*/
-        }
-        
-        private void SetRaycastOrigin(RaycastDirection direction)
-        {
-            if (direction == Left) leftRaycastController.OnPlatformerSetRaycastOrigin();
-            else rightRaycastController.OnPlatformerSetRaycastOrigin();
-        }
+            }
 
-        private void SetHorizontalRayLength(RaycastDirection direction)
-        {
-            if (direction == Left) leftRaycastController.OnPlatformerSetRaycastLength();
-            else rightRaycastController.OnPlatformerSetRaycastLength();
-        }
-        
+            async UniTaskVoid AddHorizontalHitToContactList(RaycastDirection d)
+            {
+                if (d == Right) raycastHitColliderController.OnAddRightHitToContactList();
+                else raycastHitColliderController.OnAddLeftHitToContactList();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            void SetNewHorizontalPosition(RaycastDirection d, bool isGrounded, float speedY)
+            {
+                if (d == Right) physicsController.OnSetNewPositiveHorizontalPosition();
+                else physicsController.OnSetNewNegativeHorizontalPosition();
+                if (!isGrounded && speedY != 0) physicsController.OnStopNewHorizontalPosition();
+            }
+
+            async UniTaskVoid SetFailedSlopeAngle(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetRightFailedSlopeAngle();
+                else leftRaycastHitColliderController.OnSetLeftFailedSlopeAngle();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetCurrentWallCollider(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetRightCurrentWallCollider();
+                else leftRaycastHitColliderController.OnSetLeftCurrentWallCollider();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            void SetCurrentHorizontalLateralSlopeAngle(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightLateralSlopeAngle();
+                else leftRaycastHitColliderController.OnSetCurrentLeftLateralSlopeAngle();
+            }
+
+            async UniTaskVoid SetCurrentHorizontalHitAngle(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitAngle();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitAngle();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetCurrentHorizontalHitCollider(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitCollider();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitCollider();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid GetCurrentHitCollider(RaycastDirection d)
+            {
+                currentHitCollider = d == Right
+                    ? rightRaycastHitCollider.CurrentRightHitCollider
+                    : leftRaycastHitCollider.CurrentLeftHitCollider;
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid GetMovementIsRayDirection(int movementDirection, RaycastDirection d)
+            {
+                if (d == Right && movementDirection == 1 || d == Left && movementDirection == -1)
+                    movementIsRayDirection = true;
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid GetCurrentHitAngle(RaycastDirection d)
+            {
+                currentHitAngle = d == Right
+                    ? rightRaycastHitCollider.CurrentRightHitAngle
+                    : leftRaycastHitCollider.CurrentLeftHitAngle;
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetCurrentSideHitsStorage(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitsStorage();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitsStorage();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetCurrentHorizontalHitDistance(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnSetCurrentRightHitDistance();
+                else leftRaycastHitColliderController.OnSetCurrentLeftHitDistance();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            void SetHitConnected(float distance, RaycastDirection d)
+            {
+                if (distance > 0)
+                {
+                    if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitConnected();
+                    else leftRaycastHitColliderController.OnSetLeftRaycastHitConnected();
+                }
+                else
+                {
+                    if (d == Right) rightRaycastHitColliderController.OnSetRightRaycastHitMissed();
+                    else leftRaycastHitColliderController.OnSetLeftRaycastHitMissed();
+                }
+            }
+
+            void SetCurrentHorizontalRaycast(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastController.OnSetCurrentRightRaycast();
+                else leftRaycastController.OnSetCurrentLeftRaycast();
+            }
+
+            void SetCurrentHorizontalRaycastToIgnoreOneWayPlatform(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastController.OnSetCurrentRightRaycastToIgnoreOneWayPlatform();
+                else leftRaycastController.OnSetCurrentLeftRaycastToIgnoreOneWayPlatform();
+            }
+
+            void AddToCurrentHorizontalHitsStorageIndex(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastHitColliderController.OnAddToCurrentRightHitsStorageIndex();
+                leftRaycastHitColliderController.OnAddToCurrentLeftHitsStorageIndex();
+            }
+
+            
+
+            async UniTaskVoid SetHorizontalRaycastLength(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastController.OnInitializeRightRaycastLength();
+                else leftRaycastController.OnInitializeLeftRaycastLength();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetHorizontalRaycastToTopOrigin(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastController.OnSetRightRaycastToTopOrigin();
+                else leftRaycastController.OnSetLeftRaycastToTopOrigin();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            async UniTaskVoid SetHorizontalRaycastFromBottomOrigin(RaycastDirection d)
+            {
+                if (d == Right) rightRaycastController.OnSetRightRaycastFromBottomOrigin();
+                else leftRaycastController.OnSetLeftRaycastFromBottomOrigin();
+                await SetYieldOrSwitchToThreadPoolAsync();
+            }
+
+            
+
+            await SetYieldOrSwitchToThreadPoolAsync();
+        }*/
+
         #endregion
 
         private void CastRaysDown()

@@ -84,7 +84,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             u.UpRayLength = downRaycastHitCollider.GroundedEvent ? raycast.RayOffset : physics.NewPosition.y;
         }
 
-        private void InitializeUpRaycastStart()
+        /*private void InitializeUpRaycastStart()
         {
             u.UpRaycastStart = SetPoint(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner, physics.Transform,
                 physics.NewPosition.x);
@@ -94,12 +94,12 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         {
             u.UpRaycastEnd = SetPoint(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner, physics.Transform,
                 physics.NewPosition.y);
-        }
+        }*/
 
-        private static Vector2 SetPoint(Vector2 bounds1, Vector2 bounds2, Transform t, float axis)
+        /*private static Vector2 SetPoint(Vector2 bounds1, Vector2 bounds2, Transform t, float axis)
         {
             return OnSetBounds(bounds1, bounds2) * 2 + (Vector2) t.right * axis;
-        }
+        }*/
 
         private void InitializeUpRaycastSmallestDistance()
         {
@@ -140,7 +140,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
             await SetYieldOrSwitchToThreadPoolAsync();
         }
 
-        public async UniTaskVoid OnInitializeUpRaycastStart()
+        /*public async UniTaskVoid OnInitializeUpRaycastStart()
         {
             InitializeUpRaycastStart();
             await SetYieldOrSwitchToThreadPoolAsync();
@@ -150,7 +150,7 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
         {
             InitializeUpRaycastEnd();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }
+        }*/
 
         public async UniTaskVoid OnInitializeUpRaycastSmallestDistance()
         {

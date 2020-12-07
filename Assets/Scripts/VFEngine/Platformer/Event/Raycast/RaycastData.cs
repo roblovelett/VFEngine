@@ -17,16 +17,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public float DistanceToGroundRayMaximumLength { get; private set; }
 
         #endregion
-        
+
         public float BoundsWidth { get; set; }
         public float BoundsHeight { get; set; }
         public Vector2 OriginalColliderSize { get; set; }
         public Vector2 OriginalColliderOffset { get; set; }
         public Vector2 Bounds { get; set; }
         public Vector2 BoundsCenter { get; set; }
+        public Vector2 BoundsBottomCenterPosition { get; set; }
         public Vector2 BoundsBottomLeftCorner { get; set; }
         public Vector2 BoundsBottomRightCorner { get; set; }
-        public Vector2 BoundsBottomCenterPosition { get; set; }
         public Vector2 BoundsTopLeftCorner { get; set; }
         public Vector2 BoundsTopRightCorner { get; set; }
         public int NumberOfHorizontalRaysPerSide { get; set; }

@@ -275,14 +275,14 @@ namespace VFEngine.Platformer.Physics
         private void SetNewPositiveHorizontalPosition()
         {
             p.NewPositionX = SetNewHorizontalPosition(true,
-                rightRaycastHitCollider.DistanceBetweenRightHitAndRaycastOrigin, raycast.BoundsWidth,
+                rightRaycastHitCollider.DistanceBetweenHitAndRaycastOrigin, raycast.BoundsWidth,
                 raycast.RayOffset);
         }
 
         private void SetNewNegativeHorizontalPosition()
         {
             p.NewPositionX = SetNewHorizontalPosition(false,
-                leftRaycastHitCollider.DistanceBetweenLeftHitAndRaycastOrigin, raycast.BoundsWidth, raycast.RayOffset);
+                leftRaycastHitCollider.DistanceBetweenHitAndRaycastOrigin, raycast.BoundsWidth, raycast.RayOffset);
         }
 
         private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)
