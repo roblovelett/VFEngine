@@ -114,9 +114,9 @@ namespace VFEngine.Platformer.Event.Raycast.UpRaycast
 
         private void SetCurrentUpRaycast()
         {
-            u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, physics.Transform.up, u.UpRayLength,
+            /*u.CurrentUpRaycastHit = Raycast(u.CurrentUpRaycastOrigin, physics.Transform.up, u.UpRayLength,
                 layerMask.PlatformMask & ~ layerMask.OneWayPlatformMask & ~ layerMask.MovingOneWayPlatformMask, cyan,
-                raycast.DrawRaycastGizmosControl);
+                raycast.DrawRaycastGizmosControl);*/
         }
 
         private void SetUpRaycastSmallestDistanceToRaycastUpHitAt()

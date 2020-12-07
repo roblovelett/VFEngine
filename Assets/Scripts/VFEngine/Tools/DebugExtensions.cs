@@ -9,6 +9,8 @@ namespace VFEngine.Tools
 
     public static class DebugExtensions
     {
+        #region warning control
+        
         private const string Ze = "zero";
         private const string SObj = "ScriptableObject";
         private const string GObj = "GameObject";
@@ -79,13 +81,8 @@ namespace VFEngine.Tools
             warningMessage = warningMessage.Replace("@", warningMessageCount == 1 ? "" : "\n");
             LogWarning($"{warningMessage}");
         }
-
-        public static RaycastHit2D Raycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,
-            LayerMask mask, Color color, bool drawGizmos = false)
-        {
-            if (drawGizmos) DrawRay(rayOriginPoint, rayDirection * rayDistance, color);
-            return Physics2D.Raycast(rayOriginPoint, rayDirection, rayDistance, mask);
-        }
+        
+        #endregion
 
         public static RaycastHit2D Boxcast(Vector2 origin, Vector2 size, float angle, Vector2 direction, float length,
             LayerMask mask, Color color, bool drawGizmos = false)

@@ -81,9 +81,9 @@ namespace VFEngine.Platformer.Event.Raycast.DistanceToGroundRaycast
 
         private void SetDistanceToGroundRaycast()
         {
-            d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -physics.Transform.up,
+            /*d.DistanceToGroundRaycastHit = Raycast(d.DistanceToGroundRaycastOrigin, -physics.Transform.up,
                 raycast.DistanceToGroundRayMaximumLength, layerMask.RaysBelowLayerMaskPlatforms, blue,
-                raycast.DrawRaycastGizmosControl);
+                raycast.DrawRaycastGizmosControl);*/
         }
 
         #endregion

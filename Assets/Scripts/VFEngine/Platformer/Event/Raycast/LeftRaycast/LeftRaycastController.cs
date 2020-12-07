@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
-using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 {
     using static Raycast;
-    using static DebugExtensions;
     using static Color;
     using static Vector2;
+    using static RaycastDirection;
+    using static Time;
 
     public class LeftRaycastController : MonoBehaviour, IController
     {
@@ -98,7 +99,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         private void SetRaycastLength()
         {
-            l.RayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
+            l.RayLength = OnSetHorizontalRayLength(physics.Speed.x, deltaTime, raycast.BoundsWidth, raycast.RayOffset);
         }
 
         private void PlatformerSetCurrentRaycast()
@@ -122,15 +123,40 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             else SetCurrentRaycastWithLayerMasks();
         }
 
+        private int CurrentRaycastDirection
+        {
+            get
+            {
+                var direction = 0;
+                switch (raycast.CurrentRaycastDirection)
+                {
+                    case Left:
+                        direction = -1;
+                        break;
+                    case Right:
+                        direction = 1;
+                        break;
+                    case None: break;
+                    case Up: break;
+                    case Down: break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+
+                return direction;
+            }
+        }
+
         private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
-            l.CurrentRaycastHit = Raycast(l.CurrentRaycastOrigin, -physics.Transform.right, l.RayLength,
-                layerMask.PlatformMask, red, raycast.DrawRaycastGizmosControl);
+            l.CurrentRaycastHit = OnSetRaycast(l.CurrentRaycastOrigin,
+                CurrentRaycastDirection * physics.Transform.right, l.RayLength, layerMask.PlatformMask, red,
+                raycast.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentRaycastWithLayerMasks()
         {
-            l.CurrentRaycastHit = Raycast(l.CurrentRaycastOrigin, -physics.Transform.right, l.RayLength,
+            l.CurrentRaycastHit = OnSetRaycast(l.CurrentRaycastOrigin,
+                CurrentRaycastDirection * physics.Transform.right, l.RayLength,
                 layerMask.PlatformMask & ~layerMask.OneWayPlatformMask & ~layerMask.MovingOneWayPlatformMask, red,
                 raycast.DrawRaycastGizmosControl);
         }

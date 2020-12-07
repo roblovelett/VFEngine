@@ -6,6 +6,7 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static Vector2;
     using static ScriptableObject;
+    using static RaycastDirection;
 
     public class RaycastController : MonoBehaviour
     {
@@ -38,7 +39,12 @@ namespace VFEngine.Platformer.Event.Raycast
         private void InitializeData()
         {
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            r = new RaycastData {OriginalColliderSize = boxCollider.size, OriginalColliderOffset = boxCollider.offset};
+            r = new RaycastData
+            {
+                OriginalColliderSize = boxCollider.size,
+                OriginalColliderOffset = boxCollider.offset,
+                CurrentRaycastDirection = None
+            };
             r.ApplySettings(settings);
             if (r.CastRaysOnBothSides) r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays / 2;
             else r.NumberOfHorizontalRaysPerSide = r.NumberOfHorizontalRays;
@@ -157,6 +163,16 @@ namespace VFEngine.Platformer.Event.Raycast
             r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
         }
 
+        private void PlatformerSetRaycastDirectionToLeft()
+        {
+            r.CurrentRaycastDirection = Left;
+        }
+
+        private void PlatformerSetRaycastDirectionToRight()
+        {
+            r.CurrentRaycastDirection = Right;
+        }
+
         #endregion
 
         #endregion
@@ -172,6 +188,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnSetRaysParameters()
         {
             SetRaysParameters();
+        }
+
+        public void OnPlatformerSetRaycastDirectionToLeft()
+        {
+            PlatformerSetRaycastDirectionToLeft();
+        }
+
+        public void OnPlatformerSetRaycastDirectionToRight()
+        {
+            PlatformerSetRaycastDirectionToRight();
         }
 
         #endregion

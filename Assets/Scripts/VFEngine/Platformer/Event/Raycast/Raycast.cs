@@ -6,7 +6,6 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static Vector2;
     using static Mathf;
-    using static Time;
 
     public static class Raycast
     {
@@ -17,40 +16,37 @@ namespace VFEngine.Platformer.Event.Raycast
         private static Vector2 SetRaycastToTopOrigin(Vector2 boundsTopLeftCorner, Vector2 boundsTopRightCorner,
             Transform transform, float obstacleTolerance)
         {
-            var origin = SetBounds(boundsTopLeftCorner, boundsTopRightCorner);
-            var tolerance = SetTolerance(transform, obstacleTolerance);
-            origin -= tolerance;
-            return origin;
+            var topOrigin = (boundsTopLeftCorner + boundsTopRightCorner) / 2;
+            topOrigin -= (Vector2) transform.up * obstacleTolerance;
+            return topOrigin;
         }
 
         private static Vector2 SetRaycastFromBottomOrigin(Vector2 boundsBottomLeftCorner,
             Vector2 boundsBottomRightCorner, Transform transform, float obstacleTolerance)
         {
-            var origin = SetBounds(boundsBottomLeftCorner, boundsBottomRightCorner);
-            var tolerance = SetTolerance(transform, obstacleTolerance);
-            origin += tolerance;
-            return origin;
+            var bottomOrigin = (boundsBottomLeftCorner + boundsBottomRightCorner) / 2;
+            bottomOrigin += (Vector2) transform.up * obstacleTolerance;
+            return bottomOrigin;
         }
 
-        private static Vector2 SetBounds(Vector2 boundsLeft, Vector2 boundsRight)
+        private static float SetHorizontalRayLength(float speedX, float deltaTime, float boundsWidth, float rayOffset)
         {
-            return (boundsLeft + boundsRight) / 2;
-        }
-
-        private static Vector2 SetTolerance(Transform transform, float obstacleTolerance)
-        {
-            return (Vector2) transform.up * obstacleTolerance;
-        }
-
-        private static float SetHorizontalRayLength(float speedX, float boundsWidth, float rayOffset)
-        {
-            return Abs(speedX * deltaTime) + boundsWidth / 2 + rayOffset * 2;
+            var rayLength = Abs(speedX * deltaTime) + boundsWidth / 2 + rayOffset * 2;
+            return rayLength;
         }
 
         private static Vector2 SetCurrentRaycastOrigin(Vector2 raycastFromBottom, Vector2 raycastToTop, int index,
             int numberOfHorizontalRays)
         {
-            return Lerp(raycastFromBottom, raycastToTop, index / (float) (numberOfHorizontalRays - 1));
+            var origin = Lerp(raycastFromBottom, raycastToTop, index / (float) (numberOfHorizontalRays - 1));
+            return origin;
+        }
+
+        private static RaycastHit2D SetRaycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,
+            LayerMask mask, Color color, bool drawGizmos)
+        {
+            if (drawGizmos) Debug.DrawRay(rayOriginPoint, rayDirection * rayDistance, color);
+            return Physics2D.Raycast(rayOriginPoint, rayDirection, rayDistance, mask);
         }
 
         /*private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
@@ -82,15 +78,21 @@ namespace VFEngine.Platformer.Event.Raycast
                 obstacleTolerance);
         }
 
-        public static float OnSetHorizontalRayLength(float speedX, float boundsWidth, float rayOffset)
+        public static float OnSetHorizontalRayLength(float speedX, float deltaTime, float boundsWidth, float rayOffset)
         {
-            return SetHorizontalRayLength(speedX, boundsWidth, rayOffset);
+            return SetHorizontalRayLength(speedX, deltaTime, boundsWidth, rayOffset);
         }
 
         public static Vector2 OnSetCurrentRaycastOrigin(Vector2 raycastFromBottom, Vector2 raycastToTop, int index,
             int numberOfHorizontalRays)
         {
             return SetCurrentRaycastOrigin(raycastFromBottom, raycastToTop, index, numberOfHorizontalRays);
+        }
+
+        public static RaycastHit2D OnSetRaycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,
+            LayerMask mask, Color color, bool drawGizmos)
+        {
+            return SetRaycast(rayOriginPoint, rayDirection, rayDistance, mask, color, drawGizmos);
         }
 
         /*public static Vector2 OnSetVerticalRaycast(Vector2 boundsLeft, Vector2 boundsRight, Transform transform, float rayOffset, float xPosition)

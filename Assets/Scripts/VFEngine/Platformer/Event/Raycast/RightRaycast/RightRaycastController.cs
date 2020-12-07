@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
-using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 {
     using static Raycast;
-    using static DebugExtensions;
     using static Color;
     using static Vector2;
+    using static Time;
+    using static RaycastDirection;
 
     public class RightRaycastController : MonoBehaviour, IController
     {
@@ -98,7 +99,7 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void SetRaycastLength()
         {
-            r.RayLength = OnSetHorizontalRayLength(physics.Speed.x, raycast.BoundsWidth, raycast.RayOffset);
+            r.RayLength = OnSetHorizontalRayLength(physics.Speed.x, deltaTime, raycast.BoundsWidth, raycast.RayOffset);
         }
 
         private void PlatformerSetCurrentRaycast()
@@ -116,6 +117,29 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         private bool ExcludeOneWayPlatformsFromRaycast => downRaycastHitCollider.HasGroundedLastFrame &&
                                                           rightRaycastHitCollider.CurrentHitsStorageIndex == 0;
 
+        private int CurrentRaycastDirection
+        {
+            get
+            {
+                var direction = 0;
+                switch (raycast.CurrentRaycastDirection)
+                {
+                    case Left:
+                        direction = -1;
+                        break;
+                    case Right:
+                        direction = 1;
+                        break;
+                    case None: break;
+                    case Up: break;
+                    case Down: break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+
+                return direction;
+            }
+        }
+
         private void SetCurrentRaycast()
         {
             if (ExcludeOneWayPlatformsFromRaycast) SetCurrentRaycastToIgnoreOneWayPlatform();
@@ -124,14 +148,16 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
-            r.CurrentRaycastHit = Raycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
-                layerMask.PlatformMask, green, raycast.DrawRaycastGizmosControl);
+            r.CurrentRaycastHit = OnSetRaycast(r.CurrentRaycastOrigin,
+                CurrentRaycastDirection * physics.Transform.right, r.RayLength, layerMask.PlatformMask, blue,
+                raycast.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentRaycastWithLayerMasks()
         {
-            r.CurrentRaycastHit = Raycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
-                layerMask.PlatformMask & ~layerMask.OneWayPlatformMask & ~layerMask.MovingOneWayPlatformMask, green,
+            r.CurrentRaycastHit = OnSetRaycast(r.CurrentRaycastOrigin,
+                CurrentRaycastDirection * physics.Transform.right, r.RayLength,
+                layerMask.PlatformMask & ~layerMask.OneWayPlatformMask & ~layerMask.MovingOneWayPlatformMask, blue,
                 raycast.DrawRaycastGizmosControl);
         }
 

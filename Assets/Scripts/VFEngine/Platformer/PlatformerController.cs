@@ -264,12 +264,14 @@ namespace VFEngine.Platformer
 
         private void CastRaysLeft()
         {
+            raycastController.OnPlatformerSetRaycastDirectionToLeft();
             const RaycastDirection direction = Left;
             CastRaysHorizontally(direction);
         }
 
         private void CastRaysRight()
         {
+            raycastController.OnPlatformerSetRaycastDirectionToRight();
             const RaycastDirection direction = Right;
             CastRaysHorizontally(direction);
         }

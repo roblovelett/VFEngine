@@ -75,14 +75,14 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
         {
-            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
-                layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);
+            /*d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
+                layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);*/
         }
 
         private void SetCurrentDownRaycast()
-        {
-            d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
-                layerMask.RaysBelowLayerMaskPlatforms, blue, raycast.DrawRaycastGizmosControl);
+        { 
+            /*d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
+                layerMask.RaysBelowLayerMaskPlatforms, blue, raycast.DrawRaycastGizmosControl);*/
         }
 
         private void InitializeDownRayLength()

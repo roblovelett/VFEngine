@@ -92,9 +92,9 @@ namespace VFEngine.Platformer.Event.Raycast.StickyRaycast.LeftStickyRaycast
 
         private void SetLeftStickyRaycast()
         {
-            l.LeftStickyRaycastHit = Raycast(l.LeftStickyRaycastOrigin, -physics.Transform.up,
+            /*l.LeftStickyRaycastHit = Raycast(l.LeftStickyRaycastOrigin, -physics.Transform.up,
                 l.LeftStickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, cyan,
-                raycast.DrawRaycastGizmosControl);
+                raycast.DrawRaycastGizmosControl);*/
         }
 
         #endregion

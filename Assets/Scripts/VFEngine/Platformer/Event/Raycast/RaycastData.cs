@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public int NumberOfHorizontalRaysPerSide { get; set; }
         public int NumberOfVerticalRaysPerSide => NumberOfVerticalRays / 2;
         public float ObstacleHeightTolerance => RayOffset;
+        public RaycastDirection CurrentRaycastDirection { get; set; }
 
         #region public methods
 
