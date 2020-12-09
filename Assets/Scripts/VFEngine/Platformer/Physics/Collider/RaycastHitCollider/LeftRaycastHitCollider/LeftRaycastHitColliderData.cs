@@ -7,14 +7,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
     {
         #region properties
 
-        public bool HitConnected => CurrentHitDistance > 0;
+        public bool HitConnected { get; set; }
         public bool HitIgnoredCollider { get; set; }
         public bool IsColliding { get; set; }
         public bool PassedSlopeAngle { get; set; }
-        public int HitsStorageLength { get; set; }
         public int CurrentHitsStorageIndex { get; set; }
         public float CurrentHitAngle { get; set; }
-        private float CurrentHitDistance => HitsStorage[CurrentHitsStorageIndex].distance;
         public float DistanceBetweenHitAndRaycastOrigins { get; set; }
         public float DistanceToCollider { get; set; }
         public float LateralSlopeAngle { get; set; }

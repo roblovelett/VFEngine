@@ -1,16 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider
 {
     using static MathsExtensions;
-    using static RaycastHitCollider;
-    using static UniTaskExtensions;
+    using static Mathf;
+    using static Vector2;
 
     public class RightRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -21,10 +19,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private RightRaycastController rightRaycastController;
+        private RaycastHitColliderController raycastHitColliderController;
         private RightRaycastHitColliderData r;
         private PhysicsData physics;
         private RaycastData raycast;
         private RightRaycastData rightRaycast;
+        private RaycastHitColliderData raycastHitCollider;
 
         #endregion
 
@@ -41,14 +41,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             physicsController = GetComponent<PhysicsController>();
             raycastController = GetComponent<RaycastController>();
             rightRaycastController = GetComponent<RightRaycastController>();
+            raycastHitColliderController = GetComponent<RaycastHitColliderController>();
         }
-        
+
         private void InitializeData()
         {
-            r = new RightRaycastHitColliderData
-            {
-                CurrentWallCollider = null
-            };
+            r = new RightRaycastHitColliderData {CurrentWallCollider = null};
         }
 
         private void Start()
@@ -62,11 +60,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             physics = physicsController.Data;
             raycast = raycastController.Data;
             rightRaycast = rightRaycastController.Data;
+            raycastHitCollider = raycastHitColliderController.Data;
         }
 
         private void Initialize()
         {
             InitializeHitsStorage();
+            InitializeCurrentHitsStorage();
+            InitializeCurrentHit();
+            InitializeHitConnected();
+            InitializeCurrentLeftHitCollider();
+            InitializeHitIgnoredCollider();
+            InitializeCurrentHitAngle();
             ResetState();
         }
 
@@ -74,7 +79,37 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         {
             r.HitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
         }
-        
+
+        private void InitializeCurrentHitsStorage()
+        {
+            r.HitsStorage[r.CurrentHitsStorageIndex] = rightRaycast.CurrentRaycastHit;
+        }
+
+        private void InitializeCurrentHit()
+        {
+            r.CurrentHit = r.HitsStorage[r.CurrentHitsStorageIndex];
+        }
+
+        private void InitializeHitConnected()
+        {
+            r.HitConnected = r.CurrentHit.distance > 0;
+        }
+
+        private void InitializeCurrentLeftHitCollider()
+        {
+            r.CurrentHitCollider = r.CurrentHit.collider;
+        }
+
+        private void InitializeHitIgnoredCollider()
+        {
+            r.HitIgnoredCollider = r.CurrentHitCollider == raycastHitCollider.IgnoredCollider;
+        }
+
+        private void InitializeCurrentHitAngle()
+        {
+            r.CurrentHitAngle = Abs(Angle(r.CurrentHit.normal, physics.Transform.up));
+        }
+
         private void ResetState()
         {
             SetIsNotColliding();
@@ -92,7 +127,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         {
             r.DistanceToCollider = -1;
         }
-        
+
         private void SetFailedSlopeAngle()
         {
             r.PassedSlopeAngle = false;
@@ -103,104 +138,86 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.LateralSlopeAngle = 0;
         }
 
+        #region platformer
+
         private void PlatformerInitializeFrame()
         {
             SetCurrentWallColliderNull();
             ResetState();
         }
-        
-        private void SetCurrentWallColliderNull()
-        {
-            r.CurrentWallCollider = null;
-        }
-        private bool IncorrectHitsStorage => r.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
-        
+
         private void PlatformerSetHitsStorage()
         {
             if (IncorrectHitsStorage) InitializeHitsStorage();
             InitializeCurrentHitsStorageIndex();
         }
-        
-        private void InitializeCurrentHitsStorageIndex()
+
+        private void PlatformerSetLateralSlopeAngle()
         {
-            r.CurrentHitsStorageIndex = 0;
+            SetLateralSlopeAngle();
         }
 
-        private void PlatformerSetCurrentHitsStorage()
+        private void PlatformerSetIsColliding()
         {
-            SetCurrentHitsStorage();
+            SetIsColliding();
+            SetDistanceToCollider();
         }
-        
-        private void SetCurrentHitsStorage()
+
+        private void PlatformerHitWall()
         {
-            r.HitsStorage[r.CurrentHitsStorageIndex] = rightRaycast.CurrentRaycastHit;
+            SetCurrentWallCollider();
+            SetFailedSlopeAngle();
+            SetDistanceBetweenHitAndRaycastOrigins();
         }
-        
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         private void PlatformerAddToCurrentHitsStorageIndex()
         {
             AddToCurrentHitsStorageIndex();
         }
-        
-        private void AddToCurrentHitsStorageIndex()
+
+        #endregion
+
+        private void SetCurrentWallColliderNull()
         {
-            r.CurrentHitsStorageIndex++;
-        }
-        
-        // ============================================================== //
-        
-        private void SetRightRaycastHitConnected()
-        {
-            r.HitConnected = true;
+            r.CurrentWallCollider = null;
         }
 
-        private void SetRightDistanceToRightCollider()
+        private bool IncorrectHitsStorage => r.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
+
+        private void InitializeCurrentHitsStorageIndex()
         {
-            r.DistanceToCollider = r.CurrentHitAngle;
+            r.CurrentHitsStorageIndex = 0;
         }
 
-        private void SetRightRaycastHitMissed()
-        {
-            r.HitConnected = false;
-        }
-
-        private void SetCurrentRightHitAngle()
-        {
-            r.CurrentHitAngle = OnSetRaycastHitAngle(r.HitsStorage[r.CurrentHitsStorageIndex].normal,
-                physics.Transform);
-        }
-
-        private void SetIsCollidingRight()
-        {
-            r.IsColliding = true;
-        }
-
-        private void SetRightCurrentWallCollider()
-        {
-            r.CurrentWallCollider = r.CurrentHitCollider.gameObject;
-        }
-        
-        private void SetCurrentRightHitDistance()
-        {
-            r.CurrentHitDistance = r.HitsStorage[r.CurrentHitsStorageIndex].distance;
-        }
-
-        private void SetCurrentRightHitCollider()
-        {
-            r.CurrentHitCollider = r.HitsStorage[r.CurrentHitsStorageIndex].collider;
-        }
-
-        private void SetCurrentRightLateralSlopeAngle()
+        private void SetLateralSlopeAngle()
         {
             r.LateralSlopeAngle = r.CurrentHitAngle;
         }
 
-        private void SetCurrentDistanceBetweenRightHitAndRaycastOrigin()
+        private void SetIsColliding()
         {
-            r.DistanceBetweenHitAndRaycastOrigin = DistanceBetweenPointAndLine(
-                r.HitsStorage[r.CurrentHitsStorageIndex].point, rightRaycast.RaycastFromBottomOrigin,
-                rightRaycast.RaycastToTopOrigin);
+            r.IsColliding = true;
+        }
+
+        private void SetDistanceToCollider()
+        {
+            r.DistanceToCollider = r.CurrentHit.distance;
+        }
+
+        private void SetCurrentWallCollider()
+        {
+            r.CurrentWallCollider = r.CurrentHitCollider.gameObject;
+        }
+
+        private void SetDistanceBetweenHitAndRaycastOrigins()
+        {
+            r.DistanceBetweenHitAndRaycastOrigins = DistanceBetweenPointAndLine(r.CurrentHit.point,
+                rightRaycast.RaycastFromBottomOrigin, rightRaycast.RaycastToTopOrigin);
+        }
+
+        private void AddToCurrentHitsStorageIndex()
+        {
+            r.CurrentHitsStorageIndex++;
         }
 
         #endregion
@@ -212,7 +229,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public RightRaycastHitColliderData Data => r;
 
         #region public methods
-        
+
         #region platformer
 
         public void OnPlatformerInitializeFrame()
@@ -225,106 +242,27 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             PlatformerSetHitsStorage();
         }
 
-        public void OnPlatformerSetCurrentHitsStorage()
+        public void OnPlatformerSetLateralSlopeAngle()
         {
-            PlatformerSetCurrentHitsStorage();
+            PlatformerSetLateralSlopeAngle();
+        }
+
+        public void OnPlatformerSetIsColliding()
+        {
+            PlatformerSetIsColliding();
+        }
+
+        public void OnPlatformerHitWall()
+        {
+            PlatformerHitWall();
         }
 
         public void OnPlatformerAddToCurrentHitsStorageIndex()
         {
             PlatformerAddToCurrentHitsStorageIndex();
         }
-        
+
         #endregion
-
-        /*public void OnInitializeRightHitsStorage()
-        {
-            InitializeHitsStorage();
-        }
-
-        public void OnInitializeCurrentRightHitsStorageIndex()
-        {
-            InitializeCurrentRightHitsStorageIndex();
-        }*/
-
-        public void OnSetRightRaycastHitConnected()
-        {
-            SetRightRaycastHitConnected();
-        }
-
-        public void OnSetRightRaycastHitMissed()
-        {
-            SetRightRaycastHitMissed();
-        }
-
-        public void OnSetCurrentRightHitsStorage()
-        {
-            SetCurrentHitsStorage();
-        }
-
-        public void OnSetCurrentRightHitAngle()
-        {
-            SetCurrentRightHitAngle();
-        }
-
-        public async UniTaskVoid OnSetIsCollidingRight()
-        {
-            SetIsCollidingRight();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetRightDistanceToRightCollider()
-        {
-            SetRightDistanceToRightCollider();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetRightCurrentWallCollider()
-        {
-            SetRightCurrentWallCollider();
-        }
-
-        /*public void OnAddToCurrentRightHitsStorageIndex()
-        {
-            AddToCurrentRightHitsStorageIndex();
-        }*/
-
-        public void OnSetCurrentRightHitDistance()
-        {
-            SetCurrentRightHitDistance();
-        }
-
-        public void OnSetCurrentRightHitCollider()
-        {
-            SetCurrentRightHitCollider();
-        }
-
-        public void OnSetCurrentRightLateralSlopeAngle()
-        {
-            SetCurrentRightLateralSlopeAngle();
-        }
-
-        public void OnSetRightFailedSlopeAngle()
-        {
-            SetFailedSlopeAngle();
-        }
-
-        public void OnSetCurrentDistanceBetweenRightHitAndRaycastOrigin()
-        {
-            SetCurrentDistanceBetweenRightHitAndRaycastOrigin();
-        }
-
-        public async UniTaskVoid OnSetCurrentWallColliderNull()
-        {
-            SetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnResetState()
-        {
-            ResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         #endregion
 

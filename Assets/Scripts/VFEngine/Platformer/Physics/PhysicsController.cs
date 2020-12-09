@@ -123,6 +123,7 @@ namespace VFEngine.Platformer.Physics
                 Transform = character.transform,
                 GravityActive = true,
                 StoredHorizontalMovementDirection = 1,
+                SmallValue = 0.0001f,
                 MovementDirectionThreshold = 0.0001f
             };
             p.ApplySettings(settings);

@@ -163,6 +163,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.MovingPlatformCurrentGravity = d.MovingPlatformGravity;
         }
 
+        private void PlatformerCastRaysDown()
+        {
+            // do this
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+
         private void SetCurrentDownHitsStorage()
         {
             d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = downRaycast.CurrentDownRaycastHit;
@@ -339,6 +352,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public void OnPlatformerTestMovingPlatform()
         {
             PlatformerTestMovingPlatform();
+        }
+
+        public void OnPlatformerCastRaysDown()
+        {
+            PlatformerCastRaysDown();
         }
         
         #endregion

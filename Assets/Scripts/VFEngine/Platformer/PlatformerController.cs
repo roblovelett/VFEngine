@@ -79,7 +79,28 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        #region internal
+
         private static bool TimeIsActive => !TimeLteZero();
+        private bool MovingRight => physics.HorizontalMovementDirection == 1;
+        private bool MovingLeft => physics.HorizontalMovementDirection == -1;
+        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
+
+        private bool HitConnected =>
+            CastingLeft ? leftRaycastHitCollider.HitConnected : rightRaycastHitCollider.HitConnected;
+
+        private bool HitIgnoredCollider => CastingLeft
+            ? leftRaycastHitCollider.HitIgnoredCollider
+            : rightRaycastHitCollider.HitIgnoredCollider;
+
+        private bool MovementIsRayDirection => CastingLeft && MovingLeft || !CastingLeft && MovingRight;
+
+        private float CurrentHitAngle =>
+            CastingLeft ? leftRaycastHitCollider.CurrentHitAngle : rightRaycastHitCollider.CurrentHitAngle;
+
+        private bool HitWall => CurrentHitAngle > physics.MaximumSlopeAngle;
+
+        #endregion
 
         #region private methods
 
@@ -158,10 +179,16 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        #region fixed update
+        
         private void FixedUpdate()
         {
             RunPlatformer();
         }
+        
+        #endregion
+
+        #region platformer
 
         private void RunPlatformer()
         {
@@ -173,10 +200,18 @@ namespace VFEngine.Platformer
             CastRays();
         }
 
+        #endregion
+
+        #region apply gravity
+
         private void ApplyGravity()
         {
             physicsController.OnPlatformerApplyGravity();
         }
+
+        #endregion
+
+        #region initialize frame
 
         private void InitializeFrame()
         {
@@ -188,6 +223,8 @@ namespace VFEngine.Platformer
             leftRaycastHitColliderController.OnPlatformerInitializeFrame();
             raycastController.OnPlatformerInitializeFrame();
         }
+
+        #endregion
 
         #region moving platform test
 
@@ -220,27 +257,19 @@ namespace VFEngine.Platformer
 
         #region cast rays
 
-        private bool MovingRight => physics.HorizontalMovementDirection == 1;
-        private bool MovingLeft => physics.HorizontalMovementDirection == -1;
-
         private void CastRays()
         {
-            if (raycast.CastRaysOnBothSides)
-            {
-                CastRaysLeft();
-                CastRaysRight();
-            }
-            else if (MovingRight)
-            {
-                CastRaysRight();
-            }
-            else
-            {
-                CastRaysLeft();
-            }
-
+            if (raycast.CastRaysOnBothSides) CastRaysBothSides();
+            else if (MovingRight) CastRaysRight();
+            else CastRaysLeft();
             CastRaysDown();
             CastRaysUp();
+        }
+
+        private void CastRaysBothSides()
+        {
+            CastRaysLeft();
+            CastRaysRight();
         }
 
         private void CastRaysLeft()
@@ -259,22 +288,6 @@ namespace VFEngine.Platformer
 
         #region cast rays horizontally
 
-        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
-
-        private bool HitConnected =>
-            CastingLeft ? leftRaycastHitCollider.HitConnected : rightRaycastHitCollider.HitConnected;
-
-        private bool HitIgnoredCollider => CastingLeft
-            ? leftRaycastHitCollider.HitIgnoredCollider
-            : rightRaycastHitCollider.HitIgnoredCollider;
-
-        private bool MovementIsRayDirection => CastingLeft && MovingLeft || !CastingLeft && MovingRight;
-
-        private float CurrentHitAngle =>
-            CastingLeft ? leftRaycastHitCollider.CurrentHitAngle : rightRaycastHitCollider.CurrentHitAngle;
-
-        private bool HitWall => CurrentHitAngle > physics.MaximumSlopeAngle;
-
         private void CastRaysHorizontally()
         {
             if (CastingLeft)
@@ -290,13 +303,15 @@ namespace VFEngine.Platformer
 
             for (var i = 0; i < raycast.NumberOfHorizontalRaysPerSide; i++)
             {
+                if (CastingLeft) leftRaycastController.OnPlatformerSetCurrentRaycast();
+                else rightRaycastController.OnPlatformerSetCurrentRaycast();
                 if (HitConnected)
                 {
                     if (HitIgnoredCollider) break;
                     if (MovementIsRayDirection)
                     {
                         if (CastingLeft) leftRaycastHitColliderController.OnPlatformerSetLateralSlopeAngle();
-                        else leftRaycastHitColliderController.OnPlatformerSetLateralSlopeAngle();
+                        else rightRaycastHitColliderController.OnPlatformerSetLateralSlopeAngle();
                     }
 
                     if (HitWall)
@@ -332,6 +347,65 @@ namespace VFEngine.Platformer
 
         private void CastRaysDown()
         {
+            //downRaycastHitCollider.OnPlatformerCastRaysDown();
+
+
+            /*
+            _friction = 0;
+            if (_newPosition.y < -_smallValue) State.IsFalling = true;
+            else State.IsFalling = false;
+            if (Parameters.Gravity > 0 && !State.IsFalling)
+            {
+                State.IsCollidingBelow = false;
+                return;
+            }
+
+            var rayLength = _boundsHeight / 2 + RayOffset;
+            if (State.OnAMovingPlatform) rayLength *= 2;
+            if (_newPosition.y < 0) rayLength += Mathf.Abs(_newPosition.y);
+            _verticalRayCastFromLeft = (_boundsBottomLeftCorner + _boundsTopLeftCorner) / 2;
+            _verticalRayCastToRight = (_boundsBottomRightCorner + _boundsTopRightCorner) / 2;
+            _verticalRayCastFromLeft += (Vector2) transform.up * RayOffset;
+            _verticalRayCastToRight += (Vector2) transform.up * RayOffset;
+            _verticalRayCastFromLeft += (Vector2) transform.right * _newPosition.x;
+            _verticalRayCastToRight += (Vector2) transform.right * _newPosition.x;
+            if (_belowHitsStorage.Length != NumberOfVerticalRays)
+                _belowHitsStorage = new RaycastHit2D[NumberOfVerticalRays];
+            _raysBelowLayerMaskPlatforms = PlatformMask;
+            _raysBelowLayerMaskPlatformsWithoutOneWay = PlatformMask & ~MidHeightOneWayPlatformMask &
+                                                        ~OneWayPlatformMask & ~MovingOneWayPlatformMask;
+            _raysBelowLayerMaskPlatformsWithoutMidHeight = _raysBelowLayerMaskPlatforms & ~MidHeightOneWayPlatformMask;
+
+            // if what we're standing on is a mid height oneway platform, we turn it 
+            // into a regular platform for this frame only
+            if (StandingOnLastFrame != null)
+            {
+                _savedBelowLayer = StandingOnLastFrame.layer;
+                if (MidHeightOneWayPlatformMask.MMContains(StandingOnLastFrame.layer))
+                    StandingOnLastFrame.layer = LayerMask.NameToLayer("Platforms");
+            }
+
+            // if we were grounded last frame, and not on a one way platform, 
+            // we ignore any one way platform that would come in our path.
+            if (State.WasGroundedLastFrame)
+                if (StandingOnLastFrame != null)
+                    if (!MidHeightOneWayPlatformMask.MMContains(StandingOnLastFrame.layer))
+                        _raysBelowLayerMaskPlatforms = _raysBelowLayerMaskPlatformsWithoutMidHeight;
+
+            // stairs management
+            if (State.WasGroundedLastFrame)
+                if (StandingOnLastFrame != null)
+                    if (StairsMask.MMContains(StandingOnLastFrame.layer))
+                        // if we're still within the bounds of the stairs
+                        if (StandingOnCollider.bounds.Contains(_colliderBottomCenterPosition))
+                            _raysBelowLayerMaskPlatforms =
+                                (_raysBelowLayerMaskPlatforms & ~OneWayPlatformMask) | StairsMask;
+            if (State.OnAMovingPlatform && _newPosition.y > 0)
+                _raysBelowLayerMaskPlatforms = _raysBelowLayerMaskPlatforms & ~OneWayPlatformMask;
+            var smallestDistance = float.MaxValue;
+            var smallestDistanceIndex = 0;
+            var hitConnected = false;
+            */
         }
 
         private void CastRaysUp()
@@ -353,33 +427,7 @@ namespace VFEngine.Platformer
 #region old code
 
 /*
-private void GetWarningMessages()
-{
-    const string rc = "Raycast";
-    const string ctr = "Controller";
-    const string ch = "Character";
-    var warningMessage = "";
-    var warningMessageCount = 0;
-    if (!physicsController) warningMessage += FieldParentGameObjectString($"Physics {ctr}", $"{ch}");
-    if (!raycastController) warningMessage += FieldParentGameObjectString($"{rc} {ctr}", $"{ch}");
-    if (!raycastHitColliderController)
-        warningMessage += FieldParentGameObjectString($"Collider {ctr}", $"{ch}");
-    if (!layerMaskController) warningMessage += FieldParentGameObjectString($"Layer Mask {ctr}", $"{ch}");
-    DebugLogWarning(warningMessageCount, warningMessage);
 
-    string FieldParentGameObjectString(string field, string obj)
-    {
-        AddWarningMessage();
-        return FieldParentGameObjectMessage(field, obj);
-    }
-
-    void AddWarningMessage()
-    {
-        warningMessageCount++;
-    }
-}
-
-await Async(StartRaycasts());
 var pTask3 = Async(MoveTransform());
 var pTask4 = Async(raycastController.OnSetRaysParameters());
 var pTask5 = Async(SetNewSpeed());
@@ -390,14 +438,6 @@ var pTask8 = Async(physicsController.OnStopExternalForce());
 var pTask9 = Async(SetStandingOnLastFrameToSavedBelowLayer());
 var pTask10 = Async(physicsController.OnSetWorldSpeedToSpeed());
 var task3 = await (pTask6, pTask7, pTask8, pTask9, pTask10);
-
-private async UniTaskVoid SetHorizontalMovementDirection()
-{
-    
-    await SetYieldOrSwitchToThreadPoolAsync();
-}
-
-
 
 private async UniTaskVoid CastRaysUp()
 {
@@ -447,6 +487,8 @@ private async UniTaskVoid CastRaysUp()
 
 private async UniTaskVoid CastRaysDown()
 {
+
+
     var rhcTask1 = Async(downRaycastHitColliderController.OnSetIsNotCollidingBelow());
     var phTask1 = Async(DetachFromMovingPlatform());
     var task1 = await (rhcTask1, phTask1);

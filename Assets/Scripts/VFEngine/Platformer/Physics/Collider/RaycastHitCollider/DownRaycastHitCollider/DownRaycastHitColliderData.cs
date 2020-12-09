@@ -10,8 +10,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     {
         #region properties
 
-        public bool HasPhysicsMaterialClosestToDownHit { get; set; }
-        public bool HasPathMovementClosestToDownHit { get; set; }
+        public bool HasPhysicsMaterialClosestToHit { get; set; }
+        public bool HasPathMovementClosestToHit { get; set; }
         public bool DownHitConnected { get; set; }
         public bool IsCollidingBelow { get; set; }
         public bool OnMovingPlatform { get; set; }

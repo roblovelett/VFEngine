@@ -68,11 +68,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         private void Initialize()
         {
             InitializeHitsStorage();
-            SetCurrentHitsStorage();
-            SetCurrentHit();
-            SetCurrentLeftHitCollider();
-            SetHitIgnoredCollider();
-            SetCurrentHitAngle();
+            InitializeCurrentHitsStorage();
+            InitializeCurrentHit();
+            InitializeHitConnected();
+            InitializeCurrentLeftHitCollider();
+            InitializeHitIgnoredCollider();
+            InitializeCurrentHitAngle();
             ResetState();
         }
 
@@ -81,27 +82,32 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.HitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
         }
 
-        private void SetCurrentHitsStorage()
+        private void InitializeCurrentHitsStorage()
         {
             l.HitsStorage[l.CurrentHitsStorageIndex] = leftRaycast.CurrentRaycastHit;
         }
 
-        private void SetCurrentHit()
+        private void InitializeCurrentHit()
         {
             l.CurrentHit = l.HitsStorage[l.CurrentHitsStorageIndex];
         }
 
-        private void SetCurrentLeftHitCollider()
+        private void InitializeHitConnected()
+        {
+            l.HitConnected = l.CurrentHit.distance > 0;
+        }
+
+        private void InitializeCurrentLeftHitCollider()
         {
             l.CurrentHitCollider = l.CurrentHit.collider;
         }
 
-        private void SetHitIgnoredCollider()
+        private void InitializeHitIgnoredCollider()
         {
             l.HitIgnoredCollider = l.CurrentHitCollider == raycastHitCollider.IgnoredCollider;
         }
 
-        private void SetCurrentHitAngle()
+        private void InitializeCurrentHitAngle()
         {
             l.CurrentHitAngle = Abs(Angle(l.CurrentHit.normal, physics.Transform.up));
         }
