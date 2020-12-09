@@ -19,6 +19,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public bool HasStandingOnLastFrame { get; set; }
         public bool HasGroundedLastFrame { get; set; }
         public bool GroundedEvent { get; set; }
+        public bool MovingPlatformHasSpeed { get; set; }
+        public bool MovingPlatformHasSpeedOnAxis { get; set; }
         public int DownHitsStorageLength { get; set; }
         public int CurrentDownHitsStorageIndex { get; set; }
         public int DownHitsStorageSmallestDistanceIndex { get; set; }

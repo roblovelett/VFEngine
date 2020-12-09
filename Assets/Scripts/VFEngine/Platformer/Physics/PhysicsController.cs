@@ -10,22 +10,20 @@ using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitColl
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.StickyRaycastHitCollider;
-using VFEngine.Tools;
 using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
-    using static DebugExtensions;
     using static Quaternion;
     using static Time;
     using static Mathf;
     using static Vector2;
-    using static RigidbodyType2D;
     using static ScriptableObject;
     using static UniTaskExtensions;
     using static GameObject;
+    using static RaycastDirection;
 
     public class PhysicsController : MonoBehaviour, IController
     {
@@ -35,6 +33,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings;
         private GameObject character;
+        private PlatformerController platformerController;
         private RaycastController raycastController;
         private RaycastHitColliderController raycastHitColliderController;
         private UpRaycastController upRaycastController;
@@ -46,6 +45,7 @@ namespace VFEngine.Platformer.Physics
         private DownRaycastHitColliderController downRaycastHitColliderController;
         private StickyRaycastHitColliderController stickyRaycastHitColliderController;
         private PhysicsData p;
+        private PlatformerData platformer;
         private RaycastData raycast;
         private UpRaycastData upRaycast;
         private LeftStickyRaycastData leftStickyRaycast;
@@ -59,16 +59,49 @@ namespace VFEngine.Platformer.Physics
 
         #endregion
 
+        #region internal
+
+        private bool SpeedLessThanNegativeMovementDirectionThreshold => p.Speed.x < -p.MovementDirectionThreshold;
+
+        private bool ExternalForceLessThanNegativeMovementDirectionThreshold =>
+            p.ExternalForce.x < -p.MovementDirectionThreshold;
+
+        private bool LeftMovementDirection => SpeedLessThanNegativeMovementDirectionThreshold ||
+                                              ExternalForceLessThanNegativeMovementDirectionThreshold;
+
+        private bool SpeedMoreThanMovementDirectionThreshold => p.Speed.x > p.MovementDirectionThreshold;
+
+        private bool ExternalForceMoreThanMovementDirectionThreshold =>
+            p.ExternalForce.x > p.MovementDirectionThreshold;
+
+        private bool RightMovementDirection => SpeedMoreThanMovementDirectionThreshold ||
+                                               ExternalForceMoreThanMovementDirectionThreshold;
+
+        private bool PlatformSpeedMoreThanSpeed =>
+            Abs(downRaycastHitCollider.MovingPlatformCurrentSpeed.x) > Abs(p.Speed.x);
+
+        private bool ApplyPlatformSpeedToMovementDirection =>
+            downRaycastHitCollider.HasMovingPlatform && PlatformSpeedMoreThanSpeed;
+
+        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
+        private bool CastingRight => raycast.CurrentRaycastDirection == Right;
+        private bool InAir => downRaycastHitCollider.GroundedEvent && p.Speed.y != 0;
+
+        #endregion
+
         #region private methods
+
+        #region initialization
 
         private void Awake()
         {
             SetControllers();
             InitializeData();
         }
-        
+
         private void SetControllers()
         {
+            platformerController = GetComponent<PlatformerController>();
             raycastController = GetComponent<RaycastController>();
             raycastHitColliderController = GetComponent<RaycastHitColliderController>();
             upRaycastController = GetComponent<UpRaycastController>();
@@ -80,7 +113,7 @@ namespace VFEngine.Platformer.Physics
             downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
             stickyRaycastHitColliderController = GetComponent<StickyRaycastHitColliderController>();
         }
-        
+
         private void InitializeData()
         {
             character = Find("Character");
@@ -133,6 +166,7 @@ namespace VFEngine.Platformer.Physics
 
         private void SetDependencies()
         {
+            platformer = platformerController.Data;
             raycast = raycastController.Data;
             upRaycast = upRaycastController.Data;
             leftStickyRaycast = leftStickyRaycastController.Data;
@@ -149,11 +183,10 @@ namespace VFEngine.Platformer.Physics
         {
             ResetState();
         }
-        
-        private void ResetState()
-        {
-            p.IsFalling = true;
-        }
+
+        #endregion
+
+        #region platformer
 
         private void PlatformerApplyGravity()
         {
@@ -162,6 +195,56 @@ namespace VFEngine.Platformer.Physics
             if (p.Speed.y < 0) ApplyFallMultiplierToCurrentGravity();
             if (p.GravityActive) ApplyGravityToVerticalSpeed();
             if (p.FallSlowFactor != 0) ApplyFallSlowFactorToVerticalSpeed();
+        }
+
+        private void PlatformerInitializeFrame()
+        {
+            SetNewPosition();
+            ResetState();
+        }
+
+        private void PlatformerTestMovingPlatform()
+        {
+            if (!downRaycastHitCollider.HasMovingPlatform) return;
+            if (downRaycastHitCollider.MovingPlatformHasSpeedOnAxis) TranslatePlatformSpeedToTransform();
+            if (!platformer.TestPlatform) return;
+            DisableGravity();
+            ApplyMovingPlatformSpeedToNewPosition();
+            StopHorizontalSpeedOnPlatformTest();
+        }
+
+        private void PlatformerSetAppliedForces()
+        {
+            SetAppliedForces();
+        }
+
+        private void PlatformerSetHorizontalMovementDirection()
+        {
+            SetHorizontalMovementDirectionToStored();
+            if (LeftMovementDirection) SetLeftMovementDirection();
+            else if (RightMovementDirection) SetRightMovementDirection();
+            if (ApplyPlatformSpeedToMovementDirection) ApplyPlatformSpeedToHorizontalMovementDirection();
+            SetStoredHorizontalMovementDirection();
+        }
+
+        private void PlatformerHitWall()
+        {
+            if (CastingLeft) SetNewNegativeHorizontalPosition();
+            else if (CastingRight) SetNewPositiveHorizontalPosition();
+            if (InAir) StopNewHorizontalPosition();
+            StopHorizontalSpeed();
+        }
+
+        #endregion
+
+        private void ResetState()
+        {
+            p.IsFalling = true;
+        }
+
+        private void SetIsFalling()
+        {
+            p.IsFalling = true;
         }
 
         private void SetCurrentGravity()
@@ -190,12 +273,6 @@ namespace VFEngine.Platformer.Physics
             p.SpeedY *= p.FallSlowFactor;
         }
 
-        private void PlatformerInitializeFrame()
-        {
-            SetNewPosition();
-            ResetState();
-        }
-
         private void SetNewPosition()
         {
             p.NewPosition = p.Speed * deltaTime;
@@ -204,13 +281,6 @@ namespace VFEngine.Platformer.Physics
         private void TranslatePlatformSpeedToTransform()
         {
             p.Transform.Translate(downRaycastHitCollider.MovingPlatformCurrentSpeed * deltaTime);
-        }
-
-        private void PlatformerTestMovingPlatform()
-        {
-            DisableGravity();
-            ApplyMovingPlatformSpeedToNewPosition();
-            StopHorizontalSpeedOnPlatformTest();
         }
 
         private void DisableGravity()
@@ -229,14 +299,16 @@ namespace VFEngine.Platformer.Physics
             p.SpeedX = -p.SpeedX;
         }
 
-        private void SetForcesApplied()
+        private void SetAppliedForces()
         {
-            p.ForcesApplied = p.Speed;
+            p.AppliedForces = p.Speed;
         }
+
         private void SetHorizontalMovementDirectionToStored()
         {
             p.HorizontalMovementDirection = p.StoredHorizontalMovementDirection;
         }
+
         private void SetLeftMovementDirection()
         {
             p.HorizontalMovementDirection = -1;
@@ -246,55 +318,27 @@ namespace VFEngine.Platformer.Physics
         {
             p.HorizontalMovementDirection = 1;
         }
+
         private void ApplyPlatformSpeedToHorizontalMovementDirection()
         {
             p.HorizontalMovementDirection = (int) Sign(downRaycastHitCollider.MovingPlatformCurrentSpeed.x);
         }
+
         private void SetStoredHorizontalMovementDirection()
         {
             p.StoredHorizontalMovementDirection = p.HorizontalMovementDirection;
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-        private void SetNewPositiveHorizontalPosition()
-        {
-            p.NewPositionX = SetNewHorizontalPosition(true,
-                rightRaycastHitCollider.DistanceBetweenHitAndRaycastOrigin, raycast.BoundsWidth,
-                raycast.RayOffset);
-        }
 
         private void SetNewNegativeHorizontalPosition()
         {
-            p.NewPositionX = SetNewHorizontalPosition(false,
-                leftRaycastHitCollider.DistanceBetweenHitAndRaycastOrigin, raycast.BoundsWidth, raycast.RayOffset);
+            p.NewPositionX = -leftRaycastHitCollider.DistanceBetweenHitAndRaycastOrigins + raycast.BoundsWidth / 2 +
+                             raycast.RayOffset * 2;
         }
 
-        private static float SetNewHorizontalPosition(bool positiveDirection, float distance, float width, float offset)
+        private void SetNewPositiveHorizontalPosition()
         {
-            var positiveX = -distance + width / 2 + offset * 2;
-            var negativeX = distance - width / 2 - offset * 2;
-            return positiveDirection ? positiveX : negativeX;
-        }
-
-        private void StopHorizontalSpeed()
-        {
-            p.SpeedX = 0;
+            p.NewPositionX = rightRaycastHitCollider.DistanceBetweenHitAndRaycastOrigins - raycast.BoundsWidth / 2 -
+                             raycast.RayOffset * 2;
         }
 
         private void StopNewHorizontalPosition()
@@ -302,9 +346,9 @@ namespace VFEngine.Platformer.Physics
             p.NewPositionX = 0;
         }
 
-        private void SetIsFalling()
+        private void StopHorizontalSpeed()
         {
-            p.IsFalling = true;
+            p.SpeedX = 0;
         }
 
         private void SetIsNotFalling()
@@ -438,7 +482,7 @@ namespace VFEngine.Platformer.Physics
         public PhysicsData Data => p;
 
         #region public methods
-        
+
         #region platformer
 
         public void OnPlatformerApplyGravity()
@@ -451,54 +495,27 @@ namespace VFEngine.Platformer.Physics
             PlatformerInitializeFrame();
         }
 
-        public void OnTranslatePlatformSpeedToTransform()
-        {
-            TranslatePlatformSpeedToTransform();
-        }
-        
         public void OnPlatformerTestMovingPlatform()
         {
             PlatformerTestMovingPlatform();
         }
-        
-        public void OnSetForcesApplied()
+
+        public void OnPlatformerSetAppliedForces()
         {
-            SetForcesApplied();
-        }
-        
-        public void OnSetHorizontalMovementDirectionToStored()
-        {
-            SetHorizontalMovementDirectionToStored();
+            PlatformerSetAppliedForces();
         }
 
-        public void OnSetLeftMovementDirection()
+        public void OnPlatformerSetHorizontalMovementDirection()
         {
-            SetLeftMovementDirection();
+            PlatformerSetHorizontalMovementDirection();
         }
 
-        public void OnSetRightMovementDirection()
+        public void OnPlatformerHitWall()
         {
-            SetRightMovementDirection();
+            PlatformerHitWall();
         }
 
-        public void OnApplyPlatformSpeedToHorizontalMovementDirection()
-        {
-            ApplyPlatformSpeedToHorizontalMovementDirection();
-        }
-
-        public void OnSetStoredHorizontalMovementDirection()
-        {
-            SetStoredHorizontalMovementDirection();
-        }
-        
         #endregion
-
-        #region physics model
-
-        /*public void OnSetCurrentCurrentGravity()
-        {
-            SetCurrentGravity();
-        }*/
 
         public void OnApplyAscentMultiplierToCurrentGravity()
         {
@@ -531,7 +548,7 @@ namespace VFEngine.Platformer.Physics
             ResetState();
             await SetYieldOrSwitchToThreadPoolAsync();
         }
-        
+
         public async UniTaskVoid OnDisableGravity()
         {
             DisableGravity();
@@ -683,8 +700,6 @@ namespace VFEngine.Platformer.Physics
         {
             SlowFall();
         }
-
-        #endregion
 
         #endregion
 

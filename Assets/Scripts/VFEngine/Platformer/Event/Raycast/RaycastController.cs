@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast
@@ -15,14 +16,20 @@ namespace VFEngine.Platformer.Event.Raycast
         #region dependencies
 
         [SerializeField] private RaycastSettings settings;
+        private PlatformerController platformerController;
         private PhysicsController physicsController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
         private BoxCollider2D boxCollider;
         private RaycastData r;
+        private PlatformerData platformer;
         private PhysicsData physics;
+        private DownRaycastHitColliderData downRaycastHitCollider;
 
         #endregion
 
         #region private methods
+
+        #region initialization
 
         private void Awake()
         {
@@ -32,7 +39,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetControllers()
         {
+            platformerController = GetComponent<PlatformerController>();
             physicsController = GetComponent<PhysicsController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
             boxCollider = GetComponent<BoxCollider2D>();
         }
 
@@ -135,13 +144,42 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetDependencies()
         {
+            platformer = platformerController.Data;
             physics = physicsController.Data;
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
         }
 
         private void Initialize()
         {
             SetRaysParameters();
         }
+
+        #endregion
+
+        #region platformer
+
+        private void PlatformerInitializeFrame()
+        {
+            SetRaysParameters();
+        }
+
+        private bool TestMovingPlatform => downRaycastHitCollider.HasMovingPlatform && platformer.TestPlatform;
+        private void PlatformerTestMovingPlatform()
+        {
+            if (TestMovingPlatform) SetRaysParameters();
+        }
+
+        private void PlatformerSetRaycastDirectionToLeft()
+        {
+            r.CurrentRaycastDirection = Left;
+        }
+
+        private void PlatformerSetRaycastDirectionToRight()
+        {
+            r.CurrentRaycastDirection = Right;
+        }
+
+        #endregion
 
         private void SetRaysParameters()
         {
@@ -163,16 +201,6 @@ namespace VFEngine.Platformer.Event.Raycast
             r.Bounds = new Vector2 {x = r.BoundsWidth, y = r.BoundsHeight};
         }
 
-        private void PlatformerSetRaycastDirectionToLeft()
-        {
-            r.CurrentRaycastDirection = Left;
-        }
-
-        private void PlatformerSetRaycastDirectionToRight()
-        {
-            r.CurrentRaycastDirection = Right;
-        }
-
         #endregion
 
         #endregion
@@ -183,11 +211,16 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region raycast
+        #region platformer
 
-        public void OnSetRaysParameters()
+        public void OnPlatformerInitializeFrame()
         {
-            SetRaysParameters();
+            PlatformerInitializeFrame();
+        }
+
+        public void OnPlatformerTestMovingPlatform()
+        {
+            PlatformerTestMovingPlatform();
         }
 
         public void OnPlatformerSetRaycastDirectionToLeft()

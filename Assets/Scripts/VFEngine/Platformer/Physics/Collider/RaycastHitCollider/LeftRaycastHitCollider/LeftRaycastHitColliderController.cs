@@ -1,16 +1,12 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider
 {
     using static MathsExtensions;
-    using static RaycastHitCollider;
-    using static UniTaskExtensions;
     using static Mathf;
     using static Vector2;
 
@@ -34,6 +30,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #region private methods
 
+        #region initialization
+
         private void Awake()
         {
             SetControllers();
@@ -47,13 +45,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             leftRaycastController = GetComponent<LeftRaycastController>();
             raycastHitColliderController = GetComponent<RaycastHitColliderController>();
         }
-        
+
         private void InitializeData()
         {
-            l = new LeftRaycastHitColliderData
-            {
-                CurrentWallCollider = null
-            };
+            l = new LeftRaycastHitColliderData {CurrentWallCollider = null};
         }
 
         private void Start()
@@ -85,7 +80,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         {
             l.HitsStorage = new RaycastHit2D[raycast.NumberOfHorizontalRaysPerSide];
         }
-        
+
         private void SetCurrentHitsStorage()
         {
             l.HitsStorage[l.CurrentHitsStorageIndex] = leftRaycast.CurrentRaycastHit;
@@ -95,7 +90,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         {
             l.CurrentHit = l.HitsStorage[l.CurrentHitsStorageIndex];
         }
-        
+
         private void SetCurrentLeftHitCollider()
         {
             l.CurrentHitCollider = l.CurrentHit.collider;
@@ -128,7 +123,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         {
             l.DistanceToCollider = -1;
         }
-        
+
         private void SetFailedSlopeAngle()
         {
             l.PassedSlopeAngle = false;
@@ -139,38 +134,25 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             l.LateralSlopeAngle = 0;
         }
 
+        #endregion
+
+        #region platformer
+
         private void PlatformerInitializeFrame()
         {
             SetCurrentWallColliderNull();
             ResetState();
         }
-        
-        private void SetCurrentWallColliderNull()
-        {
-            l.CurrentWallCollider = null;
-        }
-        
-        private bool IncorrectHitsStorage => l.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
-        
+
         private void PlatformerSetHitsStorage()
         {
             if (IncorrectHitsStorage) InitializeHitsStorage();
             InitializeCurrentHitsStorageIndex();
         }
-        
-        private void InitializeCurrentHitsStorageIndex()
-        {
-            l.CurrentHitsStorageIndex = 0;
-        }
 
         private void PlatformerSetLateralSlopeAngle()
         {
             SetLateralSlopeAngle();
-        }
-        
-        private void SetLateralSlopeAngle()
-        {
-            l.LateralSlopeAngle = l.CurrentHitAngle;
         }
 
         private void PlatformerSetIsColliding()
@@ -178,39 +160,64 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             SetIsColliding();
             SetDistanceToCollider();
         }
-        
-        private void SetIsColliding()
+
+        private void PlatformerHitWall()
         {
-            l.IsColliding = true;
-        }
-        
-        private void SetDistanceToCollider()
-        {
-            l.DistanceToCollider = l.CurrentHit.distance;
+            SetCurrentWallCollider();
+            SetFailedSlopeAngle();
+            SetDistanceBetweenHitAndRaycastOrigins();
         }
 
         private void PlatformerAddToCurrentHitsStorageIndex()
         {
             AddToCurrentHitsStorageIndex();
         }
-        
+
+        #endregion
+
+        private void SetCurrentWallColliderNull()
+        {
+            l.CurrentWallCollider = null;
+        }
+
+        private bool IncorrectHitsStorage => l.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
+
+        private void InitializeCurrentHitsStorageIndex()
+        {
+            l.CurrentHitsStorageIndex = 0;
+        }
+
+        private void SetLateralSlopeAngle()
+        {
+            l.LateralSlopeAngle = l.CurrentHitAngle;
+        }
+
+        private void SetIsColliding()
+        {
+            l.IsColliding = true;
+        }
+
+        private void SetDistanceToCollider()
+        {
+            l.DistanceToCollider = l.CurrentHit.distance;
+        }
+
+        private void SetCurrentWallCollider()
+        {
+            l.CurrentWallCollider = l.CurrentHitCollider.gameObject;
+        }
+
+        private void SetDistanceBetweenHitAndRaycastOrigins()
+        {
+            l.DistanceBetweenHitAndRaycastOrigins = DistanceBetweenPointAndLine(l.CurrentHit.point,
+                leftRaycast.RaycastFromBottomOrigin, leftRaycast.RaycastToTopOrigin);
+        }
+
         private void AddToCurrentHitsStorageIndex()
         {
             l.CurrentHitsStorageIndex++;
         }
 
-        
-
-        /*
-        
-
-        
-
-        private void SetLeftCurrentWallCollider()
-        {
-            l.CurrentWallCollider = l.CurrentHitCollider.gameObject;
-        }*/
-        
         #endregion
 
         #endregion
@@ -220,7 +227,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public LeftRaycastHitColliderData Data => l;
 
         #region public methods
-        
+
         #region platformer
 
         public void OnPlatformerInitializeFrame()
@@ -243,15 +250,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
             PlatformerSetIsColliding();
         }
 
-        /*public void OnPlatformerSetCurrentHitsStorage()
+        public void OnPlatformerHitWall()
         {
-            PlatformerSetCurrentHitsStorage();
-        }*/
-
-        /*public void OnPlatformerSetCurrentHitDistance()
-        {
-            PlatformerSetCurrentHitDistance();
-        }*/
+            PlatformerHitWall();
+        }
 
         public void OnPlatformerAddToCurrentHitsStorageIndex()
         {
@@ -259,95 +261,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         }
 
         #endregion
-
-        /*public void OnInitializeLeftHitsStorage()
-        {
-            InitializeLeftHitsStorage();
-        }
-
-        public void OnInitializeCurrentLeftHitsStorageIndex()
-        {
-            InitializeCurrentLeftHitsStorageIndex();
-        }*/
-
-        /*public void OnSetCurrentLeftHitsStorage()
-        {
-            SetCurrentLeftHitsStorage();
-        }*/
-
-        /*public void OnSetCurrentLeftHitAngle()
-        {
-            SetCurrentLeftHitAngle();
-        }*/
-
-        public async UniTaskVoid OnSetIsCollidingLeft()
-        {
-            SetIsCollidingLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetLeftDistanceToLeftCollider()
-        {
-            SetLeftDistanceToLeftCollider();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetLeftCurrentWallCollider()
-        {
-            SetLeftCurrentWallCollider();
-        }
-
-        public async UniTaskVoid OnSetCurrentWallColliderNull()
-        {
-            SetCurrentWallColliderNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetLeftFailedSlopeAngle()
-        {
-            SetFailedSlopeAngle();
-        }
-
-        /*public void OnAddToCurrentLeftHitsStorageIndex()
-        {
-            AddToCurrentHitsStorageIndex();
-        }*/
-
-        /*public void OnSetCurrentLeftHitDistance()
-        {
-            SetCurrentHitDistance();
-        }
-
-        public void OnSetLeftRaycastHitConnected()
-        {
-            SetLeftRaycastHitConnected();
-        }
-
-        public void OnSetLeftRaycastHitMissed()
-        {
-            SetLeftRaycastHitMissed();
-        }*/
-
-        /*public void OnSetCurrentLeftHitCollider()
-        {
-            SetCurrentLeftHitCollider();
-        }*/
-
-        /*public void OnSetCurrentLeftLateralSlopeAngle()
-        {
-            SetCurrentLeftLateralSlopeAngle();
-        }*/
-
-        public void OnSetCurrentDistanceBetweenLeftHitAndRaycastOrigin()
-        {
-            SetCurrentDistanceBetweenLeftHitAndRaycastOrigin();
-        }
-
-        public async UniTaskVoid OnResetState()
-        {
-            ResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
 
         #endregion
 

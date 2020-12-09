@@ -54,7 +54,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         public Vector2 WorldSpeed { get; set; }
-        public Vector2 ForcesApplied { get; set; }
+        public Vector2 AppliedForces { get; set; }
         public Rigidbody2D CurrentHitRigidBody { get; set; }
         public bool CurrentHitRigidBodyCanBePushed { get; set; }
         public Vector2 CurrentPushDirection { get; set; }

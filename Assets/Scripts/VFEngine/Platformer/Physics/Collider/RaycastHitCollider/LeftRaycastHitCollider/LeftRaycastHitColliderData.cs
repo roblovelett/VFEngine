@@ -15,7 +15,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public int CurrentHitsStorageIndex { get; set; }
         public float CurrentHitAngle { get; set; }
         private float CurrentHitDistance => HitsStorage[CurrentHitsStorageIndex].distance;
-        public float DistanceBetweenHitAndRaycastOrigin { get; set; }
+        public float DistanceBetweenHitAndRaycastOrigins { get; set; }
         public float DistanceToCollider { get; set; }
         public float LateralSlopeAngle { get; set; }
         public Collider2D CurrentHitCollider { get; set; }

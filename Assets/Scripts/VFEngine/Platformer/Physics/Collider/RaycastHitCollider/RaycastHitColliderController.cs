@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.LeftRaycast;
 using VFEngine.Platformer.Event.Raycast.RightRaycast;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 {
-    using static ScriptableObject;
-    using static UniTaskExtensions;
-
     public class RaycastHitColliderController : MonoBehaviour
     {
         #region fields
@@ -27,6 +22,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
 
         #region private methods
 
+        #region initialization
+
         private void Awake()
         {
             SetControllers();
@@ -38,13 +35,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             rightRaycastController = GetComponent<RightRaycastController>();
             leftRaycastController = GetComponent<LeftRaycastController>();
         }
-        
+
         private void InitializeData()
         {
-            r = new RaycastHitColliderData
-            {
-                ContactList = new List<RaycastHit2D>()
-            };
+            r = new RaycastHitColliderData {ContactList = new List<RaycastHit2D>()};
         }
 
         private void Start()
@@ -58,24 +52,40 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             leftRaycast = leftRaycastController.Data;
         }
 
+        #endregion
+
+        #region platformer
+
         private void PlatformerInitializeFrame()
         {
             ClearContactList();
         }
 
-        private void AddRightHitToContactList()
+        private void PlatformerLeftRaycastHitWall()
         {
-            r.ContactList.Add(rightRaycast.CurrentRaycastHit);
+            AddLeftRaycastHitToContactList();
         }
 
-        private void AddLeftHitToContactList()
+        private void PlatformerRightRaycastHitWall()
         {
-            r.ContactList.Add(leftRaycast.CurrentRaycastHit);
+            AddRightRaycastHitToContactList();
         }
+
+        #endregion
 
         private void ClearContactList()
         {
             r.ContactList.Clear();
+        }
+
+        private void AddLeftRaycastHitToContactList()
+        {
+            r.ContactList.Add(leftRaycast.CurrentRaycastHit);
+        }
+
+        private void AddRightRaycastHitToContactList()
+        {
+            r.ContactList.Add(rightRaycast.CurrentRaycastHit);
         }
 
         #endregion
@@ -94,23 +104,18 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             PlatformerInitializeFrame();
         }
-        
+
+        public void OnPlatformerLeftRaycastHitWall()
+        {
+            PlatformerLeftRaycastHitWall();
+        }
+
+        public void OnPlatformerRightRaycastHitWall()
+        {
+            PlatformerRightRaycastHitWall();
+        }
+
         #endregion
-        public void OnAddRightHitToContactList()
-        {
-            AddRightHitToContactList();
-        }
-
-        public void OnAddLeftHitToContactList()
-        {
-            AddLeftHitToContactList();
-        }
-
-        /*public async UniTaskVoid OnResetState()
-        {
-            ResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
 
         #endregion
 

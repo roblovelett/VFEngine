@@ -15,6 +15,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static Vector3;
     using static Single;
     using static UniTaskExtensions;
+    using static PhysicsExtensions;
 
     public class DownRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -22,11 +23,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         #region dependencies
 
+        private PlatformerController platformerController;
         private PhysicsController physicsController;
         private RaycastController raycastController;
         private DownRaycastController downRaycastController;
         private LayerMaskController layerMaskController;
         private DownRaycastHitColliderData d;
+        private PlatformerData platformer;
         private PhysicsData physics;
         private RaycastData raycast;
         private DownRaycastData downRaycast;
@@ -44,6 +47,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetControllers()
         {
+            platformerController = GetComponent<PlatformerController>();
             physicsController = GetComponent<PhysicsController>();
             raycastController = GetComponent<RaycastController>();
             downRaycastController = GetComponent<DownRaycastController>();
@@ -83,6 +87,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetDependencies()
         {
+            platformer = platformerController.Data;
             physics = physicsController.Data;
             raycast = raycastController.Data;
             downRaycast = downRaycastController.Data;
@@ -93,6 +98,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             InitializeDownHitsStorage();
             InitializeHasMovingPlatform();
+            InitializeMovingPlatformHasSpeed();
+            InitializeMovingPlatformHasSpeedOnAxis();
             ResetState();
         }
         
@@ -104,6 +111,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private void InitializeHasMovingPlatform()
         {
             d.HasMovingPlatform = d.MovingPlatform != null;
+        }
+
+        private void InitializeMovingPlatformHasSpeed()
+        {
+            d.MovingPlatformHasSpeed = !SpeedNan(d.MovingPlatformCurrentSpeed);
+        }
+
+        private void InitializeMovingPlatformHasSpeedOnAxis()
+        {
+            d.MovingPlatformHasSpeedOnAxis = !AxisSpeedNan(d.MovingPlatformCurrentSpeed);
         }
         
         private void ResetState()
@@ -128,8 +145,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.StandingOnLastFrame = d.StandingOn;
         }
 
+        private bool TestMovingPlatform => d.HasMovingPlatform && platformer.TestPlatform;
         private void PlatformerTestMovingPlatform()
         {
+            if (!TestMovingPlatform) return;
             SetOnMovingPlatform();
             SetMovingPlatformCurrentGravity();
         }
@@ -346,7 +365,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             SetStandingOnLastFrame();
             await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
+        }*//*
 
         public async UniTaskVoid OnSetCurrentDownHitsStorage()
         {
@@ -529,7 +548,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public void OnSetMovingPlatformCurrentSpeed()
         {
             SetMovingPlatformCurrentSpeed();
-        }
+        }*/
 
         #endregion
 
