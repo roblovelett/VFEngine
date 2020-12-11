@@ -83,7 +83,6 @@ namespace VFEngine.Platformer.Physics
         private bool ApplyPlatformSpeedToMovementDirection =>
             downRaycastHitCollider.HasMovingPlatform && PlatformSpeedMoreThanSpeed;
 
-        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
         private bool CastingRight => raycast.CurrentRaycastDirection == Right;
         private bool InAir => downRaycastHitCollider.GroundedEvent && p.Speed.y != 0;
 
@@ -228,12 +227,37 @@ namespace VFEngine.Platformer.Physics
             SetStoredHorizontalMovementDirection();
         }
 
-        private void PlatformerHitWall()
+        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
+        private bool LeftMovementIsRayDirection => CastingLeft && p.HorizontalMovementDirection == -1; 
+        private bool SetNewLeftPositionAndStopSpeed => leftRaycastHitCollider.HitConnected && !leftRaycastHitCollider.HitIgnoredCollider && leftRaycastHitCollider.HitWall && LeftMovementIsRayDirection;
+        private bool RightMovementIsRayDirection => p.HorizontalMovementDirection == 1 && CastingRight;
+        private bool SetNewRightPositionAndStopSpeed => rightRaycastHitCollider.HitConnected && !rightRaycastHitCollider.HitIgnoredCollider && rightRaycastHitCollider.HitWall && RightMovementIsRayDirection;
+        private void PlatformerCastCurrentRay()
         {
-            if (CastingLeft) SetNewNegativeHorizontalPosition();
-            else if (CastingRight) SetNewPositiveHorizontalPosition();
+            if (SetNewLeftPositionAndStopSpeed)
+            {
+                SetNewNegativeHorizontalPosition();
+                OnAerialHorizontalWallHit();
+            } else if (SetNewRightPositionAndStopSpeed)
+            {
+                SetNewPositiveHorizontalPosition();
+                OnAerialHorizontalWallHit();
+            }
+        }
+
+        private void OnAerialHorizontalWallHit()
+        {
             if (InAir) StopNewHorizontalPosition();
             StopHorizontalSpeed();
+        }
+
+        private bool IsFalling => p.NewPosition.y < -p.SmallValue;
+        private bool IsNotCollidingBelow => p.Gravity > 0 && !p.IsFalling;
+        
+        private void PlatformerCastRaysDown()
+        {
+            if (IsFalling) SetIsFalling();
+            else SetIsNotFalling();
         }
 
         #endregion
@@ -364,7 +388,7 @@ namespace VFEngine.Platformer.Physics
 
         private void ApplyHalfBoundsHeightAndRayOffsetToNegativeVerticalNewPosition()
         {
-            p.NewPositionY = -downRaycastHitCollider.CurrentDownHitSmallestDistance + raycast.BoundsHeight / 2 +
+            p.NewPositionY = -downRaycastHitCollider.CurrentSmallestDistanceHit + raycast.BoundsHeight / 2 +
                              raycast.RayOffset;
         }
 
@@ -511,9 +535,14 @@ namespace VFEngine.Platformer.Physics
             PlatformerSetHorizontalMovementDirection();
         }
 
-        public void OnPlatformerHitWall()
+        public void OnPlatformerCastCurrentRay()
+        { 
+            PlatformerCastCurrentRay();
+        }
+
+        public void OnPlatformerCastRaysDown()
         {
-            PlatformerHitWall();
+            PlatformerCastRaysDown();
         }
 
         #endregion

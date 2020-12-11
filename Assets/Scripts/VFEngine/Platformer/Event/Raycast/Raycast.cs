@@ -16,17 +16,59 @@ namespace VFEngine.Platformer.Event.Raycast
         private static Vector2 SetRaycastToTopOrigin(Vector2 boundsTopLeftCorner, Vector2 boundsTopRightCorner,
             Transform transform, float obstacleTolerance)
         {
-            var topOrigin = (boundsTopLeftCorner + boundsTopRightCorner) / 2;
-            topOrigin -= (Vector2) transform.up * obstacleTolerance;
-            return topOrigin;
+            var origin = ApplyBoundsToOrigin(boundsTopLeftCorner, boundsTopRightCorner);
+            origin -= ApplyTransformToHorizontalOrigin(transform, obstacleTolerance);
+            return origin;
         }
 
         private static Vector2 SetRaycastFromBottomOrigin(Vector2 boundsBottomLeftCorner,
             Vector2 boundsBottomRightCorner, Transform transform, float obstacleTolerance)
         {
-            var bottomOrigin = (boundsBottomLeftCorner + boundsBottomRightCorner) / 2;
-            bottomOrigin += (Vector2) transform.up * obstacleTolerance;
-            return bottomOrigin;
+            var origin = ApplyBoundsToOrigin(boundsBottomLeftCorner, boundsBottomRightCorner);
+            origin += ApplyTransformToHorizontalOrigin(transform, obstacleTolerance);
+            return origin;
+        }
+
+        private static Vector2 ApplyTransformToHorizontalOrigin(Transform transform, float obstacleTolerance)
+        {
+            return (Vector2) transform.up * obstacleTolerance;
+        }
+
+        private static Vector2 SetDownRaycastFromLeftOrigin(Vector2 boundsBottomLeftCorner, Vector2 boundsTopLeftCorner,
+            Transform transform, float rayOffset, Vector2 newPosition)
+        {
+            var origin = SetDownRaycastOrigin(boundsBottomLeftCorner, boundsTopLeftCorner, transform, rayOffset,
+                newPosition);
+            return origin;
+        }
+
+        private static Vector2 SetDownRaycastToRightOrigin(Vector2 boundsBottomRightCorner,
+            Vector2 boundsTopRightCorner, Transform transform, float rayOffset, Vector2 newPosition)
+        {
+            var origin = SetDownRaycastOrigin(boundsBottomRightCorner, boundsTopRightCorner, transform, rayOffset,
+                newPosition);
+            return origin;
+        }
+
+        private static Vector2 SetDownRaycastOrigin(Vector2 bounds1, Vector2 bounds2, Transform transform,
+            float rayOffset, Vector2 newPosition)
+        {
+            var origin = ApplyBoundsToOrigin(bounds1, bounds2);
+            origin = ApplyTransformToBottomOrigin(origin, newPosition, transform, rayOffset);
+            return origin;
+        }
+
+        private static Vector2 ApplyTransformToBottomOrigin(Vector2 origin, Vector2 newPosition, Transform transform,
+            float rayOffset)
+        {
+            origin += (Vector2) transform.up * rayOffset;
+            origin += (Vector2) transform.right * newPosition.x;
+            return origin;
+        }
+
+        private static Vector2 ApplyBoundsToOrigin(Vector2 bounds1, Vector2 bounds2)
+        {
+            return (bounds1 + bounds2) / 2;
         }
 
         private static float SetHorizontalRayLength(float speedX, float deltaTime, float boundsWidth, float rayOffset)
@@ -49,13 +91,10 @@ namespace VFEngine.Platformer.Event.Raycast
             return Physics2D.Raycast(rayOriginPoint, rayDirection, rayDistance, mask);
         }
 
-        /*private static Vector2 SetVerticalRaycast(Vector2 bounds1, Vector2 bounds2, Transform t, float offset, float x)
+        private static float SetRayLength(float boundsHeight, float rayOffset)
         {
-            var ray = SetBounds(bounds1, bounds2);
-            ray += (Vector2) t.up * offset;
-            ray += (Vector2) t.right * x;
-            return ray;
-        }*/
+            return boundsHeight / 2 + rayOffset;
+        }
 
         #endregion
 
@@ -95,10 +134,24 @@ namespace VFEngine.Platformer.Event.Raycast
             return SetRaycast(rayOriginPoint, rayDirection, rayDistance, mask, color, drawGizmos);
         }
 
-        /*public static Vector2 OnSetVerticalRaycast(Vector2 boundsLeft, Vector2 boundsRight, Transform transform, float rayOffset, float xPosition)
+        public static Vector2 OnSetDownRaycastFromLeftOrigin(Vector2 boundsBottomLeftCorner,
+            Vector2 boundsTopLeftCorner, Transform transform, float rayOffset, Vector2 newPosition)
         {
-            return SetVerticalRaycast(boundsLeft, boundsRight, transform, rayOffset, xPosition);
-        }*/
+            return SetDownRaycastFromLeftOrigin(boundsBottomLeftCorner, boundsTopLeftCorner, transform, rayOffset,
+                newPosition);
+        }
+
+        public static Vector2 OnSetDownRaycastToRightOrigin(Vector2 boundsBottomRightCorner,
+            Vector2 boundsTopRightCorner, Transform transform, float rayOffset, Vector2 newPosition)
+        {
+            return SetDownRaycastToRightOrigin(boundsBottomRightCorner, boundsTopRightCorner, transform, rayOffset,
+                newPosition);
+        }
+
+        public static float OnSetRayLength(float boundsHeight, float rayOffset)
+        {
+            return SetRayLength(boundsHeight, rayOffset);
+        }
 
         #endregion
 

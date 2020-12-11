@@ -1,17 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObject;
-    using static LayerMask;
-    using static DebugExtensions;
-    using static UniTaskExtensions;
     using static LayerMaskExtensions;
 
     public class LayerMaskController : MonoBehaviour, IController
@@ -21,22 +18,30 @@ namespace VFEngine.Platformer.Layer.Mask
         #region dependencies
 
         [SerializeField] private LayerMaskSettings settings;
+        private PhysicsController physicsController;
+        private RaycastController raycastController;
         private DownRaycastHitColliderController downRaycastHitColliderController;
         private LayerMaskData l;
+        private PhysicsData physics;
+        private RaycastData raycast;
         private DownRaycastHitColliderData downRaycastHitCollider;
 
         #endregion
 
         #region private methods
 
+        #region initialization
+
         private void Awake()
         {
             SetControllers();
             InitializeData();
         }
-        
+
         private void SetControllers()
         {
+            physicsController = GetComponent<PhysicsController>();
+            raycastController = GetComponent<RaycastController>();
             downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
         }
 
@@ -45,19 +50,19 @@ namespace VFEngine.Platformer.Layer.Mask
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
             l = new LayerMaskData
             {
-                PlatformMask = 0,
-                MovingPlatformMask = 0,
-                OneWayPlatformMask = 0,
-                MovingOneWayPlatformMask = 0,
-                MidHeightOneWayPlatformMask =  0,
-                StairsMask = 0
+                Platform = 0,
+                MovingPlatform = 0,
+                OneWayPlatform = 0,
+                MovingOneWayPlatform = 0,
+                MidHeightOneWayPlatform = 0,
+                Stairs = 0
             };
             l.ApplySettings(settings);
-            l.SavedPlatformMask = l.PlatformMask;
-            l.PlatformMask |= l.OneWayPlatformMask;
-            l.PlatformMask |= l.MovingPlatformMask;
-            l.PlatformMask |= l.MovingOneWayPlatformMask;
-            l.PlatformMask |= l.MidHeightOneWayPlatformMask;
+            l.SavedPlatform = l.Platform;
+            l.Platform |= l.OneWayPlatform;
+            l.Platform |= l.MovingPlatform;
+            l.Platform |= l.MovingOneWayPlatform;
+            l.Platform |= l.MidHeightOneWayPlatform;
         }
 
         /*private void GetWarningMessages()
@@ -125,49 +130,98 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetDependencies()
         {
+            physics = physicsController.Data;
+            raycast = raycastController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
         }
 
-        private void SetRaysBelowLayerMaskPlatforms()
+        #endregion
+
+        #region platformer
+
+        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        private bool HasStandingOnLastFrame => downRaycastHitCollider.HasStandingOnLastFrame;
+
+        private bool MidHeightOneWayPlatformHasStandingOnLastFrame =>
+            l.MidHeightOneWayPlatform.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
+
+        private bool SetRaysBelowPlatformsMaskToPlatformsWithoutHeight => downRaycastHitCollider.WasGroundedLastFrame &&
+                                                                          HasStandingOnLastFrame &&
+                                                                          !MidHeightOneWayPlatformHasStandingOnLastFrame;
+
+        private bool StairsMaskHasStandingOnLastFrame =>
+            l.Stairs.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
+
+        private bool StandingOnColliderHasBottomCenterPosition =>
+            downRaycastHitCollider.StandingOnCollider.bounds.Contains(raycast.BoundsBottomCenterPosition);
+
+        private bool SetRaysBelowPlatformsMaskToOneWayOrStairs => downRaycastHitCollider.WasGroundedLastFrame &&
+                                                                  HasStandingOnLastFrame &&
+                                                                  StairsMaskHasStandingOnLastFrame &&
+                                                                  StandingOnColliderHasBottomCenterPosition;
+
+        private bool SetRaysBelowPlatformsMaskToOneWay =>
+            downRaycastHitCollider.OnMovingPlatform && physics.NewPosition.y > 0;
+
+        private void PlatformerCastRaysDown()
         {
-            l.RaysBelowLayerMaskPlatforms = l.PlatformMask;
+            if (IsNotCollidingBelow) return;
+            SetRaysBelowPlatforms();
+            SetRaysBelowPlatformsWithoutOneWay();
+            SetRaysBelowPlatformsWithoutMidHeight();
+            if (HasStandingOnLastFrame)
+            {
+                SetSavedBelowToStandingOnLastFrame();
+                SetMidHeightOneWayPlatformHasStandingOnLastFrame();
+            }
+
+            if (SetRaysBelowPlatformsMaskToPlatformsWithoutHeight) SetRaysBelowPlatformsToPlatformsWithoutHeight();
+            if (SetRaysBelowPlatformsMaskToOneWayOrStairs) SetRaysBelowPlatformsToOneWayOrStairs();
+            if (SetRaysBelowPlatformsMaskToOneWay) SetRaysBelowPlatformsToOneWay();
         }
 
-        private void SetRaysBelowLayerMaskPlatformsWithoutOneWay()
+        #endregion
+
+        private void SetRaysBelowPlatforms()
         {
-            l.RaysBelowLayerMaskPlatformsWithoutOneWay = l.PlatformMask & ~l.MidHeightOneWayPlatformMask &
-                                                         ~l.OneWayPlatformMask & ~l.MovingOneWayPlatformMask;
+            l.RaysBelowPlatforms = l.Platform;
         }
 
-        private void SetRaysBelowLayerMaskPlatformsWithoutMidHeight()
+        private void SetRaysBelowPlatformsWithoutOneWay()
         {
-            l.RaysBelowLayerMaskPlatformsWithoutMidHeight =
-                l.RaysBelowLayerMaskPlatforms & ~l.MidHeightOneWayPlatformMask;
+            l.RaysBelowPlatformsWithoutOneWay = l.Platform & ~l.MidHeightOneWayPlatform &
+                                                ~l.OneWayPlatform & ~l.MovingOneWayPlatform;
         }
 
-        private void SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
+        private void SetRaysBelowPlatformsWithoutMidHeight()
         {
-            l.RaysBelowLayerMaskPlatforms = l.RaysBelowLayerMaskPlatformsWithoutMidHeight;
+            l.RaysBelowPlatformsWithoutMidHeight = l.RaysBelowPlatforms & ~l.MidHeightOneWayPlatform;
         }
 
-        private void SetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
-        {
-            l.RaysBelowLayerMaskPlatforms = (l.RaysBelowLayerMaskPlatforms & ~l.OneWayPlatformMask) | l.StairsMask;
-        }
-
-        private void SetRaysBelowLayerMaskPlatformsToOneWay()
-        {
-            l.RaysBelowLayerMaskPlatforms &= ~l.OneWayPlatformMask;
-        }
-
-        private void SetSavedBelowLayerToStandingOnLastFrameLayer()
+        private void SetSavedBelowToStandingOnLastFrame()
         {
             l.SavedBelowLayer = downRaycastHitCollider.StandingOnLastFrame.layer;
         }
 
-        private void SetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer()
+        private void SetMidHeightOneWayPlatformHasStandingOnLastFrame()
         {
-            l.MidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer = l.MidHeightOneWayPlatformMask.Contains(downRaycastHitCollider.StandingOnLastFrame);
+            l.MidHeightOneWayPlatformHasStandingOnLastFrame =
+                l.MidHeightOneWayPlatform.Contains(downRaycastHitCollider.StandingOnLastFrame);
+        }
+
+        private void SetRaysBelowPlatformsToPlatformsWithoutHeight()
+        {
+            l.RaysBelowPlatforms = l.RaysBelowPlatformsWithoutMidHeight;
+        }
+
+        private void SetRaysBelowPlatformsToOneWayOrStairs()
+        {
+            l.RaysBelowPlatforms = (l.RaysBelowPlatforms & ~l.OneWayPlatform) | l.Stairs;
+        }
+
+        private void SetRaysBelowPlatformsToOneWay()
+        {
+            l.RaysBelowPlatforms &= ~l.OneWayPlatform;
         }
 
         #endregion
@@ -180,47 +234,14 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region public methods
 
-        public async UniTaskVoid OnSetRaysBelowLayerMaskPlatforms()
+        #region platformer
+
+        public void OnPlatformerCastRaysDown()
         {
-            SetRaysBelowLayerMaskPlatforms();
-            await SetYieldOrSwitchToThreadPoolAsync();
+            PlatformerCastRaysDown();
         }
 
-        public async UniTaskVoid OnSetRaysBelowLayerMaskPlatformsWithoutOneWay()
-        {
-            SetRaysBelowLayerMaskPlatformsWithoutOneWay();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetRaysBelowLayerMaskPlatformsWithoutMidHeight()
-        {
-            SetRaysBelowLayerMaskPlatformsWithoutMidHeight();
-        }
-
-        public void OnSetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight()
-        {
-            SetRaysBelowLayerMaskPlatformsToPlatformsWithoutHeight();
-        }
-
-        public void OnSetRaysBelowLayerMaskPlatformsToOneWayOrStairs()
-        {
-            SetRaysBelowLayerMaskPlatformsToOneWayOrStairs();
-        }
-
-        public void OnSetRaysBelowLayerMaskPlatformsToOneWay()
-        {
-            SetRaysBelowLayerMaskPlatformsToOneWay();
-        }
-
-        public void OnSetSavedBelowLayerToStandingOnLastFrameLayer()
-        {
-            SetSavedBelowLayerToStandingOnLastFrameLayer();
-        }
-
-        public void OnSetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer()
-        {
-            SetMidHeightOneWayPlatformMaskHasStandingOnLastFrameLayer();
-        }
+        #endregion
 
         #endregion
 

@@ -9,6 +9,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
     using static MathsExtensions;
     using static Mathf;
     using static Vector2;
+    using static RaycastDirection;
 
     public class RightRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -28,7 +29,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         #endregion
 
+        private bool IncorrectHitsStorage => r.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
+        private bool CastingRight => raycast.CurrentRaycastDirection == Right;
+        private bool MovingRight => physics.HorizontalMovementDirection == 1;
+        private bool MovementIsRayDirection => CastingRight && MovingRight;
+
         #region private methods
+
+        #region initialization
 
         private void Awake()
         {
@@ -72,6 +80,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             InitializeCurrentLeftHitCollider();
             InitializeHitIgnoredCollider();
             InitializeCurrentHitAngle();
+            InitializeHitWall();
             ResetState();
         }
 
@@ -110,6 +119,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.CurrentHitAngle = Abs(Angle(r.CurrentHit.normal, physics.Transform.up));
         }
 
+        private void InitializeHitWall()
+        {
+            r.HitWall = r.CurrentHitAngle > physics.MaximumSlopeAngle;
+        }
+
         private void ResetState()
         {
             SetIsNotColliding();
@@ -138,6 +152,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             r.LateralSlopeAngle = 0;
         }
 
+        #endregion
+
         #region platformer
 
         private void PlatformerInitializeFrame()
@@ -146,25 +162,21 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             ResetState();
         }
 
-        private void PlatformerSetHitsStorage()
+        private void PlatformerCastRays()
         {
+            if (!CastingRight) return;
             if (IncorrectHitsStorage) InitializeHitsStorage();
             InitializeCurrentHitsStorageIndex();
         }
 
-        private void PlatformerSetLateralSlopeAngle()
+        private void PlatformerCastCurrentRay()
         {
-            SetLateralSlopeAngle();
-        }
-
-        private void PlatformerSetIsColliding()
-        {
+            if (!CastingRight || !r.HitConnected || r.HitIgnoredCollider) return;
+            if (MovementIsRayDirection) SetLateralSlopeAngle();
+            if (!r.HitWall) return;
             SetIsColliding();
             SetDistanceToCollider();
-        }
-
-        private void PlatformerHitWall()
-        {
+            if (!MovementIsRayDirection || !CastingRight) return;
             SetCurrentWallCollider();
             SetFailedSlopeAngle();
             SetDistanceBetweenHitAndRaycastOrigins();
@@ -172,6 +184,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         private void PlatformerAddToCurrentHitsStorageIndex()
         {
+            if (!CastingRight) return;
             AddToCurrentHitsStorageIndex();
         }
 
@@ -181,8 +194,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         {
             r.CurrentWallCollider = null;
         }
-
-        private bool IncorrectHitsStorage => r.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
 
         private void InitializeCurrentHitsStorageIndex()
         {
@@ -237,24 +248,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
             PlatformerInitializeFrame();
         }
 
-        public void OnPlatformerSetHitsStorage()
+        public void OnPlatformerCastRays()
         {
-            PlatformerSetHitsStorage();
+            PlatformerCastRays();
         }
 
-        public void OnPlatformerSetLateralSlopeAngle()
+        public void OnPlatformerCastCurrentRay()
         {
-            PlatformerSetLateralSlopeAngle();
-        }
-
-        public void OnPlatformerSetIsColliding()
-        {
-            PlatformerSetIsColliding();
-        }
-
-        public void OnPlatformerHitWall()
-        {
-            PlatformerHitWall();
+            PlatformerCastCurrentRay();
         }
 
         public void OnPlatformerAddToCurrentHitsStorageIndex()

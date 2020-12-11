@@ -72,7 +72,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             var transformUp = physics.Transform.up;
             s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up), -transformUp,
-                stickyRaycast.StickyRaycastLength, layerMask.RaysBelowLayerMaskPlatforms, red,
+                stickyRaycast.StickyRaycastLength, layerMask.RaysBelowPlatforms, red,
                 raycast.DrawRaycastGizmosControl);
         }
 
@@ -80,7 +80,7 @@ namespace VFEngine.Platformer.Event.Boxcast.SafetyBoxcast
         {
             var transformUp = physics.Transform.up;
             s.SafetyBoxcastHit = Boxcast(raycast.BoundsCenter, raycast.Bounds, Angle(transformUp, up),
-                physics.NewPosition.normalized, physics.NewPosition.magnitude, layerMask.PlatformMask, red,
+                physics.NewPosition.normalized, physics.NewPosition.magnitude, layerMask.Platform, red,
                 raycast.DrawRaycastGizmosControl);
         }
 

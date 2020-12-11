@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
     using static Color;
     using static Vector2;
     using static Time;
+    using static RaycastDirection;
 
     public class LeftRaycastController : MonoBehaviour, IController
     {
@@ -31,11 +32,15 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         private LayerMaskData layerMask;
 
         #endregion
-        
-        private bool ExcludeOneWayPlatformsFromRaycast => downRaycastHitCollider.HasGroundedLastFrame &&
+
+        private bool ExcludeOneWayPlatformsFromRaycast => downRaycastHitCollider.WasGroundedLastFrame &&
                                                           leftRaycastHitCollider.CurrentHitsStorageIndex == 0;
 
+        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
+
         #region private methods
+
+        #region initialization
 
         private void Awake()
         {
@@ -74,12 +79,26 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             layerMask = layerMaskController.Data;
         }
 
-        private void PlatformerSetRaycast()
+        #endregion
+
+        #region platformer
+
+        private void PlatformerCastRays()
         {
+            if (!CastingLeft) return;
             SetRaycastFromBottomOrigin();
             SetRaycastToTopOrigin();
             SetRaycastLength();
         }
+
+        private void PlatformerCastCurrentRay()
+        {
+            if (!CastingLeft) return;
+            SetCurrentRaycastOrigin();
+            SetCurrentRaycast();
+        }
+
+        #endregion
 
         private void SetRaycastFromBottomOrigin()
         {
@@ -98,12 +117,6 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
             l.RayLength = OnSetHorizontalRayLength(physics.Speed.x, deltaTime, raycast.BoundsWidth, raycast.RayOffset);
         }
 
-        private void PlatformerSetCurrentRaycast()
-        {
-            SetCurrentRaycastOrigin();
-            SetCurrentRaycast();
-        }
-
         private void SetCurrentRaycastOrigin()
         {
             l.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(l.RaycastFromBottomOrigin, l.RaycastToTopOrigin,
@@ -119,13 +132,13 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
             l.CurrentRaycastHit = OnSetRaycast(l.CurrentRaycastOrigin, -physics.Transform.right, l.RayLength,
-                layerMask.PlatformMask, red, raycast.DrawRaycastGizmosControl);
+                layerMask.Platform, red, raycast.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentRaycastWithLayerMasks()
         {
             l.CurrentRaycastHit = OnSetRaycast(l.CurrentRaycastOrigin, -physics.Transform.right, l.RayLength,
-                layerMask.PlatformMask & ~layerMask.OneWayPlatformMask & ~layerMask.MovingOneWayPlatformMask, red,
+                layerMask.Platform & ~layerMask.OneWayPlatform & ~layerMask.MovingOneWayPlatform, red,
                 raycast.DrawRaycastGizmosControl);
         }
 
@@ -141,14 +154,14 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
 
         #region platformer
 
-        public void OnPlatformerSetRaycast()
+        public void OnPlatformerCastRays()
         {
-            PlatformerSetRaycast();
+            PlatformerCastRays();
         }
 
-        public void OnPlatformerSetCurrentRaycast()
+        public void OnPlatformerCastCurrentRay()
         {
-            PlatformerSetCurrentRaycast();
+            PlatformerCastCurrentRay();
         }
 
         #endregion

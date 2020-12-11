@@ -9,6 +9,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
 
         public bool HitConnected { get; set; }
         public bool HitIgnoredCollider { get; set; }
+        public bool HitWall { get; set; }
         public bool IsColliding { get; set; }
         public bool PassedSlopeAngle { get; set; }
         public int CurrentHitsStorageIndex { get; set; }

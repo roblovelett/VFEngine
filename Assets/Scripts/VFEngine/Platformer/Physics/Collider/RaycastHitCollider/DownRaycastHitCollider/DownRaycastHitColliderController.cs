@@ -1,20 +1,16 @@
 ﻿using System;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Tools;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
-    using static MathsExtensions;
     using static LayerMask;
     using static Vector3;
     using static Single;
-    using static UniTaskExtensions;
     using static PhysicsExtensions;
 
     public class DownRaycastHitColliderController : MonoBehaviour, IController
@@ -53,19 +49,15 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             downRaycastController = GetComponent<DownRaycastController>();
             layerMaskController = GetComponent<LayerMaskController>();
         }
-        
+
         private void InitializeData()
         {
             d = new DownRaycastHitColliderData
             {
-                PhysicsMaterialClosestToDownHit = null,
-                PathMovementClosestToDownHit = null,
-                MovingPlatform = null
+                PhysicsMaterialClosestToHit = null, PathMovementClosestToHit = null, MovingPlatform = null
             };
-
             /*
             d.StandingOnLastFrame = d.StandingOn;
-            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.StandingOnWithSmallestDistance = d.DownHitWithSmallestDistance.collider.gameObject;
             d.PhysicsMaterialClosestToDownHit = d.StandingOnWithSmallestDistance.gameObject
                 .GetComponentNoAllocation<PhysicsMaterialData>();
@@ -74,7 +66,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
                 d.StandingOnWithSmallestDistance.gameObject.GetComponentNoAllocation<PathMovementData>();
             d.HasPathMovementClosestToDownHit = d.PathMovementClosestToDownHit != null;
             d.StandingOnWithSmallestDistanceLayer = d.StandingOnWithSmallestDistance.gameObject.layer;
-            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
             d.HasMovingPlatform = d.MovingPlatform != null;
             */
         }
@@ -100,12 +91,13 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             InitializeHasMovingPlatform();
             InitializeMovingPlatformHasSpeed();
             InitializeMovingPlatformHasSpeedOnAxis();
+            InitializeHasStandingOnLastFrame();
             ResetState();
         }
-        
+
         private void InitializeDownHitsStorage()
         {
-            d.DownHitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
+            d.HitsStorage = new RaycastHit2D[raycast.NumberOfVerticalRaysPerSide];
         }
 
         private void InitializeHasMovingPlatform()
@@ -122,7 +114,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.MovingPlatformHasSpeedOnAxis = !AxisSpeedNan(d.MovingPlatformCurrentSpeed);
         }
-        
+
+        private void InitializeHasStandingOnLastFrame()
+        {
+            d.HasStandingOnLastFrame = d.StandingOnLastFrame != null;
+        }
+
         private void ResetState()
         {
             d.GroundedEvent = false;
@@ -134,51 +131,56 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             SetStandingOnLastFrameToStandingOn();
             ResetState();
         }
-        
+
         private void SetHasGroundedLastFrameToCollidingBelow()
         {
-            d.HasGroundedLastFrame = d.IsCollidingBelow;
+            d.WasGroundedLastFrame = d.IsCollidingBelow;
         }
-        
+
         private void SetStandingOnLastFrameToStandingOn()
         {
             d.StandingOnLastFrame = d.StandingOn;
         }
 
         private bool TestMovingPlatform => d.HasMovingPlatform && platformer.TestPlatform;
+
         private void PlatformerTestMovingPlatform()
         {
             if (!TestMovingPlatform) return;
             SetOnMovingPlatform();
             SetMovingPlatformCurrentGravity();
         }
-        
+
         private void SetOnMovingPlatform()
         {
             d.OnMovingPlatform = true;
         }
-        
+
         private void SetMovingPlatformCurrentGravity()
         {
             d.MovingPlatformCurrentGravity = d.MovingPlatformGravity;
         }
 
+        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        private bool IncorrectStorageLength => d.HitsStorage.Length != raycast.NumberOfVerticalRays;
+
+        private bool ColliderAndMidHeightOneWayPlatformHasStandingOnLastFrame => d.HasStandingOnLastFrame &&
+            layerMask.MidHeightOneWayPlatformHasStandingOnLastFrame;
+
         private void PlatformerCastRaysDown()
         {
-            // do this
-        }
-        
-        
-        
-        
-        
-        
-        
-        
+            InitializeFriction();
+            if (IsNotCollidingBelow)
+            {
+                SetIsNotCollidingBelow();
+                return;
+            }
 
-        private void SetCurrentDownHitsStorage()
-        {
-            d.DownHitsStorage[d.CurrentDownHitsStorageIndex] = downRaycast.CurrentDownRaycastHit;
+            if (IncorrectStorageLength) InitializeDownHitsStorage();
+            if (ColliderAndMidHeightOneWayPlatformHasStandingOnLastFrame) SetStandingOnLastFrameLayerToPlatform();
+            InitializeSmallestDistanceToHit();
+            InitializeSmallestDistanceToHitStorageIndex();
+            InitializeHitConnected();
         }
 
         private void InitializeFriction()
@@ -186,51 +188,73 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.Friction = 0;
         }
 
-        private void InitializeDownHitsStorageSmallestDistanceIndex()
+        private void SetIsNotCollidingBelow()
         {
-            d.DownHitsStorageSmallestDistanceIndex = 0;
+            d.IsCollidingBelow = false;
         }
 
-        private void InitializeDownHitConnected()
+        private void SetStandingOnLastFrameLayerToPlatform()
         {
-            d.DownHitConnected = false;
+            d.StandingOnLastFrame.layer = NameToLayer("Platform");
+        }
+
+        private void InitializeSmallestDistanceToHit()
+        {
+            d.SmallestDistanceToHit = MaxValue;
+        }
+
+        private void InitializeSmallestDistanceToHitStorageIndex()
+        {
+            d.SmallestDistanceToHitStorageIndex = 0;
+        }
+
+        private void InitializeHitConnected()
+        {
+            d.HitConnected = false;
+        }
+
+        /*==========================================================================================================*/
+
+        private void SetCurrentDownHitsStorage()
+        {
+            d.HitsStorage[d.CurrentHitsStorageIndex] = downRaycast.CurrentRaycastHit;
         }
 
         private void InitializeDownHitsStorageIndex()
         {
-            d.CurrentDownHitsStorageIndex = 0;
+            d.CurrentHitsStorageIndex = 0;
         }
 
         private void AddDownHitsStorageIndex()
         {
-            d.CurrentDownHitsStorageIndex++;
+            d.CurrentHitsStorageIndex++;
         }
 
         private void SetRaycastDownHitAt()
         {
-            d.RaycastDownHitAt = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
+            d.RaycastHitAt = d.HitsStorage[d.SmallestDistanceToHitStorageIndex];
         }
 
         private void SetDownHitConnected()
         {
-            d.DownHitConnected = true;
+            d.HitConnected = true;
         }
 
         private void SetBelowSlopeAngleAt()
         {
-            d.BelowSlopeAngle = Vector2.Angle(d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].normal,
+            d.BelowSlopeAngle = Vector2.Angle(d.HitsStorage[d.SmallestDistanceToHitStorageIndex].normal,
                 physics.Transform.up);
         }
 
         private void SetCrossBelowSlopeAngleAt()
         {
             d.CrossBelowSlopeAngle = Cross(physics.Transform.up,
-                d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].normal);
+                d.HitsStorage[d.SmallestDistanceToHitStorageIndex].normal);
         }
 
         private void SetSmallestDistanceIndexAt()
         {
-            d.DownHitsStorageSmallestDistanceIndex = d.CurrentDownHitsStorageIndex;
+            d.SmallestDistanceToHitStorageIndex = d.CurrentHitsStorageIndex;
         }
 
         private void SetNegativeBelowSlopeAngle()
@@ -240,12 +264,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetDownHitWithSmallestDistance()
         {
-            d.DownHitWithSmallestDistance = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex];
+            //d.DownHitWithSmallestDistance = d.HitsStorage[d.SmallestDistanceToHitStorageIndex];
         }
 
         private void SetFrictionToDownHitWithSmallestDistancesFriction()
         {
-            if (d.PhysicsMaterialClosestToDownHit is null) return;
+            if (d.PhysicsMaterialClosestToHit is null) return;
             //d.Friction = d.PhysicsMaterialClosestToDownHit.Friction;
         }
 
@@ -254,15 +278,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.IsCollidingBelow = true;
         }
 
-        private void SetIsNotCollidingBelow()
-        {
-            d.IsCollidingBelow = false;
-        }
-
         private void SetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
         {
-            if (d.PathMovementClosestToDownHit is null) return;
-            d.MovingPlatform = d.PathMovementClosestToDownHit;
+            if (d.PathMovementClosestToHit is null) return;
+            d.MovingPlatform = d.PathMovementClosestToHit;
         }
 
         private void SetMovingPlatformToNull()
@@ -282,19 +301,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetCurrentDownHitSmallestDistance()
         {
-            d.CurrentDownHitSmallestDistance = DistanceBetweenPointAndLine(
+            /*d.CurrentDownHitSmallestDistance = DistanceBetweenPointAndLine(
                 d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].point, downRaycast.DownRaycastFromLeft,
-                downRaycast.DownRaycastToRight);
+                downRaycast.RaycastToRightOrigin);*/
         }
 
         private void SetGroundedEvent()
         {
             d.GroundedEvent = true;
-        }
-
-        private void SetStandingOnLastFrameLayerToPlatform()
-        {
-            d.StandingOnLastFrame.layer = NameToLayer("Platform");
         }
 
         private void SetStandingOnLastFrameLayerToSavedBelowLayer()
@@ -304,12 +318,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void SetStandingOn()
         {
-            d.StandingOn = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider.gameObject;
+            d.StandingOn = d.HitsStorage[d.SmallestDistanceToHitStorageIndex].collider.gameObject;
         }
 
         private void SetStandingOnCollider()
         {
-            d.StandingOnCollider = d.DownHitsStorage[d.DownHitsStorageSmallestDistanceIndex].collider;
+            d.StandingOnCollider = d.HitsStorage[d.SmallestDistanceToHitStorageIndex].collider;
         }
 
         private void SetNotOnMovingPlatform()
@@ -322,14 +336,9 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             //d.MovingPlatformCurrentSpeed = d.MovingPlatform.CurrentSpeed;
         }
 
-        private void InitializeSmallestDistanceToDownHit()
-        {
-            d.SmallestDistanceToDownHit = MaxValue;
-        }
-
         private void SetSmallestDistanceToDownHitDistance()
         {
-            d.SmallestDistanceToDownHit = d.RaycastDownHitAt.distance;
+            d.SmallestDistanceToHit = d.RaycastHitAt.distance;
         }
 
         #endregion
@@ -341,7 +350,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public DownRaycastHitColliderData Data => d;
 
         #region public methods
-        
+
         #region platformer
 
         public void OnPlatformerInitializeFrame()
@@ -358,215 +367,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             PlatformerCastRaysDown();
         }
-        
+
         #endregion
-        
-        /*public async UniTaskVoid OnSetOnMovingPlatform()
-        {
-            SetOnMovingPlatform();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetMovingPlatformCurrentGravity()
-        {
-            SetMovingPlatformCurrentGravity();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
-
-        /*public async UniTaskVoid OnSetWasGroundedLastFrame()
-        {
-            SetWasGroundedLastFrame();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetStandingOnLastFrame()
-        {
-            SetStandingOnLastFrame();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*//*
-
-        public async UniTaskVoid OnSetCurrentDownHitsStorage()
-        {
-            SetCurrentDownHitsStorage();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnInitializeFriction()
-        {
-            InitializeFriction();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnInitializeDownHitsStorage()
-        {
-            InitializeDownHitsStorage();
-        }
-
-        public async UniTaskVoid OnInitializeDownHitsStorageSmallestDistanceIndex()
-        {
-            InitializeDownHitsStorageSmallestDistanceIndex();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnInitializeDownHitConnected()
-        {
-            InitializeDownHitConnected();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnInitializeDownHitsStorageIndex()
-        {
-            InitializeDownHitsStorageIndex();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnAddDownHitsStorageIndex()
-        {
-            AddDownHitsStorageIndex();
-        }
-
-        public async UniTaskVoid OnSetRaycastDownHitAt()
-        {
-            SetRaycastDownHitAt();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetDownHitConnected()
-        {
-            SetDownHitConnected();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetBelowSlopeAngleAt()
-        {
-            SetBelowSlopeAngleAt();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetCrossBelowSlopeAngleAt()
-        {
-            SetCrossBelowSlopeAngleAt();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetSmallestDistanceIndexAt()
-        {
-            SetSmallestDistanceIndexAt();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetNegativeBelowSlopeAngle()
-        {
-            SetNegativeBelowSlopeAngle();
-        }
-
-        public async UniTaskVoid OnSetDownHitWithSmallestDistance()
-        {
-            SetDownHitWithSmallestDistance();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetIsCollidingBelow()
-        {
-            SetIsCollidingBelow();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetIsNotCollidingBelow()
-        {
-            SetIsNotCollidingBelow();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetFrictionToDownHitWithSmallestDistancesFriction()
-        {
-            SetFrictionToDownHitWithSmallestDistancesFriction();
-        }
-
-        public void OnSetMovingPlatformToDownHitWithSmallestDistancesPathMovement()
-        {
-            SetMovingPlatformToDownHitWithSmallestDistancesPathMovement();
-        }
-
-        public async UniTaskVoid OnSetMovingPlatformToNull()
-        {
-            SetMovingPlatformToNull();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnStopMovingPlatformCurrentGravity()
-        {
-            StopMovingPlatformCurrentGravity();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnStopMovingPlatformCurrentSpeed()
-        {
-            StopMovingPlatformCurrentSpeed();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetCurrentDownHitSmallestDistance()
-        {
-            SetCurrentDownHitSmallestDistance();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnInitializeSmallestDistanceToDownHit()
-        {
-            InitializeSmallestDistanceToDownHit();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetSmallestDistanceToDownHitDistance()
-        {
-            SetSmallestDistanceToDownHitDistance();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetGroundedEvent()
-        {
-            SetGroundedEvent();
-        }
-
-        public void OnSetStandingOnLastFrameLayerToPlatform()
-        {
-            SetStandingOnLastFrameLayerToPlatform();
-        }
-
-        public void OnSetStandingOnLastFrameLayerToSavedBelowLayer()
-        {
-            SetStandingOnLastFrameLayerToSavedBelowLayer();
-        }
-
-        public async UniTaskVoid OnSetStandingOn()
-        {
-            SetStandingOn();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetStandingOnCollider()
-        {
-            SetStandingOnCollider();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetNotOnMovingPlatform()
-        {
-            SetNotOnMovingPlatform();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnResetState()
-        {
-            ResetState();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnSetMovingPlatformCurrentSpeed()
-        {
-            SetMovingPlatformCurrentSpeed();
-        }*/
 
         #endregion
 

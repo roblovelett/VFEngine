@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -10,12 +11,12 @@ namespace VFEngine.Platformer.Layer.Mask
     {
         #region properties
 
-        [SerializeField] public LayerMask platformMask;
-        [SerializeField] public LayerMask movingPlatformMask;
-        [SerializeField] public LayerMask oneWayPlatformMask;
-        [SerializeField] public LayerMask movingOneWayPlatformMask;
-        [SerializeField] public LayerMask midHeightOneWayPlatformMask;
-        [SerializeField] public LayerMask stairsMask;
+        [SerializeField] public LayerMask platform;
+        [SerializeField] public LayerMask movingPlatform;
+        [SerializeField] public LayerMask oneWayPlatform;
+        [SerializeField] public LayerMask movingOneWayPlatform;
+        [SerializeField] public LayerMask midHeightOneWayPlatform;
+        [SerializeField] public LayerMask stairs;
 
         [LabelText("Display Warnings")] [SerializeField]
         public bool displayWarningsControl;
