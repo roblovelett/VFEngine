@@ -10,7 +10,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         public Vector2 CurrentRaycastOrigin { get; set; }
         public Vector2 RaycastFromBottomOrigin { get; set; }
         public Vector2 RaycastToTopOrigin { get; set; }
-        public RaycastHit2D CurrentRaycastHit { get; set; }
+        public RaycastHit2D CurrentRaycast { get; set; }
 
         #endregion
     }

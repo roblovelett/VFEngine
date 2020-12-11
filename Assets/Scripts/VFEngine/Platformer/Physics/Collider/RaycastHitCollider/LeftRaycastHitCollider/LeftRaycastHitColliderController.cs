@@ -29,10 +29,14 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         #endregion
 
+        #region internal
+
         private bool IncorrectHitsStorage => l.HitsStorage.Length != raycast.NumberOfHorizontalRaysPerSide;
         private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
         private bool MovingLeft => physics.HorizontalMovementDirection == -1;
         private bool MovementIsRayDirection => CastingLeft && MovingLeft;
+
+        #endregion
 
         #region private methods
 
@@ -75,7 +79,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         {
             InitializeHitsStorage();
             InitializeCurrentHitsStorage();
-            InitializeCurrentHit();
+            InitializeCurrentRaycast();
             InitializeHitConnected();
             InitializeCurrentLeftHitCollider();
             InitializeHitIgnoredCollider();
@@ -91,22 +95,22 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeCurrentHitsStorage()
         {
-            l.HitsStorage[l.CurrentHitsStorageIndex] = leftRaycast.CurrentRaycastHit;
+            l.HitsStorage[l.CurrentHitsStorageIndex] = leftRaycast.CurrentRaycast;
         }
 
-        private void InitializeCurrentHit()
+        private void InitializeCurrentRaycast()
         {
-            l.CurrentHit = l.HitsStorage[l.CurrentHitsStorageIndex];
+            l.CurrentRaycast = l.HitsStorage[l.CurrentHitsStorageIndex];
         }
 
         private void InitializeHitConnected()
         {
-            l.HitConnected = l.CurrentHit.distance > 0;
+            l.HitConnected = l.CurrentRaycast.distance > 0;
         }
 
         private void InitializeCurrentLeftHitCollider()
         {
-            l.CurrentHitCollider = l.CurrentHit.collider;
+            l.CurrentHitCollider = l.CurrentRaycast.collider;
         }
 
         private void InitializeHitIgnoredCollider()
@@ -116,7 +120,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeCurrentHitAngle()
         {
-            l.CurrentHitAngle = Abs(Angle(l.CurrentHit.normal, physics.Transform.up));
+            l.CurrentHitAngle = Abs(Angle(l.CurrentRaycast.normal, physics.Transform.up));
         }
 
         private void InitializeHitWall()
@@ -212,7 +216,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void SetDistanceToCollider()
         {
-            l.DistanceToCollider = l.CurrentHit.distance;
+            l.DistanceToCollider = l.CurrentRaycast.distance;
         }
 
         private void SetCurrentWallCollider()
@@ -222,7 +226,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void SetDistanceBetweenHitAndRaycastOrigins()
         {
-            l.DistanceBetweenHitAndRaycastOrigins = DistanceBetweenPointAndLine(l.CurrentHit.point,
+            l.DistanceBetweenHitAndRaycastOrigins = DistanceBetweenPointAndLine(l.CurrentRaycast.point,
                 leftRaycast.RaycastFromBottomOrigin, leftRaycast.RaycastToTopOrigin);
         }
 

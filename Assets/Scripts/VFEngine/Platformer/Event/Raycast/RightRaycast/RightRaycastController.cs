@@ -33,11 +33,14 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
 
         #endregion
 
+        #region internal
         private bool ExcludeOneWayPlatformsFromRaycast => downRaycastHitCollider.WasGroundedLastFrame &&
                                                           rightRaycastHitCollider.CurrentHitsStorageIndex == 0;
 
         private bool CastingRight => raycast.CurrentRaycastDirection == Right;
 
+        #endregion
+        
         #region private methods
 
         #region initialization
@@ -126,18 +129,18 @@ namespace VFEngine.Platformer.Event.Raycast.RightRaycast
         private void SetCurrentRaycast()
         {
             if (ExcludeOneWayPlatformsFromRaycast) SetCurrentRaycastToIgnoreOneWayPlatform();
-            else SetCurrentRaycastWithLayerMasks();
+            else SetCurrentRaycastToIncludePlatforms();
         }
 
         private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
-            r.CurrentRaycastHit = OnSetRaycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
+            r.CurrentRaycast = OnSetRaycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
                 layerMask.Platform, blue, raycast.DrawRaycastGizmosControl);
         }
 
-        private void SetCurrentRaycastWithLayerMasks()
+        private void SetCurrentRaycastToIncludePlatforms()
         {
-            r.CurrentRaycastHit = OnSetRaycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
+            r.CurrentRaycast = OnSetRaycast(r.CurrentRaycastOrigin, physics.Transform.right, r.RayLength,
                 layerMask.Platform & ~layerMask.OneWayPlatform & ~layerMask.MovingOneWayPlatform, blue,
                 raycast.DrawRaycastGizmosControl);
         }

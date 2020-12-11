@@ -27,6 +27,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #endregion
 
+        #region internal
+
+        private bool TestMovingPlatform => downRaycastHitCollider.HasMovingPlatform && platformer.TestPlatform;
+
+        #endregion
+
         #region private methods
 
         #region initialization
@@ -163,20 +169,29 @@ namespace VFEngine.Platformer.Event.Raycast
             SetRaysParameters();
         }
 
-        private bool TestMovingPlatform => downRaycastHitCollider.HasMovingPlatform && platformer.TestPlatform;
         private void PlatformerTestMovingPlatform()
         {
             if (TestMovingPlatform) SetRaysParameters();
         }
 
-        private void PlatformerSetRaycastDirectionToLeft()
+        private void PlatformerCastRaysUp()
         {
-            r.CurrentRaycastDirection = Left;
+            r.CurrentRaycastDirection = Up;
         }
 
-        private void PlatformerSetRaycastDirectionToRight()
+        private void PlatformerCastRaysRight()
         {
             r.CurrentRaycastDirection = Right;
+        }
+
+        private void PlatformerCastRaysDown()
+        {
+            r.CurrentRaycastDirection = Down;
+        }
+
+        private void PlatformerCastRaysLeft()
+        {
+            r.CurrentRaycastDirection = Left;
         }
 
         #endregion
@@ -223,14 +238,24 @@ namespace VFEngine.Platformer.Event.Raycast
             PlatformerTestMovingPlatform();
         }
 
-        public void OnPlatformerSetRaycastDirectionToLeft()
+        public void OnPlatformerCastRaysUp()
         {
-            PlatformerSetRaycastDirectionToLeft();
+            PlatformerCastRaysUp();
         }
 
-        public void OnPlatformerSetRaycastDirectionToRight()
+        public void OnPlatformerCastRaysRight()
         {
-            PlatformerSetRaycastDirectionToRight();
+            PlatformerCastRaysRight();
+        }
+
+        public void OnPlatformerCastRaysDown()
+        {
+            PlatformerCastRaysDown();
+        }
+
+        public void OnPlatformerCastRaysLeft()
+        {
+            PlatformerCastRaysLeft();
         }
 
         #endregion

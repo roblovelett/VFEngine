@@ -262,13 +262,13 @@ namespace VFEngine.Platformer
 
         private void CastRaysLeft()
         {
-            raycastController.OnPlatformerSetRaycastDirectionToLeft();
+            raycastController.OnPlatformerCastRaysLeft();
             CastRaysHorizontally();
         }
 
         private void CastRaysRight()
         {
-            raycastController.OnPlatformerSetRaycastDirectionToRight();
+            raycastController.OnPlatformerCastRaysRight();
             CastRaysHorizontally();
         }
 
@@ -299,12 +299,17 @@ namespace VFEngine.Platformer
 
         private void CastRaysDown()
         {
-            /*layerMaskController.OnPlatformerCastRaysDown();
+            raycastController.OnPlatformerCastRaysDown();
+            layerMaskController.OnPlatformerCastRaysDown();
             downRaycastHitColliderController.OnPlatformerCastRaysDown();
             physicsController.OnPlatformerCastRaysDown();
             if (IsNotCollidingBelow) return;
             downRaycastController.OnPlatformerCastRaysDown();
-            for (var i = 0; i < raycast.NumberOfVerticalRays; i++) downRaycastController.OnPlatformerCastCurrentRay();*/
+            for (var i = 0; i < raycast.NumberOfVerticalRays; i++)
+            {
+                downRaycastController.OnPlatformerCastCurrentRay();
+                downRaycastHitColliderController.OnPlatformerCastCurrentRay();
+            }
             
             
             

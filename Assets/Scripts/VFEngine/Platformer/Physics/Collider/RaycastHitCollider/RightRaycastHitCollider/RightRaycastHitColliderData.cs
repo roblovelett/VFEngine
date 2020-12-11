@@ -19,7 +19,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHi
         public float LateralSlopeAngle { get; set; }
         public Collider2D CurrentHitCollider { get; set; }
         public GameObject CurrentWallCollider { get; set; }
-        public RaycastHit2D CurrentHit { get; set; }
+        public RaycastHit2D CurrentRaycast { get; set; }
         public RaycastHit2D[] HitsStorage { get; set; }
 
         #endregion

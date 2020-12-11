@@ -85,6 +85,21 @@ namespace VFEngine.Platformer.Physics
 
         private bool CastingRight => raycast.CurrentRaycastDirection == Right;
         private bool InAir => downRaycastHitCollider.GroundedEvent && p.Speed.y != 0;
+        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
+        private bool LeftMovementIsRayDirection => CastingLeft && p.HorizontalMovementDirection == -1;
+
+        private bool SetNewLeftPositionAndStopSpeed => leftRaycastHitCollider.HitConnected &&
+                                                       !leftRaycastHitCollider.HitIgnoredCollider &&
+                                                       leftRaycastHitCollider.HitWall && LeftMovementIsRayDirection;
+
+        private bool RightMovementIsRayDirection => p.HorizontalMovementDirection == 1 && CastingRight;
+
+        private bool SetNewRightPositionAndStopSpeed => rightRaycastHitCollider.HitConnected &&
+                                                        !rightRaycastHitCollider.HitIgnoredCollider &&
+                                                        rightRaycastHitCollider.HitWall && RightMovementIsRayDirection;
+
+        private bool IsFalling => p.NewPosition.y < -p.SmallValue;
+        private bool IsNotCollidingBelow => p.Gravity > 0 && !p.IsFalling;
 
         #endregion
 
@@ -127,7 +142,8 @@ namespace VFEngine.Platformer.Physics
             };
             p.ApplySettings(settings);
             if (p.AutomaticGravityControl) p.Transform.rotation = identity;
-            /*p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic && p.CurrentHitRigidBody.bodyType != Static;*/
+            /*p.CurrentHitRigidBodyCanBePushed = p.CurrentHitRigidBody != null && !p.CurrentHitRigidBody.isKinematic
+             && p.CurrentHitRigidBody.bodyType != Static;*/
         }
 
         /*private void GetWarningMessages()
@@ -227,18 +243,14 @@ namespace VFEngine.Platformer.Physics
             SetStoredHorizontalMovementDirection();
         }
 
-        private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
-        private bool LeftMovementIsRayDirection => CastingLeft && p.HorizontalMovementDirection == -1; 
-        private bool SetNewLeftPositionAndStopSpeed => leftRaycastHitCollider.HitConnected && !leftRaycastHitCollider.HitIgnoredCollider && leftRaycastHitCollider.HitWall && LeftMovementIsRayDirection;
-        private bool RightMovementIsRayDirection => p.HorizontalMovementDirection == 1 && CastingRight;
-        private bool SetNewRightPositionAndStopSpeed => rightRaycastHitCollider.HitConnected && !rightRaycastHitCollider.HitIgnoredCollider && rightRaycastHitCollider.HitWall && RightMovementIsRayDirection;
         private void PlatformerCastCurrentRay()
         {
             if (SetNewLeftPositionAndStopSpeed)
             {
                 SetNewNegativeHorizontalPosition();
                 OnAerialHorizontalWallHit();
-            } else if (SetNewRightPositionAndStopSpeed)
+            }
+            else if (SetNewRightPositionAndStopSpeed)
             {
                 SetNewPositiveHorizontalPosition();
                 OnAerialHorizontalWallHit();
@@ -251,9 +263,6 @@ namespace VFEngine.Platformer.Physics
             StopHorizontalSpeed();
         }
 
-        private bool IsFalling => p.NewPosition.y < -p.SmallValue;
-        private bool IsNotCollidingBelow => p.Gravity > 0 && !p.IsFalling;
-        
         private void PlatformerCastRaysDown()
         {
             if (IsFalling) SetIsFalling();
@@ -536,7 +545,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         public void OnPlatformerCastCurrentRay()
-        { 
+        {
             PlatformerCastCurrentRay();
         }
 

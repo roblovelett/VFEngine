@@ -77,11 +77,10 @@ namespace VFEngine.Platformer.Event.Raycast
             return rayLength;
         }
 
-        private static Vector2 SetCurrentRaycastOrigin(Vector2 raycastFromBottom, Vector2 raycastToTop, int index,
-            int numberOfHorizontalRays)
+        private static Vector2 SetCurrentRaycastOrigin(Vector2 raycast1, Vector2 raycast2, int index,
+            int numberOfRays)
         {
-            var origin = Lerp(raycastFromBottom, raycastToTop, index / (float) (numberOfHorizontalRays - 1));
-            return origin;
+            return Lerp(raycast1, raycast2, index / (float) (numberOfRays - 1));
         }
 
         private static RaycastHit2D SetRaycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,
@@ -122,10 +121,10 @@ namespace VFEngine.Platformer.Event.Raycast
             return SetHorizontalRayLength(speedX, deltaTime, boundsWidth, rayOffset);
         }
 
-        public static Vector2 OnSetCurrentRaycastOrigin(Vector2 raycastFromBottom, Vector2 raycastToTop, int index,
-            int numberOfHorizontalRays)
+        public static Vector2 OnSetCurrentRaycastOrigin(Vector2 raycast1, Vector2 raycast2, int index,
+            int numberOfRays)
         {
-            return SetCurrentRaycastOrigin(raycastFromBottom, raycastToTop, index, numberOfHorizontalRays);
+            return SetCurrentRaycastOrigin(raycast1, raycast2, index, numberOfRays);
         }
 
         public static RaycastHit2D OnSetRaycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,

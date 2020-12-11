@@ -1,17 +1,15 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
-using UniTaskExtensions = VFEngine.Tools.UniTaskExtensions;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
     using static Mathf;
     using static Raycast;
-    using static UniTaskExtensions;
     using static Vector2;
+    using static Color;
 
     public class DownRaycastController : MonoBehaviour, IController
     {
@@ -28,6 +26,17 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         private RaycastData raycast;
         private DownRaycastHitColliderData downRaycastHitCollider;
         private LayerMaskData layerMask;
+
+        #endregion
+
+        #region internal
+
+        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        private bool OnMovingPlatform => downRaycastHitCollider.OnMovingPlatform;
+        private bool NegativeVerticalNewPosition => physics.NewPosition.y < 0;
+
+        private bool ExcludeOneWayPlatformsFromRaycast =>
+            physics.NewPosition.y > 0 && !downRaycastHitCollider.WasGroundedLastFrame;
 
         #endregion
 
@@ -70,10 +79,6 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region platformer
 
-        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
-        private bool OnMovingPlatform => downRaycastHitCollider.OnMovingPlatform;
-        private bool NegativeVerticalNewPosition => physics.NewPosition.y < 0;
-
         private void PlatformerCastRaysDown()
         {
             if (IsNotCollidingBelow) return;
@@ -82,6 +87,12 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
             if (NegativeVerticalNewPosition) SetRayLengthToVerticalNewPosition();
             SetRaycastFromLeftOrigin();
             SetRaycastToRightOrigin();
+        }
+
+        private void PlatformerCastCurrentRay()
+        {
+            SetCurrentRaycastOrigin();
+            SetCurrentRaycast();
         }
 
         #endregion
@@ -113,33 +124,29 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
                 raycast.BoundsTopRightCorner, physics.Transform, raycast.RayOffset, physics.NewPosition);
         }
 
-        //private void SetCurrentDownRaycastToIgnoreOneWayPlatform()
-        //{
-        /*d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
-            layerMask.RaysBelowLayerMaskPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);*/
-        //}
-
-        //private void SetCurrentDownRaycast()
-        //{
-        /*d.CurrentDownRaycastHit = Raycast(d.CurrentDownRaycastOrigin, -physics.Transform.up, d.DownRayLength,
-            layerMask.RaysBelowLayerMaskPlatforms, blue, raycast.DrawRaycastGizmosControl);*/
-        //}
-        /*private void SetDownRaycastFromLeft()
+        private void SetCurrentRaycastOrigin()
         {
-            d.DownRaycastFromLeft = OnSetVerticalRaycast(raycast.BoundsBottomLeftCorner, raycast.BoundsTopLeftCorner,
-                physics.Transform, raycast.RayOffset, physics.NewPosition.x);
+            d.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(d.RaycastFromLeftOrigin, d.RaycastToRightOrigin,
+                downRaycastHitCollider.CurrentHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
         }
 
-        private void SetDownRaycastToRight()
+        private void SetCurrentRaycast()
         {
-            d.DownRaycastToRight = OnSetVerticalRaycast(raycast.BoundsBottomRightCorner, raycast.BoundsTopRightCorner,
-                physics.Transform, raycast.RayOffset, physics.NewPosition.x);
-        }*/
-        /*private void SetCurrentDownRaycastOriginPoint()
+            if (ExcludeOneWayPlatformsFromRaycast) SetCurrentRaycastToIgnoreOneWayPlatform();
+            else SetCurrentRaycastToIncludePlatforms();
+        }
+
+        private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
-            d.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(d.DownRaycastFromLeft, d.RaycastToRightOrigin,
-                downRaycastHitCollider.CurrentDownHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
-        }*/
+            d.CurrentRaycast = OnSetRaycast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
+                layerMask.RaysBelowPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);
+        }
+
+        private void SetCurrentRaycastToIncludePlatforms()
+        {
+            d.CurrentRaycast = OnSetRaycast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
+                layerMask.RaysBelowPlatforms, blue, raycast.DrawRaycastGizmosControl);
+        }
 
         #endregion
 
@@ -160,53 +167,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         public void OnPlatformerCastCurrentRay()
         {
-            //PlatformerCastCurrentRay();
+            PlatformerCastCurrentRay();
         }
 
         #endregion
-
-        public void OnSetCurrentDownRaycastToIgnoreOneWayPlatform()
-        {
-            //SetCurrentDownRaycastToIgnoreOneWayPlatform();
-        }
-
-        public void OnSetCurrentDownRaycast()
-        {
-            //SetCurrentDownRaycast();
-        }
-
-        public async UniTaskVoid OnInitializeDownRayLength()
-        {
-            //InitializeDownRayLength();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public void OnDoubleDownRayLength()
-        {
-            //DoubleDownRayLength();
-        }
-
-        public void OnSetDownRayLengthToVerticalNewPosition()
-        {
-            //SetDownRayLengthToVerticalNewPosition();
-        }
-
-        /*public async UniTaskVoid OnSetDownRaycastFromLeft()
-        {
-            SetDownRaycastFromLeft();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }
-
-        public async UniTaskVoid OnSetDownRaycastToRight()
-        {
-            SetDownRaycastToRight();
-            await SetYieldOrSwitchToThreadPoolAsync();
-        }*/
-
-        public void OnSetCurrentDownRaycastOriginPoint()
-        {
-            //SetCurrentDownRaycastOriginPoint();
-        }
 
         #endregion
 

@@ -28,6 +28,34 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #endregion
 
+        #region internal
+        
+        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        private bool HasStandingOnLastFrame => downRaycastHitCollider.HasStandingOnLastFrame;
+
+        private bool MidHeightOneWayPlatformHasStandingOnLastFrame =>
+            l.MidHeightOneWayPlatform.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
+
+        private bool SetRaysBelowPlatformsMaskToPlatformsWithoutHeight => downRaycastHitCollider.WasGroundedLastFrame &&
+                                                                          HasStandingOnLastFrame &&
+                                                                          !MidHeightOneWayPlatformHasStandingOnLastFrame;
+
+        private bool StairsMaskHasStandingOnLastFrame =>
+            l.Stairs.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
+
+        private bool StandingOnColliderHasBottomCenterPosition =>
+            downRaycastHitCollider.StandingOnCollider.bounds.Contains(raycast.BoundsBottomCenterPosition);
+
+        private bool SetRaysBelowPlatformsMaskToOneWayOrStairs => downRaycastHitCollider.WasGroundedLastFrame &&
+                                                                  HasStandingOnLastFrame &&
+                                                                  StairsMaskHasStandingOnLastFrame &&
+                                                                  StandingOnColliderHasBottomCenterPosition;
+
+        private bool SetRaysBelowPlatformsMaskToOneWay =>
+            downRaycastHitCollider.OnMovingPlatform && physics.NewPosition.y > 0;
+        
+        #endregion
+        
         #region private methods
 
         #region initialization
@@ -138,30 +166,6 @@ namespace VFEngine.Platformer.Layer.Mask
         #endregion
 
         #region platformer
-
-        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
-        private bool HasStandingOnLastFrame => downRaycastHitCollider.HasStandingOnLastFrame;
-
-        private bool MidHeightOneWayPlatformHasStandingOnLastFrame =>
-            l.MidHeightOneWayPlatform.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
-
-        private bool SetRaysBelowPlatformsMaskToPlatformsWithoutHeight => downRaycastHitCollider.WasGroundedLastFrame &&
-                                                                          HasStandingOnLastFrame &&
-                                                                          !MidHeightOneWayPlatformHasStandingOnLastFrame;
-
-        private bool StairsMaskHasStandingOnLastFrame =>
-            l.Stairs.Contains(downRaycastHitCollider.StandingOnLastFrame.layer);
-
-        private bool StandingOnColliderHasBottomCenterPosition =>
-            downRaycastHitCollider.StandingOnCollider.bounds.Contains(raycast.BoundsBottomCenterPosition);
-
-        private bool SetRaysBelowPlatformsMaskToOneWayOrStairs => downRaycastHitCollider.WasGroundedLastFrame &&
-                                                                  HasStandingOnLastFrame &&
-                                                                  StairsMaskHasStandingOnLastFrame &&
-                                                                  StandingOnColliderHasBottomCenterPosition;
-
-        private bool SetRaysBelowPlatformsMaskToOneWay =>
-            downRaycastHitCollider.OnMovingPlatform && physics.NewPosition.y > 0;
 
         private void PlatformerCastRaysDown()
         {
