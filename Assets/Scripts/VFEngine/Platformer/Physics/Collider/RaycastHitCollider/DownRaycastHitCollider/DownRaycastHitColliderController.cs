@@ -6,9 +6,8 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics.Movement.PathMovement;
 using VFEngine.Platformer.Physics.PhysicsMaterial;
 using VFEngine.Tools;
-using Debug = System.Diagnostics.Debug;
-// ReSharper disable PossibleNullReferenceException
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
@@ -18,7 +17,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
     using static PhysicsExtensions;
     using static MathsExtensions;
     using static RaycastDirection;
-    using static Debug;
 
     public class DownRaycastHitColliderController : MonoBehaviour, IController
     {
@@ -58,6 +56,20 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         private bool HitIgnoredCollider => d.CurrentRaycast.collider == raycastHitCollider.IgnoredCollider;
         private bool NegativeCrossBelowSlopeAngle => d.CrossBelowSlopeAngle.z < 0;
         private bool RaycastLessThanSmallestDistance => d.CurrentRaycast.distance < d.SmallestDistance;
+        private bool HitConnected => d.HitConnected = true;
+        private bool NotGroundedLastFrame => !d.WasGroundedLastFrame;
+        private bool SmallestDistanceLessThanHalfBoundsHeight => d.SmallestDistance < raycast.BoundsHeight / 2;
+        private bool OneWayPlatformHasStandingOn => layerMask.OneWayPlatform.Contains(d.StandingOn.layer);
+        private bool MovingOneWayPlatformHasStandingOn => layerMask.MovingOneWayPlatform.Contains(d.StandingOn.layer);
+
+        private bool AerialAndNotHighEnoughForOneWayPlatform =>
+            NotGroundedLastFrame && SmallestDistanceLessThanHalfBoundsHeight && OneWayPlatformHasStandingOn ||
+            MovingOneWayPlatformHasStandingOn;
+
+        private bool ApplyingExternalForce => physics.ExternalForce.y > 0 && physics.Speed.y > 0;
+        private bool FrictionTest => d.FrictionTest = true;
+        private bool MovingPlatformTest => d.MovingPlatformTest = true;
+        private bool NoMovingPlatform => d.MovingPlatform == null;
 
         #endregion
 
@@ -193,17 +205,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             AddToHitsStorageIndex();
         }
 
-        private bool HitConnected => d.HitConnected = true;
-        private bool NotGroundedLastFrame => !d.WasGroundedLastFrame;
-        private bool SmallestDistanceLessThanHalfBoundsHeight => d.SmallestDistance < raycast.BoundsHeight / 2;
-        private bool OneWayPlatformHasStandingOn => layerMask.OneWayPlatform.Contains(d.StandingOn.layer);
-        private bool MovingOneWayPlatformHasStandingOn => layerMask.MovingOneWayPlatform.Contains(d.StandingOn.layer);
-        private bool AerialAndNotHighEnoughForOneWayPlatform =>
-            NotGroundedLastFrame && SmallestDistanceLessThanHalfBoundsHeight && OneWayPlatformHasStandingOn ||
-            MovingOneWayPlatformHasStandingOn;
-        private bool ApplyingExternalForce => physics.ExternalForce.y > 0 && physics.Speed.y > 0;
-        private bool FrictionTest => d.FrictionTest = true;
-        private bool MovingPlatformTest => d.MovingPlatformTest = true;
         private void PlatformerOnHitConnected()
         {
             if (!CastingDown) return;
@@ -216,25 +217,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
                     SetNotCollidingBelow();
                     return;
                 }
+
                 SetIsCollidingBelow();
-                if (ApplyingExternalForce)
-                {
-                    SetNotCollidingBelow();
-                }
-
-                if (FrictionTest)
-                {
-                    d.Friction = d.PhysicsMaterialControllerClosestToHit.Data.Friction;
-                }
-
-                if (MovingPlatformTest && d.IsGrounded)
-                {
-                    d.MovingPlatform = d.PathMovementControllerClosestToHit;
-                }
-                else
-                {
-                    DetachFromMovingPlatform();
-                }    
+                if (ApplyingExternalForce) SetNotCollidingBelow();
+                if (FrictionTest) d.Friction = d.PhysicsMaterialControllerClosestToHit.Data.Friction;
+                if (MovingPlatformTest && d.IsGrounded) d.MovingPlatform = d.PathMovementControllerClosestToHit;
+                else DetachFromMovingPlatform();
             }
             else
             {
@@ -243,7 +231,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             }
         }
 
-        private bool NoMovingPlatform => d.MovingPlatform == null;
         private void DetachFromMovingPlatform()
         {
             if (NoMovingPlatform) return;
@@ -304,12 +291,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.SmallestDistanceRaycast = d.HitsStorage[d.SmallestDistanceIndex];
         }
-        
+
         private void InitializeDistanceBetweenSmallestPointAndVerticalRaycast()
         {
             d.DistanceBetweenSmallestPointAndVerticalRaycast = DistanceBetweenPointAndLine(
-                d.SmallestDistanceRaycast.point, downRaycast.RaycastFromLeftOrigin,
-                downRaycast.RaycastToRightOrigin);
+                d.SmallestDistanceRaycast.point, downRaycast.RaycastFromLeftOrigin, downRaycast.RaycastToRightOrigin);
         }
 
         private void InitializeSmallestDistanceMet()
@@ -319,7 +305,8 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializePhysicsMaterialControllerClosestToHit()
         {
-            d.PhysicsMaterialControllerClosestToHit = d.SmallestDistanceRaycast.collider.gameObject.GetComponent<PhysicsMaterialController>();
+            d.PhysicsMaterialControllerClosestToHit =
+                d.SmallestDistanceRaycast.collider.gameObject.GetComponent<PhysicsMaterialController>();
         }
 
         private void InitializeFrictionTest()
@@ -329,9 +316,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
 
         private void InitializePathMovementControllerClosestToHit()
         {
-            d.PathMovementControllerClosestToHit = d.SmallestDistanceRaycast.collider.gameObject.GetComponent<PathMovementController>();
+            d.PathMovementControllerClosestToHit =
+                d.SmallestDistanceRaycast.collider.gameObject.GetComponent<PathMovementController>();
         }
-        
+
         private void InitializeMovingPlatformTest()
         {
             d.MovingPlatformTest = d.PathMovementControllerClosestToHit != null;
@@ -347,11 +335,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.DetachedFromMovingPlatformEvent = false;
         }
+
         private void SetNoGroundedEvent()
         {
             d.GroundedEvent = false;
         }
-        
+
         private void SetHasGroundedLastFrameToCollidingBelow()
         {
             d.WasGroundedLastFrame = d.IsCollidingBelow;
@@ -431,37 +420,39 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         {
             d.SmallestDistance = d.CurrentRaycast.distance;
         }
-        
+
         private void AddToHitsStorageIndex()
         {
             d.HitsStorageIndex++;
         }
-        
+
         private void SetStandingOn()
         {
             d.StandingOn = d.HitsStorage[d.SmallestDistanceIndex].collider.gameObject;
         }
-        
+
         private void SetStandingOnCollider()
         {
             d.StandingOnCollider = d.HitsStorage[d.SmallestDistanceIndex].collider;
         }
-        
+
         /*==========================================================================================================*/
 
         private void SetIsCollidingBelow()
         {
             d.IsCollidingBelow = true;
         }
+
         private void SetGroundedEvent()
         {
             d.GroundedEvent = true;
         }
+
         private void SetStandingOnLastFrameLayerToSavedBelowLayer()
         {
             d.StandingOnLastFrame.layer = layerMask.SavedBelowLayer;
         }
-        
+
         private void SetNotOnMovingPlatform()
         {
             d.OnMovingPlatform = false;
