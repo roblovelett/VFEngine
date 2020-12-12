@@ -25,7 +25,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] public bool physics2DInteractionControl = true;
         [SerializeField] public bool safeSetTransformControl;
         [SerializeField] public bool automaticGravityControl = true;
-
+        [SerializeField] public bool stickToSlopesControl = true;
         [LabelText("Display Warnings")] [SerializeField] public bool displayWarningsControl = true;
 
         #endregion

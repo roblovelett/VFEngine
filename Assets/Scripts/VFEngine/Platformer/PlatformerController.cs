@@ -297,6 +297,9 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        private bool SmallestDistanceMet => downRaycastHitCollider.SmallestDistanceMet;
+        private bool StickToSlopes => physics.StickToSlopesControl;
+
         private void CastRaysDown()
         {
             raycastController.OnPlatformerCastRaysDown();
@@ -309,48 +312,20 @@ namespace VFEngine.Platformer
             {
                 downRaycastController.OnPlatformerCastCurrentRay();
                 downRaycastHitColliderController.OnPlatformerCastCurrentRay();
+                if (SmallestDistanceMet) break;
+                downRaycastHitColliderController.OnPlatformerAddToCurrentHitsStorageIndex();
             }
-            
-            
-            
-            
-            /*for (var i = 0; i < raycast.NumberOfVerticalRaysPerSide; i++)
-            {
-                downRaycastController.OnSetCurrentDownRaycastOriginPoint();
-                if (physics.NewPosition.y > 0 && !downRaycastHitCollider.HasGroundedLastFrame)
-                    downRaycastController.OnSetCurrentDownRaycastToIgnoreOneWayPlatform();
-                else downRaycastController.OnSetCurrentDownRaycast();
-                var rhcTask7 = Async(downRaycastHitColliderController.OnSetCurrentDownHitsStorage());
-                var rhcTask8 = Async(downRaycastHitColliderController.OnSetRaycastDownHitAt());
-                var rhcTask9 = Async(downRaycastHitColliderController.OnSetCurrentDownHitSmallestDistance());
-                var task4 = await (rhcTask7, rhcTask8, rhcTask9);
-                if (downRaycastHitCollider.RaycastDownHitAt)
-                {
-                    if (downRaycastHitCollider.RaycastDownHitAt.collider == raycastHitCollider.IgnoredCollider)
-                        continue;
-                    var rhcTask10 = Async(downRaycastHitColliderController.OnSetDownHitConnected());
-                    var rhcTask11 = Async(downRaycastHitColliderController.OnSetBelowSlopeAngleAt());
-                    var rhcTask12 = Async(downRaycastHitColliderController.OnSetCrossBelowSlopeAngleAt());
-                    var task5 = await (rhcTask10, rhcTask11, rhcTask12);
-                    if (downRaycastHitCollider.CrossBelowSlopeAngle.z < 0)
-                        downRaycastHitColliderController.OnSetNegativeBelowSlopeAngle();
-                    if (downRaycastHitCollider.RaycastDownHitAt.distance <
-                        downRaycastHitCollider.SmallestDistanceToDownHit)
-                    {
-                        var rhcTask13 = Async(downRaycastHitColliderController.OnSetSmallestDistanceIndexAt());
-                        var rhcTask14 =
-                            Async(downRaycastHitColliderController.OnSetDownHitWithSmallestDistance());
-                        var rTask4 = Async(downRaycastHitColliderController
-                            .OnSetSmallestDistanceToDownHitDistance());
-                        var task6 = await (rhcTask13, rhcTask14, rTask4);
-                    }
-                }
 
-                if (downRaycastHitCollider.CurrentDownHitSmallestDistance < physics.SmallValue) break;
-                downRaycastHitColliderController.OnAddDownHitsStorageIndex();
-            }*/
+            downRaycastHitColliderController.OnPlatformerHitConnected();
+            physicsController.OnPlatformerDownHitConnected();
+            if (StickToSlopes) StickToSlope();
         }
 
+        private void StickToSlope()
+        {
+            // do this
+        }
+        
         #endregion
 
         #endregion

@@ -127,7 +127,7 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         private void SetCurrentRaycastOrigin()
         {
             d.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(d.RaycastFromLeftOrigin, d.RaycastToRightOrigin,
-                downRaycastHitCollider.CurrentHitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
+                downRaycastHitCollider.HitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);
         }
 
         private void SetCurrentRaycast()
@@ -139,13 +139,13 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
         private void SetCurrentRaycastToIgnoreOneWayPlatform()
         {
             d.CurrentRaycast = OnSetRaycast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
-                layerMask.RaysBelowPlatformsWithoutOneWay, blue, raycast.DrawRaycastGizmosControl);
+                layerMask.RaysBelowPlatformsWithoutOneWay, black, raycast.DrawRaycastGizmosControl);
         }
 
         private void SetCurrentRaycastToIncludePlatforms()
         {
             d.CurrentRaycast = OnSetRaycast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
-                layerMask.RaysBelowPlatforms, blue, raycast.DrawRaycastGizmosControl);
+                layerMask.RaysBelowPlatforms, black, raycast.DrawRaycastGizmosControl);
         }
 
         #endregion

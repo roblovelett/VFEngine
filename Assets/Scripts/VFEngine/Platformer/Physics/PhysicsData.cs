@@ -18,6 +18,7 @@ namespace VFEngine.Platformer.Physics
         public bool SafeSetTransformControl { get; set; }
         public bool DisplayWarningsControl { get; private set; }
         public bool AutomaticGravityControl { get; private set; }
+        public bool StickToSlopesControl { get; private set; }
         public float AscentMultiplier { get; private set; }
         public float FallMultiplier { get; private set; }
         public float Gravity { get; private set; }
@@ -85,6 +86,7 @@ namespace VFEngine.Platformer.Physics
             SafeSetTransformControl = settings.safeSetTransformControl;
             DisplayWarningsControl = settings.displayWarningsControl;
             AutomaticGravityControl = settings.automaticGravityControl;
+            StickToSlopesControl = settings.stickToSlopesControl;
             AscentMultiplier = settings.ascentMultiplier;
             FallMultiplier = settings.fallMultiplier;
             Gravity = settings.gravity;

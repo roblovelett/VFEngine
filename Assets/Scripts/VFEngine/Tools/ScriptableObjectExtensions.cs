@@ -37,8 +37,8 @@ namespace VFEngine.Tools
         public const string PlatformerPathMovementDataPath =
             "VFEngine/Platformer/Physics/Path Movement/Path Movement Data";
 
-        public const string PlatformerPhysicsMaterialDataPath =
-            "VFEngine/Platformer/Physics/Physics Material/Physics Material Data";
+        public const string PlatformerPhysicsMaterialSettingsPath =
+            "VFEngine/Platformer/Physics/Physics Material/Physics Material Settings";
 
         public static string PlatformerScriptableObjectsPath { get; } = $"{ScriptableObjectsPath}{PlatformerPath}";
 

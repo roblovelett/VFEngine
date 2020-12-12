@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         #region internal
 
         private bool ExcludeOneWayPlatformsFromRaycast => downRaycastHitCollider.WasGroundedLastFrame &&
-                                                          leftRaycastHitCollider.CurrentHitsStorageIndex == 0;
+                                                          leftRaycastHitCollider.HitsStorageIndex == 0;
 
         private bool CastingLeft => raycast.CurrentRaycastDirection == Left;
 
@@ -124,7 +124,7 @@ namespace VFEngine.Platformer.Event.Raycast.LeftRaycast
         private void SetCurrentRaycastOrigin()
         {
             l.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(l.RaycastFromBottomOrigin, l.RaycastToTopOrigin,
-                leftRaycastHitCollider.CurrentHitsStorageIndex, raycast.NumberOfHorizontalRaysPerSide);
+                leftRaycastHitCollider.HitsStorageIndex, raycast.NumberOfHorizontalRaysPerSide);
         }
 
         private void SetCurrentRaycast()

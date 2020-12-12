@@ -269,6 +269,14 @@ namespace VFEngine.Platformer.Physics
             else SetIsNotFalling();
         }
 
+        private bool CastingDown => raycast.CurrentRaycastDirection == Down;
+        private bool DetachedFromMovingPlatform => downRaycastHitCollider.DetachedFromMovingPlatformEvent;
+        private void PlatformerDownHitConnected()
+        {
+            if (!DetachedFromMovingPlatform) return;
+            SetGravityActive();
+        }
+        
         #endregion
 
         private void ResetState()
@@ -552,6 +560,11 @@ namespace VFEngine.Platformer.Physics
         public void OnPlatformerCastRaysDown()
         {
             PlatformerCastRaysDown();
+        }
+
+        public void OnPlatformerDownHitConnected()
+        {
+            PlatformerDownHitConnected();
         }
 
         #endregion

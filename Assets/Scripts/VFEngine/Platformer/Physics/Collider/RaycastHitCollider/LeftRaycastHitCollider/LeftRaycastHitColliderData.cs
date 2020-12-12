@@ -12,7 +12,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
         public bool HitWall { get; set; }
         public bool IsColliding { get; set; }
         public bool PassedSlopeAngle { get; set; }
-        public int CurrentHitsStorageIndex { get; set; }
+        public int HitsStorageIndex { get; set; }
         public float CurrentHitAngle { get; set; }
         public float DistanceBetweenHitAndRaycastOrigins { get; set; }
         public float DistanceToCollider { get; set; }

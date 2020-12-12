@@ -6,6 +6,8 @@ namespace VFEngine.Platformer.Event.Raycast
 {
     using static Vector2;
     using static Mathf;
+    using static Debug;
+    using static Physics2D;
 
     public static class Raycast
     {
@@ -86,8 +88,8 @@ namespace VFEngine.Platformer.Event.Raycast
         private static RaycastHit2D SetRaycast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance,
             LayerMask mask, Color color, bool drawGizmos)
         {
-            if (drawGizmos) Debug.DrawRay(rayOriginPoint, rayDirection * rayDistance, color);
-            return Physics2D.Raycast(rayOriginPoint, rayDirection, rayDistance, mask);
+            if (drawGizmos) DrawRay(rayOriginPoint, rayDirection * rayDistance, color);
+            return Raycast(rayOriginPoint, rayDirection, rayDistance, mask);
         }
 
         private static float SetRayLength(float boundsHeight, float rayOffset)

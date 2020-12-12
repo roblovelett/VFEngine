@@ -1,17 +1,20 @@
-﻿using ScriptableObjectArchitecture;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using VFEngine.Tools;
-
-namespace VFEngine.Platformer.Physics.PhysicsMaterial
+﻿namespace VFEngine.Platformer.Physics.PhysicsMaterial
 {
-    using static ScriptableObjectExtensions;
-
-    [CreateAssetMenu(fileName = "PhysicsMaterialData", menuName = PlatformerPhysicsMaterialDataPath, order = 0)]
-    [InlineEditor]
-    public class PhysicsMaterialData : ScriptableObject
+    public class PhysicsMaterialData
     {
-        [SerializeField] private FloatReference friction = new FloatReference();
-        public float Friction => friction.Value;
+        #region properties
+
+        public float Friction { get; set; }
+
+        #region public methods
+
+        public void ApplySettings(PhysicsMaterialSettings settings)
+        {
+            Friction = settings.friction;
+        }
+
+        #endregion
+
+        #endregion
     }
 }

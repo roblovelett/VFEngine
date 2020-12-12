@@ -95,12 +95,12 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeCurrentHitsStorage()
         {
-            l.HitsStorage[l.CurrentHitsStorageIndex] = leftRaycast.CurrentRaycast;
+            l.HitsStorage[l.HitsStorageIndex] = leftRaycast.CurrentRaycast;
         }
 
         private void InitializeCurrentRaycast()
         {
-            l.CurrentRaycast = l.HitsStorage[l.CurrentHitsStorageIndex];
+            l.CurrentRaycast = l.HitsStorage[l.HitsStorageIndex];
         }
 
         private void InitializeHitConnected()
@@ -201,7 +201,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void InitializeCurrentHitsStorageIndex()
         {
-            l.CurrentHitsStorageIndex = 0;
+            l.HitsStorageIndex = 0;
         }
 
         private void SetLateralSlopeAngle()
@@ -232,7 +232,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHit
 
         private void AddToCurrentHitsStorageIndex()
         {
-            l.CurrentHitsStorageIndex++;
+            l.HitsStorageIndex++;
         }
 
         #endregion
