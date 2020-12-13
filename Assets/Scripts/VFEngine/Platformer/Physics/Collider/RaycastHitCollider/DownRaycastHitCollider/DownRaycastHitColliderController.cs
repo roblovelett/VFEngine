@@ -45,12 +45,11 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         #region internal
 
         private bool TestMovingPlatform => d.HasMovingPlatform && platformer.TestPlatform;
-        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        
         private bool CastingDown => raycast.CurrentRaycastDirection == Down;
         private bool IncorrectStorageLength => d.HitsStorage.Length != raycast.NumberOfVerticalRays;
 
-        private bool ColliderAndMidHeightOneWayPlatformHasStandingOnLastFrame => d.HasStandingOnLastFrame &&
-            layerMask.MidHeightOneWayPlatformHasStandingOnLastFrame;
+        
 
         private bool HasCurrentRaycast => d.CurrentRaycast;
         private bool HitIgnoredCollider => d.CurrentRaycast.collider == raycastHitCollider.IgnoredCollider;
@@ -169,14 +168,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             SetOnMovingPlatform();
             SetMovingPlatformCurrentGravity();
         }
-
+        private bool SetNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
+        private bool ColliderAndMidHeightOneWayPlatformHasStandingOnLastFrame => d.HasStandingOnLastFrame &&
+            layerMask.MidHeightOneWayPlatformHasStandingOnLastFrame;
         private void PlatformerCastRaysDown()
         {
             if (!CastingDown) return;
             InitializeFriction();
-            if (IsNotCollidingBelow)
+            if (SetNotCollidingBelow)
             {
-                SetNotCollidingBelow();
+                SetIsNotCollidingBelow();
                 return;
             }
 
@@ -214,19 +215,19 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
                 SetStandingOnCollider();
                 if (AerialAndNotHighEnoughForOneWayPlatform)
                 {
-                    SetNotCollidingBelow();
+                    SetIsNotCollidingBelow();
                     return;
                 }
 
                 SetIsCollidingBelow();
-                if (ApplyingExternalForce) SetNotCollidingBelow();
+                if (ApplyingExternalForce) SetIsNotCollidingBelow();
                 if (FrictionTest) d.Friction = d.PhysicsMaterialControllerClosestToHit.Data.Friction;
                 if (MovingPlatformTest && d.IsGrounded) d.MovingPlatform = d.PathMovementControllerClosestToHit;
                 else DetachFromMovingPlatform();
             }
             else
             {
-                SetNotCollidingBelow();
+                SetIsNotCollidingBelow();
                 if (d.OnMovingPlatform) DetachFromMovingPlatform();
             }
         }
@@ -366,7 +367,7 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.Friction = 0;
         }
 
-        private void SetNotCollidingBelow()
+        private void SetIsNotCollidingBelow()
         {
             d.IsCollidingBelow = false;
         }

@@ -87,7 +87,7 @@ namespace VFEngine.Platformer
         private bool CastingRight => raycast.CurrentRaycastDirection == Right;
         private bool LeftRaycastHitWall => CastingLeft && leftRaycastHitCollider.HitWall;
         private bool RightRaycastHitWall => CastingRight && rightRaycastHitCollider.HitWall;
-        private bool IsNotCollidingBelow => !(physics.Gravity > 0) || physics.IsFalling;
+        
 
         #endregion
 
@@ -299,26 +299,31 @@ namespace VFEngine.Platformer
 
         private bool SmallestDistanceMet => downRaycastHitCollider.SmallestDistanceMet;
         private bool StickToSlopes => physics.StickToSlopesControl;
+        private bool NotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
 
         private void CastRaysDown()
         {
             raycastController.OnPlatformerCastRaysDown();
-            layerMaskController.OnPlatformerCastRaysDown();
-            downRaycastHitColliderController.OnPlatformerCastRaysDown();
             physicsController.OnPlatformerCastRaysDown();
-            if (IsNotCollidingBelow) return;
+            layerMaskController.OnPlatformerCastRaysDown();
             downRaycastController.OnPlatformerCastRaysDown();
-            for (var i = 0; i < raycast.NumberOfVerticalRays; i++)
+            downRaycastHitColliderController.OnPlatformerCastRaysDown();
+            if (NotCollidingBelow) return;
+            for (var i = 0; i < raycast.NumberOfVerticalRaysPerSide; i++)
             {
+                downRaycastController.OnPlatformerCastCurrentRay();
+                downRaycastHitColliderController.OnPlatformerAddToCurrentHitsStorageIndex();
+                /*
                 downRaycastController.OnPlatformerCastCurrentRay();
                 downRaycastHitColliderController.OnPlatformerCastCurrentRay();
                 if (SmallestDistanceMet) break;
                 downRaycastHitColliderController.OnPlatformerAddToCurrentHitsStorageIndex();
+                */
             }
 
-            downRaycastHitColliderController.OnPlatformerHitConnected();
+            /*downRaycastHitColliderController.OnPlatformerHitConnected();
             physicsController.OnPlatformerDownHitConnected();
-            if (StickToSlopes) StickToSlope();
+            if (StickToSlopes) StickToSlope();*/
         }
 
         private void StickToSlope()

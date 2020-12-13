@@ -98,7 +98,7 @@ namespace VFEngine.Platformer.Physics
                                                         !rightRaycastHitCollider.HitIgnoredCollider &&
                                                         rightRaycastHitCollider.HitWall && RightMovementIsRayDirection;
 
-        private bool IsFalling => p.NewPosition.y < -p.SmallValue;
+        
         private bool IsNotCollidingBelow => p.Gravity > 0 && !p.IsFalling;
 
         #endregion
@@ -263,13 +263,15 @@ namespace VFEngine.Platformer.Physics
             StopHorizontalSpeed();
         }
 
+        private bool CastingDown => raycast.CurrentRaycastDirection == Down;
+        private bool SetFalling => p.NewPosition.y < -p.SmallValue;
         private void PlatformerCastRaysDown()
         {
-            if (IsFalling) SetIsFalling();
+            if (!CastingDown) return;
+            if (SetFalling) SetIsFalling();
             else SetIsNotFalling();
         }
 
-        private bool CastingDown => raycast.CurrentRaycastDirection == Down;
         private bool DetachedFromMovingPlatform => downRaycastHitCollider.DetachedFromMovingPlatformEvent;
         private void PlatformerDownHitConnected()
         {

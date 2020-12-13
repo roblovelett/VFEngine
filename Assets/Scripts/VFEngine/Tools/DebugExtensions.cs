@@ -10,7 +10,7 @@ namespace VFEngine.Tools
     public static class DebugExtensions
     {
         #region warning control
-        
+
         private const string Ze = "zero";
         private const string SObj = "ScriptableObject";
         private const string GObj = "GameObject";
@@ -81,8 +81,15 @@ namespace VFEngine.Tools
             warningMessage = warningMessage.Replace("@", warningMessageCount == 1 ? "" : "\n");
             LogWarning($"{warningMessage}");
         }
-        
+
         #endregion
+
+        public static RaycastHit2D RayCast(Vector2 origin, Vector2 direction, float distance, LayerMask mask,
+            Color color, bool drawGizmosControl = false)
+        {
+            if (drawGizmosControl) DrawRay(origin, direction * distance, color);
+            return Raycast(origin, direction, distance, mask);
+        }
 
         public static RaycastHit2D Boxcast(Vector2 origin, Vector2 size, float angle, Vector2 direction, float length,
             LayerMask mask, Color color, bool drawGizmos = false)
