@@ -13,13 +13,13 @@ TagManager:
   - UI
   - 
   - 
-  - Player
-  - Platform
-  - MovingPlatform
+  - Ground
   - OneWayPlatform
-  - MovingOneWayPlatform
-  - MidHeightOneWayPlatform
-  - Stairs
+  - Ladder
+  - Character
+  - CharacterCollision
+  - StandOnCollision
+  - Interactable
   - 
   - 
   - 
