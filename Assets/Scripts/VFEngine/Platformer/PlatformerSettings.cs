@@ -12,8 +12,10 @@ namespace VFEngine.Platformer
     {
         #region properties
 
-        [LabelText("Display Warnings")] [SerializeField]
-        public bool displayWarningsControl = true;
+        [SerializeField] public bool displayWarningsControl = true;
+        [SerializeField] public float oneWayPlatformDelay = 0.1f;
+        [SerializeField] public float ladderClimbThreshold = 0.3f;
+        [SerializeField] public float ladderDelay = 0.3f;
 
         #endregion
     }

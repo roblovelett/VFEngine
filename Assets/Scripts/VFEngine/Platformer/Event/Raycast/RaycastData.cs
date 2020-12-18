@@ -2,49 +2,86 @@
 
 namespace VFEngine.Platformer.Event.Raycast
 {
+    using static Mathf;
+    using static RaycastDirection;
+
     public class RaycastData
     {
         #region properties
 
         #region dependencies
 
-        public bool DisplayWarningsControl { get; private set; }
         public bool DrawRaycastGizmosControl { get; private set; }
-        public bool CastRaysOnBothSides { get; private set; }
+        public bool DisplayWarningsControl { get; private set; }
         public int NumberOfHorizontalRays { get; private set; }
         public int NumberOfVerticalRays { get; private set; }
-        public float RayOffset { get; private set; }
-        public float DistanceToGroundRayMaximumLength { get; private set; }
+        public float RaySpacing { get; private set; }
+        public float SkinWidth { get; private set; }
 
         #endregion
 
-        public float BoundsWidth { get; set; }
-        public float BoundsHeight { get; set; }
-        public Vector2 OriginalColliderSize { get; set; }
-        public Vector2 OriginalColliderOffset { get; set; }
-        public Vector2 Bounds { get; set; }
-        public Vector2 BoundsCenter { get; set; }
-        public Vector2 BoundsBottomCenterPosition { get; set; }
-        public Vector2 BoundsBottomLeftCorner { get; set; }
-        public Vector2 BoundsBottomRightCorner { get; set; }
-        public Vector2 BoundsTopLeftCorner { get; set; }
-        public Vector2 BoundsTopRightCorner { get; set; }
-        public int NumberOfHorizontalRaysPerSide { get; set; }
-        public int NumberOfVerticalRaysPerSide => NumberOfVerticalRays / 2;
-        public float ObstacleHeightTolerance => RayOffset;
-        public RaycastDirection CurrentRaycastDirection { get; set; }
+        public Collider2D BoxCollider { get; set; }
+        public RaycastBounds Bounds { get; set; }
+        public RaycastDirection Direction { get; set; }
+        public int HorizontalRayCount { get; set; }
+        public int VerticalRayCount { get; set; }
+        public float HorizontalRaySpacing { get; set; }
+        public float VerticalRaySpacing { get; set; }
 
         #region public methods
 
         public void ApplySettings(RaycastSettings settings)
         {
-            DisplayWarningsControl = settings.displayWarningsControl;
             DrawRaycastGizmosControl = settings.drawRaycastGizmosControl;
-            CastRaysOnBothSides = settings.castRaysOnBothSides;
+            DisplayWarningsControl = settings.displayWarningsControl;
             NumberOfHorizontalRays = settings.numberOfHorizontalRays;
             NumberOfVerticalRays = settings.numberOfVerticalRays;
-            RayOffset = settings.rayOffset;
-            DistanceToGroundRayMaximumLength = settings.distanceToGroundRayMaximumLength;
+            RaySpacing = settings.raySpacing;
+            SkinWidth = settings.skinWidth;
+        }
+
+        public void Initialize(Collider2D boxCollider)
+        {
+            BoxCollider = boxCollider;
+            Direction = None;
+            Bounds = new RaycastBounds();
+            Bounds.Initialize(BoxCollider, SkinWidth);
+            SetRayCount();
+            SetRaySpacing();
+        }
+
+        public void CalculateSpacing()
+        {
+            Bounds.SetBounds(BoxCollider, SkinWidth);
+            SetRayCount();
+            SetRaySpacing();
+        }
+
+        public void SetRayOrigins()
+        {
+            Bounds.SetBounds(BoxCollider, SkinWidth);
+        }
+
+        private void SetRayCount()
+        {
+            HorizontalRayCount = SetCount(Bounds.Size.y, RaySpacing);
+            VerticalRayCount = SetCount(Bounds.Size.x, RaySpacing);
+        }
+
+        private void SetRaySpacing()
+        {
+            HorizontalRaySpacing = SetSpacing(Bounds.Size.y, HorizontalRayCount);
+            VerticalRaySpacing = SetSpacing(Bounds.Size.x, VerticalRayCount);
+        }
+
+        private static int SetCount(float size, float spacing)
+        {
+            return (int) Round(size / spacing);
+        }
+
+        private static float SetSpacing(float size, int count)
+        {
+            return size / (count - 1);
         }
 
         #endregion

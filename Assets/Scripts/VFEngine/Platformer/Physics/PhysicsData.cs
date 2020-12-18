@@ -1,95 +1,69 @@
-﻿using UnityEngine;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable RedundantAssignment
+
+using UnityEngine;
+
 namespace VFEngine.Platformer.Physics
 {
+    using static Vector2;
+    using static Mathf;
+    using static Time;
+
     public class PhysicsData
     {
         #region properties
 
         #region dependencies
-        
-        public float Physics2DPushForce { get; private set; }
-        public bool Physics2DInteractionControl { get; private set; }
-        public Vector2 MaximumVelocity { get; private set; }
-        public AnimationCurve SlopeAngleSpeedFactor { get; private set; }
-        public float MaximumSlopeAngle { get; private set; }
-        public bool SafeSetTransformControl { get; set; }
+
         public bool DisplayWarningsControl { get; private set; }
-        public bool AutomaticGravityControl { get; private set; }
-        public bool StickToSlopesControl { get; private set; }
-        public float AscentMultiplier { get; private set; }
-        public float FallMultiplier { get; private set; }
+        public float MaximumSlopeAngle { get; private set; }
+        public float MinimumWallAngle { get; private set; }
+        public float MinimumMovementThreshold { get; private set; }
         public float Gravity { get; private set; }
+        public float AirFriction { get; private set; }
+        public float GroundFriction { get; private set; }
+        public float StaggerSpeedFalloff { get; private set; }
 
         #endregion
 
-        public Transform Transform { get; set; }
-        public float CurrentVerticalSpeedFactor { get; set; }
-        public bool IsJumping { get; set; }
-        public bool IsFalling { get; set; }
-        public bool GravityActive { get; set; }
-        public int HorizontalMovementDirection { get; set; }
-        public float FallSlowFactor { get; set; }
-        public float SmallValue { get; set; }
-        public float MovementDirectionThreshold { get; set; }
+        public bool FacingRight { get; set; }
+        public bool IgnoreFriction { get; set; }
+        public float GravityScale { get; set; }
+        public float HorizontalMovementDirection { get; set; }
         public Vector2 Speed { get; set; }
-        public Vector2 NewPosition { get; set; }
-
-        public float NewPositionY
-        {
-            set => value = NewPosition.y;
-        }
-
-        public float NewPositionX
-        {
-            set => value = NewPosition.x;
-        }
-
         public Vector2 ExternalForce { get; set; }
-
-        public float ExternalForceY
-        {
-            set => value = ExternalForce.y;
-        }
-
-        public Vector2 WorldSpeed { get; set; }
-        public Vector2 AppliedForces { get; set; }
-        public Rigidbody2D CurrentHitRigidBody { get; set; }
-        public bool CurrentHitRigidBodyCanBePushed { get; set; }
-        public Vector2 CurrentPushDirection { get; set; }
-        public float CurrentGravity { get; set; }
-        public int StoredHorizontalMovementDirection { get; set; }
-
-        public float SpeedX
-        {
-            get => Speed.x;
-            set => value = Speed.x;
-        }
-
-        public float SpeedY
-        {
-            get => Speed.y;
-            set => value = Speed.y;
-        }
-
+        public Vector2 TotalSpeed { get; set; }
+        public Vector2 DeltaMove { get; set; }
+        
         #region public methods
 
         public void ApplySettings(PhysicsSettings settings)
         {
-            Physics2DPushForce = settings.physics2DPushForce;
-            Physics2DInteractionControl = settings.physics2DInteractionControl;
-            MaximumVelocity = settings.maximumVelocity;
-            SlopeAngleSpeedFactor = settings.slopeAngleSpeedFactor;
-            MaximumSlopeAngle = settings.maximumSlopeAngle;
-            SafeSetTransformControl = settings.safeSetTransformControl;
             DisplayWarningsControl = settings.displayWarningsControl;
-            AutomaticGravityControl = settings.automaticGravityControl;
-            StickToSlopesControl = settings.stickToSlopesControl;
-            AscentMultiplier = settings.ascentMultiplier;
-            FallMultiplier = settings.fallMultiplier;
+            MaximumSlopeAngle = settings.maximumSlopeAngle;
+            MinimumWallAngle = settings.minimumWallAngle;
+            MinimumMovementThreshold = settings.minimumMovementThreshold;
             Gravity = settings.gravity;
+            AirFriction = settings.airFriction;
+            GroundFriction = settings.groundFriction;
+            StaggerSpeedFalloff = settings.staggerSpeedFalloff;
+        }
+
+        public void Initialize()
+        {
+            FacingRight = false;
+            IgnoreFriction = false;
+            GravityScale = 1;
+            Speed = zero;
+            ExternalForce = zero;
+            ExternalForce = zero;
+            TotalSpeed = Speed * ExternalForce;
+            DeltaMove = TotalSpeed * fixedDeltaTime;
+        }
+
+        public void ApplyDeltaMoveToHorizontalMovementDirection()
+        {
+            HorizontalMovementDirection = Sign(DeltaMove.x);
         }
 
         #endregion

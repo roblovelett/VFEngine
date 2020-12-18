@@ -1,25 +1,25 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
-    [CreateAssetMenu(fileName = "LayerMaskSettings", menuName = "VFEngine/Platformer/Layer/Mask/Layer Mask Settings",
-        order = 0)]
+    using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "RaycastSettings", menuName = PlatformerLayerMaskSettingsPath, order = 0)]
     [InlineEditor]
     public class LayerMaskSettings : ScriptableObject
     {
         #region properties
 
-        [SerializeField] public LayerMask platform;
-        [SerializeField] public LayerMask movingPlatform;
+        [SerializeField] public bool displayWarningsControl;
+        [SerializeField] public LayerMask ground;
         [SerializeField] public LayerMask oneWayPlatform;
-        [SerializeField] public LayerMask movingOneWayPlatform;
-        [SerializeField] public LayerMask midHeightOneWayPlatform;
-        [SerializeField] public LayerMask stairs;
-
-        [LabelText("Display Warnings")] [SerializeField]
-        public bool displayWarningsControl;
+        [SerializeField] public LayerMask ladder;
+        [SerializeField] public LayerMask character;
+        [SerializeField] public LayerMask characterCollision;
+        [SerializeField] public LayerMask standOnCollision;
+        [SerializeField] public LayerMask interactable;
 
         #endregion
     }

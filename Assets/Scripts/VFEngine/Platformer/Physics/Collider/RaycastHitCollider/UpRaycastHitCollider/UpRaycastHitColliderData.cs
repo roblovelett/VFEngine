@@ -7,14 +7,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.UpRaycastHitCo
     {
         #region properties
 
-        public bool UpHitConnected { get; set; }
-        public bool IsCollidingAbove { get; set; }
-        public bool WasTouchingCeilingLastFrame { get; set; }
-        public int UpHitsStorageLength { get; set; }
-        public int UpHitsStorageCollidingIndex { get; set; }
-        public int CurrentUpHitsStorageIndex { get; set; }
-        public RaycastHit2D RaycastUpHitAt { get; set; }
-        public RaycastHit2D[] UpHitsStorage { get; set; }
+        public bool Colliding { get; set; }
+        public RaycastHit2D Hit { get; set; }
+
+        #region public methods
+
+        public void Initialize()
+        {
+            Reset();
+        }
+
+        public void Reset()
+        {
+            Colliding = false;
+            Hit = new RaycastHit2D();
+        }
+
+        #endregion
 
         #endregion
     }
