@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using VFEngine.Platformer.Event.Raycast.DownRaycast;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast
@@ -13,7 +15,18 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] private RaycastSettings settings;
         private BoxCollider2D boxCollider;
+        private DownRaycastController downRaycastController;
+        private DownRaycastHitColliderController downRaycastHitColliderController;
         private RaycastData r;
+        private DownRaycastHitColliderData downRaycastHitCollider;
+        private PlatformerData platformer;
+
+        #endregion
+
+        #region internal
+
+        private RaycastHit2D Hit => downRaycastHitCollider.Collision.hit;
+        private bool HitConnected => Hit.distance <= 0;
 
         #endregion
 
@@ -30,14 +43,14 @@ namespace VFEngine.Platformer.Event.Raycast
         private void SetControllers()
         {
             boxCollider = GetComponent<BoxCollider2D>();
+            downRaycastController = GetComponent<DownRaycastController>();
+            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
         }
 
         private void InitializeData()
         {
-            if (!settings) settings = CreateInstance<RaycastSettings>();
             r = new RaycastData();
-            r.ApplySettings(settings);
-            r.Initialize(boxCollider);
+            r.InitializeData();
         }
 
         private void Start()
@@ -48,10 +61,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetDependencies()
         {
+            if (!settings) settings = CreateInstance<RaycastSettings>();
+            downRaycastHitCollider = downRaycastHitColliderController.Data;
         }
 
         private void Initialize()
         {
+            r.Initialize(settings, boxCollider);
         }
 
         #endregion
@@ -60,7 +76,29 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             r.SetRayOrigins();
         }
-        
+
+        private void PlatformerCastRaysDown()
+        {
+            CastRaysDown();
+        }
+
+        private void CastRaysDown()
+        {
+            r.InitializeDownIndex();
+            for (var i = 0; i < r.VerticalRayCount; i++)
+            {
+                downRaycastHitColliderController.OnSetHit();
+                if (HitConnected)
+                {
+                    downRaycastHitColliderController.OnHitConnected();
+                    downRaycastController.OnHitConnected();
+                    break;
+                }
+
+                r.AddToDownIndex();
+            }
+        }
+
         #endregion
 
         #endregion
@@ -74,6 +112,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnPlatformerInitializeFrame()
         {
             PlatformerInitializeFrame();
+        }
+
+        public void OnPlatformerCastRaysDown()
+        {
+            PlatformerCastRaysDown();
         }
 
         #endregion

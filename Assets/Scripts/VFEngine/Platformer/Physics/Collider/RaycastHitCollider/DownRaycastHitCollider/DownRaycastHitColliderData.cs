@@ -3,33 +3,37 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider
 {
+    using static Vector2;
+    using static Mathf;
     public class DownRaycastHitColliderData
     {
         #region properties
 
-        public bool Colliding { get; set; }
-        public bool OnGround { get; set; }
-        public bool OnSlope { get; set; }
-        public int GroundLayer { get; set; }
-        public float GroundAngle { get; set; }
-        public float GroundDirection { get; set; }
-        public RaycastHit2D Hit { get; set; }
+        #region dependencies
 
+        #endregion
+
+        public RaycastHit2D Hit { get; set; }
+        public RaycastCollision Collision { get; set; }
+        
         #region public methods
 
-        public void Initialize()
+        public void InitializeData()
         {
-            OnSlope = OnGround && GroundAngle != 0;
-            Reset();
+            Collision = new RaycastCollision();
+            Collision.Reset();
         }
 
-        public void Reset()
+        public void Initialize()
+        { }
+
+        public void OnHitConnected()
         {
-            Colliding = false;
-            Hit = new RaycastHit2D();
-            OnGround = false;
-            GroundAngle = 0;
-            GroundDirection = 0;
+            Collision.colliding = true;
+            Collision.onGround = true;
+            Collision.groundDirection = (int) Sign(Hit.normal.x);
+            Collision.groundLayer = Hit.collider.gameObject.layer;
+            Collision.groundAngle = Angle(Hit.normal, up);
         }
 
         #endregion

@@ -2,6 +2,22 @@
 {
     public class PlatformerData
     {
+        #region fields
+
+        #region private methods
+
+        private void ApplySettings(PlatformerSettings settings)
+        {
+            DisplayWarningsControl = settings.displayWarningsControl;
+            OneWayPlatformDelay = settings.oneWayPlatformDelay;
+            LadderClimbThreshold = settings.ladderClimbThreshold;
+            LadderDelay = settings.ladderDelay;
+        }
+
+        #endregion
+
+        #endregion
+
         #region properties
 
         #region dependencies
@@ -18,18 +34,15 @@
 
         #region public methods
 
-        public void ApplySettings(PlatformerSettings settings)
-        {
-            DisplayWarningsControl = settings.displayWarningsControl;
-            OneWayPlatformDelay = settings.oneWayPlatformDelay;
-            LadderClimbThreshold = settings.ladderClimbThreshold;
-            LadderDelay = settings.ladderDelay;
-        }
-
-        public void Initialize()
+        public void InitializeData()
         {
             Tolerance = 0;
             IgnorePlatformsTime = 0;
+        }
+
+        public void Initialize(PlatformerSettings settings)
+        {
+            ApplySettings(settings);
         }
 
         #endregion

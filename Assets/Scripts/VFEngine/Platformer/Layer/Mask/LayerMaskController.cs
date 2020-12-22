@@ -34,16 +34,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetControllers()
         {
-            
         }
 
         private void InitializeData()
         {
-            character = Find("Character");
-            if (!settings) settings = CreateInstance<LayerMaskSettings>();
             l = new LayerMaskData();
-            l.ApplySettings(settings);
-            l.Initialize(character);
+            l.InitializeData();
         }
 
         private void Start()
@@ -54,22 +50,19 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void SetDependencies()
         {
+            character = Find("Character");
+            if (!settings) settings = CreateInstance<LayerMaskSettings>();
         }
 
         private void Initialize()
         {
+            l.Initialize(settings, character);
         }
 
         #endregion
 
         #endregion
 
-        private void PlatformerInitializeFrame()
-        {
-            l.SetLayerToCharacter();
-            l.SetCharacterLayerToIgnoreRaycast();
-        }
-        
         #endregion
 
         #region properties
@@ -78,11 +71,6 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region public methods
 
-        public void OnPlatformerInitializeFrame()
-        {
-            PlatformerInitializeFrame();
-        }
-        
         #endregion
 
         #endregion

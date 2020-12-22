@@ -1,18 +1,12 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
-using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
-using VFEngine.Tools;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 {
-    using static Mathf;
-    using static Raycast;
     using static Vector2;
     using static Color;
-    using static RaycastDirection;
-    using static DebugExtensions;
+    using static Debug;
 
     public class DownRaycastController : MonoBehaviour, IController
     {
@@ -20,24 +14,32 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region dependencies
 
-        private PhysicsController physicsController;
         private RaycastController raycastController;
-        private DownRaycastHitColliderController downRaycastHitColliderController;
-        private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
         private DownRaycastData d;
-        private PhysicsData physics;
         private RaycastData raycast;
-        private DownRaycastHitColliderData downRaycastHitCollider;
-        private LayerMaskData layerMask;
+        private PhysicsData physics;
 
         #endregion
 
         #region internal
 
-        
-        
+        private bool MovingRight => physics.HorizontalMovementDirection == 1;
+        private Vector2 InitialOrigin => MovingRight ? raycast.Bounds.BottomLeft : raycast.Bounds.BottomRight;
+        private Vector2 HorizontalDirection => MovingRight ? right : left;
+        private float Spacing => raycast.VerticalRaySpacing;
+        private int Index => raycast.DownIndex;
+        private float SkinWidth => raycast.SkinWidth;
 
-        
+        private Vector2 Origin
+        {
+            get
+            {
+                var origin = InitialOrigin + HorizontalDirection * (Spacing * Index);
+                origin.y += SkinWidth * 2;
+                return origin;
+            }
+        }
 
         #endregion
 
@@ -51,121 +53,39 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         private void SetControllers()
         {
-            physicsController = GetComponent<PhysicsController>();
             raycastController = GetComponent<RaycastController>();
-            downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
-            layerMaskController = GetComponent<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
         }
 
         private void InitializeData()
         {
-            d = new DownRaycastData
-            {
-                CurrentRaycastOrigin = zero, RaycastFromLeftOrigin = zero, RaycastToRightOrigin = zero
-            };
+            d = new DownRaycastData();
+            d.InitializeData();
         }
 
         private void Start()
         {
             SetDependencies();
+            Initialize();
         }
 
         private void SetDependencies()
         {
-            physics = physicsController.Data;
             raycast = raycastController.Data;
-            downRaycastHitCollider = downRaycastHitColliderController.Data;
-            layerMask = layerMaskController.Data;
+            physics = physicsController.Data;
         }
 
-        #region platformer
-
-        private bool CastingDown => raycast.CurrentRaycastDirection == Down;
-        private bool IsNotCollidingBelow => physics.Gravity > 0 && !physics.IsFalling;
-        private bool OnMovingPlatform => downRaycastHitCollider.OnMovingPlatform;
-        private bool NegativeVerticalNewPosition => physics.NewPosition.y < 0;
-        private void PlatformerCastRaysDown()
+        private void Initialize()
         {
-            if (!CastingDown || IsNotCollidingBelow) return;
-            SetRaycastLength();
-            if (OnMovingPlatform) DoubleRayLength();
-            if (NegativeVerticalNewPosition) SetRayLengthToVerticalNewPosition();
-            SetRaycastsOrigins();
-        }
-
-        private void PlatformerCastCurrentRay()
-        {
-            SetCurrentRaycastOrigin();
-            SetCurrentRaycast();
+            d.Origin = Origin;
         }
 
         #endregion
 
-        private void SetRaycastLength()
+        private void HitConnected()
         {
-            d.RayLength = raycast.BoundsHeight / 2 + raycast.RayOffset;
+            DrawRay(Origin, down * (SkinWidth * 2), blue);
         }
-
-        private void DoubleRayLength()
-        {
-            d.RayLength *= 2;
-        }
-
-        private void SetRayLengthToVerticalNewPosition()
-        {
-            d.RayLength += Abs(physics.NewPosition.y);
-        }
-
-        private void SetRaycastsOrigins()
-        {
-            var up = physics.Transform.up;
-            var right = transform.right;
-            d.RaycastFromLeftOrigin = (raycast.BoundsBottomLeftCorner + raycast.BoundsTopLeftCorner) / 2;
-            d.RaycastToRightOrigin = (raycast.BoundsBottomRightCorner + raycast.BoundsTopRightCorner) / 2;
-            d.RaycastFromLeftOrigin += (Vector2) up * raycast.RayOffset;
-            d.RaycastToRightOrigin += (Vector2) up * raycast.RayOffset;
-            d.RaycastFromLeftOrigin += (Vector2) right * physics.NewPosition.x;
-            d.RaycastToRightOrigin += (Vector2) right * physics.NewPosition.y;
-        }
-
-        /*private void SetRaycastFromLeftOrigin()
-        {
-            d.RaycastFromLeftOrigin = OnSetDownRaycastFromLeftOrigin(raycast.BoundsBottomLeftCorner,
-                raycast.BoundsTopLeftCorner, physics.Transform, raycast.RayOffset, physics.NewPosition);
-        }*/
-
-        /*private void SetRaycastToRightOrigin()
-        {
-            d.RaycastToRightOrigin = OnSetDownRaycastToRightOrigin(raycast.BoundsBottomRightCorner,
-                raycast.BoundsTopRightCorner, physics.Transform, raycast.RayOffset, physics.NewPosition);
-        }*/
-
-        private void SetCurrentRaycastOrigin()
-        {
-            d.CurrentRaycastOrigin = Lerp(d.RaycastFromLeftOrigin, d.RaycastToRightOrigin, downRaycastHitCollider.HitsStorageIndex / (float) (raycast.NumberOfVerticalRaysPerSide - 1));
-            /*d.CurrentRaycastOrigin = OnSetCurrentRaycastOrigin(d.RaycastFromLeftOrigin, d.RaycastToRightOrigin,
-                downRaycastHitCollider.HitsStorageIndex, raycast.NumberOfVerticalRaysPerSide);*/
-        }
-        private bool ExcludeOneWayPlatformsFromRaycast => physics.NewPosition.y > 0 && !downRaycastHitCollider.WasGroundedLastFrame;
-        private void SetCurrentRaycast()
-        {
-            if (ExcludeOneWayPlatformsFromRaycast) SetCurrentRaycastToIgnoreOneWayPlatform();
-            else SetCurrentRaycastToIncludePlatforms();
-        }
-
-        private void SetCurrentRaycastToIgnoreOneWayPlatform()
-        {
-            d.CurrentRaycast = RayCast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
-                layerMask.RaysBelowPlatformsWithoutOneWay, green, raycast.DrawRaycastGizmosControl);
-        }
-
-        private void SetCurrentRaycastToIncludePlatforms()
-        {
-            d.CurrentRaycast = RayCast(d.CurrentRaycastOrigin, -physics.Transform.up, d.RayLength,
-                layerMask.RaysBelowPlatforms, cyan, raycast.DrawRaycastGizmosControl);
-        }
-
-        #endregion
 
         #endregion
 
@@ -175,19 +95,10 @@ namespace VFEngine.Platformer.Event.Raycast.DownRaycast
 
         #region public methods
 
-        #region platformer
-
-        public void OnPlatformerCastRaysDown()
+        public void OnHitConnected()
         {
-            PlatformerCastRaysDown();
+            HitConnected();
         }
-
-        public void OnPlatformerCastCurrentRay()
-        {
-            PlatformerCastCurrentRay();
-        }
-
-        #endregion
 
         #endregion
 

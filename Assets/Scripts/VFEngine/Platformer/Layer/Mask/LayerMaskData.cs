@@ -8,6 +8,26 @@ namespace VFEngine.Platformer.Layer.Mask
 
     public class LayerMaskData
     {
+        #region fields
+
+        #region private methods
+
+        private void ApplySettings(LayerMaskSettings settings)
+        {
+            DisplayWarningsControl = settings.displayWarningsControl;
+            Ground = settings.ground;
+            OneWayPlatform = settings.oneWayPlatform;
+            Ladder = settings.ladder;
+            Character = settings.character;
+            CharacterCollision = settings.characterCollision;
+            StandOnCollision = settings.standOnCollision;
+            Interactable = settings.interactable;
+        }
+
+        #endregion
+
+        #endregion
+
         #region properties
 
         #region dependencies
@@ -20,29 +40,16 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask CharacterCollision { get; private set; }
         public LayerMask StandOnCollision { get; private set; }
         public LayerMask Interactable { get; private set; }
+        public GameObject CharacterObject { get; set; }
 
         #endregion
 
         public int Layer { get; set; }
-        public GameObject CharacterObject { get; set; }
         public LayerMask Collision { get; set; }
-        
 
         #region public methods
 
-        public void ApplySettings(LayerMaskSettings settings)
-        {
-            DisplayWarningsControl = settings.displayWarningsControl;
-            Ground = settings.ground;
-            OneWayPlatform = settings.oneWayPlatform;
-            Ladder = settings.ladder;
-            Character = settings.character;
-            CharacterCollision = settings.characterCollision;
-            StandOnCollision = settings.standOnCollision;
-            Interactable = settings.interactable;
-        }
-
-        public void Initialize(GameObject character)
+        public void InitializeData()
         {
             LayerMask[] masks =
             {
@@ -61,16 +68,13 @@ namespace VFEngine.Platformer.Layer.Mask
             }
 
             Collision = CharacterCollision;
+        }
+
+        public void Initialize(LayerMaskSettings settings, GameObject character)
+        {
             CharacterObject = character;
-        }
-
-        public void SetLayerToCharacter()
-        {
+            ApplySettings(settings);
             Layer = CharacterObject.layer;
-        }
-
-        public void SetCharacterLayerToIgnoreRaycast()
-        {
             CharacterObject.layer = IgnoreRaycastLayer;
         }
 

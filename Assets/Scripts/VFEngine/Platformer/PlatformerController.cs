@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.DownRaycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
@@ -20,6 +21,7 @@ namespace VFEngine.Platformer
 
         [SerializeField] private PlatformerSettings settings;
         private RaycastController raycastController;
+        private DownRaycastController downRaycastController;
         private UpRaycastHitColliderController upRaycastHitColliderController;
         private RightRaycastHitColliderController rightRaycastHitColliderController;
         private DownRaycastHitColliderController downRaycastHitColliderController;
@@ -28,6 +30,7 @@ namespace VFEngine.Platformer
         private LayerMaskController layerMaskController;
         private PlatformerData p;
         private RaycastData raycast;
+        private DownRaycastData downRaycast;
         private UpRaycastHitColliderData upRaycastHitCollider;
         private RightRaycastHitColliderData rightRaycastHitCollider;
         private DownRaycastHitColliderData downRaycastHitCollider;
@@ -35,6 +38,18 @@ namespace VFEngine.Platformer
         private PhysicsData physics;
         private LayerMaskData layerMask;
 
+        #endregion
+        
+        #region internal
+
+        private bool HorizontalMovement => physics.DeltaMove.x != 0;
+        private bool NegativeVerticalMovement => physics.DeltaMove.y <= 0;
+        private bool OnSlope => downRaycastHitCollider.Collision.OnSlope;
+        private bool OnSlopes => NegativeVerticalMovement && OnSlope;
+        private bool DescendingSlope => GroundDirection == HorizontalMovementDirection;
+        private int GroundDirection => downRaycastHitCollider.Collision.groundDirection;
+        private int HorizontalMovementDirection => physics.HorizontalMovementDirection;
+        
         #endregion
 
         #region private methods
@@ -49,16 +64,15 @@ namespace VFEngine.Platformer
 
         private void InitializeData()
         {
-            if (!settings) settings = CreateInstance<PlatformerSettings>();
             p = new PlatformerData();
-            p.ApplySettings(settings);
-            p.Initialize();
+            p.InitializeData();
         }
 
         private void SetControllers()
         {
             physicsController = GetComponent<PhysicsController>();
             raycastController = GetComponent<RaycastController>();
+            downRaycastController = GetComponent<DownRaycastController>();
             upRaycastHitColliderController = GetComponent<UpRaycastHitColliderController>();
             rightRaycastHitColliderController = GetComponent<RightRaycastHitColliderController>();
             downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
@@ -74,8 +88,10 @@ namespace VFEngine.Platformer
 
         private void SetDependencies()
         {
+            if (!settings) settings = CreateInstance<PlatformerSettings>();
             physics = physicsController.Data;
             raycast = raycastController.Data;
+            downRaycast = downRaycastController.Data;
             upRaycastHitCollider = upRaycastHitColliderController.Data;
             rightRaycastHitCollider = rightRaycastHitColliderController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
@@ -85,7 +101,7 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
-            
+            p.Initialize(settings);
         }
         
         #endregion
@@ -100,9 +116,11 @@ namespace VFEngine.Platformer
         private void Platformer()
         {
             InitializeFrame();
-            SetSlopes();
+            CastRaysDown();
             SetExternalForce();
             SetGravity();
+            SetHorizontalExternalForce();
+            CheckSlopes();
         }
 
         #region initialize frame
@@ -110,9 +128,7 @@ namespace VFEngine.Platformer
         private void InitializeFrame()
         {
             InitializeRaycastHitColliders();
-            InitializeLayerMask();
             InitializeRaycast();
-            InitializePhysics();
         }
 
         private void InitializeRaycastHitColliders()
@@ -123,24 +139,55 @@ namespace VFEngine.Platformer
             leftRaycastHitColliderController.OnPlatformerInitializeFrame();
         }
 
-        private void InitializeLayerMask()
-        {
-            layerMaskController.OnPlatformerInitializeFrame();
-        }
-
         private void InitializeRaycast()
         {
             raycastController.OnPlatformerInitializeFrame();
         }
 
-        private void InitializePhysics()
-        {
-            physicsController.OnPlatformerInitializeFrame();
-        }
-        
         #endregion
 
-        private void SetSlopes()
+        private void CastRaysDown()
+        {
+            raycastController.OnPlatformerCastRaysDown();
+        }
+        
+        private void SetExternalForce()
+        {
+            physicsController.OnPlatformerSetExternalForce();
+        }
+
+        private void SetGravity()
+        {
+            physicsController.OnPlatformerSetGravity();
+        }
+
+        private void SetHorizontalExternalForce()
+        {
+            physicsController.OnPlatformerSetHorizontalExternalForce();
+        }
+
+        private void CheckSlopes()
+        {
+            if (!HorizontalMovement) return;
+            if (OnSlopes)
+            {
+                if (DescendingSlope) DescendSlope();
+                else ClimbSlope();
+            }
+            SetHorizontalCollisions();
+        }
+
+        private void DescendSlope()
+        {
+            
+        }
+
+        private void ClimbSlope()
+        {
+            
+        }
+
+        private void SetHorizontalCollisions()
         {
             
         }
