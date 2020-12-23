@@ -25,6 +25,10 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
             groundAngle = 0;
         }
 
+        public void Initialize()
+        {
+            Reset();
+        }
         #endregion
 
         #endregion

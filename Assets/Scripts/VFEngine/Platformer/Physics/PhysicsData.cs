@@ -27,6 +27,12 @@ namespace VFEngine.Platformer.Physics
             GroundFriction = settings.groundFriction;
             StaggerSpeedFalloff = settings.staggerSpeedFalloff;
         }
+
+        private void StopVerticalForce()
+        {
+            SpeedY = 0;
+            ExternalForceY = 0;
+        }
         
         #endregion
         
@@ -71,7 +77,19 @@ namespace VFEngine.Platformer.Physics
         public Vector2 Speed { get; set; }
         public Vector2 ExternalForce { get; set; }
         public Vector2 TotalSpeed { get; set; }
-        public Vector2 DeltaMove { get; set; }
+        public Vector2 DeltaMovement { get; set; }
+
+        public float DeltaMovementX
+        {
+            get => DeltaMovement.x;
+            set => value = DeltaMovement.x;
+        }
+
+        public float DeltaMovementY
+        {
+            get => DeltaMovement.y;
+            set => value = DeltaMovement.y;
+        }
         
         #region public methods
         
@@ -84,13 +102,27 @@ namespace VFEngine.Platformer.Physics
             ExternalForce = zero;
             ExternalForce = zero;
             TotalSpeed = Speed * ExternalForce;
-            DeltaMove = TotalSpeed * fixedDeltaTime;
-            HorizontalMovementDirection = (int) Sign(DeltaMove.x);
+            DeltaMovement = TotalSpeed * fixedDeltaTime;
+            HorizontalMovementDirection = (int) Sign(DeltaMovement.x);
         }
 
         public void Initialize(PhysicsSettings settings)
         {
             ApplySettings(settings);
+        }
+
+        public void OnDescendSlope(float groundAngle, float distance)
+        {
+            DeltaMovementX = Cos(groundAngle * Deg2Rad) * distance * Sign(DeltaMovement.x);
+            DeltaMovementY = -Sin(groundAngle * Deg2Rad) * distance;
+            StopVerticalForce();
+        }
+
+        public void OnClimbSlope(float verticalMovement, float groundAngle, float distance)
+        {
+            DeltaMovementX = Cos(groundAngle * Deg2Rad) * distance * Sign(DeltaMovement.x);
+            DeltaMovementY = verticalMovement;
+            StopVerticalForce();
         }
 
         #endregion

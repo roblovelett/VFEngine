@@ -65,7 +65,9 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastDirection Direction { get; set; }
         public int HorizontalRayCount { get; set; }
         public int VerticalRayCount { get; set; }
+        public int RightIndex { get; set; }
         public int DownIndex { get; set; }
+        public int LeftIndex { get; set; }
         public float HorizontalRaySpacing { get; set; }
         public float VerticalRaySpacing { get; set; }
 
@@ -100,6 +102,18 @@ namespace VFEngine.Platformer.Event.Raycast
         public void AddToDownIndex()
         {
             DownIndex++;
+        }
+
+        public void InitializeRightIndex()
+        {
+            if (RightIndex == 0) return;
+            RightIndex = 0;
+        }
+
+        public void InitializeLeftIndex()
+        {
+            if (LeftIndex == 0) return;
+            LeftIndex = 0;
         }
 
         #endregion

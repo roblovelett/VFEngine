@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.DownRaycast;
+using VFEngine.Platformer.Event.Raycast.LeftRaycast;
+using VFEngine.Platformer.Event.Raycast.RightRaycast;
+using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.LeftRaycastHitCollider;
+using VFEngine.Platformer.Physics.Collider.RaycastHitCollider.RightRaycastHitCollider;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast
@@ -15,10 +20,18 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] private RaycastSettings settings;
         private BoxCollider2D boxCollider;
+        private RightRaycastController rightRaycastController;
         private DownRaycastController downRaycastController;
+        private LeftRaycastController leftRaycastController;
+        private RightRaycastHitColliderController rightRaycastHitColliderController;
         private DownRaycastHitColliderController downRaycastHitColliderController;
+        private LeftRaycastHitColliderController leftRaycastHitColliderController;
+        private PhysicsController physicsController;
         private RaycastData r;
+        private RightRaycastHitColliderData rightRaycastHitCollider;
         private DownRaycastHitColliderData downRaycastHitCollider;
+        private LeftRaycastHitColliderData leftRaycastHitCollider;
+        private PhysicsData physics;
         private PlatformerData platformer;
 
         #endregion
@@ -45,6 +58,9 @@ namespace VFEngine.Platformer.Event.Raycast
             boxCollider = GetComponent<BoxCollider2D>();
             downRaycastController = GetComponent<DownRaycastController>();
             downRaycastHitColliderController = GetComponent<DownRaycastHitColliderController>();
+            rightRaycastHitColliderController = GetComponent<RightRaycastHitColliderController>();
+            leftRaycastHitColliderController = GetComponent<LeftRaycastHitColliderController>();
+            physicsController = GetComponent<PhysicsController>();
         }
 
         private void InitializeData()
@@ -62,7 +78,10 @@ namespace VFEngine.Platformer.Event.Raycast
         private void SetDependencies()
         {
             if (!settings) settings = CreateInstance<RaycastSettings>();
+            rightRaycastHitCollider = rightRaycastHitColliderController.Data;
             downRaycastHitCollider = downRaycastHitColliderController.Data;
+            leftRaycastHitCollider = leftRaycastHitColliderController.Data;
+            physics = physicsController.Data;
         }
 
         private void Initialize()
@@ -99,6 +118,32 @@ namespace VFEngine.Platformer.Event.Raycast
             }
         }
 
+        private int HorizontalDirection => physics.HorizontalMovementDirection;
+        private bool CastRight => HorizontalDirection == 1;
+        private bool CastLeft => HorizontalDirection == 1;
+        private bool DoNotCast => !CastRight || !CastLeft;
+
+        private void PlatformerCastRaysToSides()
+        {
+            if (DoNotCast) return;
+            if (CastRight) CastRaysRight();
+            if (CastLeft) CastRaysLeft();
+        }
+
+        private void CastRaysRight()
+        {
+            r.InitializeRightIndex();
+            for (var i = 0; i < r.HorizontalRayCount; i++)
+            {
+                rightRaycastHitColliderController.OnSetHit();
+            }
+        }
+
+        private void CastRaysLeft()
+        {
+            r.InitializeLeftIndex();
+        }
+
         #endregion
 
         #endregion
@@ -117,6 +162,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnPlatformerCastRaysDown()
         {
             PlatformerCastRaysDown();
+        }
+
+        public void OnPlatformerCastRaysToSides()
+        {
+            PlatformerCastRaysToSides();
         }
 
         #endregion

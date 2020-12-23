@@ -25,15 +25,23 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         }
 
         public void Initialize()
-        { }
+        {
+            Hit = new RaycastHit2D();
+            
+        }
 
         public void OnHitConnected()
         {
-            Collision.colliding = true;
+            OnCollision();
             Collision.onGround = true;
             Collision.groundDirection = (int) Sign(Hit.normal.x);
             Collision.groundLayer = Hit.collider.gameObject.layer;
             Collision.groundAngle = Angle(Hit.normal, up);
+        }
+
+        public void OnCollision()
+        {
+            Collision.colliding = true;
         }
 
         #endregion

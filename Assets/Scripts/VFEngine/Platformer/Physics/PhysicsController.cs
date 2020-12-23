@@ -10,6 +10,7 @@ namespace VFEngine.Platformer.Physics
     using static Time;
     using static Vector2;
     using static ScriptableObject;
+    using static Mathf;
 
     public class PhysicsController : MonoBehaviour, IController
     {
@@ -111,6 +112,23 @@ namespace VFEngine.Platformer.Physics
             p.ExternalForceX += -Gravity * GroundFriction * GroundDirection * fixedDeltaTime / 4;
         }
 
+        private float Distance => Abs(p.DeltaMovement.x);
+        
+        private void PlatformerDescendSlope()
+        {
+            p.OnDescendSlope(GroundAngle, Distance);
+        }
+
+        private float VerticalMovement => Sin(GroundAngle * Deg2Rad) * Distance;
+        private float VerticalDeltaMovement => p.DeltaMovementY;
+        private bool ClimbSlope => VerticalDeltaMovement <= VerticalMovement;
+        
+        private void PlatformerClimbSlope()
+        {
+            if (!MetMinimumWallAngle || !ClimbSlope) return;
+            p.OnClimbSlope(VerticalMovement, GroundAngle, Distance);
+        }
+
         #endregion
 
         #endregion
@@ -134,6 +152,16 @@ namespace VFEngine.Platformer.Physics
         public void OnPlatformerSetHorizontalExternalForce()
         {
             PlatformerSetHorizontalExternalForce();
+        }
+
+        public void OnPlatformerDescendSlope()
+        {
+            PlatformerDescendSlope();
+        }
+
+        public void OnPlatformerClimbSlope()
+        {
+            PlatformerClimbSlope();
         }
 
         #endregion

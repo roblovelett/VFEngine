@@ -101,6 +101,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
             d.OnHitConnected();
         }
 
+        private void PlatformerDescendSlope()
+        {
+            d.OnCollision();
+        }
+
+        private void PlatformerClimbSlope()
+        {
+            d.OnCollision();
+        }
+
         #endregion
 
         #endregion
@@ -124,6 +134,16 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider.DownRaycastHit
         public void OnHitConnected()
         {
             HitConnected();
+        }
+
+        public void OnPlatformerDescendSlope()
+        {
+            PlatformerDescendSlope();
+        }
+        
+        public void OnPlatformerClimbSlope()
+        {
+            PlatformerClimbSlope();
         }
 
         #endregion

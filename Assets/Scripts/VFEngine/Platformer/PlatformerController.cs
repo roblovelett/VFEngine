@@ -42,8 +42,8 @@ namespace VFEngine.Platformer
         
         #region internal
 
-        private bool HorizontalMovement => physics.DeltaMove.x != 0;
-        private bool NegativeVerticalMovement => physics.DeltaMove.y <= 0;
+        private bool HorizontalMovement => physics.DeltaMovement.x != 0;
+        private bool NegativeVerticalMovement => physics.DeltaMovement.y <= 0;
         private bool OnSlope => downRaycastHitCollider.Collision.OnSlope;
         private bool OnSlopes => NegativeVerticalMovement && OnSlope;
         private bool DescendingSlope => GroundDirection == HorizontalMovementDirection;
@@ -121,6 +121,7 @@ namespace VFEngine.Platformer
             SetGravity();
             SetHorizontalExternalForce();
             CheckSlopes();
+            CastRaysToSides();
         }
 
         #region initialize frame
@@ -168,28 +169,26 @@ namespace VFEngine.Platformer
 
         private void CheckSlopes()
         {
-            if (!HorizontalMovement) return;
-            if (OnSlopes)
-            {
-                if (DescendingSlope) DescendSlope();
-                else ClimbSlope();
-            }
-            SetHorizontalCollisions();
+            if (!HorizontalMovement || !OnSlopes) return;
+            if (DescendingSlope) DescendSlope();
+            else ClimbSlope();
         }
 
         private void DescendSlope()
         {
-            
+            physicsController.OnPlatformerDescendSlope();
+            downRaycastHitColliderController.OnPlatformerDescendSlope();
         }
 
         private void ClimbSlope()
         {
-            
+            physicsController.OnPlatformerClimbSlope();
+            downRaycastHitColliderController.OnPlatformerClimbSlope();
         }
 
-        private void SetHorizontalCollisions()
+        private void CastRaysToSides()
         {
-            
+            raycastController.OnPlatformerCastRaysToSides();
         }
         
         #endregion
