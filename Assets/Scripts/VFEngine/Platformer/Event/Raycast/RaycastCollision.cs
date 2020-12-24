@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 
-namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
+namespace VFEngine.Platformer.Event.Raycast
 {
-    public class RaycastCollision
+    public struct RaycastCollision
     {
         #region properties
 
         public bool colliding;
         public bool onGround;
         public bool OnSlope => onGround && groundAngle != 0;
-        public RaycastHit2D hit;
         public int groundDirection;
         public int groundLayer;
         public float groundAngle;
@@ -20,7 +19,6 @@ namespace VFEngine.Platformer.Physics.Collider.RaycastHitCollider
         {
             colliding = false;
             onGround = false;
-            hit = new RaycastHit2D();
             groundDirection = 0;
             groundAngle = 0;
         }

@@ -2,7 +2,7 @@
 
 namespace VFEngine.Platformer.Event.Raycast
 {
-    public class RaycastBounds
+    public struct RaycastBounds
     {
         #region fields
 

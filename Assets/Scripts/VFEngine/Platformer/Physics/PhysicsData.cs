@@ -2,7 +2,6 @@
 // ReSharper disable RedundantAssignment
 
 using UnityEngine;
-using VFEngine.Platformer.Physics.Movement;
 
 namespace VFEngine.Platformer.Physics
 {
@@ -10,7 +9,7 @@ namespace VFEngine.Platformer.Physics
     using static Mathf;
     using static Time;
 
-    public class PhysicsData
+    public struct PhysicsData
     {
         #region fields
         

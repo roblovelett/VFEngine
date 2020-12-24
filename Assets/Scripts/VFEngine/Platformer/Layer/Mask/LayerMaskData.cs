@@ -6,7 +6,7 @@ namespace VFEngine.Platformer.Layer.Mask
     using static LayerMask;
     using static Physics2D;
 
-    public class LayerMaskData
+    public struct LayerMaskData
     {
         #region fields
 
@@ -57,14 +57,14 @@ namespace VFEngine.Platformer.Layer.Mask
             };
             foreach (var currentMask in masks)
             {
-                if (currentMask != 0) continue;
+                /*if (currentMask != 0) continue;
                 if (currentMask == Ground) Ground = GetMask("Ground");
                 if (currentMask == OneWayPlatform) OneWayPlatform = GetMask("OneWayPlatform");
                 if (currentMask == Ladder) Ladder = GetMask("Ladder");
                 if (currentMask == Character) Character = GetMask("Character");
                 if (currentMask == CharacterCollision) CharacterCollision = GetMask("CharacterCollision");
                 if (currentMask == StandOnCollision) StandOnCollision = GetMask("StandOnCollision");
-                if (currentMask == Interactable) Interactable = GetMask("Interactable");
+                if (currentMask == Interactable) Interactable = GetMask("Interactable");*/
             }
 
             Collision = CharacterCollision;

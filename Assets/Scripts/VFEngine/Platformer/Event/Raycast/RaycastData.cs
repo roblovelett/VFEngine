@@ -3,9 +3,8 @@
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static Mathf;
-    using static RaycastDirection;
 
-    public class RaycastData
+    public struct RaycastData
     {
         #region fields
 
@@ -13,24 +12,24 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void ApplySettings(RaycastSettings settings)
         {
-            DrawRaycastGizmosControl = settings.drawRaycastGizmosControl;
-            DisplayWarningsControl = settings.displayWarningsControl;
-            NumberOfHorizontalRays = settings.numberOfHorizontalRays;
-            NumberOfVerticalRays = settings.numberOfVerticalRays;
-            RaySpacing = settings.raySpacing;
+            DrawGizmos = settings.drawGizmos;
+            DisplayWarnings = settings.displayWarnings;
+            HorizontalRaysAmount = settings.horizontalRaysAmount;
+            VerticalRaysAmount = settings.verticalRaysAmount;
+            Spacing = settings.spacing;
             SkinWidth = settings.skinWidth;
         }
 
-        private void SetRayCount()
+        private void SetCount()
         {
-            HorizontalRayCount = SetCount(Bounds.Size.y, RaySpacing);
-            VerticalRayCount = SetCount(Bounds.Size.x, RaySpacing);
+            HorizontalCount = SetCount(Bounds.Size.y, Spacing);
+            VerticalCount = SetCount(Bounds.Size.x, Spacing);
         }
 
-        private void SetRaySpacing()
+        private void SetSpacing()
         {
-            HorizontalRaySpacing = SetSpacing(Bounds.Size.y, HorizontalRayCount);
-            VerticalRaySpacing = SetSpacing(Bounds.Size.x, VerticalRayCount);
+            HorizontalSpacing = SetSpacing(Bounds.Size.y, HorizontalCount);
+            VerticalSpacing = SetSpacing(Bounds.Size.x, VerticalCount);
         }
 
         private static int SetCount(float size, float spacing)
@@ -51,46 +50,44 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        public bool DrawRaycastGizmosControl { get; private set; }
-        public bool DisplayWarningsControl { get; private set; }
-        public int NumberOfHorizontalRays { get; private set; }
-        public int NumberOfVerticalRays { get; private set; }
-        public float RaySpacing { get; private set; }
+        public bool DrawGizmos { get; private set; }
+        public bool DisplayWarnings { get; private set; }
+        public int HorizontalRaysAmount { get; private set; }
+        public int VerticalRaysAmount { get; private set; }
+        public float Spacing { get; private set; }
         public float SkinWidth { get; private set; }
 
         #endregion
 
-        public Collider2D BoxCollider { get; set; }
+        public Collider2D Collider { get; set; }
         public RaycastBounds Bounds { get; set; }
-        public RaycastDirection Direction { get; set; }
-        public int HorizontalRayCount { get; set; }
-        public int VerticalRayCount { get; set; }
+        public int HorizontalCount { get; set; }
+        public int VerticalCount { get; set; }
         public int RightIndex { get; set; }
         public int DownIndex { get; set; }
         public int LeftIndex { get; set; }
-        public float HorizontalRaySpacing { get; set; }
-        public float VerticalRaySpacing { get; set; }
+        public float HorizontalSpacing { get; set; }
+        public float VerticalSpacing { get; set; }
 
         #region public methods
 
         public void InitializeData()
         {
-            Direction = None;
             Bounds = new RaycastBounds();
         }
 
-        public void Initialize(RaycastSettings settings, Collider2D boxCollider)
+        public void Initialize(RaycastSettings settings, Collider2D collider)
         {
             ApplySettings(settings);
-            BoxCollider = boxCollider;
-            Bounds.Initialize(BoxCollider, SkinWidth);
-            SetRayCount();
-            SetRaySpacing();
+            Collider = collider;
+            Bounds.Initialize(Collider, SkinWidth);
+            SetCount();
+            SetSpacing();
         }
 
         public void SetRayOrigins()
         {
-            Bounds.SetBounds(BoxCollider, SkinWidth);
+            Bounds.SetBounds(Collider, SkinWidth);
         }
 
         public void InitializeDownIndex()
@@ -108,6 +105,11 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             if (RightIndex == 0) return;
             RightIndex = 0;
+        }
+
+        public void AddToRightIndex()
+        {
+            RightIndex++;
         }
 
         public void InitializeLeftIndex()

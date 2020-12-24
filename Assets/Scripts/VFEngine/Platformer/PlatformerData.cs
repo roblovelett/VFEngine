@@ -1,17 +1,31 @@
 ﻿namespace VFEngine.Platformer
 {
-    public class PlatformerData
+    public struct PlatformerData
     {
         #region fields
 
         #region private methods
 
-        private void ApplySettings(PlatformerSettings settings)
+        private void Initialize()
+        {
+            Tolerance = 0;
+            IgnorePlatformsTime = 0;
+        }
+
+        private void InitializeDependencies(PlatformerSettings settings)
         {
             DisplayWarningsControl = settings.displayWarningsControl;
             OneWayPlatformDelay = settings.oneWayPlatformDelay;
             LadderClimbThreshold = settings.ladderClimbThreshold;
             LadderDelay = settings.ladderDelay;
+        }
+
+        private void InitializeDependencies()
+        {
+            DisplayWarningsControl = false;
+            OneWayPlatformDelay = 0;
+            LadderClimbThreshold = 0;
+            LadderDelay = 0;
         }
 
         #endregion
@@ -29,23 +43,15 @@
 
         #endregion
 
-        public float Tolerance { get; set; }
-        public float IgnorePlatformsTime { get; set; }
+        public float Tolerance { get; private set; }
+        public float IgnorePlatformsTime { get; private set; }
 
-        #region public methods
-
-        public void InitializeData()
+        public PlatformerData(PlatformerSettings settings) : this()
         {
-            Tolerance = 0;
-            IgnorePlatformsTime = 0;
+            if (settings) InitializeDependencies(settings);
+            else InitializeDependencies();
+            Initialize();
         }
-
-        public void Initialize(PlatformerSettings settings)
-        {
-            ApplySettings(settings);
-        }
-
-        #endregion
 
         #endregion
     }

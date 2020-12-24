@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast
@@ -12,12 +13,11 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region properties
 
-        [SerializeField] public bool castRaysOnBothSides;
-        [SerializeField] public bool drawRaycastGizmosControl = true;
-        [SerializeField] public bool displayWarningsControl = true;
-        [SerializeField] public int numberOfHorizontalRays = 8;
-        [SerializeField] public int numberOfVerticalRays = 8;
-        [SerializeField] public float raySpacing = 0.125f;
+        [SerializeField] public bool drawGizmos = true;
+        [SerializeField] public bool displayWarnings = true;
+        [SerializeField] public int horizontalRaysAmount = 8;
+        [SerializeField] public int verticalRaysAmount = 8;
+        [SerializeField] public float spacing = 0.125f;
         [SerializeField] public float skinWidth = 0.015f;
 
         #endregion
