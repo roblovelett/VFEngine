@@ -4,18 +4,18 @@
     {
         #region properties
 
-        public PlatformerData data;
+        public PlatformerData Data { get; set; }
 
         #region public methods
 
         public Platformer(PlatformerSettings settings)
         {
-            data = new PlatformerData(settings);
+            Data = new PlatformerData(settings);
         }
 
         public Platformer()
         {
-            data = new PlatformerData();
+            Data = new PlatformerData();
         }
         
         #endregion

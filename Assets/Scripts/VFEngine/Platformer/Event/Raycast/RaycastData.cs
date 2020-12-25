@@ -10,14 +10,52 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        private void ApplySettings(RaycastSettings settings)
+        private void InitializeDependencies(RaycastSettings settings)
         {
-            DrawGizmos = settings.drawGizmos;
             DisplayWarnings = settings.displayWarnings;
+            DrawGizmos = settings.drawGizmos;
             HorizontalRaysAmount = settings.horizontalRaysAmount;
             VerticalRaysAmount = settings.verticalRaysAmount;
             Spacing = settings.spacing;
             SkinWidth = settings.skinWidth;
+        }
+
+        private void InitializeDependencies()
+        {
+            DisplayWarnings = false;
+            DrawGizmos = false;
+            HorizontalRaysAmount = 0;
+            VerticalRaysAmount = 0;
+            Spacing = 0;
+            SkinWidth = 0;
+        }
+
+        private void Initialize(Collider2D collider, float skinWidth)
+        {
+            Collider = collider;
+            InitializeBounds(collider, skinWidth);
+            InitializeInternal();
+        }
+
+        private void Initialize(float skinWidth)
+        {
+            Collider = new Collider2D();
+            InitializeBounds(Collider, skinWidth);
+            InitializeInternal();
+        }
+
+        private void InitializeBounds(Collider2D collider, float skinWidth)
+        {
+            Bounds = new RaycastBounds(collider, skinWidth);
+        }
+
+        private void InitializeInternal()
+        {
+            Collision = new RaycastCollision();
+            Collision.OnInitialize();
+            Index = 0;
+            SetCount();
+            SetSpacing();
         }
 
         private void SetCount()
@@ -26,15 +64,15 @@ namespace VFEngine.Platformer.Event.Raycast
             VerticalCount = SetCount(Bounds.Size.x, Spacing);
         }
 
+        private static int SetCount(float size, float spacing)
+        {
+            return (int) Round(size / spacing);
+        }
+
         private void SetSpacing()
         {
             HorizontalSpacing = SetSpacing(Bounds.Size.y, HorizontalCount);
             VerticalSpacing = SetSpacing(Bounds.Size.x, VerticalCount);
-        }
-
-        private static int SetCount(float size, float spacing)
-        {
-            return (int) Round(size / spacing);
         }
 
         private static float SetSpacing(float size, int count)
@@ -50,8 +88,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
-        public bool DrawGizmos { get; private set; }
         public bool DisplayWarnings { get; private set; }
+        public bool DrawGizmos { get; private set; }
         public int HorizontalRaysAmount { get; private set; }
         public int VerticalRaysAmount { get; private set; }
         public float Spacing { get; private set; }
@@ -61,62 +99,40 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public Collider2D Collider { get; set; }
         public RaycastBounds Bounds { get; set; }
+        public RaycastCollision Collision { get; set; }
+        public int Index { get; set; }
         public int HorizontalCount { get; set; }
         public int VerticalCount { get; set; }
-        public int RightIndex { get; set; }
-        public int DownIndex { get; set; }
-        public int LeftIndex { get; set; }
         public float HorizontalSpacing { get; set; }
         public float VerticalSpacing { get; set; }
 
         #region public methods
 
-        public void InitializeData()
+        #region constructors
+
+        public RaycastData(RaycastSettings settings, Collider2D collider) : this()
         {
-            Bounds = new RaycastBounds();
+            if (settings) InitializeDependencies(settings);
+            else InitializeDependencies();
+            if (collider) Initialize(collider, SkinWidth);
+            else Initialize(SkinWidth);
         }
 
-        public void Initialize(RaycastSettings settings, Collider2D collider)
+        public RaycastData(RaycastSettings settings) : this()
         {
-            ApplySettings(settings);
-            Collider = collider;
-            Bounds.Initialize(Collider, SkinWidth);
-            SetCount();
-            SetSpacing();
+            if (settings) InitializeDependencies(settings);
+            else InitializeDependencies();
+            Initialize(SkinWidth);
         }
 
-        public void SetRayOrigins()
+        public RaycastData(Collider2D collider) : this()
         {
-            Bounds.SetBounds(Collider, SkinWidth);
+            InitializeDependencies();
+            if (collider) Initialize(collider, SkinWidth);
+            else Initialize(SkinWidth);
         }
 
-        public void InitializeDownIndex()
-        {
-            if (DownIndex == 0) return;
-            DownIndex = 0;
-        }
-
-        public void AddToDownIndex()
-        {
-            DownIndex++;
-        }
-
-        public void InitializeRightIndex()
-        {
-            if (RightIndex == 0) return;
-            RightIndex = 0;
-        }
-
-        public void AddToRightIndex()
-        {
-            RightIndex++;
-        }
-
-        public void InitializeLeftIndex()
-        {
-            if (LeftIndex == 0) return;
-            LeftIndex = 0;
-        }
+        #endregion
 
         #endregion
 

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
+using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
-
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObject;
@@ -14,10 +13,10 @@ namespace VFEngine.Platformer.Event.Raycast
         #region dependencies
 
         [SerializeField] private RaycastSettings settings;
-        private BoxCollider2D boxCollider;
-        private PhysicsController physicsController;
-        //private RaycastData r;
-        //private PhysicsData physics;
+        private new Collider2D collider;
+        private Raycast raycast;
+        private LayerMaskData layerMask;
+        private PhysicsData physics;
         private PlatformerData platformer;
 
         #endregion
@@ -29,42 +28,34 @@ namespace VFEngine.Platformer.Event.Raycast
         #region private methods
 
         #region initialization
-
+        
         private void Awake()
         {
-            //SetControllers();
-            //InitializeData();
+            Initialize();
         }
 
-        /*private void SetControllers()
+        private void Initialize()
         {
-            boxCollider = GetComponent<BoxCollider2D>();
-            physicsController = GetComponent<PhysicsController>();
-        }*/
-
-        //private void InitializeData()
-        //{
-            /*r = new RaycastData();
-            r.InitializeData();*/
-        //}
+            if (!settings) settings = CreateInstance<RaycastSettings>();
+            collider = GetComponent<BoxCollider2D>();
+            raycast = new Raycast(settings, collider);
+        }
 
         private void Start()
         {
-        //    SetDependencies();
-        //    Initialize();
+            SetDependencies();
         }
 
-        //private void SetDependencies()
-        //{
-            //if (!settings) settings = CreateInstance<RaycastSettings>();
-            //physics = physicsController.Data;
-        //}
+        private void SetDependencies()
+        {
+            layerMask = GetComponent<LayerMaskController>().Data;
+            physics = GetComponent<PhysicsController>().Data;
+            platformer = GetComponent<PlatformerController>().Data;
+        }
 
-        //private void Initialize()
-        //{
-            //r.Initialize(settings, boxCollider);
-        //}
+        #endregion
 
+        
         #endregion
 
         /*private void PlatformerInitializeFrame()
@@ -129,11 +120,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #endregion
 
-        #endregion
-
         #region properties
-
-        //public RaycastData Data => r;
+        public RaycastData Data => raycast.Data;
 
         #region public methods
 

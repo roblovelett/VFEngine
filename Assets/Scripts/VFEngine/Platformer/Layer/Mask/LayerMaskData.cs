@@ -21,7 +21,7 @@ namespace VFEngine.Platformer.Layer.Mask
             Character = settings.character;
             CharacterCollision = settings.characterCollision;
             StandOnCollision = settings.standOnCollision;
-            Interactable = settings.interactable;
+            Interactive = settings.interactive;
         }
 
         #endregion
@@ -39,7 +39,7 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask Character { get; private set; }
         public LayerMask CharacterCollision { get; private set; }
         public LayerMask StandOnCollision { get; private set; }
-        public LayerMask Interactable { get; private set; }
+        public LayerMask Interactive { get; private set; }
         public GameObject CharacterObject { get; set; }
 
         #endregion
@@ -53,7 +53,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             LayerMask[] masks =
             {
-                Ground, OneWayPlatform, Ladder, Character, CharacterCollision, StandOnCollision, Interactable
+                Ground, OneWayPlatform, Ladder, Character, CharacterCollision, StandOnCollision, Interactive
             };
             foreach (var currentMask in masks)
             {
@@ -64,7 +64,7 @@ namespace VFEngine.Platformer.Layer.Mask
                 if (currentMask == Character) Character = GetMask("Character");
                 if (currentMask == CharacterCollision) CharacterCollision = GetMask("CharacterCollision");
                 if (currentMask == StandOnCollision) StandOnCollision = GetMask("StandOnCollision");
-                if (currentMask == Interactable) Interactable = GetMask("Interactable");*/
+                if (currentMask == Interactive) Interactable = GetMask("Interactive");*/
             }
 
             Collision = CharacterCollision;

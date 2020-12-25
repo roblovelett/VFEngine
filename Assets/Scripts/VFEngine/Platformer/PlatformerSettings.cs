@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer
@@ -12,7 +13,7 @@ namespace VFEngine.Platformer
     {
         #region properties
 
-        [SerializeField] public bool displayWarningsControl = true;
+        [SerializeField] public bool displayWarnings = true;
         [SerializeField] public float oneWayPlatformDelay = 0.1f;
         [SerializeField] public float ladderClimbThreshold = 0.3f;
         [SerializeField] public float ladderDelay = 0.3f;

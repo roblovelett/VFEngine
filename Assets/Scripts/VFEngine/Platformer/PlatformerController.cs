@@ -3,7 +3,6 @@ using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer
 {
     using static ScriptableObject;
@@ -16,13 +15,13 @@ namespace VFEngine.Platformer
 
         [SerializeField] private PlatformerSettings settings;
         private Platformer platformer;
-        //private RaycastController raycastController;
-        //private PhysicsController physicsController;
-        //private LayerMaskController layerMaskController;
-        //private RaycastData raycast;
-        //private PhysicsData physics;
-        //private LayerMaskData layerMask;
-
+        private RaycastController raycastController;
+        private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private RaycastData raycast;
+        private LayerMaskData layerMask;
+        private PhysicsData physics;
+        
         #endregion
         
         #region internal
@@ -60,16 +59,16 @@ namespace VFEngine.Platformer
 
         private void SetControllers()
         {
-            //physicsController = GetComponent<PhysicsController>();
-            //raycastController = GetComponent<RaycastController>();
-            //layerMaskController = GetComponent<LayerMaskController>();
+            raycastController = GetComponent<RaycastController>();
+            layerMaskController = GetComponent<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
         }
         
         private void SetDependencies()
         {
-            //physics = physicsController.Data;
-            //raycast = raycastController.Data;
-            //layerMask = layerMaskController.Data;
+            raycast = raycastController.Data;
+            layerMask = layerMaskController.Data;
+            physics = physicsController.Data;
         }
 
         #endregion
@@ -160,7 +159,7 @@ namespace VFEngine.Platformer
 
         #region properties
 
-        public PlatformerData Data => platformer.data;
+        public PlatformerData Data => platformer.Data;
 
         #region public methods
 

@@ -8,29 +8,14 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        #endregion
-
-        #endregion
-
-        #region properties
-
-        public Vector2 TopLeft { get; private set; }
-        public Vector2 TopRight { get; private set; }
-        public Vector2 BottomLeft { get; private set; }
-        public Vector2 BottomRight { get; private set; }
-        public Vector2 Size { get; private set; }
-        public Bounds Bounds { get; private set; }
-
-        #region public methods
-
-        public void Initialize(Collider2D boxCollider, float skinWidth)
+        private void Initialize(Collider2D collider, float skinWidth)
         {
-            SetBounds(boxCollider, skinWidth);
+            SetBounds(collider, skinWidth);
         }
 
-        public void SetBounds(Collider2D boxCollider, float skinWidth)
+        private void SetBounds(Collider2D collider, float skinWidth)
         {
-            Bounds = boxCollider.bounds;
+            Bounds = collider.bounds;
             Bounds.Expand(skinWidth * -2);
             Size = Bounds.size;
             BottomLeft = new Vector2(Bounds.min.x, Bounds.min.y);
@@ -38,6 +23,30 @@ namespace VFEngine.Platformer.Event.Raycast
             TopLeft = new Vector2(Bounds.min.x, Bounds.max.y);
             TopRight = new Vector2(Bounds.max.x, Bounds.max.y);
         }
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        public Bounds Bounds { get; private set; }
+        public Vector2 TopLeft { get; private set; }
+        public Vector2 TopRight { get; private set; }
+        public Vector2 BottomLeft { get; private set; }
+        public Vector2 BottomRight { get; private set; }
+        public Vector2 Size { get; private set; }
+
+        #region public methods
+
+        #region constructors
+
+        public RaycastBounds(Collider2D collider, float skinWidth) : this()
+        {
+            Initialize(collider, skinWidth);
+        }
+
+        #endregion
 
         #endregion
 

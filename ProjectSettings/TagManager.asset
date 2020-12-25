@@ -19,7 +19,7 @@ TagManager:
   - Character
   - CharacterCollision
   - StandOnCollision
-  - Interactable
+  - Interactive
   - 
   - 
   - 

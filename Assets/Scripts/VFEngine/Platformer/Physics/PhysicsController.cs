@@ -19,8 +19,8 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private PhysicsSettings settings;
         private GameObject character;
-        private RaycastController raycastController;
-
+        private Physics physics;
+        private RaycastData raycast;
 
         #endregion
 
@@ -55,37 +55,27 @@ namespace VFEngine.Platformer.Physics
 
         private void Awake()
         {
-            //SetControllers();
-            //InitializeData();
+            Initialize();
         }
 
-        private void SetControllers()
+        private void Initialize()
         {
-            //raycastController = GetComponent<RaycastController>();
+            if (!settings) settings = CreateInstance<PhysicsSettings>();
+            physics = new Physics(settings);
         }
-
-        //private void InitializeData()
-        //{
-            //p = new PhysicsData();
-            //p.InitializeData();
-        //}
 
         private void Start()
         {
-            //SetDependencies();
-            //Initialize();
+            //SetControllers();
+            SetDependencies();
         }
 
-        //private void SetDependencies()
-        //{
-            //if (!settings) settings = CreateInstance<PhysicsSettings>();
-            //downRaycastHitCollider = downRaycastHitColliderController.Data;
-        //}
-
-        //private void Initialize()
-        //{
-        //    p.Initialize(settings);
-        //}
+        /*private void SetControllers(){}*/
+        
+        private void SetDependencies()
+        {
+            raycast = GetComponent<RaycastController>().Data;
+        }
 
         #endregion
 

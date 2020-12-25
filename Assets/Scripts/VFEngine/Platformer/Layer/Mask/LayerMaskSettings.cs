@@ -2,6 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable UnassignedField.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;
@@ -13,13 +14,13 @@ namespace VFEngine.Platformer.Layer.Mask
         #region properties
 
         [SerializeField] public bool displayWarningsControl;
-        [SerializeField] public LayerMask ground;
-        [SerializeField] public LayerMask oneWayPlatform;
-        [SerializeField] public LayerMask ladder;
-        [SerializeField] public LayerMask character;
-        [SerializeField] public LayerMask characterCollision;
-        [SerializeField] public LayerMask standOnCollision;
-        [SerializeField] public LayerMask interactable;
+        public LayerMask ground;
+        public LayerMask oneWayPlatform;
+        public LayerMask ladder;
+        public LayerMask character;
+        public LayerMask characterCollision;
+        public LayerMask standOnCollision;
+        public LayerMask interactive;
 
         #endregion
     }
