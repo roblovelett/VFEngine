@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static Mathf;
@@ -10,7 +12,31 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
+        private void Initialize()
+        {
+            InitializeBounds();
+            InitializeInternal();
+        }
+
+        private void InitializeDependencies(RaycastSettings settings, Collider2D collider)
+        {
+            InitializeSettings(settings);
+            InitializeCollider(collider);
+        }
+
         private void InitializeDependencies(RaycastSettings settings)
+        {
+            InitializeSettings(settings);
+            InitializeCollider();
+        }
+
+        private void InitializeDependencies(Collider2D collider)
+        {
+            InitializeSettings();
+            InitializeCollider(collider);
+        }
+
+        private void InitializeSettings(RaycastSettings settings)
         {
             DisplayWarnings = settings.displayWarnings;
             DrawGizmos = settings.drawGizmos;
@@ -20,7 +46,7 @@ namespace VFEngine.Platformer.Event.Raycast
             SkinWidth = settings.skinWidth;
         }
 
-        private void InitializeDependencies()
+        private void InitializeSettings()
         {
             DisplayWarnings = false;
             DrawGizmos = false;
@@ -30,23 +56,19 @@ namespace VFEngine.Platformer.Event.Raycast
             SkinWidth = 0;
         }
 
-        private void Initialize(Collider2D collider, float skinWidth)
+        private void InitializeCollider(Collider2D collider)
         {
             Collider = collider;
-            InitializeBounds(collider, skinWidth);
-            InitializeInternal();
         }
 
-        private void Initialize(float skinWidth)
+        private void InitializeCollider()
         {
             Collider = new Collider2D();
-            InitializeBounds(Collider, skinWidth);
-            InitializeInternal();
         }
 
-        private void InitializeBounds(Collider2D collider, float skinWidth)
+        private void InitializeBounds()
         {
-            Bounds = new RaycastBounds(collider, skinWidth);
+            Bounds = new RaycastBounds(Collider, SkinWidth);
         }
 
         private void InitializeInternal()
@@ -60,24 +82,14 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetCount()
         {
-            HorizontalCount = SetCount(Bounds.Size.y, Spacing);
-            VerticalCount = SetCount(Bounds.Size.x, Spacing);
-        }
-
-        private static int SetCount(float size, float spacing)
-        {
-            return (int) Round(size / spacing);
+            HorizontalCount = (int) Round(Bounds.Size.y / Spacing);
+            VerticalCount = (int) Round(Bounds.Size.x / Spacing);
         }
 
         private void SetSpacing()
         {
-            HorizontalSpacing = SetSpacing(Bounds.Size.y, HorizontalCount);
-            VerticalSpacing = SetSpacing(Bounds.Size.x, VerticalCount);
-        }
-
-        private static float SetSpacing(float size, int count)
-        {
-            return size / (count - 1);
+            HorizontalSpacing = Bounds.Size.y / (HorizontalCount - 1);
+            VerticalSpacing = Bounds.Size.x / (VerticalCount - 1);
         }
 
         #endregion
@@ -94,10 +106,10 @@ namespace VFEngine.Platformer.Event.Raycast
         public int VerticalRaysAmount { get; private set; }
         public float Spacing { get; private set; }
         public float SkinWidth { get; private set; }
+        public Collider2D Collider { get; set; }
 
         #endregion
 
-        public Collider2D Collider { get; set; }
         public RaycastBounds Bounds { get; set; }
         public RaycastCollision Collision { get; set; }
         public int Index { get; set; }
@@ -112,24 +124,20 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public RaycastData(RaycastSettings settings, Collider2D collider) : this()
         {
-            if (settings) InitializeDependencies(settings);
-            else InitializeDependencies();
-            if (collider) Initialize(collider, SkinWidth);
-            else Initialize(SkinWidth);
+            InitializeDependencies(settings, collider);
+            Initialize();
         }
 
         public RaycastData(RaycastSettings settings) : this()
         {
-            if (settings) InitializeDependencies(settings);
-            else InitializeDependencies();
-            Initialize(SkinWidth);
+            InitializeDependencies(settings);
+            Initialize();
         }
 
         public RaycastData(Collider2D collider) : this()
         {
-            InitializeDependencies();
-            if (collider) Initialize(collider, SkinWidth);
-            else Initialize(SkinWidth);
+            InitializeDependencies(collider);
+            Initialize();
         }
 
         #endregion

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
     public struct RaycastCollision
@@ -12,6 +14,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             Reset();
             GroundLayer = 0;
+            OnSlope = OnGround && GroundAngle != 0;
         }
 
         private void Reset()
@@ -38,7 +41,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public bool Below { get; set; }
         public bool Left { get; set; }
         public bool OnGround { get; set; }
-        public bool OnSlope => OnGround && GroundAngle != 0;
+        public bool OnSlope { get; set; }
         public int GroundDirection { get; set; }
         public int GroundLayer { get; set; }
         public float GroundAngle { get; set; }

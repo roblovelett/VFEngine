@@ -12,9 +12,9 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskSettings settings;
-        private GameObject character;
-        private LayerMask layerMask;
+        private LayerMaskModel layerMask;
 
         #endregion
 
@@ -33,24 +33,25 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void Initialize()
         {
+            if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            layerMask = new LayerMask(settings);
+            layerMask = new LayerMaskModel(settings, character);
         }
 
-        private void Start()
+        /*private void Start()
         {
             //SetControllers();
-            SetDependencies();
-        }
+            //SetDependencies();
+        }*/
 
         /*private void SetControllers(){}*/
         
-        private void SetDependencies()
+        /*private void SetDependencies()
         {
             //layerMask = GetComponent<LayerMaskController>().Data;
             //physics = GetComponent<PhysicsController>().Data;
             //platformer = GetComponent<PlatformerController>().Data;
-        }
+        }*/
 
         #endregion
 

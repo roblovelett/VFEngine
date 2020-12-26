@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable UnusedMember.Local
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
-    using static Time;
-    using static Vector2;
     using static ScriptableObject;
-    using static Mathf;
+    using static GameObject;
 
     public class PhysicsController : MonoBehaviour
     {
@@ -17,10 +14,10 @@ namespace VFEngine.Platformer.Physics
 
         #region dependencies
 
+        [SerializeField] private GameObject character;
         [SerializeField] private PhysicsSettings settings;
-        private GameObject character;
-        private Physics physics;
-        private RaycastData raycast;
+        private PhysicsModel physics;
+        //private RaycastData raycast;
 
         #endregion
 
@@ -60,21 +57,19 @@ namespace VFEngine.Platformer.Physics
 
         private void Initialize()
         {
+            if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
-            physics = new Physics(settings);
+            physics = new PhysicsModel(settings, character);
         }
 
         private void Start()
         {
-            //SetControllers();
             SetDependencies();
         }
 
-        /*private void SetControllers(){}*/
-        
         private void SetDependencies()
         {
-            raycast = GetComponent<RaycastController>().Data;
+            //raycast = GetComponent<RaycastController>().Data;
         }
 
         #endregion
@@ -120,7 +115,7 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        //public PhysicsData Data => p;
+        public PhysicsData Data => physics.Data;
 
         #region public methods
 

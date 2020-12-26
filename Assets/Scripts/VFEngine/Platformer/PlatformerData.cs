@@ -1,16 +1,12 @@
-﻿namespace VFEngine.Platformer
+﻿// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+namespace VFEngine.Platformer
 {
     public struct PlatformerData
     {
         #region fields
 
         #region private methods
-
-        private void Initialize()
-        {
-            Tolerance = 0;
-            IgnorePlatformsTime = 0;
-        }
 
         private void InitializeDependencies(PlatformerSettings settings)
         {
@@ -20,12 +16,15 @@
             LadderDelay = settings.ladderDelay;
         }
 
-        private void InitializeDependencies()
+        private void Initialize()
         {
-            DisplayWarnings = false;
-            OneWayPlatformDelay = 0;
-            LadderClimbThreshold = 0;
-            LadderDelay = 0;
+            InitializeInternal();
+        }
+
+        private void InitializeInternal()
+        {
+            Tolerance = 0;
+            IgnorePlatformsTime = 0;
         }
 
         #endregion
@@ -52,8 +51,7 @@
 
         public PlatformerData(PlatformerSettings settings) : this()
         {
-            if (settings) InitializeDependencies(settings);
-            else InitializeDependencies();
+            InitializeDependencies(settings);
             Initialize();
         }
 

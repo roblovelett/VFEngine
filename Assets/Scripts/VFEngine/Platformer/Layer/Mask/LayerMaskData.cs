@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
-    using static LayerMask;
     using static Physics2D;
+    using static LayerMask;
 
     public struct LayerMaskData
     {
@@ -12,7 +13,17 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        private void ApplySettings(LayerMaskSettings settings)
+        private void InitializeDependencies(LayerMaskSettings settings)
+        {
+            InitializeSettings(settings);
+        }
+
+        private void InitializeDependencies()
+        {
+            InitializeSettings();
+        }
+
+        private void InitializeSettings(LayerMaskSettings settings)
         {
             DisplayWarningsControl = settings.displayWarningsControl;
             Ground = settings.ground;
@@ -22,6 +33,47 @@ namespace VFEngine.Platformer.Layer.Mask
             CharacterCollision = settings.characterCollision;
             StandOnCollision = settings.standOnCollision;
             Interactive = settings.interactive;
+        }
+
+        private void InitializeSettings()
+        {
+            DisplayWarningsControl = false;
+            Ground = GetMask("Ground");
+            OneWayPlatform = GetMask("OneWayPlatform");
+            Ladder = GetMask("Ladder");
+            Character = GetMask("Character");
+            CharacterCollision = GetMask("CharacterCollision");
+            StandOnCollision = GetMask("StandOnCollision");
+            Interactive = GetMask("Interactive");
+        }
+
+        private void Initialize(GameObject character)
+        {
+            InitializeCharacter(character);
+            InitializeInternal();
+        }
+
+        private void Initialize()
+        {
+            InitializeCharacter();
+            InitializeInternal();
+        }
+
+        private void InitializeCharacter(GameObject character)
+        {
+            CharacterGameObject = character;
+        }
+
+        private void InitializeCharacter()
+        {
+            CharacterGameObject = new GameObject();
+        }
+
+        private void InitializeInternal()
+        {
+            Collision = CharacterCollision;
+            SavedLayer = CharacterGameObject.layer;
+            CharacterGameObject.layer = IgnoreRaycastLayer;
         }
 
         #endregion
@@ -40,43 +92,36 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMask CharacterCollision { get; private set; }
         public LayerMask StandOnCollision { get; private set; }
         public LayerMask Interactive { get; private set; }
-        public GameObject CharacterObject { get; set; }
 
         #endregion
 
-        public int Layer { get; set; }
+        public int SavedLayer { get; set; }
         public LayerMask Collision { get; set; }
+        public GameObject CharacterGameObject { get; set; }
 
         #region public methods
 
-        public void InitializeData()
-        {
-            LayerMask[] masks =
-            {
-                Ground, OneWayPlatform, Ladder, Character, CharacterCollision, StandOnCollision, Interactive
-            };
-            foreach (var currentMask in masks)
-            {
-                /*if (currentMask != 0) continue;
-                if (currentMask == Ground) Ground = GetMask("Ground");
-                if (currentMask == OneWayPlatform) OneWayPlatform = GetMask("OneWayPlatform");
-                if (currentMask == Ladder) Ladder = GetMask("Ladder");
-                if (currentMask == Character) Character = GetMask("Character");
-                if (currentMask == CharacterCollision) CharacterCollision = GetMask("CharacterCollision");
-                if (currentMask == StandOnCollision) StandOnCollision = GetMask("StandOnCollision");
-                if (currentMask == Interactive) Interactable = GetMask("Interactive");*/
-            }
+        #region constructors
 
-            Collision = CharacterCollision;
+        public LayerMaskData(LayerMaskSettings settings, GameObject character) : this()
+        {
+            InitializeDependencies(settings);
+            Initialize(character);
         }
 
-        public void Initialize(LayerMaskSettings settings, GameObject character)
+        public LayerMaskData(LayerMaskSettings settings) : this()
         {
-            CharacterObject = character;
-            ApplySettings(settings);
-            Layer = CharacterObject.layer;
-            CharacterObject.layer = IgnoreRaycastLayer;
+            InitializeDependencies(settings);
+            Initialize();
         }
+
+        public LayerMaskData(GameObject character) : this()
+        {
+            InitializeDependencies();
+            Initialize(character);
+        }
+
+        #endregion
 
         #endregion
 

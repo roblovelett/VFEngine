@@ -1,19 +1,19 @@
 ﻿namespace VFEngine.Platformer
 {
-    public class Platformer
+    public class PlatformerModel
     {
         #region properties
 
-        public PlatformerData Data { get; set; }
+        public PlatformerData Data { get; }
 
         #region public methods
 
-        public Platformer(PlatformerSettings settings)
+        public PlatformerModel(PlatformerSettings settings)
         {
             Data = new PlatformerData(settings);
         }
 
-        public Platformer()
+        public PlatformerModel()
         {
             Data = new PlatformerData();
         }

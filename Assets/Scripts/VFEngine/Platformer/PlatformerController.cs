@@ -3,6 +3,7 @@ using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer
 {
     using static ScriptableObject;
@@ -14,16 +15,16 @@ namespace VFEngine.Platformer
         #region dependencies
 
         [SerializeField] private PlatformerSettings settings;
-        private Platformer platformer;
+        private PlatformerModel platformer;
         private RaycastController raycastController;
         private LayerMaskController layerMaskController;
         private PhysicsController physicsController;
         private RaycastData raycast;
         private LayerMaskData layerMask;
         private PhysicsData physics;
-        
+
         #endregion
-        
+
         #region internal
 
         //private bool HorizontalMovement => physics.DeltaMovement.x != 0;
@@ -33,13 +34,13 @@ namespace VFEngine.Platformer
         //private bool DescendingSlope => GroundDirection == HorizontalMovementDirection;
         //private int GroundDirection => downRaycastHitCollider.Collision.groundDirection;
         //private int HorizontalMovementDirection => physics.HorizontalMovementDirection;
-        
+
         #endregion
 
         #region private methods
 
         #region initialization
-        
+
         private void Awake()
         {
             Initialize();
@@ -48,7 +49,7 @@ namespace VFEngine.Platformer
         private void Initialize()
         {
             if (!settings) settings = CreateInstance<PlatformerSettings>();
-            platformer = new Platformer(settings);
+            platformer = new PlatformerModel(settings);
         }
 
         private void Start()
@@ -63,7 +64,7 @@ namespace VFEngine.Platformer
             layerMaskController = GetComponent<LayerMaskController>();
             physicsController = GetComponent<PhysicsController>();
         }
-        
+
         private void SetDependencies()
         {
             raycast = raycastController.Data;
@@ -92,7 +93,7 @@ namespace VFEngine.Platformer
         }
 
         #region initialize frame
-        
+
         /*private void InitializeFrame()
         {
             InitializeRaycastHitColliders();
@@ -154,7 +155,7 @@ namespace VFEngine.Platformer
         {
             raycastController.OnPlatformerCastRaysToSides();
         }*/
-        
+
         #endregion
 
         #region properties

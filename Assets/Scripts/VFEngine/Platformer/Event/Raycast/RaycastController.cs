@@ -2,6 +2,7 @@
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObject;
@@ -12,9 +13,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region dependencies
 
+        [SerializeField] private new Collider2D collider;
         [SerializeField] private RaycastSettings settings;
-        private new Collider2D collider;
-        private Raycast raycast;
+        private RaycastModel raycast;
         private LayerMaskData layerMask;
         private PhysicsData physics;
         private PlatformerData platformer;
@@ -28,7 +29,7 @@ namespace VFEngine.Platformer.Event.Raycast
         #region private methods
 
         #region initialization
-        
+
         private void Awake()
         {
             Initialize();
@@ -36,9 +37,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Initialize()
         {
+            if (!collider) collider = GetComponent<BoxCollider2D>();
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            collider = GetComponent<BoxCollider2D>();
-            raycast = new Raycast(settings, collider);
+            raycast = new RaycastModel(settings, collider);
         }
 
         private void Start()
@@ -55,7 +56,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #endregion
 
-        
         #endregion
 
         /*private void PlatformerInitializeFrame()
@@ -71,18 +71,18 @@ namespace VFEngine.Platformer.Event.Raycast
         private void CastRaysDown()
         {
             r.InitializeDownIndex();*/
-            //for (var i = 0; i < r.VerticalCount; i++)
-            //{
-                //downRaycastHitColliderController.OnSetHit();
-                //if (DownHitConnected)
-                //{
-                //    downRaycastHitColliderController.OnHitConnected();
-                //    downRaycastController.OnHitConnected();
-                //    break;
-                //}
-                /*r.AddToDownIndex();
-            }
-        }*/
+        //for (var i = 0; i < r.VerticalCount; i++)
+        //{
+        //downRaycastHitColliderController.OnSetHit();
+        //if (DownHitConnected)
+        //{
+        //    downRaycastHitColliderController.OnHitConnected();
+        //    downRaycastController.OnHitConnected();
+        //    break;
+        //}
+        /*r.AddToDownIndex();
+    }
+}*/
 
         //private int HorizontalDirection => physics.HorizontalMovementDirection;
         //private bool CastRight => HorizontalDirection == 1;
@@ -91,36 +91,36 @@ namespace VFEngine.Platformer.Event.Raycast
 
         //private void PlatformerCastRaysToSides()
         //{
-            //if (DoNotCast) return;
-            //if (CastRight) CastRaysRight();
-            //if (CastLeft) CastRaysLeft();
+        //if (DoNotCast) return;
+        //if (CastRight) CastRaysRight();
+        //if (CastLeft) CastRaysLeft();
         //}
 
         //private RaycastHit2D RightHit => rightRaycastHitCollider.Hit;
         //private bool RightHitConnected => DownHit.distance <= 0;
-        
         /*private void CastRaysRight()
         {
             r.InitializeRightIndex();
             for (var i = 0; i < r.HorizontalCount; i++)
             {*/
-                /*rightRaycastController.OnCastRays();
-                if (RightHit)
-                {
-                    rightRaycastHitColliderController.OnHit();
-                }*/
-                /*r.AddToRightIndex();
-            }
-        }
-
-        private void CastRaysLeft()
+        /*rightRaycastController.OnCastRays();
+        if (RightHit)
         {
-            r.InitializeLeftIndex();
+            rightRaycastHitColliderController.OnHit();
         }*/
+        /*r.AddToRightIndex();
+    }
+}
+
+private void CastRaysLeft()
+{
+    r.InitializeLeftIndex();
+}*/
 
         #endregion
 
         #region properties
+
         public RaycastData Data => raycast.Data;
 
         #region public methods

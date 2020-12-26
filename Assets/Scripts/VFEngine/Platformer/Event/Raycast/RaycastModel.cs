@@ -2,7 +2,7 @@
 
 namespace VFEngine.Platformer.Event.Raycast
 {
-    public class Raycast
+    public class RaycastModel
     {
         #region fields
         #endregion
@@ -13,22 +13,22 @@ namespace VFEngine.Platformer.Event.Raycast
         
         #region constructors
 
-        public Raycast(RaycastSettings settings, Collider2D collider)
+        public RaycastModel(RaycastSettings settings, Collider2D collider)
         {
             Data = new RaycastData(settings, collider);
         }
 
-        public Raycast(RaycastSettings settings)
+        public RaycastModel(RaycastSettings settings)
         {
             Data = new RaycastData(settings);
         }
 
-        public Raycast(Collider2D collider)
+        public RaycastModel(Collider2D collider)
         {
             Data = new RaycastData(collider);
         }
 
-        public Raycast()
+        public RaycastModel()
         {
             Data = new RaycastData();
         }
