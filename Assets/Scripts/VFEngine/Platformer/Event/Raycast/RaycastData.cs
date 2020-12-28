@@ -4,19 +4,18 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
+    using static Vector2;
     using static Mathf;
 
     public struct RaycastData
     {
         #region fields
 
+        private RaycastCollision collision;
+
         #region private methods
 
-        private void Initialize()
-        {
-            InitializeBounds();
-            InitializeInternal();
-        }
+        #region initialization
 
         private void InitializeDependencies(RaycastSettings settings, Collider2D collider)
         {
@@ -24,36 +23,14 @@ namespace VFEngine.Platformer.Event.Raycast
             InitializeCollider(collider);
         }
 
-        private void InitializeDependencies(RaycastSettings settings)
-        {
-            InitializeSettings(settings);
-            InitializeCollider();
-        }
-
-        private void InitializeDependencies(Collider2D collider)
-        {
-            InitializeSettings();
-            InitializeCollider(collider);
-        }
-
         private void InitializeSettings(RaycastSettings settings)
         {
             DisplayWarnings = settings.displayWarnings;
             DrawGizmos = settings.drawGizmos;
-            HorizontalRaysAmount = settings.horizontalRaysAmount;
-            VerticalRaysAmount = settings.verticalRaysAmount;
+            TotalHorizontalRays = settings.totalHorizontalRays;
+            TotalVerticalRays = settings.totalVerticalRays;
             Spacing = settings.spacing;
             SkinWidth = settings.skinWidth;
-        }
-
-        private void InitializeSettings()
-        {
-            DisplayWarnings = false;
-            DrawGizmos = false;
-            HorizontalRaysAmount = 0;
-            VerticalRaysAmount = 0;
-            Spacing = 0;
-            SkinWidth = 0;
         }
 
         private void InitializeCollider(Collider2D collider)
@@ -61,35 +38,31 @@ namespace VFEngine.Platformer.Event.Raycast
             Collider = collider;
         }
 
-        private void InitializeCollider()
-        {
-            Collider = new Collider2D();
-        }
-
-        private void InitializeBounds()
-        {
-            Bounds = new RaycastBounds(Collider, SkinWidth);
-        }
-
         private void InitializeInternal()
         {
-            Collision = new RaycastCollision();
-            Collision.OnInitialize();
-            Index = 0;
+            HorizontalSpacing = 0;
+            VerticalSpacing = 0;
+            Origin = zero;
+            Hit = new RaycastHit2D();
+            Bounds = new RaycastBounds(Collider, SkinWidth);
             SetCount();
             SetSpacing();
+            Collision = new RaycastCollision();
+            Collision.Initialize();
         }
+
+        #endregion
 
         private void SetCount()
         {
-            HorizontalCount = (int) Round(Bounds.Size.y / Spacing);
-            VerticalCount = (int) Round(Bounds.Size.x / Spacing);
+            HorizontalRays = (int) Round(Bounds.Size.y / Spacing);
+            VerticalRays = (int) Round(Bounds.Size.x / Spacing);
         }
 
         private void SetSpacing()
         {
-            HorizontalSpacing = Bounds.Size.y / (HorizontalCount - 1);
-            VerticalSpacing = Bounds.Size.x / (VerticalCount - 1);
+            HorizontalSpacing = Bounds.Size.y / (HorizontalRays - 1);
+            VerticalSpacing = Bounds.Size.x / (VerticalRays - 1);
         }
 
         #endregion
@@ -102,21 +75,22 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public bool DisplayWarnings { get; private set; }
         public bool DrawGizmos { get; private set; }
-        public int HorizontalRaysAmount { get; private set; }
-        public int VerticalRaysAmount { get; private set; }
+        public int TotalHorizontalRays { get; private set; }
+        public int TotalVerticalRays { get; private set; }
         public float Spacing { get; private set; }
         public float SkinWidth { get; private set; }
         public Collider2D Collider { get; set; }
 
         #endregion
 
-        public RaycastBounds Bounds { get; set; }
-        public RaycastCollision Collision { get; set; }
-        public int Index { get; set; }
-        public int HorizontalCount { get; set; }
-        public int VerticalCount { get; set; }
+        public int HorizontalRays { get; set; }
+        public int VerticalRays { get; set; }
         public float HorizontalSpacing { get; set; }
         public float VerticalSpacing { get; set; }
+        public Vector2 Origin { get; set; }
+        public RaycastHit2D Hit { get; set; }
+        public RaycastBounds Bounds { get; private set; }
+        public RaycastCollision Collision { get; private set; }
 
         #region public methods
 
@@ -125,22 +99,20 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastData(RaycastSettings settings, Collider2D collider) : this()
         {
             InitializeDependencies(settings, collider);
-            Initialize();
-        }
-
-        public RaycastData(RaycastSettings settings) : this()
-        {
-            InitializeDependencies(settings);
-            Initialize();
-        }
-
-        public RaycastData(Collider2D collider) : this()
-        {
-            InitializeDependencies(collider);
-            Initialize();
+            InitializeInternal();
         }
 
         #endregion
+
+        public void ResetCollision()
+        {
+            Collision.Reset();
+        }
+
+        public void SetBounds()
+        {
+            Bounds.Set(Collider, SkinWidth);
+        }
 
         #endregion
 

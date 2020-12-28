@@ -10,25 +10,15 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        private void Initialize()
+        /*private void DownHit(float groundAngle, int groundDirection, int groundLayer, RaycastHit2D hit)
         {
-            Reset();
-            GroundLayer = 0;
-            OnSlope = OnGround && GroundAngle != 0;
-        }
-
-        private void Reset()
-        {
-            Above = false;
-            Right = false;
-            Below = false;
-            Left = false;
-            OnGround = false;
-            GroundDirection = 0;
-            GroundAngle = 0;
-            HorizontalHit = new RaycastHit2D();
-            VerticalHit = new RaycastHit2D();
-        }
+            OnGround = true;
+            GroundAngle = groundAngle;
+            GroundDirection = groundDirection;
+            GroundLayer = groundLayer;
+            VerticalHit = hit;
+            Below = true;
+        }*/
 
         #endregion
 
@@ -49,11 +39,31 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastHit2D VerticalHit { get; set; }
 
         #region public methods
-
-        public void OnInitialize()
+        
+        public void Initialize()
         {
-            Initialize();
+            Reset();
+            GroundLayer = 0;
+            OnSlope = OnGround && GroundAngle != 0;
         }
+
+        public void Reset()
+        {
+            Above = false;
+            Right = false;
+            Below = false;
+            Left = false;
+            OnGround = false;
+            GroundDirection = 0;
+            GroundAngle = 0;
+            HorizontalHit = new RaycastHit2D();
+            VerticalHit = new RaycastHit2D();
+        }
+
+        /*public void OnDownHit(float groundAngle, int groundDirection, int groundLayer, RaycastHit2D hit)
+        {
+            DownHit(groundAngle, groundDirection, groundLayer, hit);
+        }*/
 
         #endregion
 

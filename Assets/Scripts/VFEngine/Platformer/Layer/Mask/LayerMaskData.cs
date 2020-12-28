@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 
-// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
-    using static Physics2D;
-    using static LayerMask;
-
     public struct LayerMaskData
     {
         #region fields
 
         #region private methods
 
-        private void InitializeDependencies(LayerMaskSettings settings)
+        private void InitializeDependencies(GameObject character, LayerMaskSettings settings)
         {
+            InitializeCharacter(character);
             InitializeSettings(settings);
         }
 
-        private void InitializeDependencies()
+        private void InitializeCharacter(GameObject character)
         {
-            InitializeSettings();
+            CharacterGameObject = character;
         }
 
         private void InitializeSettings(LayerMaskSettings settings)
@@ -35,46 +32,14 @@ namespace VFEngine.Platformer.Layer.Mask
             Interactive = settings.interactive;
         }
 
-        private void InitializeSettings()
-        {
-            DisplayWarningsControl = false;
-            Ground = GetMask("Ground");
-            OneWayPlatform = GetMask("OneWayPlatform");
-            Ladder = GetMask("Ladder");
-            Character = GetMask("Character");
-            CharacterCollision = GetMask("CharacterCollision");
-            StandOnCollision = GetMask("StandOnCollision");
-            Interactive = GetMask("Interactive");
-        }
-
-        private void Initialize(GameObject character)
-        {
-            InitializeCharacter(character);
-            InitializeInternal();
-        }
-
         private void Initialize()
         {
-            InitializeCharacter();
-            InitializeInternal();
-        }
-
-        private void InitializeCharacter(GameObject character)
-        {
-            CharacterGameObject = character;
-        }
-
-        private void InitializeCharacter()
-        {
-            CharacterGameObject = new GameObject();
-        }
-
-        private void InitializeInternal()
-        {
             Collision = CharacterCollision;
-            SavedLayer = CharacterGameObject.layer;
-            CharacterGameObject.layer = IgnoreRaycastLayer;
+            SavedLayer = 0;
         }
+
+        //SavedLayer = CharacterGameObject.layer;
+        //CharacterGameObject.layer = Physics2D.IgnoreRaycastLayer;
 
         #endregion
 
@@ -96,29 +61,17 @@ namespace VFEngine.Platformer.Layer.Mask
         #endregion
 
         public int SavedLayer { get; set; }
-        public LayerMask Collision { get; set; }
+        public LayerMask Collision { get; private set; }
         public GameObject CharacterGameObject { get; set; }
 
         #region public methods
 
         #region constructors
 
-        public LayerMaskData(LayerMaskSettings settings, GameObject character) : this()
+        public LayerMaskData(GameObject character, LayerMaskSettings settings) : this()
         {
-            InitializeDependencies(settings);
-            Initialize(character);
-        }
-
-        public LayerMaskData(LayerMaskSettings settings) : this()
-        {
-            InitializeDependencies(settings);
+            InitializeDependencies(character, settings);
             Initialize();
-        }
-
-        public LayerMaskData(GameObject character) : this()
-        {
-            InitializeDependencies();
-            Initialize(character);
         }
 
         #endregion

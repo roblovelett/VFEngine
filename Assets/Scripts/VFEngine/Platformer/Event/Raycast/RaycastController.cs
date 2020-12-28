@@ -2,7 +2,6 @@
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
-// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObject;
@@ -16,9 +15,9 @@ namespace VFEngine.Platformer.Event.Raycast
         [SerializeField] private new Collider2D collider;
         [SerializeField] private RaycastSettings settings;
         private RaycastModel raycast;
-        private LayerMaskData layerMask;
-        private PhysicsData physics;
-        private PlatformerData platformer;
+        private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
+        private PlatformerController platformerController;
 
         #endregion
 
@@ -37,109 +36,31 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Initialize()
         {
+            layerMaskController = GetComponent<LayerMaskController>();
+            physicsController = GetComponent<PhysicsController>();
+            platformerController = GetComponent<PlatformerController>();
             if (!collider) collider = GetComponent<BoxCollider2D>();
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            raycast = new RaycastModel(settings, collider);
-        }
-
-        private void Start()
-        {
-            SetDependencies();
-        }
-
-        private void SetDependencies()
-        {
-            layerMask = GetComponent<LayerMaskController>().Data;
-            physics = GetComponent<PhysicsController>().Data;
-            platformer = GetComponent<PlatformerController>().Data;
+            raycast = new RaycastModel(collider, settings, layerMaskController, physicsController, platformerController);
         }
 
         #endregion
 
         #endregion
-
-        /*private void PlatformerInitializeFrame()
-        {
-            r.SetRayOrigins();
-        }
-
-        private void PlatformerCastRaysDown()
-        {
-            CastRaysDown();
-        }
-
-        private void CastRaysDown()
-        {
-            r.InitializeDownIndex();*/
-        //for (var i = 0; i < r.VerticalCount; i++)
-        //{
-        //downRaycastHitColliderController.OnSetHit();
-        //if (DownHitConnected)
-        //{
-        //    downRaycastHitColliderController.OnHitConnected();
-        //    downRaycastController.OnHitConnected();
-        //    break;
-        //}
-        /*r.AddToDownIndex();
-    }
-}*/
-
-        //private int HorizontalDirection => physics.HorizontalMovementDirection;
-        //private bool CastRight => HorizontalDirection == 1;
-        //private bool CastLeft => HorizontalDirection == 1;
-        //private bool DoNotCast => !CastRight || !CastLeft;
-
-        //private void PlatformerCastRaysToSides()
-        //{
-        //if (DoNotCast) return;
-        //if (CastRight) CastRaysRight();
-        //if (CastLeft) CastRaysLeft();
-        //}
-
-        //private RaycastHit2D RightHit => rightRaycastHitCollider.Hit;
-        //private bool RightHitConnected => DownHit.distance <= 0;
-        /*private void CastRaysRight()
-        {
-            r.InitializeRightIndex();
-            for (var i = 0; i < r.HorizontalCount; i++)
-            {*/
-        /*rightRaycastController.OnCastRays();
-        if (RightHit)
-        {
-            rightRaycastHitColliderController.OnHit();
-        }*/
-        /*r.AddToRightIndex();
-    }
-}
-
-private void CastRaysLeft()
-{
-    r.InitializeLeftIndex();
-}*/
 
         #endregion
 
         #region properties
 
         public RaycastData Data => raycast.Data;
-
+        
         #region public methods
 
-        /*
-        public void OnPlatformerInitializeFrame()
+        public void PlatformerInitializeFrame()
         {
-            PlatformerInitializeFrame();
+            raycast.ResetCollision();
+            raycast.SetBounds();
         }
-
-        public void OnPlatformerCastRaysDown()
-        {
-            PlatformerCastRaysDown();
-        }
-
-        public void OnPlatformerCastRaysToSides()
-        {
-            PlatformerCastRaysToSides();
-        }*/
 
         #endregion
 

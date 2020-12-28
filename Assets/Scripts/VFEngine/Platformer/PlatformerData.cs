@@ -10,6 +10,11 @@ namespace VFEngine.Platformer
 
         private void InitializeDependencies(PlatformerSettings settings)
         {
+            InitializeSettings(settings);
+        }
+
+        private void InitializeSettings(PlatformerSettings settings)
+        {
             DisplayWarnings = settings.displayWarnings;
             OneWayPlatformDelay = settings.oneWayPlatformDelay;
             LadderClimbThreshold = settings.ladderClimbThreshold;
@@ -18,13 +23,9 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
-            InitializeInternal();
-        }
-
-        private void InitializeInternal()
-        {
             Tolerance = 0;
             IgnorePlatformsTime = 0;
+            Index = 0;
         }
 
         #endregion
@@ -42,6 +43,7 @@ namespace VFEngine.Platformer
 
         #endregion
 
+        public int Index { get; private set; }
         public float Tolerance { get; private set; }
         public float IgnorePlatformsTime { get; private set; }
 

@@ -19,21 +19,6 @@ namespace VFEngine.Platformer
         private RaycastController raycastController;
         private LayerMaskController layerMaskController;
         private PhysicsController physicsController;
-        private RaycastData raycast;
-        private LayerMaskData layerMask;
-        private PhysicsData physics;
-
-        #endregion
-
-        #region internal
-
-        //private bool HorizontalMovement => physics.DeltaMovement.x != 0;
-        //private bool NegativeVerticalMovement => physics.DeltaMovement.y <= 0;
-        //private bool OnSlope => downRaycastHitCollider.Collision.OnSlope;
-        //private bool OnSlopes => NegativeVerticalMovement && OnSlope;
-        //private bool DescendingSlope => GroundDirection == HorizontalMovementDirection;
-        //private int GroundDirection => downRaycastHitCollider.Collision.groundDirection;
-        //private int HorizontalMovementDirection => physics.HorizontalMovementDirection;
 
         #endregion
 
@@ -48,28 +33,11 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
-            if (!settings) settings = CreateInstance<PlatformerSettings>();
-            platformer = new PlatformerModel(settings);
-        }
-
-        private void Start()
-        {
-            SetControllers();
-            SetDependencies();
-        }
-
-        private void SetControllers()
-        {
             raycastController = GetComponent<RaycastController>();
             layerMaskController = GetComponent<LayerMaskController>();
             physicsController = GetComponent<PhysicsController>();
-        }
-
-        private void SetDependencies()
-        {
-            raycast = raycastController.Data;
-            layerMask = layerMaskController.Data;
-            physics = physicsController.Data;
+            if (!settings) settings = CreateInstance<PlatformerSettings>();
+            platformer = new PlatformerModel(settings, raycastController, layerMaskController, physicsController);
         }
 
         #endregion
@@ -78,83 +46,8 @@ namespace VFEngine.Platformer
 
         private void FixedUpdate()
         {
-            Platformer();
+            platformer.Run();
         }
-
-        private void Platformer()
-        {
-            /*InitializeFrame();
-            CastRaysDown();
-            SetExternalForce();
-            SetGravity();
-            SetHorizontalExternalForce();
-            CheckSlopes();
-            CastRaysToSides();*/
-        }
-
-        #region initialize frame
-
-        /*private void InitializeFrame()
-        {
-            InitializeRaycastHitColliders();
-            InitializeRaycast();
-        }
-
-        private void InitializeRaycastHitColliders()
-        {
-            
-        }
-
-        private void InitializeRaycast()
-        {
-            raycastController.OnPlatformerInitializeFrame();
-        }*/
-
-        #endregion
-
-        /*private void CastRaysDown()
-        {
-            raycastController.OnPlatformerCastRaysDown();
-        }
-        
-        private void SetExternalForce()
-        {
-            physicsController.OnPlatformerSetExternalForce();
-        }
-
-        private void SetGravity()
-        {
-            physicsController.OnPlatformerSetGravity();
-        }
-
-        private void SetHorizontalExternalForce()
-        {
-            physicsController.OnPlatformerSetHorizontalExternalForce();
-        }
-
-        private void CheckSlopes()
-        {
-            //if (!HorizontalMovement || !OnSlopes) return;
-            //if (DescendingSlope) DescendSlope();
-            //else ClimbSlope();
-        }
-
-        private void DescendSlope()
-        {
-            physicsController.OnPlatformerDescendSlope();
-            //downRaycastHitColliderController.OnPlatformerDescendSlope();
-        }
-
-        private void ClimbSlope()
-        {
-            physicsController.OnPlatformerClimbSlope();
-            //downRaycastHitColliderController.OnPlatformerClimbSlope();
-        }
-
-        private void CastRaysToSides()
-        {
-            raycastController.OnPlatformerCastRaysToSides();
-        }*/
 
         #endregion
 
@@ -169,3 +62,87 @@ namespace VFEngine.Platformer
         #endregion
     }
 }
+
+//private void Platformer()
+//{
+//InitializeFrame();
+//CastRaysDown();
+/*SetExternalForce();
+SetGravity();
+SetHorizontalExternalForce();
+CheckSlopes();
+CastRaysToSides();
+*/
+//}
+/*
+private void CastRaysDown()
+{
+    raycastController.OnPlatformerInitializeIndex();
+    for (var i = 0; i < VerticalRays; i++)
+    {
+        raycastController.OnPlatformerSetDownOrigin();
+        raycastController.OnPlatformerSetDownHit();
+        if (CastDownAtOneWayPlatform)
+        {
+            raycastController.OnPlatformerCastDownAtOneWayPlatform();
+            if (HitMissed)
+            {
+                AddToIndex();
+                continue;
+            }
+        }
+
+        if (Hit)
+        {
+            raycastController.OnPlatformerOnDownHit();
+            break;
+        }
+
+        AddToIndex();
+    }
+
+    void AddToIndex()
+    {
+        raycastController.OnPlatformerAddToIndex();
+    }
+}
+*/
+/*
+private void SetExternalForce()
+{
+    physicsController.OnPlatformerSetExternalForce();
+}
+
+private void SetGravity()
+{
+    physicsController.OnPlatformerSetGravity();
+}
+
+private void SetHorizontalExternalForce()
+{
+    physicsController.OnPlatformerSetHorizontalExternalForce();
+}
+
+private void CheckSlopes()
+{
+    //if (!HorizontalMovement || !OnSlopes) return;
+    //if (DescendingSlope) DescendSlope();
+    //else ClimbSlope();
+}
+
+private void DescendSlope()
+{
+    physicsController.OnPlatformerDescendSlope();
+    //downRaycastHitColliderController.OnPlatformerDescendSlope();
+}
+
+private void ClimbSlope()
+{
+    physicsController.OnPlatformerClimbSlope();
+    //downRaycastHitColliderController.OnPlatformerClimbSlope();
+}
+
+private void CastRaysToSides()
+{
+    raycastController.OnPlatformerCastRaysToSides();
+}*/

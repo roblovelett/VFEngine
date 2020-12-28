@@ -14,8 +14,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] public bool displayWarnings = true;
         [SerializeField] public bool drawGizmos = true;
-        [SerializeField] public int horizontalRaysAmount = 8;
-        [SerializeField] public int verticalRaysAmount = 8;
+        [SerializeField] public int totalHorizontalRays = 8;
+        [SerializeField] public int totalVerticalRays = 8;
         [SerializeField] public float spacing = 0.125f;
         [SerializeField] public float skinWidth = 0.015f;
 

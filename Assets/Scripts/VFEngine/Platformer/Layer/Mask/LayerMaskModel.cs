@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VFEngine.Platformer.Physics;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -6,34 +7,26 @@ namespace VFEngine.Platformer.Layer.Mask
     {
         #region fields
 
+        private LayerMaskData layerMask;
+        private PhysicsController physics;
+        private PlatformerController platformer;
+
         #endregion
 
         #region properties
 
-        public LayerMaskData Data { get; }
+        public LayerMaskData Data => layerMask;
 
         #region public methods
 
         #region constructors
 
-        public LayerMaskModel(LayerMaskSettings settings, GameObject character)
+        public LayerMaskModel(GameObject character, LayerMaskSettings settings, PhysicsController physicsController,
+            PlatformerController platformerController)
         {
-            Data = new LayerMaskData(settings, character);
-        }
-
-        public LayerMaskModel(LayerMaskSettings settings)
-        {
-            Data = new LayerMaskData(settings);
-        }
-
-        public LayerMaskModel(GameObject character)
-        {
-            Data = new LayerMaskData(character);
-        }
-
-        public LayerMaskModel()
-        {
-            Data = new LayerMaskData();
+            layerMask = new LayerMaskData(character, settings);
+            physics = physicsController;
+            platformer = platformerController;
         }
 
         #endregion
