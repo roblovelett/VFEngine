@@ -40,36 +40,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         #endregion
-
-        /*private void PlatformerSetExternalForce()
-        {
-            if (IgnoreFriction) return;
-            p.ExternalForce = MoveTowards(ExternalForce, zero, ExternalForce.magnitude * Friction *deltaTime);
-        }
-
-        private void PlatformerSetGravity()
-        {
-            if (VerticalSpeed) p.SpeedY += GravitationalForce;
-            else p.ExternalForceY += GravitationalForce;
-        }
-
-        private void PlatformerSetHorizontalExternalForce()
-        {
-            //if (!AddToHorizontalExternalForce) return;
-            p.ExternalForceX += -Gravity * GroundFriction * GroundDirection * fixedDeltaTime / 4;
-        }
-      
-        private void PlatformerDescendSlope()
-        {
-            //p.OnDescendSlope(/*GroundAngle* Distance);
-        }
-
-        private void PlatformerClimbSlope()
-        {
-            //if (!MetMinimumWallAngle || !ClimbSlope) return;
-            //p.OnClimbSlope(VerticalMovement, GroundAngle, Distance);
-        }*/
-
+        
         #endregion
 
         #endregion
@@ -80,30 +51,35 @@ namespace VFEngine.Platformer.Physics
 
         #region public methods
 
-        /*public void OnPlatformerSetExternalForce()
+        public void OnPlatformerInitializeFrame()
         {
-            PlatformerSetExternalForce();
+            physics.SetHorizontalMovementDirection();
         }
 
-        public void OnPlatformerSetGravity()
+        public void OnPlatformerSetExternalForce()
         {
-            PlatformerSetGravity();
+            physics.SetExternalForce();
         }
 
-        public void OnPlatformerSetHorizontalExternalForce()
+        public void OnPlatformerApplyGravity()
         {
-            PlatformerSetHorizontalExternalForce();
+            physics.ApplyGravity();
+        }
+
+        public void OnPlatformerApplyForcesToExternal()
+        {
+            physics.ApplyForcesToExternal();
         }
 
         public void OnPlatformerDescendSlope()
         {
-            PlatformerDescendSlope();
+            physics.DescendSlope();
         }
 
         public void OnPlatformerClimbSlope()
         {
-            PlatformerClimbSlope();
-        }*/
+            physics.ClimbSlope();
+        }
 
         #endregion
 

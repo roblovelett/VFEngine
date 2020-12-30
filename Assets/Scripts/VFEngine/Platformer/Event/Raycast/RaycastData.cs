@@ -40,6 +40,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeInternal()
         {
+            Length = 0;
             HorizontalSpacing = 0;
             VerticalSpacing = 0;
             Origin = zero;
@@ -85,6 +86,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public int HorizontalRays { get; set; }
         public int VerticalRays { get; set; }
+        public float Length { get; private set; }
         public float HorizontalSpacing { get; set; }
         public float VerticalSpacing { get; set; }
         public Vector2 Origin { get; set; }
@@ -114,6 +116,21 @@ namespace VFEngine.Platformer.Event.Raycast
             Bounds.Set(Collider, SkinWidth);
         }
 
+        public void SetOrigin(Vector2 origin)
+        {
+            Origin = origin;
+        }
+
+        public void SetHit(RaycastHit2D hit)
+        {
+            Hit = hit;
+        }
+
+        public void SetLength(float length)
+        {
+            Length = length;
+        }
+        
         #endregion
 
         #endregion

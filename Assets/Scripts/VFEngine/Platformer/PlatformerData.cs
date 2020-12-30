@@ -23,9 +23,9 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
+            Index = 0;
             Tolerance = 0;
             IgnorePlatformsTime = 0;
-            Index = 0;
         }
 
         #endregion
@@ -58,6 +58,11 @@ namespace VFEngine.Platformer
         }
 
         #endregion
+
+        public void SetIndex(int index)
+        {
+            Index = index;
+        }
 
         #endregion
 

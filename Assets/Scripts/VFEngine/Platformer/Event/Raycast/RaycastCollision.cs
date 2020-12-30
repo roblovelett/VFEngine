@@ -4,26 +4,10 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
+    using static Vector2;
+    using static Mathf;
     public struct RaycastCollision
     {
-        #region fields
-
-        #region private methods
-
-        /*private void DownHit(float groundAngle, int groundDirection, int groundLayer, RaycastHit2D hit)
-        {
-            OnGround = true;
-            GroundAngle = groundAngle;
-            GroundDirection = groundDirection;
-            GroundLayer = groundLayer;
-            VerticalHit = hit;
-            Below = true;
-        }*/
-
-        #endregion
-
-        #endregion
-
         #region properties
 
         public bool Above { get; set; }
@@ -32,8 +16,8 @@ namespace VFEngine.Platformer.Event.Raycast
         public bool Left { get; set; }
         public bool OnGround { get; set; }
         public bool OnSlope { get; set; }
-        public int GroundDirection { get; set; }
         public int GroundLayer { get; set; }
+        public int GroundDirection { get; set; }
         public float GroundAngle { get; set; }
         public RaycastHit2D HorizontalHit { get; set; }
         public RaycastHit2D VerticalHit { get; set; }
@@ -60,10 +44,40 @@ namespace VFEngine.Platformer.Event.Raycast
             VerticalHit = new RaycastHit2D();
         }
 
-        /*public void OnDownHit(float groundAngle, int groundDirection, int groundLayer, RaycastHit2D hit)
+        public void OnDownHit(RaycastHit2D hit)
         {
-            DownHit(groundAngle, groundDirection, groundLayer, hit);
-        }*/
+            Below = true;
+            OnGround = true;
+            GroundLayer = hit.collider.gameObject.layer;
+            SetGroundMeasurements(hit.normal);
+            VerticalHit = hit;
+        }
+
+        public void SetCollisionBelow(bool collision)
+        {
+            Below = collision;
+        }
+
+        public void OnSideHit(RaycastHit2D hit)
+        {
+            OnGround = true;
+            SetGroundMeasurements(hit.normal);
+        }
+
+        private void SetGroundMeasurements(Vector2 normal)
+        {
+            SetGroundDirection(normal.x);
+            SetGroundAngle(normal);
+        }
+        private void SetGroundDirection(float x)
+        {
+            GroundDirection = (int) Sign(x);
+        }
+
+        private void SetGroundAngle(Vector2 normal)
+        {
+            GroundAngle = Angle(normal, up);
+        }
 
         #endregion
 

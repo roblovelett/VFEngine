@@ -76,6 +76,16 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #endregion
 
+        public void SetSavedLayer(LayerMask layer)
+        {
+            SavedLayer = layer;
+        }
+
+        public void SetCharacterLayer(LayerMask layer)
+        {
+            CharacterGameObject.layer = layer;
+        }
+
         #endregion
 
         #endregion

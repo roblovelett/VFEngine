@@ -7,51 +7,17 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Vector2;
     using static Physics2D;
     using static Mathf;
-    using static Color;
-    using static Debug;
+
     public class RaycastModel
     {
         #region fields
 
-        private RaycastData raycast;
-        private readonly LayerMaskController layerMask;
-        private readonly PhysicsController physics;
-        private readonly PlatformerController platformer;
-        
+        private readonly LayerMaskController layerMaskController;
+        private readonly PhysicsController physicsController;
+        private readonly PlatformerController platformerController;
+
         #region internal
 
-        /*private LayerMaskData LayerMask => layerMask.Data;
-        private PhysicsData Physics => physics.Data;
-        private PlatformerData Platformer => platformer.Data;
-        private RaycastBounds Bounds => raycast.Bounds;
-        private RaycastCollision Collision => raycast.Collision;
-        private Collider2D Collider => raycast.Collider;
-        private float SkinWidth => raycast.SkinWidth;
-        private bool FacingRight => Physics.HorizontalMovementDirection == 1;
-        private Vector2 BottomLeft => raycast.Bounds.BottomLeft;
-        private Vector2 BottomRight => raycast.Bounds.BottomRight;
-        private float VerticalSpacing => raycast.VerticalSpacing;
-        private int Index => Platformer.Index;
-        private Vector2 DownOrigin
-        {
-            get
-            {
-                var origin = (FacingRight ? BottomLeft : BottomRight) +
-                             (FacingRight ? right : left) * (VerticalSpacing * Index);
-                origin.y += SkinWidth * 2;
-                return origin;
-            }
-        }
-        
-        private LayerMask CollisionMask => LayerMask.Collision;
-        private float DownRayDistance => SkinWidth * 4;
-        private RaycastHit2D DownHit => Raycast(DownOrigin, down, DownRayDistance, CollisionMask);
-        private LayerMask OneWayPlatform => LayerMask.OneWayPlatform;
-        private RaycastHit2D DownHitAtOneWayPlatform => Raycast(DownOrigin, down, DownRayDistance, OneWayPlatform);
-        private RaycastHit2D CurrentDownHit => raycast.Hit;
-        private int GroundDirection => (int) Sign(CurrentDownHit.normal.x);
-        private int GroundLayer => CurrentDownHit.collider.gameObject.layer;
-        private float GroundAngle => Angle(CurrentDownHit.normal, up);*/
         #endregion
 
         #region private methods
@@ -66,47 +32,134 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public RaycastData Data => raycast;
+        public RaycastData Data => Raycast;
 
         #region public methods
-        
+
         #region constructors
 
-        public RaycastModel(Collider2D collider, RaycastSettings settings, LayerMaskController layerMaskController,
-            PhysicsController physicsController,
-            PlatformerController platformerController)
+        public RaycastModel(Collider2D collider, RaycastSettings settings, LayerMaskController layerMask,
+            PhysicsController physics, PlatformerController platformer)
         {
-            raycast = new RaycastData(settings, collider);
-            layerMask = layerMaskController;
-            physics = physicsController;
-            platformer = platformerController;
+            Raycast = new RaycastData(settings, collider);
+            layerMaskController = layerMask;
+            physicsController = physics;
+            platformerController = platformer;
         }
-        
+
         #endregion
+
+        private RaycastData Raycast { get; }
 
         public void ResetCollision()
         {
-            raycast.ResetCollision();
+            Raycast.ResetCollision();
         }
 
         public void SetBounds()
         {
-            raycast.SetBounds();
+            Raycast.SetBounds();
         }
 
-        /*
-        
-        public void SetOrigin(Vector2 origin)
+        private RaycastBounds Bounds => Raycast.Bounds;
+        private RaycastCollision Collision => Raycast.Collision;
+        private PhysicsData Physics => physicsController.Data;
+        private LayerMaskData LayerMask => layerMaskController.Data;
+        private PlatformerData Platformer => platformerController.Data;
+        private int MovementDirection => Physics.MovementDirection;
+        private bool MovingRight => MovementDirection == 1;
+        private Vector2 BottomLeft => Bounds.BottomLeft;
+        private Vector2 BottomRight => Bounds.BottomRight;
+        private float VerticalSpacing => Raycast.VerticalSpacing;
+        private int Index => Platformer.Index;
+        private float SkinWidth => Raycast.SkinWidth;
+
+        private Vector2 DownOrigin
         {
-            raycast.Origin = origin;
+            get
+            {
+                var origin = (MovingRight ? BottomLeft : BottomRight) +
+                             (MovingRight ? right : left) * (VerticalSpacing * Index);
+                origin.y += SkinWidth * 2;
+                return origin;
+            }
         }
 
-        public void SetHit(RaycastHit2D hit)
+        private LayerMask CollisionLayer => LayerMask.Collision;
+        private static Vector2 DownDirection => down;
+        private float DownDistance => SkinWidth * 4;
+        private LayerMask DownLayer => CollisionLayer;
+        private RaycastHit2D DownHit => Raycast(DownOrigin, DownDirection, DownDistance, DownLayer);
+
+        public void SetDownOrigin()
         {
-            raycast.Hit = hit;
+            Raycast.SetOrigin(DownOrigin);
         }
 
-        */
+        public void SetDownHit()
+        {
+            Raycast.SetHit(DownHit);
+        }
+
+        private LayerMask OneWayPlatform => LayerMask.OneWayPlatform;
+        private LayerMask DownLayerOneWayPlatform => OneWayPlatform;
+
+        private RaycastHit2D DownHitAtOneWayPlatform =>
+            Raycast(DownOrigin, DownDirection, DownDistance, DownLayerOneWayPlatform);
+
+        public void SetDownHitAtOneWayPlatform()
+        {
+            Raycast.SetHit(DownHitAtOneWayPlatform);
+        }
+
+        public void SetCollisionOnDownHit()
+        {
+            Collision.OnDownHit(DownHit);
+        }
+
+        public void SetCollisionBelow()
+        {
+            Collision.SetCollisionBelow(true);
+        }
+
+        private float MoveX => Physics.Movement.x;
+        private float InitialLength => Abs(MoveX) + SkinWidth;
+        private float Length => Raycast.Length;
+
+        public void InitializeLength()
+        {
+            Raycast.SetLength(InitialLength);
+        }
+
+        private bool MovingLeft => MovementDirection == -1;
+        private float HorizontalSpacing => Raycast.HorizontalSpacing;
+        private Vector2 SideDirection => right * MovementDirection;
+        private LayerMask SideLayer => CollisionLayer;
+        private float SideDistance => Length;
+        private Vector2 SideOrigin => (MovingLeft ? BottomLeft : BottomRight) + up * HorizontalSpacing * Index;
+        private RaycastHit2D SideHit => Raycast(SideOrigin, SideDirection, SideDistance, SideLayer);
+
+        public void SetSideOrigin()
+        {
+            Raycast.SetOrigin(SideOrigin);
+        }
+
+        public void SetSideHit()
+        {
+            Raycast.SetHit(SideHit);
+        }
+
+        private float MinimumLength => Min(InitialLength + SkinWidth, SideHit.distance);
+
+        public void SetCollisionOnSideHit()
+        {
+            Collision.OnSideHit(SideHit);
+        }
+
+        public void SetLength()
+        {
+            Raycast.SetLength(MinimumLength);
+        }
 
         #endregion
 

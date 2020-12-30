@@ -20,18 +20,6 @@ namespace VFEngine.Platformer.Physics
             InitializeTransform(character);
         }
 
-        private void InitializeDependencies(PhysicsSettings settings)
-        {
-            InitializeSettings(settings);
-            InitializeTransform();
-        }
-
-        private void InitializeDependencies(GameObject character)
-        {
-            InitializeSettings();
-            InitializeTransform(character);
-        }
-
         private void InitializeSettings(PhysicsSettings settings)
         {
             DisplayWarningsControl = settings.displayWarningsControl;
@@ -44,26 +32,8 @@ namespace VFEngine.Platformer.Physics
             StaggerSpeedFalloff = settings.staggerSpeedFalloff;
         }
 
-        private void InitializeSettings()
-        {
-            DisplayWarningsControl = false;
-            MaximumSlopeAngle = 0;
-            MinimumWallAngle = 0;
-            MinimumMovementThreshold = 0;
-            Gravity = 0;
-            AirFriction = 0;
-            GroundFriction = 0;
-            StaggerSpeedFalloff = 0;
-        }
-
         private void InitializeTransform(GameObject character)
         {
-            Transform = character.transform;
-        }
-
-        private void InitializeTransform()
-        {
-            var character = new GameObject();
             Transform = character.transform;
         }
 
@@ -81,8 +51,8 @@ namespace VFEngine.Platformer.Physics
             ExternalForce = zero;
             ExternalForce = zero;
             TotalSpeed = Speed * ExternalForce;
-            DeltaMovement = TotalSpeed * fixedDeltaTime;
-            HorizontalMovementDirection = (int) Sign(DeltaMovement.x);
+            Movement = TotalSpeed * fixedDeltaTime;
+            SetMovementDirection();
         }
 
         #endregion
@@ -107,12 +77,31 @@ namespace VFEngine.Platformer.Physics
 
         public bool FacingRight { get; set; }
         public bool IgnoreFriction { get; set; }
-        public int HorizontalMovementDirection { get; set; }
+        public int MovementDirection { get; set; }
         public float GravityScale { get; set; }
         public Vector2 Speed { get; set; }
+
+        public float SpeedY
+        {
+            get => Speed.y;
+            set => value = Speed.y;
+        }
+
         public Vector2 ExternalForce { get; set; }
+
+        public float ExternalForceX
+        {
+            get => ExternalForce.x;
+            set => value = ExternalForce.x;
+        }
+        public float ExternalForceY
+        {
+            get => ExternalForce.y;
+            set => value = ExternalForce.y;
+        }
+
         public Vector2 TotalSpeed { get; set; }
-        public Vector2 DeltaMovement { get; set; }
+        public Vector2 Movement { get; set; }
 
         #region public methods
 
@@ -124,81 +113,51 @@ namespace VFEngine.Platformer.Physics
             Initialize();
         }
 
-        public PhysicsData(PhysicsSettings settings) : this()
-        {
-            InitializeDependencies(settings);
-            Initialize();
-        }
-
-        public PhysicsData(GameObject character) : this()
-        {
-            InitializeDependencies(character);
-            Initialize();
-        }
-
         #endregion
+
+        public void SetMovementDirection()
+        {
+            MovementDirection = (int) Sign(Movement.x);
+        }
+
+        public void SetExternalForce(float friction)
+        {
+            var maxDistanceDelta = ExternalForce.magnitude * friction * deltaTime;
+            ExternalForce = MoveTowards(ExternalForce, zero, maxDistanceDelta);
+        }
+
+        public void ApplyGravityToSpeed(float gravity)
+        {
+            SpeedY += gravity;
+        }
+
+        public void ApplyGravityToExternalForce(float gravity)
+        {
+            ExternalForceY += gravity;
+        }
+
+        public void ApplyForcesToHorizontalExternalForce(int groundDirection)
+        {
+            ExternalForceX += -Gravity * GroundFriction * groundDirection * deltaTime / 4;
+        }
+
+        public void SetMovement(Vector2 movement)
+        {
+            Movement = movement;
+        }
+
+        public void SetSpeedY(float speedY)
+        {
+            SpeedY = speedY;
+        }
+
+        public void SetExternalForceY(float externalForceY)
+        {
+            ExternalForceY = externalForceY;
+        }
 
         #endregion
 
         #endregion
     }
 }
-
-/*public float SpeedY
-        {
-            get => Speed.y;
-            set => value = Speed.y;
-        }
-
-        public float ExternalForceX
-        {
-            get => ExternalForce.x;
-            set => value = ExternalForce.x;
-        }
-
-        public float ExternalForceY
-        {
-            get => ExternalForce.y;
-            set => value = ExternalForce.y;
-        }
-        
-        public float DeltaMovementX
-        {
-            get => DeltaMovement.x;
-            set => value = DeltaMovement.x;
-        }
-
-        public float DeltaMovementY
-        {
-            get => DeltaMovement.y;
-            set => value = DeltaMovement.y;
-        }*/
-/*public void InitializeData()
-{
-    FacingRight = false;
-    IgnoreFriction = false;
-    GravityScale = 1;
-    Speed = zero;
-    ExternalForce = zero;
-    ExternalForce = zero;
-    TotalSpeed = Speed * ExternalForce;
-    DeltaMovement = TotalSpeed * fixedDeltaTime;
-    HorizontalMovementDirection = (int) Sign(DeltaMovement.x);
-}*/
-/*public void Initialize(PhysicsSettings settings)
-{
-    ApplySettings(settings);
-}*/
-/*public void OnDescendSlope(float groundAngle, float distance)
-{
-    DeltaMovementX = Cos(groundAngle * Deg2Rad) * distance * Sign(DeltaMovement.x);
-    DeltaMovementY = -Sin(groundAngle * Deg2Rad) * distance;
-    StopVerticalForce();
-}
-
-public void OnClimbSlope(float verticalMovement, float groundAngle, float distance)
-{
-    DeltaMovementX = Cos(groundAngle * Deg2Rad) * distance * Sign(DeltaMovement.x);
-    DeltaMovementY = verticalMovement;
-    StopVerticalForce();
-}*/

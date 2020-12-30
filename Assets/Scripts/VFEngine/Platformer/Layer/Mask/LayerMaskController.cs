@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Physics;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
@@ -16,8 +15,6 @@ namespace VFEngine.Platformer.Layer.Mask
         [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskSettings settings;
         private LayerMaskModel layerMask;
-        private PhysicsController physicsController;
-        private PlatformerController platformerController;
 
         #endregion
 
@@ -36,12 +33,11 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void Initialize()
         {
-            physicsController = GetComponent<PhysicsController>();
-            platformerController = GetComponent<PlatformerController>();
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            layerMask = new LayerMaskModel(character, settings, physicsController, platformerController);
+            layerMask = new LayerMaskModel(character, settings);
         }
+
         #endregion
 
         #endregion
@@ -53,6 +49,12 @@ namespace VFEngine.Platformer.Layer.Mask
         public LayerMaskData Data => layerMask.Data;
 
         #region public methods
+
+        public void OnPlatformerInitializeFrame()
+        {
+            layerMask.SetSavedLayer();
+            layerMask.SetCharacterToIgnoreRaycast();
+        }
 
         #endregion
 

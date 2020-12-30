@@ -3,33 +3,44 @@ using VFEngine.Platformer.Physics;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
+    using static Physics2D;
     public class LayerMaskModel
     {
         #region fields
+        
+        #region internal
 
-        private LayerMaskData layerMask;
-        private PhysicsController physics;
-        private PlatformerController platformer;
+        private LayerMaskData LayerMask { get; }
+        private GameObject Character => LayerMask.CharacterGameObject;
+
+        #endregion
 
         #endregion
 
         #region properties
 
-        public LayerMaskData Data => layerMask;
+        public LayerMaskData Data => LayerMask;
 
         #region public methods
 
         #region constructors
 
-        public LayerMaskModel(GameObject character, LayerMaskSettings settings, PhysicsController physicsController,
-            PlatformerController platformerController)
+        public LayerMaskModel(GameObject character, LayerMaskSettings settings)
         {
-            layerMask = new LayerMaskData(character, settings);
-            physics = physicsController;
-            platformer = platformerController;
+            LayerMask = new LayerMaskData(character, settings);
         }
 
         #endregion
+
+        public void SetSavedLayer()
+        {
+            LayerMask.SetSavedLayer(Character.layer);
+        }
+
+        public void SetCharacterToIgnoreRaycast()
+        {
+            LayerMask.SetCharacterLayer(IgnoreRaycastLayer);
+        }
 
         #endregion
 
