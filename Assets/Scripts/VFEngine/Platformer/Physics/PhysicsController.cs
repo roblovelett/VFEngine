@@ -17,8 +17,8 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsSettings settings;
-        private PhysicsModel physics;
-        private RaycastController raycastController;
+        private PhysicsModel _physics;
+        private RaycastController _raycastController;
 
         #endregion
 
@@ -33,10 +33,10 @@ namespace VFEngine.Platformer.Physics
 
         private void Initialize()
         {
-            raycastController = GetComponent<RaycastController>();
+            _raycastController = GetComponent<RaycastController>();
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
-            physics = new PhysicsModel(character, settings, raycastController);
+            _physics = new PhysicsModel(character, settings, _raycastController);
         }
 
         #endregion
@@ -47,38 +47,63 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsData Data => physics.Data;
+        public PhysicsData Data => _physics.Data;
 
         #region public methods
 
         public void OnPlatformerInitializeFrame()
         {
-            physics.SetHorizontalMovementDirection();
+            _physics.SetHorizontalMovementDirection();
         }
 
         public void OnPlatformerSetExternalForce()
         {
-            physics.SetExternalForce();
+            _physics.SetExternalForce();
         }
 
         public void OnPlatformerApplyGravity()
         {
-            physics.ApplyGravity();
+            _physics.ApplyGravity();
         }
 
         public void OnPlatformerApplyForcesToExternal()
         {
-            physics.ApplyForcesToExternal();
+            _physics.ApplyForcesToExternal();
         }
 
         public void OnPlatformerDescendSlope()
         {
-            physics.DescendSlope();
+            _physics.DescendSlope();
         }
 
         public void OnPlatformerClimbSlope()
         {
-            physics.ClimbSlope();
+            _physics.ClimbSlope();
+        }
+
+        public void OnPlatformerOnFirstSideHit()
+        {
+            _physics.OnFirstSideHit();
+        }
+
+        public void OnPlatformerOnSideHit()
+        {
+            _physics.OnSideHit();
+        }
+
+        public void OnPlatformerStopVerticalMovement()
+        {
+            _physics.StopVerticalMovement();
+        }
+
+        public void OnPlatformerAdjustVerticalMovementToSlope()
+        {
+            _physics.OnAdjustVerticalMovementToSlope();
+        }
+
+        public void OnPlatformerHitWall()
+        {
+            _physics.OnHitWall();
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region fields
 
-        private RaycastCollision collision;
+        private RaycastCollision _collision;
 
         #region private methods
 

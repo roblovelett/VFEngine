@@ -12,9 +12,9 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region fields
 
-        private readonly LayerMaskController layerMaskController;
-        private readonly PhysicsController physicsController;
-        private readonly PlatformerController platformerController;
+        private readonly LayerMaskController _layerMaskController;
+        private readonly PhysicsController _physicsController;
+        private readonly PlatformerController _platformerController;
 
         #region internal
 
@@ -42,9 +42,9 @@ namespace VFEngine.Platformer.Event.Raycast
             PhysicsController physics, PlatformerController platformer)
         {
             Raycast = new RaycastData(settings, collider);
-            layerMaskController = layerMask;
-            physicsController = physics;
-            platformerController = platformer;
+            _layerMaskController = layerMask;
+            _physicsController = physics;
+            _platformerController = platformer;
         }
 
         #endregion
@@ -63,10 +63,10 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private RaycastBounds Bounds => Raycast.Bounds;
         private RaycastCollision Collision => Raycast.Collision;
-        private PhysicsData Physics => physicsController.Data;
-        private LayerMaskData LayerMask => layerMaskController.Data;
-        private PlatformerData Platformer => platformerController.Data;
-        private int MovementDirection => Physics.MovementDirection;
+        private PhysicsData Physics => _physicsController.Data;
+        private LayerMaskData LayerMask => _layerMaskController.Data;
+        private PlatformerData Platformer => _platformerController.Data;
+        private int MovementDirection => Physics.HorizontalMovementDirection;
         private bool MovingRight => MovementDirection == 1;
         private Vector2 BottomLeft => Bounds.BottomLeft;
         private Vector2 BottomRight => Bounds.BottomRight;
@@ -123,12 +123,12 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         private float MoveX => Physics.Movement.x;
-        private float InitialLength => Abs(MoveX) + SkinWidth;
+        private float InitialSideLength => Abs(MoveX) + SkinWidth;
         private float Length => Raycast.Length;
 
-        public void InitializeLength()
+        public void InitializeLengthForSideRay()
         {
-            Raycast.SetLength(InitialLength);
+            Raycast.SetLength(InitialSideLength);
         }
 
         private bool MovingLeft => MovementDirection == -1;
@@ -138,7 +138,8 @@ namespace VFEngine.Platformer.Event.Raycast
         private float SideDistance => Length;
         private Vector2 SideOrigin => (MovingLeft ? BottomLeft : BottomRight) + up * HorizontalSpacing * Index;
         private RaycastHit2D SideHit => Raycast(SideOrigin, SideDirection, SideDistance, SideLayer);
-
+        private RaycastHit2D Hit => Raycast.Hit;
+        private float HitDistance => Hit.distance;
         public void SetSideOrigin()
         {
             Raycast.SetOrigin(SideOrigin);
@@ -149,16 +150,40 @@ namespace VFEngine.Platformer.Event.Raycast
             Raycast.SetHit(SideHit);
         }
 
-        private float MinimumLength => Min(InitialLength + SkinWidth, SideHit.distance);
+        private float MinimumSideLength => Min(InitialSideLength, HitDistance);
 
         public void SetCollisionOnSideHit()
         {
             Collision.OnSideHit(SideHit);
         }
 
-        public void SetLength()
+        public void SetLengthForSideRay()
         {
-            Raycast.SetLength(MinimumLength);
+            Raycast.SetLength(MinimumSideLength);
+        }
+
+        public void OnHitWall()
+        {
+            Collision.OnHitWall(MovementDirection, Hit);
+        }
+
+        private int GroundDirection => Collision.GroundDirection;
+        private Vector2 StoppedOrigin => BottomRight;
+        private Vector2 StoppedDirection => left * GroundDirection;
+        private static float StoppedDistance => 1;
+        private LayerMask StoppedLayer => CollisionLayer;
+        private RaycastHit2D StoppedHit => Raycast(StoppedOrigin, StoppedDirection, StoppedDistance, StoppedLayer);
+        
+        public void OnStopHorizontalSpeedAndSetHit()
+        {
+            Collision.SetHorizontalHit(StoppedHit);
+        }
+
+        private int VerticalMovementDirection => Physics.VerticalMovementDirection;
+        private float InitialVerticalLength => VerticalMovementDirection + SkinWidth;
+        public void InitializeLengthForVerticalRay()
+        {
+            Raycast.SetLength(InitialVerticalLength);
         }
 
         #endregion

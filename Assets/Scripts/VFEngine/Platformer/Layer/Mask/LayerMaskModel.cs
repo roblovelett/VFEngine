@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using VFEngine.Platformer.Physics;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
