@@ -10,7 +10,7 @@ namespace VFEngine.Platformer.Physics
     {
         #region fields
 
-        private readonly RaycastController _raycastController;
+        //private readonly RaycastController _raycastController;
 
         #region internal
 
@@ -36,10 +36,10 @@ namespace VFEngine.Platformer.Physics
 
         #region constructors
 
-        public PhysicsModel(GameObject character, PhysicsSettings settings, RaycastController raycast)
+        public PhysicsModel(ref GameObject character, ref PhysicsSettings settings, ref RaycastData raycast)
         {
             Physics = new PhysicsData(settings, character);
-            _raycastController = raycast;
+            RaycastData = raycast;
         }
 
         #endregion
@@ -50,8 +50,8 @@ namespace VFEngine.Platformer.Physics
         }
 
         private PhysicsData Physics { get; }
-        private RaycastData Raycast => _raycastController.Data;
-        private RaycastCollision Collision => Raycast.Collision;
+        private RaycastData RaycastData { get; set; }//=> _raycastController.Data;
+        private RaycastCollision Collision => RaycastData.Collision;
         private Vector2 Speed => Physics.Speed;
         private float GroundFriction => Physics.GroundFriction;
         private float AirFriction => Physics.AirFriction;
@@ -98,9 +98,9 @@ namespace VFEngine.Platformer.Physics
         private float ClimbSlopeVerticalPosition => Sin(GroundAngleRad) * HorizontalDistance;
         private bool CanClimbSlope => VerticalMovement <= ClimbSlopeVerticalPosition;
         private Vector2 ClimbSlopePosition => new Vector2(SlopeHorizontalPosition, ClimbSlopeVerticalPosition);
-        private RaycastHit2D Hit => Raycast.Hit;
+        private RaycastHit2D Hit => RaycastData.Hit;
         private float HitDistance => Hit.distance;
-        private float SkinWidth => Raycast.SkinWidth;
+        private float SkinWidth => RaycastData.SkinWidth;
         private float ClimbTotalDistance => HitDistance - SkinWidth;
         
         public void OnClimbSlope()

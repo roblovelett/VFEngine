@@ -12,10 +12,6 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region fields
 
-        private readonly LayerMaskController _layerMaskController;
-        private readonly PhysicsController _physicsController;
-        private readonly PlatformerController _platformerController;
-
         #region internal
 
         #endregion
@@ -33,18 +29,21 @@ namespace VFEngine.Platformer.Event.Raycast
         #region properties
 
         public RaycastData Data => Raycast;
+        private PhysicsData Physics { get; }
+        private LayerMaskData LayerMask { get; }
+        private PlatformerData Platformer { get; }
 
         #region public methods
 
         #region constructors
 
-        public RaycastModel(Collider2D collider, RaycastSettings settings, LayerMaskController layerMask,
-            PhysicsController physics, PlatformerController platformer)
+        public RaycastModel(ref Collider2D collider, ref RaycastSettings settings, ref LayerMaskData layerMask,
+            ref PhysicsData physics, ref PlatformerData platformer)
         {
             Raycast = new RaycastData(settings, collider);
-            _layerMaskController = layerMask;
-            _physicsController = physics;
-            _platformerController = platformer;
+            LayerMask = layerMask;
+            Physics = physics;
+            Platformer = platformer;
         }
 
         #endregion
@@ -68,11 +67,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private RaycastBounds Bounds => Raycast.Bounds;
         private RaycastCollision Collision => Raycast.Collision;
-        private PhysicsData Physics => _physicsController.Data;
-        private LayerMaskData LayerMask => _layerMaskController.Data;
-        private PlatformerData Platformer => _platformerController.Data;
-        private int MovementDirection => Physics.HorizontalMovementDirection;
-        private bool MovingRight => MovementDirection == 1;
+        
+        private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
+        private bool MovingRight => HorizontalMovementDirection == 1;
         private Vector2 BottomLeft => Bounds.BottomLeft;
         private Vector2 BottomRight => Bounds.BottomRight;
         private float VerticalSpacing => Raycast.VerticalSpacing;
@@ -151,12 +148,13 @@ namespace VFEngine.Platformer.Event.Raycast
             Raycast.SetLength(InitialSideLength);
         }
 
-        private bool MovingLeft => MovementDirection == -1;
+        private bool MovingLeft => HorizontalMovementDirection == -1;
         private float HorizontalSpacing => Raycast.HorizontalSpacing;
-        private Vector2 SideDirection => right * MovementDirection;
+        private Vector2 SideDirection => right * HorizontalMovementDirection;
         private LayerMask SideLayer => CollisionLayer;
         private float SideDistance => Length;
-        private Vector2 SideOrigin => (MovingLeft ? BottomLeft : BottomRight) + up * HorizontalSpacing * Index;
+        private Vector2 InitialSideOrigin => (MovingLeft ? BottomLeft : BottomRight) + up;
+        private Vector2 SideOrigin => InitialSideOrigin * HorizontalSpacing * Index;
         private RaycastHit2D SideHit => Raycast(SideOrigin, SideDirection, SideDistance, SideLayer);
         private RaycastHit2D Hit => Raycast.Hit;
         private float HitDistance => Hit.distance;
@@ -195,7 +193,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public void OnHitWall()
         {
-            Collision.OnHitWall(MovementDirection, Hit);
+            Collision.OnHitWall(HorizontalMovementDirection, Hit);
         }
 
         private int GroundDirection => Collision.GroundDirection;
@@ -266,10 +264,30 @@ namespace VFEngine.Platformer.Event.Raycast
             Collision.OnVerticalHit(VerticalMovementDirection, Hit);
         }
 
-        private float SteepSlopeLength => InitialSideLength * 2;
-        public void SetLengthForSteepSlope()
+        public void OnClimbSteepSlope()
         {
-            
+            SetLengthForSteepSlope();
+            SetOriginForSteepSlope();
+            SetHitForSteepSlope();
+        }
+        private float SteepSlopeLength => InitialSideLength * 2;
+        private void SetLengthForSteepSlope()
+        {
+            Raycast.SetLength(SteepSlopeLength);
+        }
+
+        private Vector2 SteepSlopeOrigin => InitialSideOrigin * VerticalMovementDirection;
+        private void SetOriginForSteepSlope()
+        {
+            Raycast.SetOrigin(SteepSlopeOrigin);
+        }
+
+        private Vector2 SteepSlopeDirection => SideDirection;
+        private LayerMask SteepSlopeLayer => CollisionLayer;
+        private RaycastHit2D SteepSlopeHit => Raycast(SteepSlopeOrigin, SteepSlopeDirection, SteepSlopeLength, SteepSlopeLayer);
+        private void SetHitForSteepSlope()
+        {
+            Raycast.SetHit(SteepSlopeHit);
         }
         
         #endregion

@@ -24,7 +24,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region constructors
 
-        public LayerMaskModel(GameObject character, LayerMaskSettings settings)
+        public LayerMaskModel(ref GameObject character, ref LayerMaskSettings settings)
         {
             LayerMask = new LayerMaskData(character, settings);
         }

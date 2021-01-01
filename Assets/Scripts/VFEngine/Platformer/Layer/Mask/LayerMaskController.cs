@@ -14,7 +14,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         [SerializeField] private GameObject character;
         [SerializeField] private LayerMaskSettings settings;
-        private LayerMaskModel _model;
+        private LayerMaskModel LayerMask { get; set; }
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            _model = new LayerMaskModel(character, settings);
+            LayerMask = new LayerMaskModel(ref character, ref settings);
         }
 
         #endregion
@@ -46,13 +46,13 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        public LayerMaskData Data => _model.Data;
+        public LayerMaskData Data => LayerMask.Data;
 
         #region public methods
 
         public void OnPlatformerInitializeFrame()
         {
-            _model.OnInitializeFrame();
+            LayerMask.OnInitializeFrame();
         }
 
         #endregion
