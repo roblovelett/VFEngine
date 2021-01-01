@@ -20,8 +20,8 @@ namespace VFEngine.Platformer.Physics
 
         private void StopVerticalForces()
         {
-            Physics.SetSpeedY(0);
-            Physics.SetExternalForceY(0);
+            Physics.SetVerticalSpeed(0);
+            Physics.SetVerticalExternalForce(0);
         }
 
         #endregion
@@ -80,13 +80,13 @@ namespace VFEngine.Platformer.Physics
         }
 
         private Vector2 Movement => Physics.Movement;
-        private float MovementX => Movement.x;
-        private float DistanceX => Abs(MovementX);
+        private float HorizontalMovement => Movement.x;
+        private float HorizontalDistance => Abs(HorizontalMovement);
         private float GroundAngle => Collision.GroundAngle;
         private float GroundAngleRad => GroundAngle * Deg2Rad;
-        private float SlopeX => Cos(GroundAngleRad) * DistanceX * HorizontalMovementDirection;
-        private float DescendSlopeY => -Sin(GroundAngleRad) * DistanceX;
-        private Vector2 DescendSlopePosition => new Vector2(SlopeX, DescendSlopeY);
+        private float SlopeHorizontalPosition => Cos(GroundAngleRad) * HorizontalDistance * HorizontalMovementDirection;
+        private float DescendSlopeVerticalPosition => -Sin(GroundAngleRad) * HorizontalDistance;
+        private Vector2 DescendSlopePosition => new Vector2(SlopeHorizontalPosition, DescendSlopeVerticalPosition);
 
         public void DescendSlope()
         {
@@ -94,16 +94,16 @@ namespace VFEngine.Platformer.Physics
             StopVerticalForces();
         }
 
-        private float MovementY => Movement.y;
-        private float ClimbSlopeY => Sin(GroundAngleRad) * DistanceX;
-        private bool CanClimbSlope => MovementY <= ClimbSlopeY;
-        private Vector2 ClimbSlopePosition => new Vector2(SlopeX, ClimbSlopeY);
+        private float VerticalMovement => Movement.y;
+        private float ClimbSlopeVerticalPosition => Sin(GroundAngleRad) * HorizontalDistance;
+        private bool CanClimbSlope => VerticalMovement <= ClimbSlopeVerticalPosition;
+        private Vector2 ClimbSlopePosition => new Vector2(SlopeHorizontalPosition, ClimbSlopeVerticalPosition);
         private RaycastHit2D Hit => Raycast.Hit;
         private float HitDistance => Hit.distance;
         private float SkinWidth => Raycast.SkinWidth;
         private float ClimbTotalDistance => HitDistance - SkinWidth;
         
-        public void ClimbSlope()
+        public void OnClimbSlope()
         {
             if (!CanClimbSlope) return;
             Physics.SetMovement(ClimbSlopePosition);
@@ -113,32 +113,49 @@ namespace VFEngine.Platformer.Physics
         public void OnFirstSideHit()
         {
             Physics.OnPreClimbSlopeBehavior(ClimbTotalDistance);
-            ClimbSlope();
+            OnClimbSlope();
             Physics.OnPostClimbSlopeBehavior(ClimbTotalDistance);
         }
 
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
-        private float SideHitMovementX => Min(DistanceX, ClimbTotalDistance) * HorizontalMovementDirection; 
+        private float SideHitHorizontalMovement => Min(HorizontalDistance, ClimbTotalDistance) * HorizontalMovementDirection; 
         public void OnSideHit()
         {
-            Physics.SetMovementX(SideHitMovementX);
+            Physics.SetHorizontalMovement(SideHitHorizontalMovement);
         }
 
         public void StopVerticalMovement()
         {
-            Physics.SetMovementY(0);
+            Physics.SetVerticalMovement(0);
         }
 
         private int VerticalMovementDirection => Physics.VerticalMovementDirection;
-        private float MovementYSlopeApplied => Tan(GroundAngleRad) * DistanceX * VerticalMovementDirection;
+        private float VerticalMovementSlopeApplied => Tan(GroundAngleRad) * HorizontalDistance * VerticalMovementDirection;
         public void OnAdjustVerticalMovementToSlope()
         {
-            Physics.SetMovementY(MovementYSlopeApplied);
+            Physics.SetVerticalMovement(VerticalMovementSlopeApplied);
         }
 
         public void OnHitWall()
         {
             Physics.OnHitWall();
+        }
+
+        public void StopHorizontalSpeed()
+        {
+            Physics.SetHorizontalSpeed(0);
+        }
+
+        private float VerticalHitDistance => Hit.distance;
+        private float VerticalMoveOnVerticalHit => (VerticalHitDistance - SkinWidth) * VerticalMovementDirection;
+        public void OnVerticalHit()
+        {
+            Physics.SetVerticalMovement(VerticalMoveOnVerticalHit);
+        }
+
+        public void OnPlatformerApplyGroundAngle()
+        {
+            Physics.OnApplyGroundAngle(GroundAngleRad);
         }
 
         #endregion

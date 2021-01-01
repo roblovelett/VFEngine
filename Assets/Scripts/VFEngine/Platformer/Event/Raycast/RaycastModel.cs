@@ -51,12 +51,17 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private RaycastData Raycast { get; }
 
+        public void OnInitializeFrame()
+        {
+            ResetCollision();
+            SetBounds();
+        }
         public void ResetCollision()
         {
             Raycast.ResetCollision();
         }
 
-        public void SetBounds()
+        private void SetBounds()
         {
             Raycast.SetBounds();
         }
@@ -91,12 +96,17 @@ namespace VFEngine.Platformer.Event.Raycast
         private LayerMask DownLayer => CollisionLayer;
         private RaycastHit2D DownHit => Raycast(DownOrigin, DownDirection, DownDistance, DownLayer);
 
-        public void SetDownOrigin()
+        public void OnCastRaysDown()
+        {
+            SetDownOrigin();
+            SetDownHit();
+        }
+        private void SetDownOrigin()
         {
             Raycast.SetOrigin(DownOrigin);
         }
 
-        public void SetDownHit()
+        private void SetDownHit()
         {
             Raycast.SetHit(DownHit);
         }
@@ -112,18 +122,28 @@ namespace VFEngine.Platformer.Event.Raycast
             Raycast.SetHit(DownHitAtOneWayPlatform);
         }
 
-        public void SetCollisionOnDownHit()
+        public void OnDownHit()
         {
-            Collision.OnDownHit(DownHit);
+            SetCollisionOnDownHit();
         }
 
-        public void SetCollisionBelow()
+        private void SetCollisionOnDownHit()
+        {
+            Collision.OnDownHit(Hit);
+        }
+
+        public void OnSlopeBehavior()
+        {
+            SetCollisionBelow();
+        }
+
+        private void SetCollisionBelow()
         {
             Collision.SetCollisionBelow(true);
         }
 
-        private float MoveX => Physics.Movement.x;
-        private float InitialSideLength => Abs(MoveX) + SkinWidth;
+        private float HorizontalMovement => Physics.Movement.x;
+        private float InitialSideLength => Abs(HorizontalMovement) + SkinWidth;
         private float Length => Raycast.Length;
 
         public void InitializeLengthForSideRay()
@@ -140,21 +160,32 @@ namespace VFEngine.Platformer.Event.Raycast
         private RaycastHit2D SideHit => Raycast(SideOrigin, SideDirection, SideDistance, SideLayer);
         private RaycastHit2D Hit => Raycast.Hit;
         private float HitDistance => Hit.distance;
-        public void SetSideOrigin()
+
+        public void OnCastRaysToSides()
+        {
+            SetSideOrigin();
+            SetSideHit();
+        }
+        private void SetSideOrigin()
         {
             Raycast.SetOrigin(SideOrigin);
         }
 
-        public void SetSideHit()
+        private void SetSideHit()
         {
             Raycast.SetHit(SideHit);
         }
 
         private float MinimumSideLength => Min(InitialSideLength, HitDistance);
 
-        public void SetCollisionOnSideHit()
+        public void OnFirstSideHit()
         {
-            Collision.OnSideHit(SideHit);
+            SetCollisionOnSideHit();
+        }
+
+        private void SetCollisionOnSideHit()
+        {
+            Collision.OnSideHit(Hit);
         }
 
         public void SetLengthForSideRay()
@@ -168,15 +199,15 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         private int GroundDirection => Collision.GroundDirection;
-        private Vector2 StoppedOrigin => BottomRight;
-        private Vector2 StoppedDirection => left * GroundDirection;
-        private static float StoppedDistance => 1;
-        private LayerMask StoppedLayer => CollisionLayer;
-        private RaycastHit2D StoppedHit => Raycast(StoppedOrigin, StoppedDirection, StoppedDistance, StoppedLayer);
+        private Vector2 StopHorizontalSpeedOrigin => BottomRight;
+        private Vector2 StopHorizontalSpeedDirection => left * GroundDirection;
+        private static float StopHorizontalSpeedDistance => 1;
+        private LayerMask StopHorizontalSpeedLayer => CollisionLayer;
+        private RaycastHit2D StopHorizontalSpeedHit => Raycast(StopHorizontalSpeedOrigin, StopHorizontalSpeedDirection, StopHorizontalSpeedDistance, StopHorizontalSpeedLayer);
         
-        public void OnStopHorizontalSpeedAndSetHit()
+        public void OnStopHorizontalSpeedHit()
         {
-            Collision.SetHorizontalHit(StoppedHit);
+            Collision.SetHorizontalHit(StopHorizontalSpeedHit);
         }
 
         private int VerticalMovementDirection => Physics.VerticalMovementDirection;
@@ -186,6 +217,61 @@ namespace VFEngine.Platformer.Event.Raycast
             Raycast.SetLength(InitialVerticalLength);
         }
 
+        private bool MovingDown => VerticalMovementDirection == -1;
+        private Vector2 TopLeft => Bounds.TopLeft;
+
+        private Vector2 VerticalOrigin =>
+            (MovingDown ? BottomLeft : TopLeft) + right * (VerticalSpacing * Index * HorizontalMovement);
+
+        public void OnCastRaysVertically()
+        {
+            SetVerticalOrigin();
+            SetVerticalHit();
+        }
+        private void SetVerticalOrigin()
+        {
+            Raycast.SetOrigin(VerticalOrigin);
+        }
+
+        private Vector2 VerticalDirection => up * VerticalMovementDirection;
+        private float VerticalDistance => Length;
+        private LayerMask VerticalLayer => CollisionLayer;
+        private RaycastHit2D VerticalHit => Raycast(VerticalOrigin, VerticalDirection, VerticalDistance, VerticalLayer);
+        
+        private void SetVerticalHit()
+        {
+            Raycast.SetHit(VerticalHit);
+        }
+
+        private float VerticalRayLength => HitDistance;
+
+        public void OnVerticalHit()
+        {
+            SetLengthForVerticalRay();
+            SetCollisionOnVerticalHit();
+        }
+        private void SetLengthForVerticalRay()
+        {
+            Raycast.SetLength(VerticalRayLength);
+        }
+
+        private RaycastHit2D VerticalHitAtOneWayPlatform => Raycast(VerticalOrigin, VerticalDirection, VerticalDistance, OneWayPlatform);
+        public void SetVerticalHitAtOneWayPlatform()
+        {
+            Raycast.SetHit(VerticalHitAtOneWayPlatform);
+        }
+
+        private void SetCollisionOnVerticalHit()
+        {
+            Collision.OnVerticalHit(VerticalMovementDirection, Hit);
+        }
+
+        private float SteepSlopeLength => InitialSideLength * 2;
+        public void SetLengthForSteepSlope()
+        {
+            
+        }
+        
         #endregion
 
         #endregion

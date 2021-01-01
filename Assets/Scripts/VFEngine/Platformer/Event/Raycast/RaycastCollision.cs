@@ -79,16 +79,23 @@ namespace VFEngine.Platformer.Event.Raycast
             GroundAngle = Angle(normal, up);
         }
 
-        public void OnHitWall(float movementDirection, RaycastHit2D hit)
+        public void OnHitWall(float horizontalMovementDirection, RaycastHit2D hit)
         {
-            Left = movementDirection < 0;
-            Right = movementDirection > 0;
+            Left = horizontalMovementDirection < 0;
+            Right = horizontalMovementDirection > 0;
             HorizontalHit = hit;
         }
 
         public void SetHorizontalHit(RaycastHit2D hit)
         {
             HorizontalHit = hit;
+        }
+
+        public void OnVerticalHit(float verticalMovementDirection, RaycastHit2D hit)
+        {
+            Above = verticalMovementDirection > 0;
+            Below = verticalMovementDirection < 0;
+            VerticalHit = hit;
         }
 
         #endregion

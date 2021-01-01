@@ -21,6 +21,7 @@ namespace VFEngine.Platformer
         private PlatformerData Platformer { get; }
         private RaycastData Raycast => _raycastController.Data;
         private RaycastCollision Collision => Raycast.Collision;
+
         //private RaycastBounds Bounds => Raycast.Bounds;
         //private LayerMaskData LayerMask => _layerMaskController.Data;
         private PhysicsData Physics => _physicsController.Data;
@@ -38,6 +39,7 @@ namespace VFEngine.Platformer
             SetSlopeBehavior();
             SetHorizontalCollision();
             SetVerticalCollision();
+            OnSlopeChange();
         }
 
         private void InitializeFrame()
@@ -49,8 +51,8 @@ namespace VFEngine.Platformer
 
         private RaycastHit2D Hit => Raycast.Hit;
         private float IgnorePlatformsTime => Platformer.IgnorePlatformsTime;
-        private bool SetHitAtOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
-        private bool HitMissed => Hit.distance <= 0;
+        private bool SetDownHitAtOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
+        private bool DownHitMissed => Hit.distance <= 0;
         private bool CastNextRayDown => !Hit;
 
         private void SetGroundCollision()
@@ -59,10 +61,10 @@ namespace VFEngine.Platformer
             {
                 Platformer.SetIndex(i);
                 _raycastController.OnPlatformerCastRaysDown();
-                if (SetHitAtOneWayPlatform)
+                if (SetDownHitAtOneWayPlatform)
                 {
                     _raycastController.OnPlatformerSetDownHitAtOneWayPlatform();
-                    if (HitMissed) continue;
+                    if (DownHitMissed) continue;
                 }
 
                 if (CastNextRayDown) continue;
@@ -80,7 +82,8 @@ namespace VFEngine.Platformer
         private float MinimumWallAngle => Physics.MinimumWallAngle;
         private bool OnAngle => GroundAngle < MinimumWallAngle;
         private Vector2 Speed => Physics.Speed;
-        private bool NoHorizontalSpeed => Speed.x == 0;
+        private float HorizontalSpeed => Speed.x;
+        private bool NoHorizontalSpeed => HorizontalSpeed == 0;
         private bool ApplyForcesToExternal => ExceededMaximumSlopeAngle && (OnAngle || NoHorizontalSpeed);
         private bool CannotSetForces => IgnoreFriction;
 
@@ -96,13 +99,14 @@ namespace VFEngine.Platformer
         private Vector2 Movement => Physics.Movement;
         private float MovementX => Movement.x;
         private bool HorizontalMovement => MovementX != 0;
-        private float MovementY => Movement.y;
-        private bool NoVerticalMovement => MovementY == 0;
-        private bool NegativeVerticalMovement => MovementY < 0;
+        private float VerticalMovement => Movement.y;
+        private bool NoVerticalMovement => VerticalMovement == 0;
+        private bool NegativeVerticalMovement => VerticalMovement < 0;
         private bool NegativeOrNoVerticalMovement => NoVerticalMovement || NegativeVerticalMovement;
         private int GroundDirection => Collision.GroundDirection;
         private bool MovementIsGroundDirection => GroundDirection == HorizontalMovementDirection;
         private bool DescendSlope => NegativeOrNoVerticalMovement && OnSlope && MovementIsGroundDirection;
+
         //private float DistanceX => Abs(Movement.x);
         private bool ClimbSlope => OnAngle;
         private bool CannotSetSlopeBehavior => !HorizontalMovement;
@@ -131,17 +135,18 @@ namespace VFEngine.Platformer
         private int Index => Platformer.Index;
         private float SideAngle => Angle(Hit.normal, up);
         private bool OnSideAngle => SideAngle < MinimumWallAngle;
-        private bool FirstHit => Index == 0;
-        private bool FirstHitOnAngle => FirstHit && !OnSlope && OnSideAngle;
+        private bool FirstSideHit => Index == 0;
+        private bool FirstSideHitOnAngle => FirstSideHit && !OnSlope && OnSideAngle;
         private bool SideHitMissed => !Hit;
-        private bool CastNextRayToSides => FirstHit && OnSlope || !FailedMaximumSlopeAngle || OnSideAngle;
+        private bool CastNextRayToSides => FirstSideHit && OnSlope || !FailedMaximumSlopeAngle || OnSideAngle;
         private bool SetVerticalMovement => OnSlope && OnAngle;
         private bool MetMinimumWallAngle => GroundAngle >= MinimumWallAngle;
         private bool GroundNotHorizontalMovementDirection => GroundDirection != HorizontalMovementDirection;
-        private bool NegativeVerticalSpeed => Speed.y < 0;
+        private float VerticalSpeed => Speed.y;
+        private bool NegativeVerticalSpeed => VerticalSpeed < 0;
 
-        private bool StopHorizontalSpeedAndSetHit =>
-            OnSlope && MetMinimumWallAngle && GroundNotHorizontalMovementDirection && NegativeVerticalSpeed;
+        private bool StopHorizontalSpeedAndSetHit => OnSlope && MetMinimumWallAngle &&
+                                                     GroundNotHorizontalMovementDirection && NegativeVerticalSpeed;
 
         private void SetHorizontalCollision()
         {
@@ -153,16 +158,16 @@ namespace VFEngine.Platformer
                     Platformer.SetIndex(i);
                     _raycastController.OnPlatformerCastRaysToSides();
                     if (SideHitMissed) continue;
-                    if (FirstHitOnAngle)
+                    if (FirstSideHitOnAngle)
                     {
                         _raycastController.OnPlatformerOnFirstSideHit();
                         _physicsController.OnPlatformerOnFirstSideHit();
-                        _raycastController.OnPlatformerSetRayLengthForSideRay();
+                        _raycastController.OnPlatformerSetLengthForSideRay();
                     }
 
                     if (CastNextRayToSides) continue;
                     _physicsController.OnPlatformerOnSideHit();
-                    _raycastController.OnPlatformerSetRayLengthForSideRay();
+                    _raycastController.OnPlatformerSetLengthForSideRay();
                     if (SetVerticalMovement)
                     {
                         if (NegativeVerticalMovement) _physicsController.OnPlatformerStopVerticalMovement();
@@ -174,13 +179,19 @@ namespace VFEngine.Platformer
                 }
             }
 
-            if (StopHorizontalSpeedAndSetHit) _raycastController.OnPlatformerStopHorizontalSpeedAndSetHit();
+            if (!StopHorizontalSpeedAndSetHit) return;
+            _raycastController.OnPlatformerOnStopHorizontalSpeedHit();
+            _physicsController.OnPlatformerStopHorizontalSpeed();
         }
 
-        private bool PositiveVerticalMovement => MovementY > 0;
+        private bool PositiveVerticalMovement => VerticalMovement > 0;
         private bool NoHorizontalMovement => MovementX == 0;
-        private bool StoppedOnGround => !OnSlope || NoHorizontalMovement;
-        private bool CastVertically => PositiveVerticalMovement || NegativeVerticalMovement && StoppedOnGround;
+        private bool InAir => !OnSlope || NoHorizontalMovement;
+        private bool CastVertically => PositiveVerticalMovement || NegativeVerticalMovement && InAir;
+        private bool VerticalHitMissed => !Hit;
+        private bool SetVerticalHitAtOneWayPlatform => NegativeVerticalMovement && VerticalHitMissed;
+        private bool ApplySlopeBehaviorToPhysics => OnSlope && PositiveVerticalMovement;
+
         private void SetVerticalCollision()
         {
             if (!CastVertically) return;
@@ -189,7 +200,31 @@ namespace VFEngine.Platformer
             {
                 Platformer.SetIndex(i);
                 _raycastController.OnPlatformerCastRaysVertically();
+                if (SetVerticalHitAtOneWayPlatform) _raycastController.OnPlatformerSetVerticalHitAtOneWayPlatform();
+                if (VerticalHitMissed) continue;
+                _physicsController.OnPlatformerVerticalHit();
+                _raycastController.OnPlatformerVerticalHit();
+                if (ApplySlopeBehaviorToPhysics) _physicsController.OnPlatformerApplyGroundAngle();
             }
+        }
+
+        private bool OnGround => Collision.OnGround;
+        private bool NoVerticalSpeed => VerticalSpeed == 0; 
+        private bool NegativeOrNoVerticalSpeed => NoVerticalSpeed || NegativeVerticalSpeed;
+        private bool SlopeChange => OnGround && HorizontalMovement && NegativeOrNoVerticalSpeed;
+        private bool ClimbingSlope => PositiveVerticalMovement;
+        private void OnSlopeChange()
+        {
+            if (!SlopeChange) return;
+            if (ClimbingSlope)
+            {
+                ClimbSteepSlope();
+            }
+        }
+
+        private void ClimbSteepSlope()
+        {
+            _raycastController.OnPlatformerClimbSteepSlope();
         }
 
         #endregion

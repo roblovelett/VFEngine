@@ -15,7 +15,7 @@ namespace VFEngine.Platformer
         #region dependencies
 
         [SerializeField] private PlatformerSettings settings;
-        private PlatformerModel _platformer;
+        private PlatformerModel _model;
         private RaycastController _raycastController;
         private LayerMaskController _layerMaskController;
         private PhysicsController _physicsController;
@@ -37,7 +37,7 @@ namespace VFEngine.Platformer
             _layerMaskController = GetComponent<LayerMaskController>();
             _physicsController = GetComponent<PhysicsController>();
             if (!settings) settings = CreateInstance<PlatformerSettings>();
-            _platformer = new PlatformerModel(settings, _raycastController, _layerMaskController, _physicsController);
+            _model = new PlatformerModel(settings, _raycastController, _layerMaskController, _physicsController);
         }
 
         #endregion
@@ -46,14 +46,14 @@ namespace VFEngine.Platformer
 
         private void FixedUpdate()
         {
-            _platformer.Run();
+            _model.Run();
         }
 
         #endregion
 
         #region properties
 
-        public PlatformerData Data => _platformer.Data;
+        public PlatformerData Data => _model.Data;
 
         #region public methods
 

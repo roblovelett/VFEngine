@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics
 
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsSettings settings;
-        private PhysicsModel _physics;
+        private PhysicsModel _model;
         private RaycastController _raycastController;
 
         #endregion
@@ -36,7 +36,7 @@ namespace VFEngine.Platformer.Physics
             _raycastController = GetComponent<RaycastController>();
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
-            _physics = new PhysicsModel(character, settings, _raycastController);
+            _model = new PhysicsModel(character, settings, _raycastController);
         }
 
         #endregion
@@ -47,63 +47,78 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        public PhysicsData Data => _physics.Data;
+        public PhysicsData Data => _model.Data;
 
         #region public methods
 
         public void OnPlatformerInitializeFrame()
         {
-            _physics.SetHorizontalMovementDirection();
+            _model.SetHorizontalMovementDirection();
         }
 
         public void OnPlatformerSetExternalForce()
         {
-            _physics.SetExternalForce();
+            _model.SetExternalForce();
         }
 
         public void OnPlatformerApplyGravity()
         {
-            _physics.ApplyGravity();
+            _model.ApplyGravity();
         }
 
         public void OnPlatformerApplyForcesToExternal()
         {
-            _physics.ApplyForcesToExternal();
+            _model.ApplyForcesToExternal();
         }
 
         public void OnPlatformerDescendSlope()
         {
-            _physics.DescendSlope();
+            _model.DescendSlope();
         }
 
         public void OnPlatformerClimbSlope()
         {
-            _physics.ClimbSlope();
+            _model.OnClimbSlope();
         }
 
         public void OnPlatformerOnFirstSideHit()
         {
-            _physics.OnFirstSideHit();
+            _model.OnFirstSideHit();
         }
 
         public void OnPlatformerOnSideHit()
         {
-            _physics.OnSideHit();
+            _model.OnSideHit();
         }
 
         public void OnPlatformerStopVerticalMovement()
         {
-            _physics.StopVerticalMovement();
+            _model.StopVerticalMovement();
         }
 
         public void OnPlatformerAdjustVerticalMovementToSlope()
         {
-            _physics.OnAdjustVerticalMovementToSlope();
+            _model.OnAdjustVerticalMovementToSlope();
         }
 
         public void OnPlatformerHitWall()
         {
-            _physics.OnHitWall();
+            _model.OnHitWall();
+        }
+
+        public void OnPlatformerStopHorizontalSpeed()
+        {
+            _model.StopHorizontalSpeed();
+        }
+
+        public void OnPlatformerVerticalHit()
+        {
+            _model.OnVerticalHit();
+        }
+
+        public void OnPlatformerApplyGroundAngle()
+        {
+            _model.OnPlatformerApplyGroundAngle();
         }
 
         #endregion

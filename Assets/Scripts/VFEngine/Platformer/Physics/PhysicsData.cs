@@ -88,12 +88,12 @@ namespace VFEngine.Platformer.Physics
         public float GravityScale { get; set; }
         public Vector2 Speed { get; set; }
 
-        public float SpeedX
+        public float HorizontalSpeed
         {
             get => Speed.x;
             set => value = Speed.x;
         }
-        public float SpeedY
+        public float VerticalSpeed
         {
             get => Speed.y;
             set => value = Speed.y;
@@ -101,12 +101,12 @@ namespace VFEngine.Platformer.Physics
 
         public Vector2 ExternalForce { get; set; }
 
-        public float ExternalForceX
+        public float HorizontalExternalForce
         {
             get => ExternalForce.x;
             set => value = ExternalForce.x;
         }
-        public float ExternalForceY
+        public float VerticalExternalForce
         {
             get => ExternalForce.y;
             set => value = ExternalForce.y;
@@ -115,13 +115,13 @@ namespace VFEngine.Platformer.Physics
         public Vector2 TotalSpeed { get; set; }
         public Vector2 Movement { get; set; }
 
-        public float MovementX
+        public float HorizontalMovement
         {
             get => Movement.x;
             set => value = Movement.x;
         }
 
-        public float MovementY
+        public float VerticalMovement
         {
             get => Movement.y;
             set => value = Movement.y;
@@ -141,12 +141,12 @@ namespace VFEngine.Platformer.Physics
 
         public void SetHorizontalMovementDirection()
         {
-            HorizontalMovementDirection = (int) Sign(Movement.x);
+            HorizontalMovementDirection = (int) Sign(HorizontalMovement);
         }
 
         public void SetVerticalMovementDirection()
         {
-            VerticalMovementDirection = (int) Sign(Movement.y);
+            VerticalMovementDirection = (int) Sign(VerticalMovement);
         }
 
         public void SetExternalForce(float friction)
@@ -157,17 +157,17 @@ namespace VFEngine.Platformer.Physics
 
         public void ApplyGravityToSpeed(float gravity)
         {
-            SpeedY += gravity;
+            VerticalSpeed += gravity;
         }
 
         public void ApplyGravityToExternalForce(float gravity)
         {
-            ExternalForceY += gravity;
+            VerticalExternalForce += gravity;
         }
 
         public void ApplyForcesToHorizontalExternalForce(int groundDirection)
         {
-            ExternalForceX += -Gravity * GroundFriction * groundDirection * deltaTime / 4;
+            HorizontalExternalForce += -Gravity * GroundFriction * groundDirection * deltaTime / 4;
         }
 
         public void SetMovement(Vector2 movement)
@@ -175,50 +175,58 @@ namespace VFEngine.Platformer.Physics
             Movement = movement;
         }
 
-        public void SetSpeedY(float speedY)
+        public void SetVerticalSpeed(float speed)
         {
-            SpeedY = speedY;
+            VerticalSpeed = speed;
         }
 
-        public void SetExternalForceY(float externalForceY)
+        public void SetVerticalExternalForce(float force)
         {
-            ExternalForceY = externalForceY;
+            VerticalExternalForce = force;
         }
 
         public void OnPreClimbSlopeBehavior(float distance)
         {
-            MovementX -= distance * HorizontalMovementDirection;
+            HorizontalMovement -= distance * HorizontalMovementDirection;
         }
 
         public void OnPostClimbSlopeBehavior(float distance)
         {
-            MovementX += distance * HorizontalMovementDirection;
+            HorizontalMovement += distance * HorizontalMovementDirection;
         }
 
-        public void SetMovementX(float movementX)
+        public void SetHorizontalMovement(float movement)
         {
-            MovementX = movementX;
+            HorizontalMovement = movement;
         }
 
-        public void SetMovementY(float movementY)
+        public void SetVerticalMovement(float movement)
         {
-            MovementY = movementY;
+            VerticalMovement = movement;
         }
 
         public void OnHitWall()
         {
-            SetSpeedX(0);
-            SetExternalForceX(0);
+            SetHorizontalSpeed(0);
+            SetHorizontalExternalForce(0);
         }
 
-        public void SetSpeedX(float speedX)
+        public void SetHorizontalSpeed(float speed)
         {
-            SpeedX = speedX;
+            HorizontalSpeed = speed;
         }
 
-        public void SetExternalForceX(float externalForceX)
+        public void SetHorizontalExternalForce(float force)
         {
-            ExternalForceX = ExternalForceX;
+            HorizontalExternalForce = force;
+        }
+
+        public void OnApplyGroundAngle(float angleRad)
+        {
+            var horizontalMovement = VerticalMovement / Tan(angleRad) * Sign(HorizontalMovement);
+            SetHorizontalMovement(horizontalMovement);
+            SetHorizontalSpeed(0);
+            SetHorizontalExternalForce(0);
         }
 
         #endregion

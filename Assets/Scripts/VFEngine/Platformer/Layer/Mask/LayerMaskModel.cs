@@ -31,12 +31,18 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #endregion
 
-        public void SetSavedLayer()
+        public void OnInitializeFrame()
+        {
+            SetSavedLayer();
+            SetCharacterToIgnoreRaycast();
+
+        }
+        private void SetSavedLayer()
         {
             LayerMask.SetSavedLayer(Character.layer);
         }
 
-        public void SetCharacterToIgnoreRaycast()
+        private void SetCharacterToIgnoreRaycast()
         {
             LayerMask.SetCharacterLayer(IgnoreRaycastLayer);
         }

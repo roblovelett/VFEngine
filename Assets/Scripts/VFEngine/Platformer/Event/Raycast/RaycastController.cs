@@ -8,7 +8,6 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Debug;
     using static Color;
     using static Vector2;
-    using static Mathf;
 
     public class RaycastController : MonoBehaviour
     {
@@ -18,7 +17,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] private new Collider2D collider;
         [SerializeField] private RaycastSettings settings;
-        private RaycastModel _raycast;
+        private RaycastModel _model;
         private LayerMaskController _layerMaskController;
         private PhysicsController _physicsController;
         private PlatformerController _platformerController;
@@ -45,7 +44,7 @@ namespace VFEngine.Platformer.Event.Raycast
             _platformerController = GetComponent<PlatformerController>();
             if (!collider) collider = GetComponent<BoxCollider2D>();
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            _raycast = new RaycastModel(collider, settings, _layerMaskController, _physicsController,
+            _model = new RaycastModel(collider, settings, _layerMaskController, _physicsController,
                 _platformerController);
         }
 
@@ -57,91 +56,112 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public RaycastData Data => _raycast.Data;
+        public RaycastData Data => _model.Data;
 
         #region public methods
 
         public void OnPlatformerInitializeFrame()
         {
-            _raycast.ResetCollision();
-            _raycast.SetBounds();
+            _model.OnInitializeFrame();
         }
 
         public void OnPlatformerCastRaysDown()
         {
-            _raycast.SetDownOrigin();
-            _raycast.SetDownHit();
+            _model.OnCastRaysDown();
         }
 
         public void OnPlatformerSetDownHitAtOneWayPlatform()
         {
-            _raycast.SetDownHitAtOneWayPlatform();
+            _model.SetDownHitAtOneWayPlatform();
         }
 
-        private Vector2 Origin => _raycast.Data.Origin;
-        private float SkinWidth => _raycast.Data.SkinWidth;
+        private RaycastData Raycast => _model.Data;
+        private Vector2 Origin => Raycast.Origin;
+        private Vector2 DownRayOrigin => Origin;
+        private float SkinWidth => Raycast.SkinWidth;
         private Vector2 DownRayDirection => down * SkinWidth * 2;
         private static Color DownRayColor => blue;
 
         public void OnPlatformerDownHit()
         {
-            _raycast.SetCollisionOnDownHit();
-            DrawRay(Origin, DownRayDirection, DownRayColor);
+            _model.OnDownHit();
+            DrawRay(DownRayOrigin, DownRayDirection, DownRayColor);
         }
 
         public void OnPlatformerSlopeBehavior()
         {
-            _raycast.SetCollisionBelow();
+            _model.OnSlopeBehavior();
         }
 
         public void OnPlatformerInitializeLengthForSideRay()
         {
-            _raycast.InitializeLengthForSideRay();
+            _model.InitializeLengthForSideRay();
         }
 
         private PhysicsData Physics => _physicsController.Data;
+        private Vector2 SideRayOrigin => Origin;
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
-        private float MoveX => Physics.Movement.x;
-        private float SideRayLength => Abs(MoveX) + SkinWidth;
+        private float Length => Raycast.Length;
+        private float SideRayLength => Length;
         private Vector2 SideRayDirection => right * HorizontalMovementDirection * SideRayLength;
         private static Color SideRayColor => red;
 
         public void OnPlatformerCastRaysToSides()
         {
-            _raycast.SetSideOrigin();
-            _raycast.SetSideHit();
-            DrawRay(Origin, SideRayDirection, SideRayColor);
+            _model.OnCastRaysToSides();
+            DrawRay(SideRayOrigin, SideRayDirection, SideRayColor);
         }
 
         public void OnPlatformerOnFirstSideHit()
         {
-            _raycast.SetCollisionOnSideHit();
+            _model.OnFirstSideHit();
         }
 
-        public void OnPlatformerSetRayLengthForSideRay()
+        public void OnPlatformerSetLengthForSideRay()
         {
-            _raycast.SetLengthForSideRay();
+            _model.SetLengthForSideRay();
         }
 
         public void OnPlatformerHitWall()
         {
-            _raycast.OnHitWall();
+            _model.OnHitWall();
         }
 
-        public void OnPlatformerStopHorizontalSpeedAndSetHit()
+        public void OnPlatformerOnStopHorizontalSpeedHit()
         {
-            _raycast.OnStopHorizontalSpeedAndSetHit();
+            _model.OnStopHorizontalSpeedHit();
         }
 
         public void OnPlatformerInitializeLengthForVerticalRay()
         {
-            _raycast.InitializeLengthForVerticalRay();
+            _model.InitializeLengthForVerticalRay();
         }
+
+        private Vector2 VerticalRayOrigin => Origin;
+        private int VerticalMovementDirection => Physics.VerticalMovementDirection;
+        private float VerticalRayLength => Length;
+        private Vector2 VerticalRayDirection => up * VerticalMovementDirection * VerticalRayLength;
+        private static Color VerticalRayColor => red;
 
         public void OnPlatformerCastRaysVertically()
         {
-            //_raycast.SetVerticalOrigin();
-            //_raycast.SetVerticalHit();
+            _model.OnCastRaysVertically();
+            DrawRay(VerticalRayOrigin, VerticalRayDirection, VerticalRayColor);
+        }
+
+        public void OnPlatformerSetVerticalHitAtOneWayPlatform()
+        {
+            _model.SetVerticalHitAtOneWayPlatform();
+        }
+        public void OnPlatformerVerticalHit()
+        {
+            _model.OnVerticalHit();
+        }
+
+        public void OnPlatformerClimbSteepSlope()
+        {
+            _model.SetLengthForSteepSlope();
+            //_model.
         }
 
         #endregion
