@@ -227,9 +227,25 @@ namespace VFEngine.Platformer.Physics
             SetHorizontalExternalForce(0);
         }
 
-        public void OnClimbMildSlope(Vector2 climbMildSlope)
+        public void AddToMovement(Vector2 movement)
         {
-            Movement += climbMildSlope;
+            Movement += movement;
+        }
+
+        public void SetTransformTranslate(Vector2 movement)
+        {
+            Transform.Translate(movement);
+        }
+
+        public void OnCeilingOrGroundCollision()
+        {
+            SetVerticalSpeed(0);
+            SetVerticalExternalForce(0);
+        }
+
+        public void SetIgnoreFriction(bool ignore)
+        {
+            IgnoreFriction = ignore;
         }
 
         #endregion

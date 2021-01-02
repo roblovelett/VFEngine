@@ -11,6 +11,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private LayerMaskData LayerMask { get; }
         private GameObject Character => LayerMask.CharacterGameObject;
+        private int SavedLayer => LayerMask.SavedLayer;
 
         #endregion
 
@@ -33,18 +34,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public void OnInitializeFrame()
         {
-            SetSavedLayer();
-            SetCharacterToIgnoreRaycast();
-
-        }
-        private void SetSavedLayer()
-        {
             LayerMask.SetSavedLayer(Character.layer);
-        }
-
-        private void SetCharacterToIgnoreRaycast()
-        {
             LayerMask.SetCharacterLayer(IgnoreRaycastLayer);
+        }
+        public void OnSetLayerToSaved()
+        {
+            LayerMask.SetCharacterLayer(SavedLayer);
         }
 
         #endregion

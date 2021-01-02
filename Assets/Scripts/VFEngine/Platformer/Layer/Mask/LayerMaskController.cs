@@ -55,6 +55,11 @@ namespace VFEngine.Platformer.Layer.Mask
             LayerMask.OnInitializeFrame();
         }
 
+        public void OnPlatformerSetLayerToSaved()
+        {
+            LayerMask.OnSetLayerToSaved();
+        }
+
         #endregion
 
         #endregion

@@ -190,11 +190,14 @@ namespace VFEngine.Platformer.Event.Raycast
             DrawRay(Origin, down, yellow);
         }
 
-        public void OnPlatformerDescendSteepSlope()
+        private Vector2 InitialPositionStart => Physics.Transform.position;
+        private Vector2 Movement => Physics.Movement;
+        private Vector2 InitialPositionDirection => Movement * 3f;
+        public void OnPlatformerCastRayFromInitialPosition()
         {
-            Raycast.OnDescendSteepSlope();
+            DrawRay(InitialPositionStart, InitialPositionDirection, green);
         }
-        
+
         #endregion
 
         #endregion

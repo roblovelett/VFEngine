@@ -141,6 +141,21 @@ namespace VFEngine.Platformer.Physics
             Physics.OnDescendSteepSlope();
         }
 
+        public void OnPlatformerTranslateMovement()
+        {
+            Physics.OnTranslateMovement();
+        }
+
+        public void OnPlatformerCeilingOrGroundCollision()
+        {
+            Physics.OnCeilingOrGroundCollision();
+        }
+
+        public void OnPlatformerResetFriction()
+        {
+            Physics.ResetFriction();
+        }
+
         #endregion
 
         #endregion

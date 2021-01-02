@@ -36,6 +36,11 @@ namespace VFEngine.Platformer
             SetHorizontalCollision();
             SetVerticalCollision();
             OnSlopeChange();
+            CastRayFromInitialPosition();
+            TranslateMovement();
+            OnCeilingOrGroundCollision();
+            SetLayerMaskToSaved();
+            ResetFriction();
         }
 
         private void InitializeFrame()
@@ -139,6 +144,7 @@ namespace VFEngine.Platformer
         private bool GroundNotHorizontalMovementDirection => GroundDirection != HorizontalMovementDirection;
         private float VerticalSpeed => Speed.y;
         private bool NegativeVerticalSpeed => VerticalSpeed < 0;
+
         private bool StopHorizontalSpeedAndSetHit => OnSlope && MetMinimumWallAngle &&
                                                      GroundNotHorizontalMovementDirection && NegativeVerticalSpeed;
 
@@ -251,9 +257,14 @@ namespace VFEngine.Platformer
         private float DescendMildSlopeAngle => SideAngle;
         private bool DescendMildSlope => DescendMildSlopeHit && DescendMildSlopeAngle < GroundAngle;
         private RaycastHit2D DescendSteepSlopeHit => Hit;
-        private bool SteepSlopeHitIsMovementDirection => (int) Sign(DescendSteepSlopeHit.normal.x) == HorizontalMovementDirection;
+
+        private bool SteepSlopeHitIsMovementDirection =>
+            (int) Sign(DescendSteepSlopeHit.normal.x) == HorizontalMovementDirection;
+
         private bool SteepSlopeHitLayerIsGround => DescendSteepSlopeHit.collider.gameObject.layer == GroundLayer;
-        private bool DescendSteepSlope => DescendSteepSlopeHit && SteepSlopeHitIsMovementDirection && SteepSlopeHitLayerIsGround;
+
+        private bool DescendSteepSlope =>
+            DescendSteepSlopeHit && SteepSlopeHitIsMovementDirection && SteepSlopeHitLayerIsGround;
 
         private void OnNegativeSlopeChange()
         {
@@ -273,6 +284,44 @@ namespace VFEngine.Platformer
         {
             Physics.OnPlatformerDescendMildSlope();
             Raycast.OnPlatformerDescendMildSlope();
+        }
+
+        private void CastRayFromInitialPosition()
+        {
+            Raycast.OnPlatformerCastRayFromInitialPosition();
+        }
+
+        private void TranslateMovement()
+        {
+            Physics.OnPlatformerTranslateMovement();
+        }
+
+        private RaycastHit2D VerticalHit => Collision.VerticalHit;
+        private bool CollidingBelow => Collision.Below;
+        private Vector2 TotalSpeed => PhysicsData.TotalSpeed;
+        private bool NegativeVerticalTotalSpeed => TotalSpeed.y < 0;
+        private bool CollidingAbove => Collision.Above;
+        private bool PositiveVerticalTotalSpeed => TotalSpeed.y > 0;
+        private bool HitGround => CollidingBelow && NegativeVerticalTotalSpeed;
+        private bool HitCeiling => CollidingAbove && PositiveVerticalTotalSpeed;
+        private bool AboveOrBelowCollision => HitGround || HitCeiling;
+        private bool OnAngleOrNotOnSlope => !OnSlope || OnAngle;
+        private bool StopVerticalForces => VerticalHit && AboveOrBelowCollision && OnAngleOrNotOnSlope;
+
+        private void OnCeilingOrGroundCollision()
+        {
+            if (!StopVerticalForces) return;
+            Physics.OnPlatformerCeilingOrGroundCollision();
+        }
+
+        private void SetLayerMaskToSaved()
+        {
+            LayerMask.OnPlatformerSetLayerToSaved();
+        }
+
+        private void ResetFriction()
+        {
+            Physics.OnPlatformerResetFriction();
         }
 
         #endregion

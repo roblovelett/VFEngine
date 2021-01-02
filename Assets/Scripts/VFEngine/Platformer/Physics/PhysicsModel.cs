@@ -177,40 +177,40 @@ namespace VFEngine.Platformer.Physics
             Physics.SetHorizontalMovement(ClimbSteepSlopeHorizontalMovement);
         }
 
-        private float ClimbSlopeAngle => Angle(Hit.normal, up);
-        private float ClimbSlopeAngleRad => ClimbSlopeAngle * Deg2Rad;
-        private bool ClimbSlopeAngleNotGroundAngle => ClimbSlopeAngle < GroundAngle;
-        private bool PositiveSlopeAngle => ClimbSlopeAngle > 0;
-        private float ClimbSlopeAngleTan => Tan(ClimbSlopeAngleRad);
+        private float ClimbMildSlopeAngle => Angle(Hit.normal, up);
+        private float ClimbMildSlopeAngleRad => ClimbMildSlopeAngle * Deg2Rad;
+        private bool ClimbMildSlopeNotGroundAngle => ClimbMildSlopeAngle < GroundAngle;
+        private bool PositiveClimbSlopeAngle => ClimbMildSlopeAngle > 0;
+        private float ClimbSlopeAngleTan => Tan(ClimbMildSlopeAngleRad);
+        private float ClimbSlopeAngleSin => Sin(ClimbMildSlopeAngleRad);
         private float GroundAngleTan => Tan(GroundAngleRad);
         private float GroundAngleSin => Sin(GroundAngleRad);
 
-        private float ClimbOvershootOnPositiveAngle =>
+        private float MildSlopeOvershootOnPositiveAngle =>
             (2 * ClimbSlopeAngleTan * HitDistance - GroundAngleTan * HitDistance) /
             (ClimbSlopeAngleTan * GroundAngleSin - GroundAngleTan * GroundAngleSin);
 
-        private float ClimbOvershoot => HitDistance / Sin(GroundAngleRad);
-        private float ClimbMildSlopeOvershoot => PositiveSlopeAngle ? ClimbOvershootOnPositiveAngle : ClimbOvershoot;
+        private float MildSlopeOvershootDefault => HitDistance / GroundAngleSin;
+        private float MildSlopeOvershoot => PositiveClimbSlopeAngle ? MildSlopeOvershootOnPositiveAngle : MildSlopeOvershootDefault;
 
-        private float NegativeHorizontalMovement =>
-            Cos(GroundAngleRad) * ClimbMildSlopeOvershoot * HorizontalMovementDirection;
+        private float MildSlopeNegativeHorizontalMovement =>
+            Cos(GroundAngleRad) * MildSlopeOvershoot * HorizontalMovementDirection;
 
-        private float NegativeVerticalMovement => Sin(GroundAngleRad) * ClimbMildSlopeOvershoot;
+        private float MildSlopeNegativeVerticalMovement => GroundAngleSin * MildSlopeOvershoot;
 
-        private float PositiveHorizontalMovement =>
-            Cos(ClimbSlopeAngleRad) * ClimbMildSlopeOvershoot * HorizontalMovementDirection;
+        private float MildSlopePositiveHorizontalMovement =>
+            Cos(ClimbMildSlopeAngleRad) * MildSlopeOvershoot * HorizontalMovementDirection;
 
-        private float PositiveVerticalMovement => Sin(ClimbSlopeAngleRad) * ClimbMildSlopeOvershoot;
-        private float HorizontalClimbMildSlopeMovement => PositiveHorizontalMovement - NegativeHorizontalMovement;
-        private float VerticalClimbMildSlopeMovement => PositiveVerticalMovement - NegativeVerticalMovement + SkinWidth;
+        private float MildSlopePositiveVerticalMovement => ClimbSlopeAngleSin * MildSlopeOvershoot;
+        private float HorizontalMildSlopeMovement => MildSlopePositiveHorizontalMovement - MildSlopeNegativeHorizontalMovement;
+        private float VerticalMildSlopeMovement => MildSlopePositiveVerticalMovement - MildSlopeNegativeVerticalMovement + SkinWidth;
 
-        private Vector2 ClimbMildSlopeMovement =>
-            new Vector2(HorizontalClimbMildSlopeMovement, VerticalClimbMildSlopeMovement);
+        private Vector2 ClimbMildSlopeMovement => new Vector2(HorizontalMildSlopeMovement, VerticalMildSlopeMovement);
 
         public void OnClimbMildSlope()
         {
-            if (!ClimbSlopeAngleNotGroundAngle) return;
-            Physics.OnClimbMildSlope(ClimbMildSlopeMovement);
+            if (!ClimbMildSlopeNotGroundAngle) return;
+            Physics.AddToMovement(ClimbMildSlopeMovement);
         }
 
         private float DescendMildSlopeVerticalMovement => -(HitDistance - SkinWidth);
@@ -219,10 +219,49 @@ namespace VFEngine.Platformer.Physics
             Physics.SetVerticalMovement(DescendMildSlopeVerticalMovement);
         }
 
-        
+        private float DescendSteepSlopeAngle => ClimbMildSlopeAngle;
+        private float DescendSteepSlopeAngleRad => DescendSteepSlopeAngle * Deg2Rad;
+        private bool PositiveDescendSteepSlopeAngle => DescendSteepSlopeAngle > GroundAngle;
+        private bool FacingRight => Physics.FacingRight;
+        private bool SetDescendSteepSlopeMovement => PositiveDescendSteepSlopeAngle && (int) Sin(Hit.normal.x) == (FacingRight ? 1 : -1);
+        private bool PositiveGroundAngle => GroundAngle > 0;
+        private float SteepSlopeAngleSin => GroundAngleSin * Deg2Rad;
+        private float GroundAngleCos => Cos(GroundAngle);
+        private float SteepSlopeAngleCos => GroundAngleCos * Deg2Rad;
+        private float SteepSlopeAngleTan => Tan(DescendSteepSlopeAngleRad);
+        private float SteepSlopeOvershootOnPositiveGroundAngle => HitDistance * SteepSlopeAngleCos /
+                                                                  (SteepSlopeAngleTan / SteepSlopeAngleCos -
+                                                                   SteepSlopeAngleSin);
+        private float SteepSlopeOvershootDefault => HitDistance / SteepSlopeAngleTan;
+        private float SteepSlopeOvershoot => PositiveGroundAngle ? SteepSlopeOvershootOnPositiveGroundAngle : SteepSlopeOvershootDefault;
+
+        private float SteepSlopeNegativeHorizontalMovement =>
+            Cos(GroundAngleRad) * SteepSlopeOvershoot * HorizontalMovementDirection;
+        private float SteepSlopeNegativeVerticalMovement => -Sin(GroundAngleRad) * SteepSlopeOvershoot;
+        private float SteepSlopePositiveHorizontalMovement => Cos(DescendSteepSlopeAngleRad) * SteepSlopeOvershoot * HorizontalMovementDirection;
+        private float SteepSlopePositiveVerticalMovement => -Sin(DescendSteepSlopeAngleRad) * SteepSlopeOvershoot;
+        private float SteepSlopeHorizontalMovement => SteepSlopePositiveHorizontalMovement - SteepSlopeNegativeHorizontalMovement;
+        private float SteepSlopeVerticalMovement  => SteepSlopePositiveVerticalMovement - SteepSlopeNegativeVerticalMovement - SkinWidth;
+        private Vector2 DescendSteepSlopeMovement => new Vector2(SteepSlopeHorizontalMovement,SteepSlopeVerticalMovement);
         public void OnDescendSteepSlope()
         {
-            
+            if (!SetDescendSteepSlopeMovement) return;
+            Physics.AddToMovement(DescendSteepSlopeMovement);
+        }
+
+        public void OnTranslateMovement()
+        {
+            Physics.SetTransformTranslate(Movement);
+        }
+
+        public void OnCeilingOrGroundCollision()
+        {
+            Physics.OnCeilingOrGroundCollision();
+        }
+
+        public void ResetFriction()
+        {
+            Physics.SetIgnoreFriction(false);
         }
 
         #endregion
