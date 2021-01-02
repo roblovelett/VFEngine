@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static Vector2;
     using static Mathf;
+
     public struct RaycastCollision
     {
         #region properties
@@ -23,7 +22,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastHit2D VerticalHit { get; set; }
 
         #region public methods
-        
+
         public void Initialize()
         {
             Reset();
@@ -69,6 +68,7 @@ namespace VFEngine.Platformer.Event.Raycast
             SetGroundDirection(normal.x);
             SetGroundAngle(normal);
         }
+
         private void SetGroundDirection(float x)
         {
             GroundDirection = (int) Sign(x);
@@ -99,7 +99,7 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         public void OnClimbSteepSlope(RaycastHit2D hit)
-        {   
+        {
             SetGroundMeasurements(hit.normal);
         }
 

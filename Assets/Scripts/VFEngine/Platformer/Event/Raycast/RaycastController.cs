@@ -17,11 +17,11 @@ namespace VFEngine.Platformer.Event.Raycast
 
         [SerializeField] private new Collider2D collider;
         [SerializeField] private RaycastSettings settings;
-        private LayerMaskData _layerMask;
-        private PhysicsData _physics;
-        private PlatformerData _platformer;
+        private LayerMaskData LayerMask { get; set; }
+        private PlatformerData Platformer { get; set; }
+        private PhysicsData Physics { get; set; }
         private RaycastModel Raycast { get; set; }
-        
+
         #endregion
 
         #region internal
@@ -39,12 +39,27 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Initialize()
         {
-            _layerMask = GetComponent<LayerMaskController>().Data;
-            _physics = GetComponent<PhysicsController>().Data;
-            _platformer = GetComponent<PlatformerController>().Data;
             if (!collider) collider = GetComponent<BoxCollider2D>();
             if (!settings) settings = CreateInstance<RaycastSettings>();
-            Raycast = new RaycastModel(ref collider, ref settings, ref _layerMask, ref _physics, ref _platformer);
+            Raycast = new RaycastModel(collider, settings);
+        }
+
+        private void Start()
+        {
+            SetData();
+            SetDependencies();
+        }
+
+        private void SetData()
+        {
+            LayerMask = GetComponent<LayerMaskController>().Data;
+            Physics = GetComponent<PhysicsController>().Data;
+            Platformer = GetComponent<PlatformerController>().Data;
+        }
+
+        private void SetDependencies()
+        {
+            Raycast.SetDependencies(LayerMask, Physics, Platformer);
         }
 
         #endregion
@@ -59,7 +74,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        
         public void OnPlatformerInitializeFrame()
         {
             Raycast.OnInitializeFrame();
@@ -99,7 +113,6 @@ namespace VFEngine.Platformer.Event.Raycast
         }
 
         private Vector2 SideRayOrigin => Origin;
-        private PhysicsData Physics => _physics;
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
         private float Length => RaycastData.Length;
         private float SideRayLength => Length;
@@ -153,6 +166,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             Raycast.SetVerticalHitAtOneWayPlatform();
         }
+
         public void OnPlatformerVerticalHit()
         {
             Raycast.OnVerticalHit();
@@ -193,6 +207,7 @@ namespace VFEngine.Platformer.Event.Raycast
         private Vector2 InitialPositionStart => Physics.Transform.position;
         private Vector2 Movement => Physics.Movement;
         private Vector2 InitialPositionDirection => Movement * 3f;
+
         public void OnPlatformerCastRayFromInitialPosition()
         {
             DrawRay(InitialPositionStart, InitialPositionDirection, green);

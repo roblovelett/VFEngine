@@ -35,13 +35,17 @@ namespace VFEngine.Platformer.Physics
 
         #region constructors
 
-        public PhysicsModel(ref GameObject character, ref PhysicsSettings settings, ref RaycastData raycast)
+        public PhysicsModel(GameObject character, PhysicsSettings settings)
         {
             Physics = new PhysicsData(settings, character);
-            RaycastData = raycast;
         }
 
         #endregion
+
+        public void SetDependencies(RaycastData raycast)
+        {
+            Raycast = raycast;
+        }
 
         public void SetHorizontalMovementDirection()
         {
@@ -49,8 +53,8 @@ namespace VFEngine.Platformer.Physics
         }
 
         private PhysicsData Physics { get; }
-        private RaycastData RaycastData { get; }
-        private RaycastCollision Collision => RaycastData.Collision;
+        private RaycastData Raycast { get; set; }
+        private RaycastCollision Collision => Raycast.Collision;
         private Vector2 Speed => Physics.Speed;
         private float GroundFriction => Physics.GroundFriction;
         private float AirFriction => Physics.AirFriction;
@@ -100,9 +104,9 @@ namespace VFEngine.Platformer.Physics
         private float ClimbSlopeVerticalPosition => Sin(GroundAngleRad) * HorizontalDistance;
         private bool CanClimbSlope => VerticalMovement <= ClimbSlopeVerticalPosition;
         private Vector2 ClimbSlopePosition => new Vector2(SlopeHorizontalPosition, ClimbSlopeVerticalPosition);
-        private RaycastHit2D Hit => RaycastData.Hit;
+        private RaycastHit2D Hit => Raycast.Hit;
         private float HitDistance => Hit.distance;
-        private float SkinWidth => RaycastData.SkinWidth;
+        private float SkinWidth => Raycast.SkinWidth;
         private float ClimbTotalDistance => HitDistance - SkinWidth;
 
         public void OnClimbSlope()
@@ -191,7 +195,9 @@ namespace VFEngine.Platformer.Physics
             (ClimbSlopeAngleTan * GroundAngleSin - GroundAngleTan * GroundAngleSin);
 
         private float MildSlopeOvershootDefault => HitDistance / GroundAngleSin;
-        private float MildSlopeOvershoot => PositiveClimbSlopeAngle ? MildSlopeOvershootOnPositiveAngle : MildSlopeOvershootDefault;
+
+        private float MildSlopeOvershoot =>
+            PositiveClimbSlopeAngle ? MildSlopeOvershootOnPositiveAngle : MildSlopeOvershootDefault;
 
         private float MildSlopeNegativeHorizontalMovement =>
             Cos(GroundAngleRad) * MildSlopeOvershoot * HorizontalMovementDirection;
@@ -202,8 +208,12 @@ namespace VFEngine.Platformer.Physics
             Cos(ClimbMildSlopeAngleRad) * MildSlopeOvershoot * HorizontalMovementDirection;
 
         private float MildSlopePositiveVerticalMovement => ClimbSlopeAngleSin * MildSlopeOvershoot;
-        private float HorizontalMildSlopeMovement => MildSlopePositiveHorizontalMovement - MildSlopeNegativeHorizontalMovement;
-        private float VerticalMildSlopeMovement => MildSlopePositiveVerticalMovement - MildSlopeNegativeVerticalMovement + SkinWidth;
+
+        private float HorizontalMildSlopeMovement =>
+            MildSlopePositiveHorizontalMovement - MildSlopeNegativeHorizontalMovement;
+
+        private float VerticalMildSlopeMovement =>
+            MildSlopePositiveVerticalMovement - MildSlopeNegativeVerticalMovement + SkinWidth;
 
         private Vector2 ClimbMildSlopeMovement => new Vector2(HorizontalMildSlopeMovement, VerticalMildSlopeMovement);
 
@@ -214,6 +224,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         private float DescendMildSlopeVerticalMovement => -(HitDistance - SkinWidth);
+
         public void OnDescendMildSlope()
         {
             Physics.SetVerticalMovement(DescendMildSlopeVerticalMovement);
@@ -223,26 +234,44 @@ namespace VFEngine.Platformer.Physics
         private float DescendSteepSlopeAngleRad => DescendSteepSlopeAngle * Deg2Rad;
         private bool PositiveDescendSteepSlopeAngle => DescendSteepSlopeAngle > GroundAngle;
         private bool FacingRight => Physics.FacingRight;
-        private bool SetDescendSteepSlopeMovement => PositiveDescendSteepSlopeAngle && (int) Sin(Hit.normal.x) == (FacingRight ? 1 : -1);
+
+        private bool SetDescendSteepSlopeMovement =>
+            PositiveDescendSteepSlopeAngle && (int) Sin(Hit.normal.x) == (FacingRight ? 1 : -1);
+
         private bool PositiveGroundAngle => GroundAngle > 0;
         private float SteepSlopeAngleSin => GroundAngleSin * Deg2Rad;
         private float GroundAngleCos => Cos(GroundAngle);
         private float SteepSlopeAngleCos => GroundAngleCos * Deg2Rad;
         private float SteepSlopeAngleTan => Tan(DescendSteepSlopeAngleRad);
+
         private float SteepSlopeOvershootOnPositiveGroundAngle => HitDistance * SteepSlopeAngleCos /
                                                                   (SteepSlopeAngleTan / SteepSlopeAngleCos -
                                                                    SteepSlopeAngleSin);
+
         private float SteepSlopeOvershootDefault => HitDistance / SteepSlopeAngleTan;
-        private float SteepSlopeOvershoot => PositiveGroundAngle ? SteepSlopeOvershootOnPositiveGroundAngle : SteepSlopeOvershootDefault;
+
+        private float SteepSlopeOvershoot =>
+            PositiveGroundAngle ? SteepSlopeOvershootOnPositiveGroundAngle : SteepSlopeOvershootDefault;
 
         private float SteepSlopeNegativeHorizontalMovement =>
             Cos(GroundAngleRad) * SteepSlopeOvershoot * HorizontalMovementDirection;
+
         private float SteepSlopeNegativeVerticalMovement => -Sin(GroundAngleRad) * SteepSlopeOvershoot;
-        private float SteepSlopePositiveHorizontalMovement => Cos(DescendSteepSlopeAngleRad) * SteepSlopeOvershoot * HorizontalMovementDirection;
+
+        private float SteepSlopePositiveHorizontalMovement =>
+            Cos(DescendSteepSlopeAngleRad) * SteepSlopeOvershoot * HorizontalMovementDirection;
+
         private float SteepSlopePositiveVerticalMovement => -Sin(DescendSteepSlopeAngleRad) * SteepSlopeOvershoot;
-        private float SteepSlopeHorizontalMovement => SteepSlopePositiveHorizontalMovement - SteepSlopeNegativeHorizontalMovement;
-        private float SteepSlopeVerticalMovement  => SteepSlopePositiveVerticalMovement - SteepSlopeNegativeVerticalMovement - SkinWidth;
-        private Vector2 DescendSteepSlopeMovement => new Vector2(SteepSlopeHorizontalMovement,SteepSlopeVerticalMovement);
+
+        private float SteepSlopeHorizontalMovement =>
+            SteepSlopePositiveHorizontalMovement - SteepSlopeNegativeHorizontalMovement;
+
+        private float SteepSlopeVerticalMovement =>
+            SteepSlopePositiveVerticalMovement - SteepSlopeNegativeVerticalMovement - SkinWidth;
+
+        private Vector2 DescendSteepSlopeMovement =>
+            new Vector2(SteepSlopeHorizontalMovement, SteepSlopeVerticalMovement);
+
         public void OnDescendSteepSlope()
         {
             if (!SetDescendSteepSlopeMovement) return;

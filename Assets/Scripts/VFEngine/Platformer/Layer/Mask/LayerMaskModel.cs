@@ -3,10 +3,11 @@
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static Physics2D;
+
     public class LayerMaskModel
     {
         #region fields
-        
+
         #region internal
 
         private LayerMaskData LayerMask { get; }
@@ -25,7 +26,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region constructors
 
-        public LayerMaskModel(ref GameObject character, ref LayerMaskSettings settings)
+        public LayerMaskModel(GameObject character, LayerMaskSettings settings)
         {
             LayerMask = new LayerMaskData(character, settings);
         }
@@ -37,6 +38,7 @@ namespace VFEngine.Platformer.Layer.Mask
             LayerMask.SetSavedLayer(Character.layer);
             LayerMask.SetCharacterLayer(IgnoreRaycastLayer);
         }
+
         public void OnSetLayerToSaved()
         {
             LayerMask.SetCharacterLayer(SavedLayer);

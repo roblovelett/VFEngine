@@ -29,24 +29,27 @@ namespace VFEngine.Platformer.Event.Raycast
         #region properties
 
         public RaycastData Data => Raycast;
-        private PhysicsData Physics { get; }
-        private LayerMaskData LayerMask { get; }
-        private PlatformerData Platformer { get; }
+        private PhysicsData Physics { get; set; }
+        private LayerMaskData LayerMask { get; set; }
+        private PlatformerData Platformer { get; set; }
 
         #region public methods
 
         #region constructor
 
-        public RaycastModel(ref Collider2D collider, ref RaycastSettings settings, ref LayerMaskData layerMask,
-            ref PhysicsData physics, ref PlatformerData platformer)
+        public RaycastModel(Collider2D collider, RaycastSettings settings)
         {
             Raycast = new RaycastData(settings, collider);
+        }
+
+        #endregion
+
+        public void SetDependencies(LayerMaskData layerMask, PhysicsData physics, PlatformerData platformer)
+        {
             LayerMask = layerMask;
             Physics = physics;
             Platformer = platformer;
         }
-
-        #endregion
 
         private RaycastData Raycast { get; }
 
@@ -223,6 +226,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private bool MovingDown => VerticalMovementDirection == -1;
         private Vector2 TopLeft => Bounds.TopLeft;
+
         private Vector2 VerticalOrigin => (MovingDown ? BottomLeft : TopLeft) +
                                           right * (VerticalSpacing * Index * HorizontalMovement);
 
@@ -365,14 +369,15 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             Collision.OnDescendMildSlope(Hit);
         }
-        
+
         public void OnInitializeDescendSteepSlope()
         {
             SetOriginForDescendSteepSlope();
-            SetHitForDescendSteepSlope();   
+            SetHitForDescendSteepSlope();
         }
 
         private Vector2 DescendSteepSlopeOrigin => (MovingRight ? BottomLeft : BottomRight) + Movement;
+
         private void SetOriginForDescendSteepSlope()
         {
             Raycast.SetOrigin(DescendSteepSlopeOrigin);
@@ -384,13 +389,14 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private RaycastHit2D DescendSteepSlopeHit => Raycast(DescendSteepSlopeOrigin, DescendSteepSlopeDirection,
             DescendSteepSlopeDistance, DescendSteepSlopeLayer);
+
         private void SetHitForDescendSteepSlope()
         {
             Raycast.SetHit(DescendSteepSlopeHit);
         }
+
         public void OnDescendSteepSlope()
         {
-            
         }
 
         #endregion

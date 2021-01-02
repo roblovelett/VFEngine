@@ -2,7 +2,6 @@
 using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable UnassignedField.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static ScriptableObjectExtensions;

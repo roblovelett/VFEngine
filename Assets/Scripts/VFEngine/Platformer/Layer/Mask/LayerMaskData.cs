@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Layer.Mask
 {
     public struct LayerMaskData
@@ -38,9 +37,6 @@ namespace VFEngine.Platformer.Layer.Mask
             SavedLayer = 0;
         }
 
-        //SavedLayer = CharacterGameObject.layer;
-        //CharacterGameObject.layer = Physics2D.IgnoreRaycastLayer;
-
         #endregion
 
         #endregion
@@ -60,9 +56,9 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #endregion
 
-        public int SavedLayer { get; set; }
+        public int SavedLayer { get; private set; }
         public LayerMask Collision { get; private set; }
-        public GameObject CharacterGameObject { get; set; }
+        public GameObject CharacterGameObject { get; private set; }
 
         #region public methods
 

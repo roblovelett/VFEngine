@@ -1,7 +1,4 @@
-﻿// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-
-namespace VFEngine.Platformer
+﻿namespace VFEngine.Platformer
 {
     public struct PlatformerData
     {
@@ -55,6 +52,7 @@ namespace VFEngine.Platformer
         public int Index { get; private set; }
         public float Tolerance { get; private set; }
         public float IgnorePlatformsTime { get; private set; }
+
         #region public methods
 
         #region constructors

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
@@ -35,7 +34,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            LayerMask = new LayerMaskModel(ref character, ref settings);
+            LayerMask = new LayerMaskModel(character, settings);
         }
 
         #endregion

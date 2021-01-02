@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static Vector2;
@@ -130,7 +128,7 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             Length = length;
         }
-        
+
         #endregion
 
         #endregion

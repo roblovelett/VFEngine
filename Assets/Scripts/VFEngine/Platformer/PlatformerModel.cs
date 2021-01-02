@@ -15,9 +15,9 @@ namespace VFEngine.Platformer
         #region internal
 
         private PlatformerData Platformer { get; }
-        private RaycastController Raycast { get; }
-        private PhysicsController Physics { get; }
-        private LayerMaskController LayerMask { get; }
+        private RaycastController Raycast { get; set; }
+        private PhysicsController Physics { get; set; }
+        private LayerMaskController LayerMask { get; set; }
         private RaycastData RaycastData => Raycast.Data;
         private RaycastCollision Collision => RaycastData.Collision;
         private PhysicsData PhysicsData => Physics.Data;
@@ -336,10 +336,13 @@ namespace VFEngine.Platformer
 
         #region constructor
 
-        public PlatformerModel(PlatformerSettings settings, ref RaycastController raycast,
-            ref LayerMaskController layerMask, ref PhysicsController physics)
+        public PlatformerModel(PlatformerSettings settings)
         {
             Platformer = new PlatformerData(settings);
+        }
+
+        public void SetDependencies(RaycastController raycast, LayerMaskController layerMask, PhysicsController physics)
+        {
             Raycast = raycast;
             LayerMask = layerMask;
             Physics = physics;

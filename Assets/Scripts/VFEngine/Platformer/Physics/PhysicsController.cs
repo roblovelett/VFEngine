@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 
-// ReSharper disable ConvertToAutoProperty
-// ReSharper disable UnusedMember.Local
-// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
@@ -18,7 +15,7 @@ namespace VFEngine.Platformer.Physics
         [SerializeField] private GameObject character;
         [SerializeField] private PhysicsSettings settings;
         private PhysicsModel Physics { get; set; }
-        private RaycastData _raycast;
+        private RaycastData Raycast { get; set; }
 
         #endregion
 
@@ -33,14 +30,29 @@ namespace VFEngine.Platformer.Physics
 
         private void Initialize()
         {
-            _raycast = GetComponent<RaycastController>().Data;
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
-            Physics = new PhysicsModel(ref character, ref settings, ref _raycast);
+            Physics = new PhysicsModel(character, settings);
+        }
+
+        private void Start()
+        {
+            SetData();
+            SetDependencies();
+        }
+
+        private void SetData()
+        {
+            Raycast = GetComponent<RaycastController>().Data;
+        }
+
+        private void SetDependencies()
+        {
+            Physics.SetDependencies(Raycast);
         }
 
         #endregion
-        
+
         #endregion
 
         #endregion

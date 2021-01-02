@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Platformer.Physics
 {
     using static Vector2;
@@ -90,9 +88,10 @@ namespace VFEngine.Platformer.Physics
 
         public float HorizontalSpeed
         {
-            //get => Speed.x;
+            get => Speed.x;
             set => value = Speed.x;
         }
+
         public float VerticalSpeed
         {
             get => Speed.y;
@@ -106,6 +105,7 @@ namespace VFEngine.Platformer.Physics
             get => ExternalForce.x;
             set => value = ExternalForce.x;
         }
+
         public float VerticalExternalForce
         {
             get => ExternalForce.y;

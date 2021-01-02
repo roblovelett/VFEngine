@@ -3,7 +3,6 @@ using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 
-// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer
 {
     using static ScriptableObject;
@@ -16,9 +15,9 @@ namespace VFEngine.Platformer
 
         [SerializeField] private PlatformerSettings settings;
         private PlatformerModel Platformer { get; set; }
-        private RaycastController _raycast;
-        private LayerMaskController _layerMask;
-        private PhysicsController _physics;
+        private RaycastController Raycast { get; set; }
+        private LayerMaskController LayerMask { get; set; }
+        private PhysicsController Physics { get; set; }
 
         #endregion
 
@@ -33,11 +32,26 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
-            _raycast = GetComponent<RaycastController>();
-            _layerMask = GetComponent<LayerMaskController>();
-            _physics = GetComponent<PhysicsController>();
             if (!settings) settings = CreateInstance<PlatformerSettings>();
-            Platformer = new PlatformerModel(settings, ref _raycast, ref _layerMask, ref _physics);
+            Platformer = new PlatformerModel(settings);
+        }
+
+        private void Start()
+        {
+            SetControllers();
+            SetDependencies();
+        }
+
+        private void SetControllers()
+        {
+            Raycast = GetComponent<RaycastController>();
+            LayerMask = GetComponent<LayerMaskController>();
+            Physics = GetComponent<PhysicsController>();
+        }
+
+        private void SetDependencies()
+        {
+            Platformer.SetDependencies(Raycast, LayerMask, Physics);
         }
 
         #endregion
