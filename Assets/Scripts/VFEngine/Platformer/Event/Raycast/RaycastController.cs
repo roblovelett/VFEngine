@@ -158,11 +158,43 @@ namespace VFEngine.Platformer.Event.Raycast
             Raycast.OnVerticalHit();
         }
 
+        public void OnPlatformerInitializeClimbSteepSlope()
+        {
+            Raycast.OnInitializeClimbSteepSlope();
+        }
+
         public void OnPlatformerClimbSteepSlope()
         {
             Raycast.OnClimbSteepSlope();
         }
 
+        public void OnPlatformerInitializeClimbMildSlope()
+        {
+            Raycast.OnInitializeClimbMildSlope();
+            DrawRay(Origin, down, yellow);
+        }
+
+        public void OnPlatformerInitializeDescendMildSlope()
+        {
+            Raycast.OnInitializeDescendMildSlope();
+        }
+
+        public void OnPlatformerDescendMildSlope()
+        {
+            Raycast.OnDescendMildSlope();
+        }
+
+        public void OnPlatformerInitializeDescendSteepSlope()
+        {
+            Raycast.OnInitializeDescendSteepSlope();
+            DrawRay(Origin, down, yellow);
+        }
+
+        public void OnPlatformerDescendSteepSlope()
+        {
+            Raycast.OnDescendSteepSlope();
+        }
+        
         #endregion
 
         #endregion

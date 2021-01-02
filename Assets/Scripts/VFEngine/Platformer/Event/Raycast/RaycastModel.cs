@@ -35,7 +35,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region constructors
+        #region constructor
 
         public RaycastModel(ref Collider2D collider, ref RaycastSettings settings, ref LayerMaskData layerMask,
             ref PhysicsData physics, ref PlatformerData platformer)
@@ -55,6 +55,7 @@ namespace VFEngine.Platformer.Event.Raycast
             ResetCollision();
             SetBounds();
         }
+
         public void ResetCollision()
         {
             Raycast.ResetCollision();
@@ -67,7 +68,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private RaycastBounds Bounds => Raycast.Bounds;
         private RaycastCollision Collision => Raycast.Collision;
-        
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
         private bool MovingRight => HorizontalMovementDirection == 1;
         private Vector2 BottomLeft => Bounds.BottomLeft;
@@ -98,6 +98,7 @@ namespace VFEngine.Platformer.Event.Raycast
             SetDownOrigin();
             SetDownHit();
         }
+
         private void SetDownOrigin()
         {
             Raycast.SetOrigin(DownOrigin);
@@ -153,7 +154,8 @@ namespace VFEngine.Platformer.Event.Raycast
         private Vector2 SideDirection => right * HorizontalMovementDirection;
         private LayerMask SideLayer => CollisionLayer;
         private float SideDistance => Length;
-        private Vector2 InitialSideOrigin => (MovingLeft ? BottomLeft : BottomRight) + up;
+        private Vector2 SideBottomOrigin => MovingLeft ? BottomLeft : BottomRight;
+        private Vector2 InitialSideOrigin => SideBottomOrigin + up;
         private Vector2 SideOrigin => InitialSideOrigin * HorizontalSpacing * Index;
         private RaycastHit2D SideHit => Raycast(SideOrigin, SideDirection, SideDistance, SideLayer);
         private RaycastHit2D Hit => Raycast.Hit;
@@ -164,6 +166,7 @@ namespace VFEngine.Platformer.Event.Raycast
             SetSideOrigin();
             SetSideHit();
         }
+
         private void SetSideOrigin()
         {
             Raycast.SetOrigin(SideOrigin);
@@ -201,8 +204,10 @@ namespace VFEngine.Platformer.Event.Raycast
         private Vector2 StopHorizontalSpeedDirection => left * GroundDirection;
         private static float StopHorizontalSpeedDistance => 1;
         private LayerMask StopHorizontalSpeedLayer => CollisionLayer;
-        private RaycastHit2D StopHorizontalSpeedHit => Raycast(StopHorizontalSpeedOrigin, StopHorizontalSpeedDirection, StopHorizontalSpeedDistance, StopHorizontalSpeedLayer);
-        
+
+        private RaycastHit2D StopHorizontalSpeedHit => Raycast(StopHorizontalSpeedOrigin, StopHorizontalSpeedDirection,
+            StopHorizontalSpeedDistance, StopHorizontalSpeedLayer);
+
         public void OnStopHorizontalSpeedHit()
         {
             Collision.SetHorizontalHit(StopHorizontalSpeedHit);
@@ -210,6 +215,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private int VerticalMovementDirection => Physics.VerticalMovementDirection;
         private float InitialVerticalLength => VerticalMovementDirection + SkinWidth;
+
         public void InitializeLengthForVerticalRay()
         {
             Raycast.SetLength(InitialVerticalLength);
@@ -217,15 +223,15 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private bool MovingDown => VerticalMovementDirection == -1;
         private Vector2 TopLeft => Bounds.TopLeft;
-
-        private Vector2 VerticalOrigin =>
-            (MovingDown ? BottomLeft : TopLeft) + right * (VerticalSpacing * Index * HorizontalMovement);
+        private Vector2 VerticalOrigin => (MovingDown ? BottomLeft : TopLeft) +
+                                          right * (VerticalSpacing * Index * HorizontalMovement);
 
         public void OnCastRaysVertically()
         {
             SetVerticalOrigin();
             SetVerticalHit();
         }
+
         private void SetVerticalOrigin()
         {
             Raycast.SetOrigin(VerticalOrigin);
@@ -235,7 +241,7 @@ namespace VFEngine.Platformer.Event.Raycast
         private float VerticalDistance => Length;
         private LayerMask VerticalLayer => CollisionLayer;
         private RaycastHit2D VerticalHit => Raycast(VerticalOrigin, VerticalDirection, VerticalDistance, VerticalLayer);
-        
+
         private void SetVerticalHit()
         {
             Raycast.SetHit(VerticalHit);
@@ -248,12 +254,15 @@ namespace VFEngine.Platformer.Event.Raycast
             SetLengthForVerticalRay();
             SetCollisionOnVerticalHit();
         }
+
         private void SetLengthForVerticalRay()
         {
             Raycast.SetLength(VerticalRayLength);
         }
 
-        private RaycastHit2D VerticalHitAtOneWayPlatform => Raycast(VerticalOrigin, VerticalDirection, VerticalDistance, OneWayPlatform);
+        private RaycastHit2D VerticalHitAtOneWayPlatform =>
+            Raycast(VerticalOrigin, VerticalDirection, VerticalDistance, OneWayPlatform);
+
         public void SetVerticalHitAtOneWayPlatform()
         {
             Raycast.SetHit(VerticalHitAtOneWayPlatform);
@@ -264,32 +273,126 @@ namespace VFEngine.Platformer.Event.Raycast
             Collision.OnVerticalHit(VerticalMovementDirection, Hit);
         }
 
+        public void OnInitializeClimbSteepSlope()
+        {
+            SetLengthForClimbSteepSlope();
+            SetOriginForClimbSteepSlope();
+            SetHitForClimbSteepSlope();
+        }
+
+        private float ClimbSteepSlopeLength => InitialSideLength * 2;
+
+        private void SetLengthForClimbSteepSlope()
+        {
+            Raycast.SetLength(ClimbSteepSlopeLength);
+        }
+
+        private Vector2 ClimbSteepSlopeOrigin => InitialSideOrigin * VerticalMovementDirection;
+
+        private void SetOriginForClimbSteepSlope()
+        {
+            Raycast.SetOrigin(ClimbSteepSlopeOrigin);
+        }
+
+        private Vector2 ClimbSteepSlopeDirection => SideDirection;
+        private float ClimbSteepSlopeDistance => ClimbSteepSlopeLength;
+        private LayerMask ClimbSteepSlopeLayer => CollisionLayer;
+
+        private RaycastHit2D ClimbSteepSlopeHit => Raycast(ClimbSteepSlopeOrigin, ClimbSteepSlopeDirection,
+            ClimbSteepSlopeDistance, ClimbSteepSlopeLayer);
+
+        private void SetHitForClimbSteepSlope()
+        {
+            Raycast.SetHit(ClimbSteepSlopeHit);
+        }
+
         public void OnClimbSteepSlope()
         {
-            SetLengthForSteepSlope();
-            SetOriginForSteepSlope();
-            SetHitForSteepSlope();
-        }
-        private float SteepSlopeLength => InitialSideLength * 2;
-        private void SetLengthForSteepSlope()
-        {
-            Raycast.SetLength(SteepSlopeLength);
+            Collision.OnClimbSteepSlope(Hit);
         }
 
-        private Vector2 SteepSlopeOrigin => InitialSideOrigin * VerticalMovementDirection;
-        private void SetOriginForSteepSlope()
+        private Vector2 Movement => Physics.Movement;
+        private Vector2 ClimbMildSlopeOrigin => SideBottomOrigin + Movement;
+        private static Vector2 ClimbMildSlopeDirection => down;
+        private static float ClimbMildSlopeDistance => 1;
+        private LayerMask ClimbMildSlopeLayer => CollisionLayer;
+
+        private RaycastHit2D ClimbMildSlopeHit => Raycast(ClimbMildSlopeOrigin, ClimbMildSlopeDirection,
+            ClimbMildSlopeDistance, ClimbMildSlopeLayer);
+
+        public void OnInitializeClimbMildSlope()
         {
-            Raycast.SetOrigin(SteepSlopeOrigin);
+            Raycast.SetHit(ClimbMildSlopeHit);
         }
 
-        private Vector2 SteepSlopeDirection => SideDirection;
-        private LayerMask SteepSlopeLayer => CollisionLayer;
-        private RaycastHit2D SteepSlopeHit => Raycast(SteepSlopeOrigin, SteepSlopeDirection, SteepSlopeLength, SteepSlopeLayer);
-        private void SetHitForSteepSlope()
+        /*public void OnClimbMildSlope(){}*/
+
+        public void OnInitializeDescendMildSlope()
         {
-            Raycast.SetHit(SteepSlopeHit);
+            SetLengthForDescendMildSlope();
+            SetOriginForDescendMildSlope();
+            SetHitForDescendMildSlope();
+        }
+
+        private float VerticalMovement => Movement.y;
+        private float DescendMildSlopeLength => Abs(VerticalMovement) + SkinWidth;
+
+        private void SetLengthForDescendMildSlope()
+        {
+            Raycast.SetLength(DescendMildSlopeLength);
+        }
+
+        private Vector2 DescendMildSlopeOrigin => (MovingLeft ? BottomRight : BottomLeft) + right * HorizontalMovement;
+
+        private void SetOriginForDescendMildSlope()
+        {
+            Raycast.SetOrigin(DescendMildSlopeOrigin);
+        }
+
+        private static Vector2 DescendMildSlopeDirection => down;
+        private float DescendMildSlopeDistance => DescendMildSlopeLength;
+        private LayerMask DescendMildSlopeLayer => CollisionLayer;
+
+        private RaycastHit2D DescendMildSlopeHit => Raycast(DescendMildSlopeOrigin, DescendMildSlopeDirection,
+            DescendMildSlopeDistance, DescendMildSlopeLayer);
+
+        private void SetHitForDescendMildSlope()
+        {
+            Raycast.SetHit(DescendMildSlopeHit);
+        }
+
+        public void OnDescendMildSlope()
+        {
+            Collision.OnDescendMildSlope(Hit);
         }
         
+        public void OnInitializeDescendSteepSlope()
+        {
+            SetOriginForDescendSteepSlope();
+            SetHitForDescendSteepSlope();   
+        }
+
+        private Vector2 DescendSteepSlopeOrigin => (MovingRight ? BottomLeft : BottomRight) + Movement;
+        private void SetOriginForDescendSteepSlope()
+        {
+            Raycast.SetOrigin(DescendSteepSlopeOrigin);
+        }
+
+        private static Vector2 DescendSteepSlopeDirection => down;
+        private static float DescendSteepSlopeDistance => 1;
+        private LayerMask DescendSteepSlopeLayer => CollisionLayer;
+
+        private RaycastHit2D DescendSteepSlopeHit => Raycast(DescendSteepSlopeOrigin, DescendSteepSlopeDirection,
+            DescendSteepSlopeDistance, DescendSteepSlopeLayer);
+        private void SetHitForDescendSteepSlope()
+        {
+            Raycast.SetHit(DescendSteepSlopeHit);
+        }
+        public void OnDescendSteepSlope()
+        {
+            
+        }
+
         #endregion
 
         #endregion

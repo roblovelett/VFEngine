@@ -66,7 +66,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region public methods
 
-        #region constructors
+        #region constructor
 
         public LayerMaskData(GameObject character, LayerMaskSettings settings) : this()
         {

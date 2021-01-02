@@ -29,17 +29,11 @@ namespace VFEngine.Platformer
             Index = 0;
             Tolerance = 0;
             IgnorePlatformsTime = 0;
-            ClimbedSteepSlope = false;
         }
 
         #endregion
 
         #region private methods
-
-        private void SetClimbedSteepSlope(bool climbed)
-        {
-            ClimbedSteepSlope = climbed;
-        }
 
         #endregion
 
@@ -61,8 +55,6 @@ namespace VFEngine.Platformer
         public int Index { get; private set; }
         public float Tolerance { get; private set; }
         public float IgnorePlatformsTime { get; private set; }
-        public bool ClimbedSteepSlope { get; private set; }
-
         #region public methods
 
         #region constructors
@@ -83,11 +75,6 @@ namespace VFEngine.Platformer
         public void SetIndex(int index)
         {
             Index = index;
-        }
-
-        public void OnApplySteepSlopeBehavior()
-        {
-            SetClimbedSteepSlope(true);
         }
 
         #endregion

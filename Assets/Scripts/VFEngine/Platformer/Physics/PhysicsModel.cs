@@ -5,12 +5,11 @@ namespace VFEngine.Platformer.Physics
 {
     using static Time;
     using static Mathf;
+    using static Vector2;
 
     public class PhysicsModel
     {
         #region fields
-
-        //private readonly RaycastController _raycastController;
 
         #region internal
 
@@ -50,17 +49,19 @@ namespace VFEngine.Platformer.Physics
         }
 
         private PhysicsData Physics { get; }
-        private RaycastData RaycastData { get; set; }//=> _raycastController.Data;
+        private RaycastData RaycastData { get; }
         private RaycastCollision Collision => RaycastData.Collision;
         private Vector2 Speed => Physics.Speed;
         private float GroundFriction => Physics.GroundFriction;
         private float AirFriction => Physics.AirFriction;
         private bool OnGround => Collision.OnGround;
         private float Friction => OnGround ? GroundFriction : AirFriction;
+        private Vector2 ExternalForce => Physics.ExternalForce;
+        private float ExternalForceMaxDistanceDelta => ExternalForce.magnitude * Friction * deltaTime;
 
-        public void SetExternalForce()
+        public void MoveExternalForceTowards()
         {
-            Physics.SetExternalForce(Friction);
+            Physics.MoveExternalForceTowards(ExternalForceMaxDistanceDelta);
         }
 
         private float Gravity => Physics.Gravity * Physics.GravityScale * deltaTime;
@@ -73,10 +74,11 @@ namespace VFEngine.Platformer.Physics
         }
 
         private int GroundDirection => Collision.GroundDirection;
+        private float AppliedToHorizontalExternalForce => -Gravity * GroundFriction * GroundDirection * deltaTime / 4;
 
         public void ApplyForcesToExternal()
         {
-            Physics.ApplyForcesToHorizontalExternalForce(GroundDirection);
+            Physics.ApplyForcesToHorizontalExternalForce(AppliedToHorizontalExternalForce);
         }
 
         private Vector2 Movement => Physics.Movement;
@@ -102,7 +104,7 @@ namespace VFEngine.Platformer.Physics
         private float HitDistance => Hit.distance;
         private float SkinWidth => RaycastData.SkinWidth;
         private float ClimbTotalDistance => HitDistance - SkinWidth;
-        
+
         public void OnClimbSlope()
         {
             if (!CanClimbSlope) return;
@@ -118,7 +120,10 @@ namespace VFEngine.Platformer.Physics
         }
 
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
-        private float SideHitHorizontalMovement => Min(HorizontalDistance, ClimbTotalDistance) * HorizontalMovementDirection; 
+
+        private float SideHitHorizontalMovement =>
+            Min(HorizontalDistance, ClimbTotalDistance) * HorizontalMovementDirection;
+
         public void OnSideHit()
         {
             Physics.SetHorizontalMovement(SideHitHorizontalMovement);
@@ -130,7 +135,10 @@ namespace VFEngine.Platformer.Physics
         }
 
         private int VerticalMovementDirection => Physics.VerticalMovementDirection;
-        private float VerticalMovementSlopeApplied => Tan(GroundAngleRad) * HorizontalDistance * VerticalMovementDirection;
+
+        private float VerticalMovementSlopeApplied =>
+            Tan(GroundAngleRad) * HorizontalDistance * VerticalMovementDirection;
+
         public void OnAdjustVerticalMovementToSlope()
         {
             Physics.SetVerticalMovement(VerticalMovementSlopeApplied);
@@ -148,14 +156,73 @@ namespace VFEngine.Platformer.Physics
 
         private float VerticalHitDistance => Hit.distance;
         private float VerticalMoveOnVerticalHit => (VerticalHitDistance - SkinWidth) * VerticalMovementDirection;
+
         public void OnVerticalHit()
         {
             Physics.SetVerticalMovement(VerticalMoveOnVerticalHit);
         }
 
+        private float GroundAngleHorizontalMovement =>
+            VerticalMovement / Tan(GroundAngleRad) * HorizontalMovementDirection;
+
         public void OnPlatformerApplyGroundAngle()
         {
-            Physics.OnApplyGroundAngle(GroundAngleRad);
+            Physics.OnApplyGroundAngle(GroundAngleHorizontalMovement);
+        }
+
+        private float ClimbSteepSlopeHorizontalMovement => ClimbTotalDistance * HorizontalMovement;
+
+        public void OnClimbSteepSlope()
+        {
+            Physics.SetHorizontalMovement(ClimbSteepSlopeHorizontalMovement);
+        }
+
+        private float ClimbSlopeAngle => Angle(Hit.normal, up);
+        private float ClimbSlopeAngleRad => ClimbSlopeAngle * Deg2Rad;
+        private bool ClimbSlopeAngleNotGroundAngle => ClimbSlopeAngle < GroundAngle;
+        private bool PositiveSlopeAngle => ClimbSlopeAngle > 0;
+        private float ClimbSlopeAngleTan => Tan(ClimbSlopeAngleRad);
+        private float GroundAngleTan => Tan(GroundAngleRad);
+        private float GroundAngleSin => Sin(GroundAngleRad);
+
+        private float ClimbOvershootOnPositiveAngle =>
+            (2 * ClimbSlopeAngleTan * HitDistance - GroundAngleTan * HitDistance) /
+            (ClimbSlopeAngleTan * GroundAngleSin - GroundAngleTan * GroundAngleSin);
+
+        private float ClimbOvershoot => HitDistance / Sin(GroundAngleRad);
+        private float ClimbMildSlopeOvershoot => PositiveSlopeAngle ? ClimbOvershootOnPositiveAngle : ClimbOvershoot;
+
+        private float NegativeHorizontalMovement =>
+            Cos(GroundAngleRad) * ClimbMildSlopeOvershoot * HorizontalMovementDirection;
+
+        private float NegativeVerticalMovement => Sin(GroundAngleRad) * ClimbMildSlopeOvershoot;
+
+        private float PositiveHorizontalMovement =>
+            Cos(ClimbSlopeAngleRad) * ClimbMildSlopeOvershoot * HorizontalMovementDirection;
+
+        private float PositiveVerticalMovement => Sin(ClimbSlopeAngleRad) * ClimbMildSlopeOvershoot;
+        private float HorizontalClimbMildSlopeMovement => PositiveHorizontalMovement - NegativeHorizontalMovement;
+        private float VerticalClimbMildSlopeMovement => PositiveVerticalMovement - NegativeVerticalMovement + SkinWidth;
+
+        private Vector2 ClimbMildSlopeMovement =>
+            new Vector2(HorizontalClimbMildSlopeMovement, VerticalClimbMildSlopeMovement);
+
+        public void OnClimbMildSlope()
+        {
+            if (!ClimbSlopeAngleNotGroundAngle) return;
+            Physics.OnClimbMildSlope(ClimbMildSlopeMovement);
+        }
+
+        private float DescendMildSlopeVerticalMovement => -(HitDistance - SkinWidth);
+        public void OnDescendMildSlope()
+        {
+            Physics.SetVerticalMovement(DescendMildSlopeVerticalMovement);
+        }
+
+        
+        public void OnDescendSteepSlope()
+        {
+            
         }
 
         #endregion

@@ -96,7 +96,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region constructors
+        #region constructor
 
         public RaycastData(RaycastSettings settings, Collider2D collider) : this()
         {

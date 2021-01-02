@@ -90,7 +90,7 @@ namespace VFEngine.Platformer.Physics
 
         public float HorizontalSpeed
         {
-            get => Speed.x;
+            //get => Speed.x;
             set => value = Speed.x;
         }
         public float VerticalSpeed
@@ -149,9 +149,8 @@ namespace VFEngine.Platformer.Physics
             VerticalMovementDirection = (int) Sign(VerticalMovement);
         }
 
-        public void SetExternalForce(float friction)
+        public void MoveExternalForceTowards(float maxDistanceDelta)
         {
-            var maxDistanceDelta = ExternalForce.magnitude * friction * deltaTime;
             ExternalForce = MoveTowards(ExternalForce, zero, maxDistanceDelta);
         }
 
@@ -165,9 +164,9 @@ namespace VFEngine.Platformer.Physics
             VerticalExternalForce += gravity;
         }
 
-        public void ApplyForcesToHorizontalExternalForce(int groundDirection)
+        public void ApplyForcesToHorizontalExternalForce(float force)
         {
-            HorizontalExternalForce += -Gravity * GroundFriction * groundDirection * deltaTime / 4;
+            HorizontalExternalForce += force;
         }
 
         public void SetMovement(Vector2 movement)
@@ -221,12 +220,16 @@ namespace VFEngine.Platformer.Physics
             HorizontalExternalForce = force;
         }
 
-        public void OnApplyGroundAngle(float angleRad)
+        public void OnApplyGroundAngle(float horizontalMovement)
         {
-            var horizontalMovement = VerticalMovement / Tan(angleRad) * Sign(HorizontalMovement);
             SetHorizontalMovement(horizontalMovement);
             SetHorizontalSpeed(0);
             SetHorizontalExternalForce(0);
+        }
+
+        public void OnClimbMildSlope(Vector2 climbMildSlope)
+        {
+            Movement += climbMildSlope;
         }
 
         #endregion

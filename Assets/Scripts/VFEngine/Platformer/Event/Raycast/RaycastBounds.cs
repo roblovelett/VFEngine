@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region public methods
 
-        #region constructors
+        #region constructor
 
         public RaycastBounds(Collider2D collider, float skinWidth) : this()
         {

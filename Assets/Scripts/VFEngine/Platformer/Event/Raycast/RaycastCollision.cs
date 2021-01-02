@@ -98,6 +98,16 @@ namespace VFEngine.Platformer.Event.Raycast
             VerticalHit = hit;
         }
 
+        public void OnClimbSteepSlope(RaycastHit2D hit)
+        {   
+            SetGroundMeasurements(hit.normal);
+        }
+
+        public void OnDescendMildSlope(RaycastHit2D hit)
+        {
+            SetGroundMeasurements(hit.normal);
+        }
+
         #endregion
 
         #endregion

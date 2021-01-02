@@ -56,9 +56,9 @@ namespace VFEngine.Platformer.Physics
             Physics.SetHorizontalMovementDirection();
         }
 
-        public void OnPlatformerSetExternalForce()
+        public void OnPlatformerMoveExternalForce()
         {
-            Physics.SetExternalForce();
+            Physics.MoveExternalForceTowards();
         }
 
         public void OnPlatformerApplyGravity()
@@ -119,6 +119,26 @@ namespace VFEngine.Platformer.Physics
         public void OnPlatformerApplyGroundAngle()
         {
             Physics.OnPlatformerApplyGroundAngle();
+        }
+
+        public void OnPlatformerClimbSteepSlope()
+        {
+            Physics.OnClimbSteepSlope();
+        }
+
+        public void OnPlatformerClimbMildSlope()
+        {
+            Physics.OnClimbMildSlope();
+        }
+
+        public void OnPlatformerDescendMildSlope()
+        {
+            Physics.OnDescendMildSlope();
+        }
+
+        public void OnPlatformerDescendSteepSlope()
+        {
+            Physics.OnDescendSteepSlope();
         }
 
         #endregion

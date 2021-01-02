@@ -87,7 +87,7 @@ namespace VFEngine.Platformer
         private void SetForces()
         {
             if (CannotSetForces) return;
-            Physics.OnPlatformerSetExternalForce();
+            Physics.OnPlatformerMoveExternalForce();
             Physics.OnPlatformerApplyGravity();
             if (ApplyForcesToExternal) Physics.OnPlatformerApplyForcesToExternal();
         }
@@ -139,7 +139,6 @@ namespace VFEngine.Platformer
         private bool GroundNotHorizontalMovementDirection => GroundDirection != HorizontalMovementDirection;
         private float VerticalSpeed => Speed.y;
         private bool NegativeVerticalSpeed => VerticalSpeed < 0;
-
         private bool StopHorizontalSpeedAndSetHit => OnSlope && MetMinimumWallAngle &&
                                                      GroundNotHorizontalMovementDirection && NegativeVerticalSpeed;
 
@@ -213,37 +212,67 @@ namespace VFEngine.Platformer
         {
             if (!SlopeChange) return;
             if (PositiveSlopeChange) OnPositiveSlopeChange();
-        }
-
-        private void OnPositiveSlopeChange()
-        {
-            OnSteepSlope();
-            OnMildSlope();
+            else OnNegativeSlopeChange();
         }
 
         private bool SteepSlopeHit => Hit;
         private float SteepSlopeAngle => SideAngle;
         private float Tolerance => Platformer.Tolerance;
         private bool SteepSlopeNotGroundAngle => Abs(SteepSlopeAngle - GroundAngle) > Tolerance;
-        private bool ApplySteepSlopeBehavior => SteepSlopeHit && SteepSlopeNotGroundAngle;
+        private bool ClimbSteepSlope => SteepSlopeHit && SteepSlopeNotGroundAngle;
+        private bool MildSlopeHit => Hit;
+        private LayerMask GroundLayer => Collision.GroundLayer;
+        private LayerMask HitLayer => Hit.collider.gameObject.layer;
+        private LayerMask MildSlopeHitLayer => HitLayer;
+        private bool MildSlopeHitLayerIsGround => MildSlopeHitLayer == GroundLayer;
+        private bool ClimbMildSlope => MildSlopeHit && MildSlopeHitLayerIsGround;
 
-        private void OnSteepSlope()
+        private void OnPositiveSlopeChange()
         {
-            Raycast.OnPlatformerClimbSteepSlope();
-            if (!ApplySteepSlopeBehavior) return;
-            //Physics.OnPlatformerApplySteepSlopeBehavior();
-            //Raycast.OnPlatformerApplySteepSlopeBehavior();
-            Platformer.OnApplySteepSlopeBehavior();
+            Raycast.OnPlatformerInitializeClimbSteepSlope();
+            if (ClimbSteepSlope)
+            {
+                OnClimbSteepSlope();
+            }
+            else
+            {
+                Raycast.OnPlatformerInitializeClimbMildSlope();
+                if (ClimbMildSlope) Physics.OnPlatformerClimbMildSlope();
+            }
         }
 
-        private bool ClimbedSteepSlope => Platformer.ClimbedSteepSlope;
-        private bool ClimbMildSlope => !ClimbedSteepSlope;
-
-        private void OnMildSlope()
+        private void OnClimbSteepSlope()
         {
-            if (!ClimbMildSlope) return;
-            //Raycast.OnPlatformerClimbMildSlope();
-            //if (!ApplyMildSlopeBehavior) return;
+            Physics.OnPlatformerClimbSteepSlope();
+            Raycast.OnPlatformerClimbSteepSlope();
+        }
+
+        private RaycastHit2D DescendMildSlopeHit => Hit;
+        private float DescendMildSlopeAngle => SideAngle;
+        private bool DescendMildSlope => DescendMildSlopeHit && DescendMildSlopeAngle < GroundAngle;
+        private RaycastHit2D DescendSteepSlopeHit => Hit;
+        private bool SteepSlopeHitIsMovementDirection => (int) Sign(DescendSteepSlopeHit.normal.x) == HorizontalMovementDirection;
+        private bool SteepSlopeHitLayerIsGround => DescendSteepSlopeHit.collider.gameObject.layer == GroundLayer;
+        private bool DescendSteepSlope => DescendSteepSlopeHit && SteepSlopeHitIsMovementDirection && SteepSlopeHitLayerIsGround;
+
+        private void OnNegativeSlopeChange()
+        {
+            Raycast.OnPlatformerInitializeDescendMildSlope();
+            if (DescendMildSlope)
+            {
+                OnDescendMildSlope();
+            }
+            else
+            {
+                Raycast.OnPlatformerInitializeDescendSteepSlope();
+                if (DescendSteepSlope) Physics.OnPlatformerDescendSteepSlope();
+            }
+        }
+
+        private void OnDescendMildSlope()
+        {
+            Physics.OnPlatformerDescendMildSlope();
+            Raycast.OnPlatformerDescendMildSlope();
         }
 
         #endregion
@@ -256,6 +285,8 @@ namespace VFEngine.Platformer
 
         #region public methods
 
+        #region constructor
+
         public PlatformerModel(PlatformerSettings settings, ref RaycastController raycast,
             ref LayerMaskController layerMask, ref PhysicsController physics)
         {
@@ -264,6 +295,8 @@ namespace VFEngine.Platformer
             LayerMask = layerMask;
             Physics = physics;
         }
+
+        #endregion
 
         public void Run()
         {
