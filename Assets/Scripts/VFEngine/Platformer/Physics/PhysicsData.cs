@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics
@@ -9,7 +8,6 @@ namespace VFEngine.Platformer.Physics
     using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
-    [InlineEditor]
     public class PhysicsData : ScriptableObject
     {
         #region events

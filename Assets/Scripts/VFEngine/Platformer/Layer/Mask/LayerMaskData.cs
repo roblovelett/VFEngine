@@ -1,5 +1,4 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Layer.Mask
@@ -7,7 +6,6 @@ namespace VFEngine.Platformer.Layer.Mask
     using static ScriptableObjectExtensions;
 
     [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
-    [InlineEditor]
     public class LayerMaskData : ScriptableObject
     {
         #region events

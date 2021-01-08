@@ -7,7 +7,6 @@ namespace VFEngine.Platformer
     using static ScriptableObjectExtensions;
     
     [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
-    [InlineEditor]
     public class PlatformerData : ScriptableObject
     {
         #region events
@@ -15,56 +14,9 @@ namespace VFEngine.Platformer
         #endregion
           
         #region properties
-        
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public bool DisplayWarnings
-        {
-            get => displayWarnings;
-            set => value = displayWarnings;
-        }
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public float OneWayPlatformDelay
-        {
-            get => oneWayPlatformDelay;
-            set => value = oneWayPlatformDelay;
-        }
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public float LadderClimbThreshold
-        {
-            get => ladderClimbThreshold;
-            set => value = ladderClimbThreshold;
-        }
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public float LadderDelay
-        {
-            get => ladderDelay;
-            set => value = ladderDelay;
-        }
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public float Tolerance
-        {
-            get => tolerance;
-            set => value = tolerance;
-        }
-        [FoldoutGroup("Runtime Data", false)]
-        [ShowInInspector]
-        [ReadOnly]
-        public float IgnorePlatformsTime
-        {
-            get => ignorePlatformsTime;
-            set => value = ignorePlatformsTime;
-        }
-          
+
+        public float IgnorePlatformsTime { get; private set; }
+
         #endregion
           
         #region fields
@@ -73,9 +25,8 @@ namespace VFEngine.Platformer
         private float oneWayPlatformDelay; 
         private float ladderClimbThreshold; 
         private float ladderDelay; 
-        private float tolerance; 
-        private float ignorePlatformsTime;
-        
+        private float tolerance;
+
         #endregion
           
         #region initialization
@@ -83,6 +34,7 @@ namespace VFEngine.Platformer
         private void InitializeInternal(PlatformerSettings settings)
         {
             ApplySettings(settings);
+            InitializeDefault();
         }
 
         private void ApplySettings(PlatformerSettings settings)
@@ -96,7 +48,7 @@ namespace VFEngine.Platformer
         private void InitializeDefault()
         {
             tolerance = 0;
-            ignorePlatformsTime = 0;
+            IgnorePlatformsTime = 0;
         }
           
         #endregion
