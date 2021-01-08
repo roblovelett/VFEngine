@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aba2d322d7624d069a1c0e57ca66df85, type: 3}
-  m_Name: RaycastSettings
+  m_Script: {fileID: 11500000, guid: c01cacb6bef2450493a444956913bda0, type: 3}
+  m_Name: PlatformerData
   m_EditorClassIdentifier: 
-  displayWarnings: 0
-  drawGizmos: 1
-  totalHorizontalRays: 8
-  totalVerticalRays: 8
-  spacing: 0.125
-  skinWidth: 0.015

@@ -1,82 +1,121 @@
-﻿namespace VFEngine.Platformer
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
+using VFEngine.Tools;
+
+namespace VFEngine.Platformer
 {
-    public struct PlatformerData
+    using static ScriptableObjectExtensions;
+    
+    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
+    [InlineEditor]
+    public class PlatformerData : ScriptableObject
     {
+        #region events
+          
+        #endregion
+          
+        #region properties
+        
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public bool DisplayWarnings
+        {
+            get => displayWarnings;
+            set => value = displayWarnings;
+        }
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public float OneWayPlatformDelay
+        {
+            get => oneWayPlatformDelay;
+            set => value = oneWayPlatformDelay;
+        }
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public float LadderClimbThreshold
+        {
+            get => ladderClimbThreshold;
+            set => value = ladderClimbThreshold;
+        }
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public float LadderDelay
+        {
+            get => ladderDelay;
+            set => value = ladderDelay;
+        }
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public float Tolerance
+        {
+            get => tolerance;
+            set => value = tolerance;
+        }
+        [FoldoutGroup("Runtime Data", false)]
+        [ShowInInspector]
+        [ReadOnly]
+        public float IgnorePlatformsTime
+        {
+            get => ignorePlatformsTime;
+            set => value = ignorePlatformsTime;
+        }
+          
+        #endregion
+          
         #region fields
 
-        #region private methods
-
+        private bool displayWarnings;
+        private float oneWayPlatformDelay; 
+        private float ladderClimbThreshold; 
+        private float ladderDelay; 
+        private float tolerance; 
+        private float ignorePlatformsTime;
+        
+        #endregion
+          
         #region initialization
 
-        private void InitializeDependencies(PlatformerSettings settings)
+        private void InitializeInternal(PlatformerSettings settings)
         {
-            InitializeSettings(settings);
+            ApplySettings(settings);
         }
 
-        private void InitializeSettings(PlatformerSettings settings)
+        private void ApplySettings(PlatformerSettings settings)
         {
-            DisplayWarnings = settings.displayWarnings;
-            OneWayPlatformDelay = settings.oneWayPlatformDelay;
-            LadderClimbThreshold = settings.ladderClimbThreshold;
-            LadderDelay = settings.ladderDelay;
+            displayWarnings = settings.displayWarnings;
+            oneWayPlatformDelay = settings.oneWayPlatformDelay;
+            ladderClimbThreshold = settings.ladderClimbThreshold;
+            ladderDelay = settings.ladderDelay;
         }
 
-        private void Initialize()
+        private void InitializeDefault()
         {
-            Index = 0;
-            Tolerance = 0;
-            IgnorePlatformsTime = 0;
+            tolerance = 0;
+            ignorePlatformsTime = 0;
         }
-
+          
         #endregion
-
-        #region private methods
-
-        #endregion
-
-        #endregion
-
-        #endregion
-
-        #region properties
-
-        #region dependencies
-
-        public bool DisplayWarnings { get; private set; }
-        public float OneWayPlatformDelay { get; private set; }
-        public float LadderClimbThreshold { get; private set; }
-        public float LadderDelay { get; private set; }
-
-        #endregion
-
-        public int Index { get; private set; }
-        public float Tolerance { get; private set; }
-        public float IgnorePlatformsTime { get; private set; }
-
+          
         #region public methods
 
-        #region constructors
-
-        public PlatformerData(PlatformerSettings settings) : this()
+        public void Initialize(PlatformerSettings settings)
         {
-            InitializeDependencies(settings);
-            Initialize();
+            InitializeInternal(settings);
         }
-
+        
         #endregion
-
-        public void OnInitializeFrame()
-        {
-            Initialize();
-        }
-
-        public void SetIndex(int index)
-        {
-            Index = index;
-        }
-
+          
+        #region private methods
+          
         #endregion
-
+          
+        #region event handlers
+          
         #endregion
     }
 }

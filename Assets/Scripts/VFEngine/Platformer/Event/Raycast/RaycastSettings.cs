@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast

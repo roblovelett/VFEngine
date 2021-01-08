@@ -1,254 +1,100 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics
 {
     using static Vector2;
-    using static Mathf;
     using static Time;
+    using static ScriptableObjectExtensions;
 
-    public struct PhysicsData
+    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
+    [InlineEditor]
+    public class PhysicsData : ScriptableObject
     {
-        #region fields
-
-        #region private methods
-
-        private void InitializeDependencies(PhysicsSettings settings, GameObject character)
-        {
-            InitializeSettings(settings);
-            InitializeTransform(character);
-        }
-
-        private void InitializeSettings(PhysicsSettings settings)
-        {
-            DisplayWarningsControl = settings.displayWarningsControl;
-            MaximumSlopeAngle = settings.maximumSlopeAngle;
-            MinimumWallAngle = settings.minimumWallAngle;
-            MinimumMovementThreshold = settings.minimumMovementThreshold;
-            Gravity = settings.gravity;
-            AirFriction = settings.airFriction;
-            GroundFriction = settings.groundFriction;
-            StaggerSpeedFalloff = settings.staggerSpeedFalloff;
-        }
-
-        private void InitializeTransform(GameObject character)
-        {
-            Transform = character.transform;
-        }
-
-        private void Initialize()
-        {
-            InitializeInternal();
-        }
-
-        private void InitializeInternal()
-        {
-            FacingRight = false;
-            IgnoreFriction = false;
-            GravityScale = 1;
-            Speed = zero;
-            ExternalForce = zero;
-            ExternalForce = zero;
-            TotalSpeed = Speed * ExternalForce;
-            Movement = TotalSpeed * fixedDeltaTime;
-            SetMovementDirection();
-        }
-
-        private void SetMovementDirection()
-        {
-            SetHorizontalMovementDirection();
-            SetVerticalMovementDirection();
-        }
-
-        #endregion
+        #region events
 
         #endregion
 
         #region properties
 
-        #region dependencies
-
-        public bool DisplayWarningsControl { get; private set; }
-        public float MaximumSlopeAngle { get; private set; }
-        public float MinimumWallAngle { get; private set; }
-        public float MinimumMovementThreshold { get; private set; }
-        public float Gravity { get; private set; }
-        public float AirFriction { get; private set; }
-        public float GroundFriction { get; private set; }
-        public float StaggerSpeedFalloff { get; private set; }
-        public Transform Transform { get; private set; }
+        public int DeltaMoveDirectionAxis { get; private set; }
+        public Vector2 DeltaMove { get; private set; }
 
         #endregion
 
-        public bool FacingRight { get; set; }
-        public bool IgnoreFriction { get; set; }
-        public int HorizontalMovementDirection { get; set; }
-        public int VerticalMovementDirection { get; set; }
-        public float GravityScale { get; set; }
-        public Vector2 Speed { get; set; }
+        #region fields
 
-        public float HorizontalSpeed
+        private bool displayWarnings;
+        private bool facingRight;
+        private bool ignoreFriction;
+        private float maximumSlopeAngle;
+        private float minimumWallAngle;
+        private float minimumMovementThreshold;
+        private float gravity;
+        private float airFriction;
+        private float groundFriction;
+        private float staggerSpeedFalloff;
+        private float gravityScale;
+        private Vector2 speed;
+        private Vector2 externalForce;
+        private Vector2 totalSpeed;
+
+        #endregion
+
+        #region initialization
+
+        private void InitializeInternal(PhysicsSettings settings)
         {
-            get => Speed.x;
-            set => value = Speed.x;
+            ApplySettings(settings);
+            InitializeDefault();
         }
 
-        public float VerticalSpeed
+        private void ApplySettings(PhysicsSettings settings)
         {
-            get => Speed.y;
-            set => value = Speed.y;
+            displayWarnings = settings.displayWarnings;
+            maximumSlopeAngle = settings.maximumSlopeAngle;
+            minimumWallAngle = settings.minimumWallAngle;
+            minimumMovementThreshold = settings.minimumMovementThreshold;
+            gravity = settings.gravity;
+            airFriction = settings.airFriction;
+            groundFriction = settings.groundFriction;
+            staggerSpeedFalloff = settings.staggerSpeedFalloff;
         }
 
-        public Vector2 ExternalForce { get; set; }
-
-        public float HorizontalExternalForce
+        private void InitializeDefault()
         {
-            get => ExternalForce.x;
-            set => value = ExternalForce.x;
+            facingRight = true;
+            ignoreFriction = false;
+            gravityScale = 1;
+            speed = zero;
+            externalForce = zero;
+            totalSpeed = speed * externalForce;
+            DeltaMove = totalSpeed * fixedDeltaTime;
+            DeltaMoveDirectionAxis = 0;
         }
 
-        public float VerticalExternalForce
-        {
-            get => ExternalForce.y;
-            set => value = ExternalForce.y;
-        }
-
-        public Vector2 TotalSpeed { get; set; }
-        public Vector2 Movement { get; set; }
-
-        public float HorizontalMovement
-        {
-            get => Movement.x;
-            set => value = Movement.x;
-        }
-
-        public float VerticalMovement
-        {
-            get => Movement.y;
-            set => value = Movement.y;
-        }
+        #endregion
 
         #region public methods
 
-        #region constructors
-
-        public PhysicsData(PhysicsSettings settings, GameObject character) : this()
+        public void Initialize(PhysicsSettings settings)
         {
-            InitializeDependencies(settings, character);
-            Initialize();
+            InitializeInternal(settings);
+        }
+
+        public void SetDeltaMoveDirectionAxis(int axis)
+        {
+            DeltaMoveDirectionAxis = axis;
         }
 
         #endregion
 
-        public void SetHorizontalMovementDirection()
-        {
-            HorizontalMovementDirection = (int) Sign(HorizontalMovement);
-        }
-
-        public void SetVerticalMovementDirection()
-        {
-            VerticalMovementDirection = (int) Sign(VerticalMovement);
-        }
-
-        public void MoveExternalForceTowards(float maxDistanceDelta)
-        {
-            ExternalForce = MoveTowards(ExternalForce, zero, maxDistanceDelta);
-        }
-
-        public void ApplyGravityToSpeed(float gravity)
-        {
-            VerticalSpeed += gravity;
-        }
-
-        public void ApplyGravityToExternalForce(float gravity)
-        {
-            VerticalExternalForce += gravity;
-        }
-
-        public void ApplyForcesToHorizontalExternalForce(float force)
-        {
-            HorizontalExternalForce += force;
-        }
-
-        public void SetMovement(Vector2 movement)
-        {
-            Movement = movement;
-        }
-
-        public void SetVerticalSpeed(float speed)
-        {
-            VerticalSpeed = speed;
-        }
-
-        public void SetVerticalExternalForce(float force)
-        {
-            VerticalExternalForce = force;
-        }
-
-        public void OnPreClimbSlopeBehavior(float distance)
-        {
-            HorizontalMovement -= distance * HorizontalMovementDirection;
-        }
-
-        public void OnPostClimbSlopeBehavior(float distance)
-        {
-            HorizontalMovement += distance * HorizontalMovementDirection;
-        }
-
-        public void SetHorizontalMovement(float movement)
-        {
-            HorizontalMovement = movement;
-        }
-
-        public void SetVerticalMovement(float movement)
-        {
-            VerticalMovement = movement;
-        }
-
-        public void OnHitWall()
-        {
-            SetHorizontalSpeed(0);
-            SetHorizontalExternalForce(0);
-        }
-
-        public void SetHorizontalSpeed(float speed)
-        {
-            HorizontalSpeed = speed;
-        }
-
-        public void SetHorizontalExternalForce(float force)
-        {
-            HorizontalExternalForce = force;
-        }
-
-        public void OnApplyGroundAngle(float horizontalMovement)
-        {
-            SetHorizontalMovement(horizontalMovement);
-            SetHorizontalSpeed(0);
-            SetHorizontalExternalForce(0);
-        }
-
-        public void AddToMovement(Vector2 movement)
-        {
-            Movement += movement;
-        }
-
-        public void SetTransformTranslate(Vector2 movement)
-        {
-            Transform.Translate(movement);
-        }
-
-        public void OnCeilingOrGroundCollision()
-        {
-            SetVerticalSpeed(0);
-            SetVerticalExternalForce(0);
-        }
-
-        public void SetIgnoreFriction(bool ignore)
-        {
-            IgnoreFriction = ignore;
-        }
+        #region private methods
 
         #endregion
+
+        #region event handlers
 
         #endregion
     }

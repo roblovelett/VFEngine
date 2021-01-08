@@ -1,88 +1,93 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
-    public struct LayerMaskData
+    using static ScriptableObjectExtensions;
+
+    [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
+    [InlineEditor]
+    public class LayerMaskData : ScriptableObject
     {
-        #region fields
-
-        #region private methods
-
-        private void InitializeDependencies(GameObject character, LayerMaskSettings settings)
-        {
-            InitializeCharacter(character);
-            InitializeSettings(settings);
-        }
-
-        private void InitializeCharacter(GameObject character)
-        {
-            CharacterGameObject = character;
-        }
-
-        private void InitializeSettings(LayerMaskSettings settings)
-        {
-            DisplayWarningsControl = settings.displayWarningsControl;
-            Ground = settings.ground;
-            OneWayPlatform = settings.oneWayPlatform;
-            Ladder = settings.ladder;
-            Character = settings.character;
-            CharacterCollision = settings.characterCollision;
-            StandOnCollision = settings.standOnCollision;
-            Interactive = settings.interactive;
-        }
-
-        private void Initialize()
-        {
-            Collision = CharacterCollision;
-            SavedLayer = 0;
-        }
-
-        #endregion
+        #region events
 
         #endregion
 
         #region properties
 
-        #region dependencies
-
-        public bool DisplayWarningsControl { get; private set; }
-        public LayerMask Ground { get; private set; }
         public LayerMask OneWayPlatform { get; private set; }
-        public LayerMask Ladder { get; private set; }
-        public LayerMask Character { get; private set; }
-        public LayerMask CharacterCollision { get; private set; }
-        public LayerMask StandOnCollision { get; private set; }
-        public LayerMask Interactive { get; private set; }
+        public LayerMask Collision { get; private set; }
 
         #endregion
 
-        public int SavedLayer { get; private set; }
-        public LayerMask Collision { get; private set; }
-        public GameObject CharacterGameObject { get; private set; }
+        #region fields
+
+        private bool displayWarnings;
+        private LayerMask ground;
+        private LayerMask ladder;
+        private LayerMask character;
+        private LayerMask characterCollision;
+        private LayerMask standOnCollision;
+        private LayerMask interactive;
+        private LayerMask saved;
+        private GameObject characterObject;
+
+        #endregion
+
+        #region initialization
+
+        private void InitializeInternal(GameObject characterGameObject, LayerMaskSettings settings)
+        {
+            ApplySettings(settings);
+            InitializeCharacter(characterGameObject);
+            InitializeDefault();
+        }
+
+        private void ApplySettings(LayerMaskSettings settings)
+        {
+            displayWarnings = settings.displayWarnings;
+            ground = settings.ground;
+            OneWayPlatform = settings.oneWayPlatform;
+            ladder = settings.ladder;
+            character = settings.character;
+            characterCollision = settings.characterCollision;
+            standOnCollision = settings.standOnCollision;
+            interactive = settings.interactive;
+        }
+
+        private void InitializeCharacter(GameObject characterGameObject)
+        {
+            characterObject = characterGameObject;
+        }
+
+        private void InitializeDefault()
+        {
+            Collision = characterCollision;
+            saved = 0;
+        }
+
+        #endregion
 
         #region public methods
 
-        #region constructor
-
-        public LayerMaskData(GameObject character, LayerMaskSettings settings) : this()
+        public void Initialize(GameObject characterGameObject, LayerMaskSettings settings)
         {
-            InitializeDependencies(character, settings);
-            Initialize();
+            InitializeInternal(characterGameObject, settings);
+        }
+
+        public void SetSaved(LayerMask layer)
+        {
+            saved = layer;
         }
 
         #endregion
 
-        public void SetSavedLayer(LayerMask layer)
-        {
-            SavedLayer = layer;
-        }
-
-        public void SetCharacterLayer(LayerMask layer)
-        {
-            CharacterGameObject.layer = layer;
-        }
+        #region private methods
 
         #endregion
+
+        #region event handlers
 
         #endregion
     }

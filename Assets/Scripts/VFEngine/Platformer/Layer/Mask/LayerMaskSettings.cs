@@ -12,7 +12,7 @@ namespace VFEngine.Platformer.Layer.Mask
     {
         #region properties
 
-        [SerializeField] public bool displayWarningsControl;
+        [SerializeField] public bool displayWarnings;
         [SerializeField] public LayerMask ground;
         [SerializeField] public LayerMask oneWayPlatform;
         [SerializeField] public LayerMask ladder;

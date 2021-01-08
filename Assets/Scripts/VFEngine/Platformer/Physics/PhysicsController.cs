@@ -1,74 +1,89 @@
-﻿using UnityEngine;
-using VFEngine.Platformer.Event.Raycast;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using UnityEngine;
 
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
+    using static Mathf;
 
-    public class PhysicsController : MonoBehaviour
+    public class PhysicsController : SerializedMonoBehaviour
     {
-        #region fields
-
-        #region dependencies
-
-        [SerializeField] private GameObject character;
-        [SerializeField] private PhysicsSettings settings;
-        private PhysicsModel Physics { get; set; }
-        private RaycastData Raycast { get; set; }
+        #region events
 
         #endregion
 
-        #region private methods
+        #region properties
+        
+        [OdinSerialize] public PhysicsData Data { get; private set; }
+
+        #endregion
+
+        #region fields
+
+        [OdinSerialize] private GameObject character;
+        [OdinSerialize] private PhysicsSettings settings;
+
+        #endregion
 
         #region initialization
+
+        private void Initialize()
+        {
+            if (!character) character = Find("Character");
+            if (!settings) settings = CreateInstance<PhysicsSettings>();
+            if (!Data) Data = CreateInstance<PhysicsData>();
+            Data.Initialize(settings);
+        }
+
+        #endregion
+
+        #region unity events
 
         private void Awake()
         {
             Initialize();
         }
 
-        private void Initialize()
-        {
-            if (!character) character = Find("Character");
-            if (!settings) settings = CreateInstance<PhysicsSettings>();
-            Physics = new PhysicsModel(character, settings);
-        }
-
         private void Start()
         {
-            SetData();
-            SetDependencies();
-        }
-
-        private void SetData()
-        {
-            Raycast = GetComponent<RaycastController>().Data;
-        }
-
-        private void SetDependencies()
-        {
-            Physics.SetDependencies(Raycast);
+            // set dependencies
         }
 
         #endregion
-
-        #endregion
-
-        #endregion
-
-        #region properties
-
-        public PhysicsData Data => Physics.Data;
 
         #region public methods
 
-        public void OnPlatformerInitializeFrame()
+        #endregion
+
+        #region private methods
+
+        private Vector2 DeltaMove => Data.DeltaMove;
+        private int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);
+        private IEnumerator InitializeFrame()
         {
-            Physics.SetHorizontalMovementDirection();
+            Data.SetDeltaMoveDirectionAxis(DeltaMoveXDirectionAxis);
+            yield return null;
         }
 
-        public void OnPlatformerMoveExternalForce()
+        #endregion
+
+        #region event handlers
+
+        public void OnPlatformerInitializeFrame()
+        {
+            StartCoroutine(InitializeFrame());
+        }
+
+        #endregion
+    }
+}
+
+#region hide
+
+/*public void OnPlatformerMoveExternalForce()
         {
             Physics.MoveExternalForceTowards();
         }
@@ -166,10 +181,6 @@ namespace VFEngine.Platformer.Physics
         public void OnPlatformerResetFriction()
         {
             Physics.ResetFriction();
-        }
+        }*/
 
-        #endregion
-
-        #endregion
-    }
-}
+#endregion

@@ -13,6 +13,10 @@ namespace VFEngine.Platformer.Event.Raycast
         #region fields
 
         #region internal
+        
+        private PhysicsData Physics { get; set; }
+        private LayerMaskData LayerMask { get; set; }
+        private PlatformerData Platformer { get; set; }
 
         #endregion
 
@@ -28,48 +32,52 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        public RaycastData Data => Raycast;
-        private PhysicsData Physics { get; set; }
-        private LayerMaskData LayerMask { get; set; }
-        private PlatformerData Platformer { get; set; }
+        public RaycastData Data { get; } = new RaycastData();
+
 
         #region public methods
 
         #region constructor
 
+        public RaycastModel()
+        {
+            
+        }
         public RaycastModel(Collider2D collider, RaycastSettings settings)
         {
-            Raycast = new RaycastData(settings, collider);
+            //Raycast = new RaycastData(settings, collider);
         }
 
         #endregion
 
+        public void ApplySettings(RaycastSettings settings)
+        {
+            
+        }
+
+        public void SetCollider(Collider2D collider)
+        {
+            
+        }
+        
         public void SetDependencies(LayerMaskData layerMask, PhysicsData physics, PlatformerData platformer)
         {
             LayerMask = layerMask;
             Physics = physics;
             Platformer = platformer;
         }
-
-        private RaycastData Raycast { get; }
-
-        public void OnInitializeFrame()
+        
+        public void InitializeFrame()
         {
-            ResetCollision();
-            SetBounds();
+            //Data.ResetCollision();
+            //Data.SetBounds();
         }
-
-        public void ResetCollision()
-        {
-            Raycast.ResetCollision();
-        }
-
-        private void SetBounds()
-        {
-            Raycast.SetBounds();
-        }
-
-        private RaycastBounds Bounds => Raycast.Bounds;
+        
+        #endregion
+        
+        #endregion
+        
+        /*private RaycastBounds Bounds => Raycast.Bounds;
         private RaycastCollision Collision => Raycast.Collision;
         private int HorizontalMovementDirection => Physics.HorizontalMovementDirection;
         private bool MovingRight => HorizontalMovementDirection == 1;
@@ -143,7 +151,7 @@ namespace VFEngine.Platformer.Event.Raycast
             Collision.SetCollisionBelow(true);
         }
 
-        private float HorizontalMovement => Physics.Movement.x;
+        private float HorizontalMovement => Physics.DeltaMove.x;
         private float InitialSideLength => Abs(HorizontalMovement) + SkinWidth;
         private float Length => Raycast.Length;
 
@@ -315,7 +323,7 @@ namespace VFEngine.Platformer.Event.Raycast
             Collision.OnClimbSteepSlope(Hit);
         }
 
-        private Vector2 Movement => Physics.Movement;
+        private Vector2 Movement => Physics.DeltaMove;
         private Vector2 ClimbMildSlopeOrigin => SideBottomOrigin + Movement;
         private static Vector2 ClimbMildSlopeDirection => down;
         private static float ClimbMildSlopeDistance => 1;
@@ -331,7 +339,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         /*public void OnClimbMildSlope(){}*/
 
-        public void OnInitializeDescendMildSlope()
+        /*public void OnInitializeDescendMildSlope()
         {
             SetLengthForDescendMildSlope();
             SetOriginForDescendMildSlope();
@@ -401,6 +409,6 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #endregion
 
-        #endregion
+        #endregion*/
     }
 }

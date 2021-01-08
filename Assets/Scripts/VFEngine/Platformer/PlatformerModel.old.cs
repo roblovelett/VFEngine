@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿/*
+using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
+using VFEngine.Tools.BetterEvent;
 
 namespace VFEngine.Platformer
 {
@@ -14,20 +16,21 @@ namespace VFEngine.Platformer
 
         #region internal
 
-        private PlatformerData Platformer { get; }
+        private PlatformerData Platformer { get; set; }
         private RaycastController Raycast { get; set; }
         private PhysicsController Physics { get; set; }
         private LayerMaskController LayerMask { get; set; }
-        private RaycastData RaycastData => Raycast.Data;
-        private RaycastCollision Collision => RaycastData.Collision;
+        //private RaycastData RaycastData => Raycast.Data;
         private PhysicsData PhysicsData => Physics.Data;
-        private int VerticalRays => RaycastData.VerticalRays;
 
         #endregion
+        
+        #endregion
+        */
 
-        #region private methods
+        //#region private methods
 
-        private void RunInternal()
+        /*private void RunInternal()
         {
             InitializeFrame();
             SetGroundCollision();
@@ -41,16 +44,18 @@ namespace VFEngine.Platformer
             OnCeilingOrGroundCollision();
             SetLayerMaskToSaved();
             ResetFriction();
-        }
+        }*/
 
-        private void InitializeFrame()
+        /*private void InitializeFrame()
         {
+            //platformerInitializeFrame.Invoke();
             Raycast.OnPlatformerInitializeFrame();
             LayerMask.OnPlatformerInitializeFrame();
             Physics.OnPlatformerInitializeFrame();
-            Platformer.OnInitializeFrame();
-        }
+            //Platformer.OnInitializeFrame();
+        }*/
 
+        /*private int VerticalRays => RaycastData.VerticalRays;
         private RaycastHit2D Hit => RaycastData.Hit;
         private float IgnorePlatformsTime => Platformer.IgnorePlatformsTime;
         private bool SetDownHitAtOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
@@ -327,6 +332,7 @@ namespace VFEngine.Platformer
         #endregion
 
         #endregion
+        *//*
 
         #region properties
 
@@ -336,7 +342,8 @@ namespace VFEngine.Platformer
 
         #region constructor
 
-        public PlatformerModel(PlatformerSettings settings)
+        public PlatformerModel(){}
+        public void ApplySettings(PlatformerSettings settings)
         {
             Platformer = new PlatformerData(settings);
         }
@@ -350,13 +357,13 @@ namespace VFEngine.Platformer
 
         #endregion
 
-        public void Run()
+        public void InitializeFrame()
         {
-            RunInternal();
+            Platformer.Initialize();
         }
 
         #endregion
 
-        #endregion
+        #endregion*//*
     }
-}
+}*/

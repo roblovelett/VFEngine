@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce247ea3bdd74d0391d336fc91c90a56, type: 3}
   m_Name: PhysicsSettings
   m_EditorClassIdentifier: 
-  displayWarningsControl: 0
+  displayWarnings: 0
   maximumSlopeAngle: 60
   minimumWallAngle: 80
   minimumMovementThreshold: 0.0001

@@ -1,65 +1,79 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using UnityEngine;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
     using static ScriptableObject;
+    using static Physics2D;
 
-    public class LayerMaskController : MonoBehaviour
+    public class LayerMaskController : SerializedMonoBehaviour
     {
-        #region fields
-
-        #region dependencies
-
-        [SerializeField] private GameObject character;
-        [SerializeField] private LayerMaskSettings settings;
-        private LayerMaskModel LayerMask { get; set; }
-
-        #endregion
-
-        #region internal
-
-        #endregion
-
-        #region private methods
-
-        #region initialization
-
-        private void Awake()
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            if (!character) character = Find("Character");
-            if (!settings) settings = CreateInstance<LayerMaskSettings>();
-            LayerMask = new LayerMaskModel(character, settings);
-        }
-
-        #endregion
-
-        #endregion
+        #region events
 
         #endregion
 
         #region properties
 
-        public LayerMaskData Data => LayerMask.Data;
+        [OdinSerialize] public LayerMaskData Data { get; private set; }
 
-        #region public methods
+        #endregion
 
-        public void OnPlatformerInitializeFrame()
+        #region fields
+
+        [OdinSerialize] private GameObject character;
+        [OdinSerialize] private LayerMaskSettings settings;
+
+        #endregion
+
+        #region initialization
+
+        private void Initialize()
         {
-            LayerMask.OnInitializeFrame();
-        }
-
-        public void OnPlatformerSetLayerToSaved()
-        {
-            LayerMask.OnSetLayerToSaved();
+            if (!character) character = Find("Character");
+            if (!settings) settings = CreateInstance<LayerMaskSettings>();
+            if (!Data) Data = CreateInstance<LayerMaskData>();
+            Data.Initialize(character, settings);
         }
 
         #endregion
+
+        #region unity events
+
+        private void Awake()
+        {
+            Initialize();
+        }
+        private void Start()
+        {
+            // Set Dependencies
+        }
+
+        #endregion
+
+        #region public methods
+
+        #endregion
+
+        #region private methods
+
+        private IEnumerator InitializeFrame()
+        {
+            Data.SetSaved(character.layer);
+            character.layer = IgnoreRaycastLayer;
+            yield return null;
+        }
+
+        #endregion
+
+        #region event handlers
+
+        public void OnPlatformerInitializeFrame()
+        {
+            StartCoroutine(InitializeFrame());
+        }
 
         #endregion
     }

@@ -12,16 +12,19 @@ namespace VFEngine.Platformer.Physics
         #region fields
 
         #region internal
-
+        private PhysicsData Physics { get; }
+        private RaycastData Raycast { get; set; }
+        
+        
         #endregion
 
         #region private methods
 
-        private void StopVerticalForces()
+        /*private void StopVerticalForces()
         {
             Physics.SetVerticalSpeed(0);
             Physics.SetVerticalExternalForce(0);
-        }
+        }*/
 
         #endregion
 
@@ -35,9 +38,9 @@ namespace VFEngine.Platformer.Physics
 
         #region constructors
 
-        public PhysicsModel(GameObject character, PhysicsSettings settings)
+        public PhysicsModel(ref GameObject character, PhysicsSettings settings)
         {
-            Physics = new PhysicsData(settings, character);
+            //Physics = new PhysicsData(ref character, settings);
         }
 
         #endregion
@@ -46,16 +49,22 @@ namespace VFEngine.Platformer.Physics
         {
             Raycast = raycast;
         }
-
-        public void SetHorizontalMovementDirection()
+        
+        public void InitializeFrame()
         {
-            Physics.SetHorizontalMovementDirection();
+            
         }
 
-        private PhysicsData Physics { get; }
-        private RaycastData Raycast { get; set; }
-        private RaycastCollision Collision => Raycast.Collision;
-        private Vector2 Speed => Physics.Speed;
+        #endregion
+
+        #endregion
+
+        /*public void SetHorizontalMovementDirection()
+        {
+            Physics.SetHorizontalMovementDirection();
+        }*/
+        
+        /*private Vector2 Speed => Physics.Speed;
         private float GroundFriction => Physics.GroundFriction;
         private float AirFriction => Physics.AirFriction;
         private bool OnGround => Collision.OnGround;
@@ -291,10 +300,6 @@ namespace VFEngine.Platformer.Physics
         public void ResetFriction()
         {
             Physics.SetIgnoreFriction(false);
-        }
-
-        #endregion
-
-        #endregion
+        }*/
     }
 }

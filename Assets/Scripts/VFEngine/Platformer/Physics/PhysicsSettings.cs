@@ -12,7 +12,7 @@ namespace VFEngine.Platformer.Physics
     {
         #region properties
 
-        [SerializeField] public bool displayWarningsControl = true;
+        [SerializeField] public bool displayWarnings = true;
         [SerializeField] [Range(0, 90)] public float maximumSlopeAngle = 60f;
         [SerializeField] [Range(0, 90)] public float minimumWallAngle = 80f;
         [SerializeField] public float minimumMovementThreshold = 0.0001f;
