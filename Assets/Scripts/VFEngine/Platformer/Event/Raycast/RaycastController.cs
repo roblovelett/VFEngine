@@ -143,10 +143,6 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.SetHit(hit);
         }
 
-        private void InitializeRay(float length, Vector2 origin, RaycastHit2D hit)
-        {
-        }
-
         private static void CastRay(Vector2 start, Vector2 direction, Color color)
         {
             DrawRay(start, direction, color);
