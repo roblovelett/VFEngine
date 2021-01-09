@@ -24,8 +24,7 @@ namespace VFEngine.Platformer
         private bool displayWarnings;
         private float oneWayPlatformDelay; 
         private float ladderClimbThreshold; 
-        private float ladderDelay; 
-        private float tolerance;
+        private float ladderDelay;
 
         #endregion
           
@@ -47,7 +46,6 @@ namespace VFEngine.Platformer
 
         private void InitializeDefault()
         {
-            tolerance = 0;
             IgnorePlatformsTime = 0;
         }
           

@@ -210,7 +210,7 @@ namespace VFEngine.Platformer.Physics
             yield return null;
         }
 
-        private IEnumerator OnHitWall()
+        private IEnumerator OnHorizontalHitWall()
         {
             StopForcesX();
             yield return null;
@@ -220,6 +220,63 @@ namespace VFEngine.Platformer.Physics
         {
             Data.SetSpeedX(0);
             Data.SetExternalForceX(0);
+        }
+
+        private IEnumerator OnHorizontalHitWallEdgeCase()
+        {
+            Data.SetSpeedX(0);
+            yield return null;
+        }
+
+        private int DeltaMoveYDirectionAxis => (int) Sign(DeltaMove.y);
+        private float VerticalHitDeltaMoveY => DistanceSansSkinWidth * DeltaMoveYDirectionAxis;
+
+        private IEnumerator ApplyVerticalHitToDeltaMoveY()
+        {
+            Data.SetDeltaMoveY(VerticalHitDeltaMoveY);
+            yield return null;
+        }
+
+        private float DeltaMoveXOnVerticalHitClimbingSlope =>
+            DeltaMove.y / Tan(GroundAngle * Deg2Rad) * DeltaMoveYDirectionAxis;
+
+        private IEnumerator ApplyClimbingSlopeBehaviorOnVerticalHitToForces()
+        {
+            Data.SetDeltaMoveX(DeltaMoveXOnVerticalHitClimbingSlope);
+            StopForcesX();
+            yield return null;
+        }
+
+        private IEnumerator ApplyClimbingSteepSlopeBehaviorToDeltaMoveX()
+        {
+            Data.SetDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
+            yield return null;
+        }
+
+        private float HitAngle => Angle(Hit.normal, up);
+        private bool PositiveHitAngle => HitAngle > 0;
+
+        private IEnumerator ApplyClimbingMildSlopeBehaviorToDeltaMove()
+        {
+            float overshoot;
+            if (PositiveHitAngle)
+            {
+                var tanA = Tan(HitAngle * Deg2Rad);
+                var tanB = Tan(GroundAngle * Deg2Rad);
+                var sin = Sin(GroundAngle * Deg2Rad);
+                overshoot = (2 * tanA * Hit.distance - tanB * Hit.distance) / (tanA * sin - tanB * sin);
+            }
+            else
+            {
+                overshoot = Hit.distance / Sin(GroundAngle * Deg2Rad);
+            }
+
+            var removeX = Cos(GroundAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+            var removeY = Sin(GroundAngle * Deg2Rad) * overshoot;
+            var addX = Cos(HitAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+            var addY = Sin(HitAngle * Deg2Rad) * overshoot;
+            Data.ApplyToDeltaMove(new Vector2(addX - removeX, addY - removeY + SkinWidth));
+            yield return null;
         }
 
         #endregion
@@ -241,24 +298,49 @@ namespace VFEngine.Platformer.Physics
             StartCoroutine(SetSlopeBehavior());
         }
 
-        public void OnRaycastHitSlopeHorizontally()
+        public void OnRaycastHorizontalHitSlope()
         {
             StartCoroutine(ApplySlopeBehaviorToDeltaMoveX());
         }
 
-        public void OnRaycastHitMaximumSlopeHorizontally()
+        public void OnRaycastHorizontalHitMaximumSlope()
         {
             StartCoroutine(ApplyMaximumSlopeBehaviorToDeltaMoveX());
         }
 
-        public void OnRaycastHitMaximumSlopeWithNonWallAngleHorizontally()
+        public void OnRaycastHorizontalHitMaximumSlopeWithNonWallAngle()
         {
             StartCoroutine(ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY());
         }
 
-        public void OnRaycastHitWall()
+        public void OnRaycastHorizontalHitWall()
         {
-            StartCoroutine(OnHitWall());
+            StartCoroutine(OnHorizontalHitWall());
+        }
+
+        public void OnRaycastHorizontalHitWallEdgeCase()
+        {
+            StartCoroutine(OnHorizontalHitWallEdgeCase());
+        }
+
+        public void OnRaycastVerticalHit()
+        {
+            StartCoroutine(ApplyVerticalHitToDeltaMoveY());
+        }
+
+        public void OnRaycastVerticalHitClimbingSlope()
+        {
+            StartCoroutine(ApplyClimbingSlopeBehaviorOnVerticalHitToForces());
+        }
+
+        public void OnRaycastHorizontalHitSteepClimbingSlope()
+        {
+            StartCoroutine(ApplyClimbingSteepSlopeBehaviorToDeltaMoveX());
+        }
+
+        public void OnRaycastHorizontalHitMildClimbingSlope()
+        {
+            StartCoroutine(ApplyClimbingMildSlopeBehaviorToDeltaMove());
         }
 
         #endregion

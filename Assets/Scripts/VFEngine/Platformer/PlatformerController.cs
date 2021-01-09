@@ -16,6 +16,8 @@ namespace VFEngine.Platformer
         public BetterEvent setForces;
         public BetterEvent setSlopeBehavior;
         public BetterEvent horizontalCollision;
+        public BetterEvent verticalCollision;
+        public BetterEvent slopeChangeCollision;
 
         #endregion
 
@@ -74,7 +76,15 @@ namespace VFEngine.Platformer
             setForces.Invoke();
             setSlopeBehavior.Invoke();
             horizontalCollision.Invoke();
-            
+            verticalCollision.Invoke();
+            slopeChangeCollision.Invoke();
+            /*
+            CastRayFromInitialPosition();
+            TranslateMovement();
+            OnCeilingOrGroundCollision();
+            SetLayerMaskToSaved();
+            ResetFriction();
+            */
         }
 
         #endregion

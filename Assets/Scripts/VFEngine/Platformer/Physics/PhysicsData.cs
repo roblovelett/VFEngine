@@ -180,6 +180,11 @@ namespace VFEngine.Platformer.Physics
             ExternalForceX = x;
         }
 
+        public void ApplyToDeltaMove(Vector2 force)
+        {
+            DeltaMove += force;
+        }
+
         #endregion
 
         #region private methods

@@ -15,15 +15,23 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Debug;
     using static RaycastData.RaycastHitType;
     using static Mathf;
+    using static RaycastData;
 
     public class RaycastController : SerializedMonoBehaviour
     {
         #region events
 
-        public BetterEvent hitSlopeHorizontally;
-        public BetterEvent hitMaximumSlopeHorizontally;
-        public BetterEvent hitMaximumSlopeWithNonWallAngleHorizontally;
-        public BetterEvent hitWall;
+        public BetterEvent horizontalHitSlope;
+        public BetterEvent horizontalHitMaximumSlope;
+        public BetterEvent horizontalHitMaximumSlopeWithNonWallAngle;
+        public BetterEvent horizontalHitWall;
+        public BetterEvent horizontalHitWallEdgeCase;
+        public BetterEvent verticalHit;
+        public BetterEvent verticalHitClimbingSlope;
+        public BetterEvent horizontalHitSteepClimbingSlope;
+        public BetterEvent horizontalHitMildClimbingSlope;
+        public BetterEvent horizontalHitMildDescendingSlope;
+        public BetterEvent horizontalHitSteepDescendingSlope;
 
         #endregion
 
@@ -135,6 +143,10 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.SetHit(hit);
         }
 
+        private void InitializeRay(float length, Vector2 origin, RaycastHit2D hit)
+        {
+        }
+
         private static void CastRay(Vector2 start, Vector2 direction, Color color)
         {
             DrawRay(start, direction, color);
@@ -170,7 +182,14 @@ namespace VFEngine.Platformer.Event.Raycast
         private bool SecondHitMaximumAngle => !(FirstHit && OnSlope) && HorizontalAngle > MaximumSlopeAngle;
         private float MaximumSlopeHorizontalLength => Min(HorizontalLength, Hit.distance);
         private bool HorizontalDeltaMove => DeltaMove.x != 0;
-        //private bool foobar => foobar;
+        private float GroundAngle => Data.GroundAngle;
+        private int GroundDirection => Data.GroundDirection;
+        private Vector2 Speed => physicsData.Speed;
+
+        private bool StopHorizontalSpeed => OnSlope && GroundAngle >= MinimumWallAngle &&
+                                            GroundDirection != DeltaMoveXDirectionAxis && Speed.y < 0;
+
+        private RaycastHit2D WallEdgeCaseHit => Raycast(BottomRight, left * GroundDirection, 1f, Collision);
 
         private IEnumerator HorizontalCollision()
         {
@@ -186,26 +205,138 @@ namespace VFEngine.Platformer.Event.Raycast
                     if (HitSlope)
                     {
                         Data.SetCollision(HorizontalSlope, Hit);
-                        hitSlopeHorizontally.Invoke();
+                        horizontalHitSlope.Invoke();
                     }
                     else if (SecondHitMaximumAngle)
                     {
                         if (MetMinimumWallAngle) continue;
-                        hitMaximumSlopeHorizontally.Invoke();
+                        horizontalHitMaximumSlope.Invoke();
                         Data.SetLength(MaximumSlopeHorizontalLength);
-                        if (OnSlopeWithNonWallAngle) hitMaximumSlopeWithNonWallAngleHorizontally.Invoke();
+                        if (OnSlopeWithNonWallAngle) horizontalHitMaximumSlopeWithNonWallAngle.Invoke();
                         Data.SetCollision(HorizontalWall, Hit, DeltaMoveXDirectionAxis);
-                        hitWall.Invoke();
+                        horizontalHitWall.Invoke();
                     }
                 }
             }
 
-            /*if (foobar)
+            if (StopHorizontalSpeed)
             {
-                // do foobar
-            }*/
+                horizontalHitWallEdgeCase.Invoke();
+                Data.SetOrigin(BottomRight);
+                Data.SetCollision(HorizontalWallEdgeCase, WallEdgeCaseHit);
+            }
 
             yield return null;
+        }
+
+        private bool VerticalDeltaMove => DeltaMove.y > 0 || DeltaMove.y < 0 && (!OnSlope || DeltaMove.x == 0);
+        private int DeltaMoveYDirectionAxis => (int) Sign(DeltaMove.y);
+        private float VerticalLength => Abs(DeltaMove.y) + SkinWidth;
+        private Vector2 TopLeft => Data.BoundsTopLeft;
+        private Vector2 VerticalOrigin => DeltaMoveYDirectionAxis == -1 ? BottomLeft : TopLeft;
+
+        private RaycastHit2D VerticalHit =>
+            Raycast(VerticalOrigin, up * DeltaMoveYDirectionAxis, VerticalLength, Collision);
+
+        private bool VerticalCastOneWayPlatform => DeltaMoveYDirectionAxis < 0 && !Hit;
+
+        private RaycastHit2D VerticalOneWayPlatformHit => Raycast(VerticalOrigin, up * DeltaMoveYDirectionAxis,
+            VerticalLength, OneWayPlatform);
+
+        private float AdjustedLengthForNextVerticalHit => Hit.distance;
+        private bool VerticalHitClimbingSlope => OnSlope && DeltaMoveYDirectionAxis == 1;
+
+        private IEnumerator VerticalCollision()
+        {
+            if (VerticalDeltaMove)
+            {
+                Data.SetLength(VerticalLength);
+                for (var i = 0; i < VerticalRays; i++)
+                {
+                    Data.SetIndex(i);
+                    InitializeRay(VerticalOrigin, VerticalHit);
+                    CastRay(VerticalOrigin, up * (DeltaMoveYDirectionAxis * VerticalLength), red);
+                    if (VerticalCastOneWayPlatform) Data.SetHit(VerticalOneWayPlatformHit);
+                    if (!Hit) continue;
+                    verticalHit.Invoke();
+                    Data.SetLength(AdjustedLengthForNextVerticalHit);
+                    if (VerticalHitClimbingSlope) verticalHitClimbingSlope.Invoke();
+                    Data.SetCollision(Vertical, Hit, DeltaMoveYDirectionAxis);
+                }
+            }
+
+            yield return null;
+        }
+
+        private bool OnGround => Data.OnGround;
+        private bool DetectSlopeChange => OnGround && DeltaMove.x != 0 && Speed.y <= 0;
+        private bool PositiveSlopeChange => DeltaMove.y > 0;
+
+        private IEnumerator SlopeChangeCollision()
+        {
+            if (DetectSlopeChange)
+            {
+                if (PositiveSlopeChange) PositiveSlopeChangeCollision();
+                else NegativeSlopeChangeCollision();
+            }
+
+            yield return null;
+        }
+
+        private void PositiveSlopeChangeCollision()
+        {
+            ClimbSteepSlopeCollision();
+            ClimbMildSlopeCollision();
+        }
+
+        private float ClimbSteepSlopeLength => HorizontalLength * 2;
+
+        private Vector2 ClimbSteepSlopeOrigin =>
+            (DeltaMoveXDirectionAxis == -1 ? BottomLeft : BottomRight) + up * DeltaMove.y;
+
+        private RaycastHit2D ClimbSteepSlopeHit => Raycast(ClimbSteepSlopeOrigin, right * DeltaMoveXDirectionAxis,
+            ClimbSteepSlopeLength, Collision);
+
+        private float ClimbSteepSlopeAngle => Angle(Hit.normal, up);
+        private bool IsClimbingSteepSlopeAngle => Hit && Abs(ClimbSteepSlopeAngle - GroundAngle) > Tolerance;
+
+        private void ClimbSteepSlopeCollision()
+        {
+            InitializeRay(ClimbSteepSlopeOrigin, ClimbSteepSlopeHit);
+            if (!IsClimbingSteepSlopeAngle) return;
+            horizontalHitSteepClimbingSlope.Invoke();
+            Data.SetCollision(ClimbSteepSlope, Hit);
+        }
+
+        private Vector2 ClimbMildSlopeOrigin => (DeltaMoveXDirectionAxis == -1 ? BottomLeft : BottomRight) + DeltaMove;
+        private RaycastHit2D ClimbMildSlopeHit => Raycast(ClimbMildSlopeOrigin, down, 1, Collision);
+        private float GroundLayer => Data.GroundLayer;
+        private float ClimbMildSlopeAngle => Angle(Hit.normal, up);
+
+        private bool IsClimbingMildSlopeGroundAngle => Hit &&
+                                                       Abs(Hit.collider.gameObject.layer - GroundLayer) < Tolerance &&
+                                                       ClimbMildSlopeAngle < GroundAngle;
+
+        private void ClimbMildSlopeCollision()
+        {
+            if (IsClimbingSteepSlopeAngle) return;
+            InitializeRay(ClimbMildSlopeOrigin, ClimbMildSlopeHit);
+            CastRay(ClimbMildSlopeOrigin, down, yellow);
+            if (IsClimbingMildSlopeGroundAngle) horizontalHitMildClimbingSlope.Invoke();
+        }
+
+        private void NegativeSlopeChangeCollision()
+        {
+            DescendMildSlopeCollision();
+            DescendSteepSlopeCollision();
+        }
+
+        private void DescendMildSlopeCollision()
+        {
+        }
+
+        private void DescendSteepSlopeCollision()
+        {
         }
 
         #endregion
@@ -230,6 +361,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnPlatformerHorizontalCollision()
         {
             StartCoroutine(HorizontalCollision());
+        }
+
+        public void OnPlatformerVerticalCollision()
+        {
+            StartCoroutine(VerticalCollision());
+        }
+
+        public void OnPlatformerSlopeChangeCollision()
+        {
+            StartCoroutine(SlopeChangeCollision());
         }
 
         #endregion

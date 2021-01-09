@@ -30,12 +30,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public int GroundDirection => collision.GroundDirection;
         public int HorizontalRays { get; private set; }
         public float HorizontalSpacing { get; private set; }
+        public Vector2 BoundsTopLeft => bounds.TopLeft;
+        public const float Tolerance = 0;
+        public LayerMask GroundLayer => collision.GroundLayer;
 
         public enum RaycastHitType
         {
             Ground,
             HorizontalSlope,
             HorizontalWall,
+            HorizontalWallEdgeCase,
             Vertical,
             ClimbMildSlope,
             ClimbSteepSlope,
@@ -209,19 +213,34 @@ namespace VFEngine.Platformer.Event.Raycast
                 case HorizontalSlope:
                     SetGroundCollision(true, angle, direction);
                     break;
+                case HorizontalWallEdgeCase:
+                    collision.HorizontalHit = hit;
+                    break;
+                case ClimbSteepSlope:
+                    SetGroundCollision(angle, direction);
+                    break;
             }
         }
 
-        public void SetCollision(RaycastHitType type, RaycastHit2D hit, float deltaMoveXDirectionAxis)
+        public void SetCollision(RaycastHitType type, RaycastHit2D hit, float deltaMoveDirectionAxis)
         {
-            var left = deltaMoveXDirectionAxis < 0;
-            var right = deltaMoveXDirectionAxis > 0;
+            var negativeDeltaMoveDirectionAxis = deltaMoveDirectionAxis < 0;
+            var positiveDeltaMoveDirectionAxis = deltaMoveDirectionAxis > 0;
+            var left = negativeDeltaMoveDirectionAxis;
+            var right = positiveDeltaMoveDirectionAxis;
+            var above = positiveDeltaMoveDirectionAxis;
+            var below = negativeDeltaMoveDirectionAxis;
             switch (type)
             {
                 case HorizontalWall:
                     collision.Left = left;
                     collision.Right = right;
                     collision.HorizontalHit = hit;
+                    break;
+                case Vertical:
+                    collision.Above = above;
+                    collision.Below = below;
+                    collision.VerticalHit = hit;
                     break;
             }
         }
@@ -243,6 +262,11 @@ namespace VFEngine.Platformer.Event.Raycast
         private void SetGroundCollision(bool on, float angle, int direction)
         {
             collision.OnGround = on;
+            SetGroundCollision(angle, direction);
+        }
+
+        private void SetGroundCollision(float angle, int direction)
+        {
             collision.GroundAngle = angle;
             collision.GroundDirection = direction;
         }
