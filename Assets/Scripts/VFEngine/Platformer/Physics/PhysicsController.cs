@@ -2,21 +2,27 @@
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Tools.BetterEvent;
 
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
     using static Mathf;
+    using static Vector2;
+    using static Time;
 
     public class PhysicsController : SerializedMonoBehaviour
     {
         #region events
 
+        public BetterEvent slopeBehavior;
+
         #endregion
 
         #region properties
-        
+
         [OdinSerialize] public PhysicsData Data { get; private set; }
 
         #endregion
@@ -25,6 +31,7 @@ namespace VFEngine.Platformer.Physics
 
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private PhysicsSettings settings;
+        private RaycastData raycastData;
 
         #endregion
 
@@ -38,6 +45,11 @@ namespace VFEngine.Platformer.Physics
             Data.Initialize(settings);
         }
 
+        private void SetDependencies()
+        {
+            raycastData = GetComponent<RaycastController>().Data;
+        }
+
         #endregion
 
         #region unity events
@@ -49,7 +61,7 @@ namespace VFEngine.Platformer.Physics
 
         private void Start()
         {
-            // set dependencies
+            SetDependencies();
         }
 
         #endregion
@@ -62,10 +74,152 @@ namespace VFEngine.Platformer.Physics
 
         private Vector2 DeltaMove => Data.DeltaMove;
         private int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);
+
         private IEnumerator InitializeFrame()
         {
             Data.SetDeltaMoveDirectionAxis(DeltaMoveXDirectionAxis);
             yield return null;
+        }
+
+        private bool IgnoreFriction => Data.IgnoreFriction;
+        private bool OnGround => raycastData.OnGround;
+        private float GroundFriction => Data.GroundFriction;
+        private float AirFriction => Data.AirFriction;
+        private float Friction => OnGround ? GroundFriction : AirFriction;
+        private Vector2 ExternalForce => Data.ExternalForce;
+
+        private Vector2 FrictionApplied =>
+            MoveTowards(ExternalForce, zero, ExternalForce.magnitude * Friction * fixedDeltaTime);
+
+        private float MinimumMoveThreshold => Data.MinimumMoveThreshold;
+        private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
+
+        private IEnumerator SetForces()
+        {
+            SetExternalForce();
+            SetGravity();
+            SetHorizontalExternalForce();
+            yield return null;
+        }
+
+        private void SetExternalForce()
+        {
+            if (IgnoreFriction) return;
+            Data.SetExternalForce(FrictionApplied);
+            if (StopExternalForce) Data.SetExternalForce(zero);
+        }
+
+        private float GravityScale => Data.GravityScale;
+        private float Gravity => Data.Gravity * GravityScale * fixedDeltaTime;
+        private Vector2 Speed => Data.Speed;
+        private bool ApplyGravityToSpeed => Speed.y > 0;
+
+        private void SetGravity()
+        {
+            if (ApplyGravityToSpeed) Data.ApplyToSpeedY(Gravity);
+            else Data.ApplyToExternalForceY(Gravity);
+        }
+
+        private bool OnSlope => raycastData.OnSlope;
+        private float GroundAngle => raycastData.GroundAngle;
+        private float MaximumSlopeAngle => Data.MaximumSlopeAngle;
+        private float MinimumWallAngle => Data.MinimumWallAngle;
+
+        private bool ApplyToExternalForce => OnSlope && GroundAngle > MaximumSlopeAngle &&
+                                             (GroundAngle < MinimumWallAngle || Speed.x == 0);
+
+        private int GroundDirection => raycastData.GroundDirection;
+        private float ForcesApplied => -Data.Gravity * GroundFriction * GroundDirection * fixedDeltaTime / 4;
+
+        private void SetHorizontalExternalForce()
+        {
+            if (!ApplyToExternalForce) return;
+            Data.ApplyToExternalForceX(ForcesApplied);
+        }
+
+        private bool HorizontalDeltaMove => DeltaMove.x != 0;
+        private bool SlopeBehavior => HorizontalDeltaMove && DeltaMove.y <= 0 && (DescendingSlope || ClimbingSlope);
+        private bool DescendingSlope => GroundDirection == DeltaMoveXDirectionAxis;
+        private float ClimbDeltaMoveY => Sin(GroundAngle * Deg2Rad) * SlopeDistance;
+        private bool ClimbingSlope => GroundAngle < MinimumWallAngle && DeltaMove.y <= ClimbDeltaMoveY;
+
+        private IEnumerator SetSlopeBehavior()
+        {
+            if (SlopeBehavior)
+            {
+                if (DescendingSlope) DescendSlope();
+                else ClimbSlope();
+                StopForcesY();
+                slopeBehavior.Invoke();
+            }
+
+            yield return null;
+        }
+
+        private float SlopeDistance => Abs(DeltaMove.x);
+        private float SlopeDeltaMoveX => Cos(GroundAngle * Deg2Rad) * SlopeDistance * DeltaMoveXDirectionAxis;
+        private float DescendDeltaMoveY => -Sin(GroundAngle * Deg2Rad) * SlopeDistance;
+
+        private void DescendSlope()
+        {
+            Data.SetDeltaMove(SlopeDeltaMoveX, DescendDeltaMoveY);
+        }
+
+        private void StopForcesY()
+        {
+            Data.SetSpeedY(0);
+            Data.SetExternalForceY(0);
+        }
+
+        private void ClimbSlope()
+        {
+            Data.SetDeltaMove(SlopeDeltaMoveX, ClimbDeltaMoveY);
+        }
+
+        private RaycastHit2D Hit => raycastData.Hit;
+        private float SkinWidth => raycastData.SkinWidth;
+        private float DistanceSansSkinWidth => Hit.distance - SkinWidth;
+        private float HorizontalHitSlopeDeltaMoveX => DistanceSansSkinWidth * DeltaMoveXDirectionAxis;
+
+        private IEnumerator ApplySlopeBehaviorToDeltaMoveX()
+        {
+            Data.ApplyToDeltaMoveX(-HorizontalHitSlopeDeltaMoveX);
+            ClimbSlope();
+            Data.ApplyToDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
+            yield return null;
+        }
+
+        private float HorizontalHitMaximumSlopeDeltaMoveX =>
+            Min(Abs(DeltaMove.x), DistanceSansSkinWidth) * DeltaMoveXDirectionAxis;
+
+        private bool StopDeltaMoveY => DeltaMove.y < 0;
+
+        private float HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY =>
+            Tan(GroundAngle * Deg2Rad) * Abs(DeltaMove.x) * Sign(DeltaMove.y);
+
+        private IEnumerator ApplyMaximumSlopeBehaviorToDeltaMoveX()
+        {
+            Data.SetDeltaMoveX(HorizontalHitMaximumSlopeDeltaMoveX);
+            yield return null;
+        }
+
+        private IEnumerator ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY()
+        {
+            if (StopDeltaMoveY) Data.SetDeltaMoveY(0);
+            else Data.SetDeltaMoveY(HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY);
+            yield return null;
+        }
+
+        private IEnumerator OnHitWall()
+        {
+            StopForcesX();
+            yield return null;
+        }
+
+        private void StopForcesX()
+        {
+            Data.SetSpeedX(0);
+            Data.SetExternalForceX(0);
         }
 
         #endregion
@@ -75,6 +229,36 @@ namespace VFEngine.Platformer.Physics
         public void OnPlatformerInitializeFrame()
         {
             StartCoroutine(InitializeFrame());
+        }
+
+        public void OnPlatformerSetForces()
+        {
+            StartCoroutine(SetForces());
+        }
+
+        public void OnPlatformerSetSlopeBehavior()
+        {
+            StartCoroutine(SetSlopeBehavior());
+        }
+
+        public void OnRaycastHitSlopeHorizontally()
+        {
+            StartCoroutine(ApplySlopeBehaviorToDeltaMoveX());
+        }
+
+        public void OnRaycastHitMaximumSlopeHorizontally()
+        {
+            StartCoroutine(ApplyMaximumSlopeBehaviorToDeltaMoveX());
+        }
+
+        public void OnRaycastHitMaximumSlopeWithNonWallAngleHorizontally()
+        {
+            StartCoroutine(ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY());
+        }
+
+        public void OnRaycastHitWall()
+        {
+            StartCoroutine(OnHitWall());
         }
 
         #endregion

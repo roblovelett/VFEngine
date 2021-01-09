@@ -13,13 +13,16 @@ namespace VFEngine.Platformer
 
         public BetterEvent initializeFrame;
         public BetterEvent groundCollision;
+        public BetterEvent setForces;
+        public BetterEvent setSlopeBehavior;
+        public BetterEvent horizontalCollision;
 
         #endregion
 
         #region properties
 
         [OdinSerialize] public PlatformerData Data { get; private set; }
-        
+
         #endregion
 
         #region fields
@@ -68,6 +71,10 @@ namespace VFEngine.Platformer
         {
             initializeFrame.Invoke();
             groundCollision.Invoke();
+            setForces.Invoke();
+            setSlopeBehavior.Invoke();
+            horizontalCollision.Invoke();
+            
         }
 
         #endregion

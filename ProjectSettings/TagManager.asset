@@ -17,9 +17,9 @@ TagManager:
   - OneWayPlatform
   - Ladder
   - Character
-  - CharacterCollision
-  - StandOnCollision
+  - Box
   - Interactive
+  - 
   - 
   - 
   - 

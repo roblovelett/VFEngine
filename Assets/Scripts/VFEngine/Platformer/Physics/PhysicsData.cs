@@ -18,24 +18,58 @@ namespace VFEngine.Platformer.Physics
 
         public int DeltaMoveDirectionAxis { get; private set; }
         public Vector2 DeltaMove { get; private set; }
+        public bool IgnoreFriction { get; private set; }
+        public float GroundFriction { get; private set; }
+        public float AirFriction { get; private set; }
+        public Vector2 ExternalForce { get; private set; }
+        public float MinimumMoveThreshold { get; private set; }
+        public float Gravity { get; private set; }
+        public float GravityScale { get; private set; }
+        public Vector2 Speed { get; private set; }
+        public float MaximumSlopeAngle { get; private set; }
+        public float MinimumWallAngle { get; private set; }
 
         #endregion
 
         #region fields
 
+        private float SpeedY
+        {
+            get => Speed.y;
+            set => value = Speed.y;
+        }
+
+        private float SpeedX
+        {
+            set => value = Speed.x;
+        }
+
+        private float ExternalForceX
+        {
+            get => ExternalForce.x;
+            set => value = ExternalForce.x;
+        }
+
+        private float ExternalForceY
+        {
+            get => ExternalForce.y;
+            set => value = ExternalForce.y;
+        }
+
+        private float DeltaMoveX
+        {
+            get => DeltaMove.x;
+            set => value = DeltaMove.x;
+        }
+
+        private float DeltaMoveY
+        {
+            set => value = DeltaMove.y;
+        }
+
         private bool displayWarnings;
         private bool facingRight;
-        private bool ignoreFriction;
-        private float maximumSlopeAngle;
-        private float minimumWallAngle;
-        private float minimumMovementThreshold;
-        private float gravity;
-        private float airFriction;
-        private float groundFriction;
         private float staggerSpeedFalloff;
-        private float gravityScale;
-        private Vector2 speed;
-        private Vector2 externalForce;
         private Vector2 totalSpeed;
 
         #endregion
@@ -51,23 +85,23 @@ namespace VFEngine.Platformer.Physics
         private void ApplySettings(PhysicsSettings settings)
         {
             displayWarnings = settings.displayWarnings;
-            maximumSlopeAngle = settings.maximumSlopeAngle;
-            minimumWallAngle = settings.minimumWallAngle;
-            minimumMovementThreshold = settings.minimumMovementThreshold;
-            gravity = settings.gravity;
-            airFriction = settings.airFriction;
-            groundFriction = settings.groundFriction;
+            MaximumSlopeAngle = settings.maximumSlopeAngle;
+            MinimumWallAngle = settings.minimumWallAngle;
+            MinimumMoveThreshold = settings.minimumMovementThreshold;
+            Gravity = settings.gravity;
+            AirFriction = settings.airFriction;
+            GroundFriction = settings.groundFriction;
             staggerSpeedFalloff = settings.staggerSpeedFalloff;
         }
 
         private void InitializeDefault()
         {
             facingRight = true;
-            ignoreFriction = false;
-            gravityScale = 1;
-            speed = zero;
-            externalForce = zero;
-            totalSpeed = speed * externalForce;
+            IgnoreFriction = false;
+            GravityScale = 1;
+            Speed = zero;
+            ExternalForce = zero;
+            totalSpeed = Speed * ExternalForce;
             DeltaMove = totalSpeed * fixedDeltaTime;
             DeltaMoveDirectionAxis = 0;
         }
@@ -84,6 +118,66 @@ namespace VFEngine.Platformer.Physics
         public void SetDeltaMoveDirectionAxis(int axis)
         {
             DeltaMoveDirectionAxis = axis;
+        }
+
+        public void SetExternalForce(Vector2 force)
+        {
+            ExternalForce = force;
+        }
+
+        public void ApplyToSpeedY(float force)
+        {
+            SpeedY += force;
+        }
+
+        public void ApplyToExternalForceY(float force)
+        {
+            ExternalForceY += force;
+        }
+
+        public void ApplyToExternalForceX(float force)
+        {
+            ExternalForceX += force;
+        }
+
+        public void SetDeltaMove(float x, float y)
+        {
+            DeltaMove = new Vector2(x, y);
+        }
+
+        public void SetSpeedY(float y)
+        {
+            SpeedY = y;
+        }
+
+        public void SetExternalForceY(float y)
+        {
+            ExternalForceY = y;
+        }
+
+        public void ApplyToDeltaMoveX(float force)
+        {
+            DeltaMoveX += force;
+        }
+
+        public void SetDeltaMoveX(float x)
+        {
+            DeltaMoveX = x;
+        }
+
+        public void SetDeltaMoveY(float y)
+        {
+            DeltaMoveY = y;
+        }
+
+        public void SetSpeedX(float x)
+        {
+            SpeedX = x;
+        }
+
+        public void SetExternalForceX(float x)
+        {
+            ExternalForceX = x;
         }
 
         #endregion

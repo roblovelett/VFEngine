@@ -14,12 +14,16 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Color;
     using static Debug;
     using static RaycastData.RaycastHitType;
+    using static Mathf;
 
     public class RaycastController : SerializedMonoBehaviour
     {
         #region events
 
-        public BetterEvent groundCollision;
+        public BetterEvent hitSlopeHorizontally;
+        public BetterEvent hitMaximumSlopeHorizontally;
+        public BetterEvent hitMaximumSlopeWithNonWallAngleHorizontally;
+        public BetterEvent hitWall;
 
         #endregion
 
@@ -108,7 +112,8 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             for (var i = 0; i < VerticalRays; i++)
             {
-                OnGroundCollision(i, DownOrigin, DownHit);
+                Data.SetIndex(i);
+                InitializeRay(DownOrigin, DownHit);
                 if (SetHitForOneWayPlatform)
                 {
                     Data.SetHit(DownHitOneWayPlatform);
@@ -124,9 +129,8 @@ namespace VFEngine.Platformer.Event.Raycast
             yield return null;
         }
 
-        private void OnGroundCollision(int index, Vector2 origin, RaycastHit2D hit)
+        private void InitializeRay(Vector2 origin, RaycastHit2D hit)
         {
-            Data.SetIndex(index);
             Data.SetOrigin(origin);
             Data.SetHit(hit);
         }
@@ -134,6 +138,74 @@ namespace VFEngine.Platformer.Event.Raycast
         private static void CastRay(Vector2 start, Vector2 direction, Color color)
         {
             DrawRay(start, direction, color);
+        }
+
+        private IEnumerator SetCollisionBelow(bool collision)
+        {
+            Data.SetCollisionBelow(collision);
+            yield return null;
+        }
+
+        private Vector2 DeltaMove => physicsData.DeltaMove;
+        private float HorizontalLength => Abs(DeltaMove.x) + SkinWidth;
+        private int HorizontalRays => Data.HorizontalRays;
+        private int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);
+        private bool NegativeDeltaMoveXDirectionAxis => DeltaMoveXDirectionAxis == -1;
+        private float HorizontalSpacing => Data.HorizontalSpacing;
+
+        private Vector2 HorizontalOrigin => (NegativeDeltaMoveXDirectionAxis ? BottomLeft : BottomRight) +
+                                            up * (HorizontalSpacing * Index);
+
+        private RaycastHit2D HorizontalHit =>
+            Raycast(HorizontalOrigin, right * DeltaMoveXDirectionAxis, HorizontalLength, Collision);
+
+        private float HorizontalAngle => Angle(Hit.normal, up);
+        private bool OnSlope => Data.OnSlope;
+        private float MinimumWallAngle => physicsData.MinimumWallAngle;
+        private bool FirstHit => Index == 0;
+        private bool MetMinimumWallAngle => HorizontalAngle < MinimumWallAngle;
+        private bool OnSlopeWithNonWallAngle => OnSlope && MetMinimumWallAngle;
+        private bool HitSlope => FirstHit && !OnSlopeWithNonWallAngle;
+        private float MaximumSlopeAngle => physicsData.MaximumSlopeAngle;
+        private bool SecondHitMaximumAngle => !(FirstHit && OnSlope) && HorizontalAngle > MaximumSlopeAngle;
+        private float MaximumSlopeHorizontalLength => Min(HorizontalLength, Hit.distance);
+        private bool HorizontalDeltaMove => DeltaMove.x != 0;
+        //private bool foobar => foobar;
+
+        private IEnumerator HorizontalCollision()
+        {
+            if (HorizontalDeltaMove)
+            {
+                Data.SetLength(HorizontalLength);
+                for (var i = 0; i < HorizontalRays; i++)
+                {
+                    Data.SetIndex(i);
+                    InitializeRay(HorizontalOrigin, HorizontalHit);
+                    CastRay(HorizontalOrigin, right * (DeltaMoveXDirectionAxis * HorizontalLength), red);
+                    if (!Hit) continue;
+                    if (HitSlope)
+                    {
+                        Data.SetCollision(HorizontalSlope, Hit);
+                        hitSlopeHorizontally.Invoke();
+                    }
+                    else if (SecondHitMaximumAngle)
+                    {
+                        if (MetMinimumWallAngle) continue;
+                        hitMaximumSlopeHorizontally.Invoke();
+                        Data.SetLength(MaximumSlopeHorizontalLength);
+                        if (OnSlopeWithNonWallAngle) hitMaximumSlopeWithNonWallAngleHorizontally.Invoke();
+                        Data.SetCollision(HorizontalWall, Hit, DeltaMoveXDirectionAxis);
+                        hitWall.Invoke();
+                    }
+                }
+            }
+
+            /*if (foobar)
+            {
+                // do foobar
+            }*/
+
+            yield return null;
         }
 
         #endregion
@@ -148,6 +220,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnPlatformerGroundCollision()
         {
             StartCoroutine(GroundCollision());
+        }
+
+        public void OnPhysicsSlopeBehavior()
+        {
+            StartCoroutine(SetCollisionBelow(true));
+        }
+
+        public void OnPlatformerHorizontalCollision()
+        {
+            StartCoroutine(HorizontalCollision());
         }
 
         #endregion

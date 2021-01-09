@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast
@@ -25,11 +24,18 @@ namespace VFEngine.Platformer.Event.Raycast
         public RaycastHit2D Hit { get; private set; }
         public Vector2 BoundsBottomLeft => bounds.BottomLeft;
         public Vector2 BoundsBottomRight => bounds.BottomRight;
+        public bool OnGround => collision.OnGround;
+        public bool OnSlope => collision.OnSlope;
+        public float GroundAngle => collision.GroundAngle;
+        public int GroundDirection => collision.GroundDirection;
+        public int HorizontalRays { get; private set; }
+        public float HorizontalSpacing { get; private set; }
 
         public enum RaycastHitType
         {
             Ground,
-            Horizontal,
+            HorizontalSlope,
+            HorizontalWall,
             Vertical,
             ClimbMildSlope,
             ClimbSteepSlope,
@@ -46,10 +52,8 @@ namespace VFEngine.Platformer.Event.Raycast
         private bool drawGizmos;
         private int totalHorizontalRays;
         private int totalVerticalRays;
-        private int horizontalRays;
-        private float spacing;
         private float length;
-        private float horizontalSpacing;
+        private float spacing;
         private Vector2 origin;
         private Bounds bounds;
         private Collision collision;
@@ -144,13 +148,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void InitializeCount()
         {
-            horizontalRays = (int) Round(bounds.Size.y / spacing);
+            HorizontalRays = (int) Round(bounds.Size.y / spacing);
             VerticalRays = (int) Round(bounds.Size.x / spacing);
         }
 
         private void InitializeSpacing()
         {
-            horizontalSpacing = bounds.Size.y / (horizontalRays - 1);
+            HorizontalSpacing = bounds.Size.y / (HorizontalRays - 1);
             VerticalSpacing = bounds.Size.x / (VerticalRays - 1);
         }
 
@@ -191,31 +195,57 @@ namespace VFEngine.Platformer.Event.Raycast
         public void SetCollision(RaycastHitType type, RaycastHit2D hit)
         {
             var normal = hit.normal;
+            var angle = Angle(normal, up);
+            var direction = (int) Sign(normal.x);
             var layer = hit.collider.gameObject.layer;
             switch (type)
             {
                 case Ground:
-                    collision.OnGround = true;
-                    collision.GroundAngle = Angle(normal, up);
-                    collision.GroundDirection = (int) Sign(normal.x);
+                    SetGroundCollision(true, angle, direction);
                     collision.GroundLayer = layer;
                     collision.VerticalHit = hit;
                     collision.Below = true;
                     break;
-                case Horizontal: break;
-                case Vertical: break;
-                case ClimbMildSlope: break;
-                case ClimbSteepSlope: break;
-                case DescendMildSlope: break;
-                case DescendSteepSlope: break;
-                case None: break;
-                default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                case HorizontalSlope:
+                    SetGroundCollision(true, angle, direction);
+                    break;
             }
+        }
+
+        public void SetCollision(RaycastHitType type, RaycastHit2D hit, float deltaMoveXDirectionAxis)
+        {
+            var left = deltaMoveXDirectionAxis < 0;
+            var right = deltaMoveXDirectionAxis > 0;
+            switch (type)
+            {
+                case HorizontalWall:
+                    collision.Left = left;
+                    collision.Right = right;
+                    collision.HorizontalHit = hit;
+                    break;
+            }
+        }
+
+        public void SetCollisionBelow(bool collisionBelow)
+        {
+            collision.Below = collisionBelow;
+        }
+
+        public void SetLength(float raycastLength)
+        {
+            length = raycastLength;
         }
 
         #endregion
 
         #region private methods
+
+        private void SetGroundCollision(bool on, float angle, int direction)
+        {
+            collision.OnGround = on;
+            collision.GroundAngle = angle;
+            collision.GroundDirection = direction;
+        }
 
         #endregion
 
