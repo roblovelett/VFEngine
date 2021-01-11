@@ -13,9 +13,9 @@ namespace VFEngine.Platformer.Event.Raycast
     using static Physics2D;
     using static Color;
     using static Debug;
-    using static RaycastData.RaycastHitType;
     using static Mathf;
     using static RaycastData;
+    using static RaycastData.RaycastHitType;
 
     public class RaycastController : SerializedMonoBehaviour
     {
@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Event.Raycast
         public BetterEvent horizontalHitMildClimbingSlope;
         public BetterEvent horizontalHitMildDescendingSlope;
         public BetterEvent horizontalHitSteepDescendingSlope;
+        public BetterEvent resetJumpCollision;
 
         #endregion
 
@@ -43,11 +44,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region fields
 
+        [OdinSerialize] private GameObject character;
         [OdinSerialize] private new BoxCollider2D collider;
         [OdinSerialize] private RaycastSettings settings;
         private LayerMaskData layerMaskData;
         private PhysicsData physicsData;
         private PlatformerData platformerData;
+        private new Transform transform;
 
         #endregion
 
@@ -55,6 +58,8 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Initialize()
         {
+            if (!character) character = GameObject.Find("Character");
+            transform = character.transform;
             if (!collider) collider = GetComponent<BoxCollider2D>();
             if (!settings) settings = CreateInstance<RaycastSettings>();
             if (!Data) Data = CreateInstance<RaycastData>();
@@ -304,7 +309,9 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.SetCollision(ClimbSteepSlope, Hit);
         }
 
-        private Vector2 ClimbMildSlopeOrigin => (DeltaMoveXDirectionAxis == -1 ? BottomLeft : BottomRight) + DeltaMove;
+        private Vector2 ClimbMildSlopeOrigin =>
+            (NegativeDeltaMoveXDirectionAxis ? BottomLeft : BottomRight) + DeltaMove;
+
         private RaycastHit2D ClimbMildSlopeHit => Raycast(ClimbMildSlopeOrigin, down, 1, Collision);
         private float GroundLayer => Data.GroundLayer;
         private float ClimbMildSlopeAngle => Angle(Hit.normal, up);
@@ -327,12 +334,67 @@ namespace VFEngine.Platformer.Event.Raycast
             DescendSteepSlopeCollision();
         }
 
+        private float DescendMildSlopeLength => Abs(DeltaMove.y) + SkinWidth;
+
+        private Vector2 DescendMildSlopeOrigin =>
+            (NegativeDeltaMoveXDirectionAxis ? BottomRight : BottomLeft) + right * DeltaMove.x;
+
+        private RaycastHit2D DescendMildSlopeHit =>
+            Raycast(DescendMildSlopeOrigin, down, DescendMildSlopeLength, Collision);
+
+        private float DescendMildSlopeAngle => Angle(Hit.normal, up);
+        private bool IsDescendingMildSlopeAngle => Hit && DescendMildSlopeAngle < GroundAngle;
+
         private void DescendMildSlopeCollision()
         {
+            InitializeRay(DescendMildSlopeOrigin, DescendMildSlopeHit);
+            if (!IsDescendingMildSlopeAngle) return;
+            horizontalHitMildDescendingSlope.Invoke();
+            Data.SetCollision(DescendMildSlope, Hit);
         }
+
+        private bool PositiveDeltaMoveXDirectionAxis => DeltaMoveXDirectionAxis == 1;
+
+        private Vector2 DescendSteepSlopeOrigin =>
+            (PositiveDeltaMoveXDirectionAxis ? BottomLeft : BottomRight) + DeltaMove;
+
+        private RaycastHit2D DescendSteepSlopeHit => Raycast(DescendSteepSlopeOrigin, down, 1, Collision);
+
+        private bool IsDescendingSteepSlope => Hit && Abs(Sign(Hit.normal.x) - DeltaMoveXDirectionAxis) < Tolerance &&
+                                               Abs(Hit.collider.gameObject.layer - GroundLayer) < Tolerance;
+
+        private float DescendSteepSlopeAngle => Angle(Hit.normal, up);
+        private bool FacingRight => physicsData.FacingRight;
+
+        private bool IsDescendingSteepSlopeAngle => IsDescendingSteepSlope && DescendSteepSlopeAngle > GroundAngle &&
+                                                    Abs(Sign(Hit.normal.x) - (FacingRight ? 1 : -1)) < Tolerance;
 
         private void DescendSteepSlopeCollision()
         {
+            if (IsDescendingMildSlopeAngle) return;
+            InitializeRay(DescendSteepSlopeOrigin, DescendSteepSlopeHit);
+            CastRay(DescendSteepSlopeOrigin, down, yellow);
+            if (IsDescendingSteepSlopeAngle) horizontalHitSteepDescendingSlope.Invoke();
+        }
+
+        private IEnumerator CastRayFromInitialPosition()
+        {
+            CastRay(transform.position, DeltaMove * 3f, green);
+            yield return null;
+        }
+
+        private bool VerticalHitCollision => Data.VerticalHit;
+        private Vector2 TotalSpeed => physicsData.TotalSpeed;
+        private bool CollidingBelow => Data.CollidingBelow;
+        private bool CollidingAbove => Data.CollidingAbove;
+
+        private bool ResetJump => VerticalHitCollision && CollidingBelow && TotalSpeed.y < 0 ||
+                                  CollidingAbove && TotalSpeed.y > 0 && (!OnSlope || GroundAngle < MinimumWallAngle);
+
+        private IEnumerator ResetJumpCollision()
+        {
+            if (ResetJump) resetJumpCollision.Invoke();
+            yield return null;
         }
 
         #endregion
@@ -367,6 +429,16 @@ namespace VFEngine.Platformer.Event.Raycast
         public void OnPlatformerSlopeChangeCollision()
         {
             StartCoroutine(SlopeChangeCollision());
+        }
+
+        public void OnPlatformerCastRayFromInitialPosition()
+        {
+            StartCoroutine(CastRayFromInitialPosition());
+        }
+
+        public void OnPlatformerResetJumpCollision()
+        {
+            StartCoroutine(ResetJumpCollision());
         }
 
         #endregion

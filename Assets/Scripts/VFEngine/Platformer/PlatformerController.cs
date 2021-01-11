@@ -18,6 +18,11 @@ namespace VFEngine.Platformer
         public BetterEvent horizontalCollision;
         public BetterEvent verticalCollision;
         public BetterEvent slopeChangeCollision;
+        public BetterEvent castRayFromInitialPosition;
+        public BetterEvent translateDeltaMove;
+        public BetterEvent resetJumpCollision;
+        public BetterEvent setLayerMaskToSaved;
+        public BetterEvent resetFriction;
 
         #endregion
 
@@ -51,11 +56,6 @@ namespace VFEngine.Platformer
             Initialize();
         }
 
-        private void Start()
-        {
-            // set dependencies
-        }
-
         private void FixedUpdate()
         {
             Run();
@@ -78,13 +78,11 @@ namespace VFEngine.Platformer
             horizontalCollision.Invoke();
             verticalCollision.Invoke();
             slopeChangeCollision.Invoke();
-            /*
-            CastRayFromInitialPosition();
-            TranslateMovement();
-            OnCeilingOrGroundCollision();
-            SetLayerMaskToSaved();
-            ResetFriction();
-            */
+            castRayFromInitialPosition.Invoke();
+            translateDeltaMove.Invoke();
+            resetJumpCollision.Invoke();
+            setLayerMaskToSaved.Invoke();
+            resetFriction.Invoke();
         }
 
         #endregion

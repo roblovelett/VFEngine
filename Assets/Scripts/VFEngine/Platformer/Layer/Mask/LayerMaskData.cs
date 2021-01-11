@@ -16,6 +16,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask Collision { get; private set; }
+        public LayerMask Saved { get; private set; }
 
         #endregion
 
@@ -28,7 +29,6 @@ namespace VFEngine.Platformer.Layer.Mask
         private LayerMask characterCollision;
         private LayerMask standOnCollision;
         private LayerMask interactive;
-        private LayerMask saved;
         private GameObject characterObject;
 
         #endregion
@@ -62,7 +62,7 @@ namespace VFEngine.Platformer.Layer.Mask
         private void InitializeDefault()
         {
             Collision = characterCollision;
-            saved = 0;
+            Saved = 0;
         }
 
         #endregion
@@ -76,7 +76,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public void SetSaved(LayerMask layer)
         {
-            saved = layer;
+            Saved = layer;
         }
 
         #endregion

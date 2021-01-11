@@ -28,6 +28,8 @@ namespace VFEngine.Platformer.Physics
         public Vector2 Speed { get; private set; }
         public float MaximumSlopeAngle { get; private set; }
         public float MinimumWallAngle { get; private set; }
+        public bool FacingRight { get; private set; }
+        public Vector2 TotalSpeed { get; private set; }
 
         #endregion
 
@@ -68,9 +70,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         private bool displayWarnings;
-        private bool facingRight;
         private float staggerSpeedFalloff;
-        private Vector2 totalSpeed;
 
         #endregion
 
@@ -96,13 +96,13 @@ namespace VFEngine.Platformer.Physics
 
         private void InitializeDefault()
         {
-            facingRight = true;
+            FacingRight = true;
             IgnoreFriction = false;
             GravityScale = 1;
             Speed = zero;
             ExternalForce = zero;
-            totalSpeed = Speed * ExternalForce;
-            DeltaMove = totalSpeed * fixedDeltaTime;
+            TotalSpeed = Speed * ExternalForce;
+            DeltaMove = TotalSpeed * fixedDeltaTime;
             DeltaMoveDirectionAxis = 0;
         }
 
@@ -183,6 +183,11 @@ namespace VFEngine.Platformer.Physics
         public void ApplyToDeltaMove(Vector2 force)
         {
             DeltaMove += force;
+        }
+
+        public void SetIgnoreFriction(bool ignore)
+        {
+            IgnoreFriction = ignore;
         }
 
         #endregion

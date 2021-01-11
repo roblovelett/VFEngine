@@ -46,10 +46,6 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             Initialize();
         }
-        private void Start()
-        {
-            // Set Dependencies
-        }
 
         #endregion
 
@@ -66,6 +62,14 @@ namespace VFEngine.Platformer.Layer.Mask
             yield return null;
         }
 
+        private LayerMask Saved => Data.Saved;
+
+        private IEnumerator SetLayerToSaved()
+        {
+            character.layer = Saved;
+            yield return null;
+        }
+
         #endregion
 
         #region event handlers
@@ -73,6 +77,11 @@ namespace VFEngine.Platformer.Layer.Mask
         public void OnPlatformerInitializeFrame()
         {
             StartCoroutine(InitializeFrame());
+        }
+
+        public void OnPlatformerSetLayerMaskToSaved()
+        {
+            StartCoroutine(SetLayerToSaved());
         }
 
         #endregion

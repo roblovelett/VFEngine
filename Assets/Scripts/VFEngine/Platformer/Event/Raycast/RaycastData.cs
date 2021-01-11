@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast
@@ -33,6 +34,9 @@ namespace VFEngine.Platformer.Event.Raycast
         public Vector2 BoundsTopLeft => bounds.TopLeft;
         public const float Tolerance = 0;
         public LayerMask GroundLayer => collision.GroundLayer;
+        public RaycastHit2D VerticalHit => collision.VerticalHit;
+        public bool CollidingBelow => collision.Below;
+        public bool CollidingAbove => collision.Above;
 
         public enum RaycastHitType
         {
@@ -41,11 +45,8 @@ namespace VFEngine.Platformer.Event.Raycast
             HorizontalWall,
             HorizontalWallEdgeCase,
             Vertical,
-            ClimbMildSlope,
             ClimbSteepSlope,
-            DescendMildSlope,
-            DescendSteepSlope,
-            None
+            DescendMildSlope
         }
 
         #endregion
@@ -219,6 +220,12 @@ namespace VFEngine.Platformer.Event.Raycast
                 case ClimbSteepSlope:
                     SetGroundCollision(angle, direction);
                     break;
+                case DescendMildSlope:
+                    SetGroundCollision(angle, direction);
+                    break;
+                case HorizontalWall: break;
+                case Vertical: break;
+                default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
 
@@ -242,6 +249,12 @@ namespace VFEngine.Platformer.Event.Raycast
                     collision.Below = below;
                     collision.VerticalHit = hit;
                     break;
+                case Ground: break;
+                case HorizontalSlope: break;
+                case HorizontalWallEdgeCase: break;
+                case ClimbSteepSlope: break;
+                case DescendMildSlope: break;
+                default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
 

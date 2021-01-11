@@ -4,6 +4,7 @@ using Sirenix.Serialization;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
 namespace VFEngine.Tools.BetterEvent
 {
     [Serializable]
