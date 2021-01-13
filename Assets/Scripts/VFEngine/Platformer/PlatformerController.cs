@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using VFEngine.Platformer.ScriptableObjects;
 using VFEngine.Tools.BetterEvent;
 
 namespace VFEngine.Platformer
@@ -11,6 +12,7 @@ namespace VFEngine.Platformer
     {
         #region events
 
+        /*
         public BetterEvent initializeFrame;
         public BetterEvent groundCollision;
         public BetterEvent setForces;
@@ -23,6 +25,7 @@ namespace VFEngine.Platformer
         public BetterEvent resetJumpCollision;
         public BetterEvent setLayerMaskToSaved;
         public BetterEvent resetFriction;
+        */
 
         #endregion
 
@@ -44,7 +47,6 @@ namespace VFEngine.Platformer
         {
             if (!settings) settings = CreateInstance<PlatformerSettings>();
             if (!Data) Data = CreateInstance<PlatformerData>();
-            Data.Initialize(settings);
         }
 
         #endregion
@@ -71,20 +73,132 @@ namespace VFEngine.Platformer
 
         private void Run()
         {
-            initializeFrame.Invoke();
-            groundCollision.Invoke();
-            setForces.Invoke();
-            setSlopeBehavior.Invoke();
-            horizontalCollision.Invoke();
-            verticalCollision.Invoke();
-            slopeChangeCollision.Invoke();
-            castRayFromInitialPosition.Invoke();
-            translateDeltaMove.Invoke();
-            resetJumpCollision.Invoke();
-            setLayerMaskToSaved.Invoke();
-            resetFriction.Invoke();
+            InitializeFrame();
+            GroundCollision();
+            UpdateForces();
+            SlopeCollision();
+            CastRayTowardsMovement();
+            Move();
+            ResetJumpCollision();
+            OnFrameExit();
         }
 
+        private void InitializeFrame()
+        {
+            InitializeRaycast();
+            InitializeLayerMask();
+        }
+
+        private void InitializeRaycast()
+        {
+            /*
+            initializeRaycastForPlatformer.Invoke();
+            -resetRaycastCollision;
+            -updateRaycastBounds;
+            */
+        }
+
+        private void InitializeLayerMask()
+        {
+            /*
+            initializeLayerMaskForPlatformer.Invoke();
+            -setSavedLayer;
+            -setLayerToIgnoreRaycast;
+            */
+        }
+
+        private void GroundCollision()
+        {
+            /*
+            setRaycastForGroundCollision.Invoke();
+            // if (setRaycastForGroundCollisionOneWayPlatform)
+                setRaycastForGroundCollisionOneWayPlatform.Invoke();
+            // if (hit)
+                setRaycastForGroundCollisionHit.Invoke();
+            */
+        }
+
+        private void UpdateForces()
+        {
+            /*
+            updateForces.Invoke();
+            //if (applyForcesToExternalForce)
+                applyForcesToExternalForce.Invoke();
+            */
+        }
+
+        private void SlopeCollision()
+        {
+            /*
+            // if moving horizontally
+                // if descendingSlope
+                    DescendSlope();
+                // else
+                    ClimbSlope();
+                HorizontalCollision();
+            StopSpeedControl();
+            VerticalCollision();
+            SlopeChangeCollision();
+            */
+        }
+
+        private void DescendSlope()
+        {
+            /*
+            setPhysicsOnDescendSlope.Invoke();
+            setRaycastCollisionOnDescendSlope.Invoke();
+            */
+        }
+
+        private void ClimbSlope()
+        {
+            //
+        }
+
+        private void HorizontalCollision()
+        {
+            //
+        }
+
+        private void StopSpeedControl()
+        {
+            //
+        }
+
+        private void VerticalCollision()
+        {
+            //
+        }
+
+        private void SlopeChangeCollision()
+        {
+           // 
+        }
+
+        private void CastRayTowardsMovement()
+        {
+            //
+        }
+
+        private void Move()
+        {
+            //
+        }
+
+        private void ResetJumpCollision()
+        {
+            //
+        }
+
+        private void OnFrameExit()
+        {
+            /*
+            setLayerMaskToSaved.Invoke();
+            setRaycastFrictionCollisionDetection.Invoke();
+            */
+        }
+        
+        
         #endregion
 
         #region event handlers

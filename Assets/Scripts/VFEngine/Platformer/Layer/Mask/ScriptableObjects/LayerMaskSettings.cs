@@ -2,7 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
-namespace VFEngine.Platformer.Layer.Mask
+namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
 

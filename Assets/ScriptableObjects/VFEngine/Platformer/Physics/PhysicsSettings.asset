@@ -17,6 +17,6 @@ MonoBehaviour:
   minimumWallAngle: 80
   minimumMovementThreshold: 0.0001
   gravity: -30
-  airFriction: 15
-  groundFriction: 30
+  airFriction: 1
+  groundFriction: 15
   staggerSpeedFalloff: 50

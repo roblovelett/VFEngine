@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
+using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Tools.BetterEvent;
 
 namespace VFEngine.Platformer.Physics
@@ -10,7 +11,6 @@ namespace VFEngine.Platformer.Physics
     using static ScriptableObject;
     using static GameObject;
     using static Mathf;
-    using static Vector2;
     using static Time;
 
     public class PhysicsController : SerializedMonoBehaviour
@@ -32,7 +32,17 @@ namespace VFEngine.Platformer.Physics
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private PhysicsSettings settings;
         private RaycastData raycastData;
-        private new Transform transform;
+
+        // Physics Data
+        private float MinimumWallAngle => Data.MinimumWallAngle;
+        private Vector2 DeltaMove => Data.DeltaMove;
+        private int DeltaMoveXDirectionAxis => Data.DeltaMoveXDirectionAxis;
+
+        // Raycast Data
+        private bool OnGround => raycastData.OnGround;
+        private bool OnSlope => raycastData.OnSlope;
+        private float GroundAngle => raycastData.GroundAngle;
+        private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
 
         #endregion
 
@@ -41,7 +51,6 @@ namespace VFEngine.Platformer.Physics
         private void Initialize()
         {
             if (!character) character = Find("Character");
-            transform = character.transform;
             if (!settings) settings = CreateInstance<PhysicsSettings>();
             if (!Data) Data = CreateInstance<PhysicsData>();
             Data.Initialize(settings);
@@ -74,262 +83,35 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private Vector2 DeltaMove => Data.DeltaMove;
-        private int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);
-
-        private IEnumerator InitializeFrame()
+        private void InitializeFrame()
         {
-            Data.SetDeltaMoveDirectionAxis(DeltaMoveXDirectionAxis);
-            yield return null;
+            Data.OnInitializeFrame(fixedDeltaTime);
         }
 
-        private bool IgnoreFriction => Data.IgnoreFriction;
-        private bool OnGround => raycastData.OnGround;
-        private float GroundFriction => Data.GroundFriction;
-        private float AirFriction => Data.AirFriction;
-        private float Friction => OnGround ? GroundFriction : AirFriction;
-        private Vector2 ExternalForce => Data.ExternalForce;
-
-        private Vector2 FrictionApplied =>
-            MoveTowards(ExternalForce, zero, ExternalForce.magnitude * Friction * fixedDeltaTime);
-
-        private float MinimumMoveThreshold => Data.MinimumMoveThreshold;
-        private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
-
-        private IEnumerator SetForces()
+        private void SetForces()
         {
-            SetExternalForce();
-            SetGravity();
-            SetHorizontalExternalForce();
-            yield return null;
+            Data.OnSetForces(OnGround, OnSlope, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
         }
 
-        private void SetExternalForce()
+        private bool DescendingSlope => GroundDirectionAxis == DeltaMoveXDirectionAxis;
+
+        private bool ClimbingSlope => GroundAngle < MinimumWallAngle &&
+                                      DeltaMove.y <= Sin(GroundAngle * Deg2Rad) * Abs(DeltaMove.x);
+
+        private bool SlopeBehavior => DeltaMove.x != 0 && DeltaMove.y <= 0 && (DescendingSlope || ClimbingSlope);
+
+        private void SetSlopeBehavior()
         {
-            if (IgnoreFriction) return;
-            Data.SetExternalForce(FrictionApplied);
-            if (StopExternalForce) Data.SetExternalForce(zero);
-        }
-
-        private float GravityScale => Data.GravityScale;
-        private float Gravity => Data.Gravity * GravityScale * fixedDeltaTime;
-        private Vector2 Speed => Data.Speed;
-        private bool ApplyGravityToSpeed => Speed.y > 0;
-
-        private void SetGravity()
-        {
-            if (ApplyGravityToSpeed) Data.ApplyToSpeedY(Gravity);
-            else Data.ApplyToExternalForceY(Gravity);
-        }
-
-        private bool OnSlope => raycastData.OnSlope;
-        private float GroundAngle => raycastData.GroundAngle;
-        private float MaximumSlopeAngle => Data.MaximumSlopeAngle;
-        private float MinimumWallAngle => Data.MinimumWallAngle;
-
-        private bool ApplyToExternalForce => OnSlope && GroundAngle > MaximumSlopeAngle &&
-                                             (GroundAngle < MinimumWallAngle || Speed.x == 0);
-
-        private int GroundDirection => raycastData.GroundDirection;
-        private float ForcesApplied => -Data.Gravity * GroundFriction * GroundDirection * fixedDeltaTime / 4;
-
-        private void SetHorizontalExternalForce()
-        {
-            if (!ApplyToExternalForce) return;
-            Data.ApplyToExternalForceX(ForcesApplied);
-        }
-
-        private bool HorizontalDeltaMove => DeltaMove.x != 0;
-        private bool SlopeBehavior => HorizontalDeltaMove && DeltaMove.y <= 0 && (DescendingSlope || ClimbingSlope);
-        private bool DescendingSlope => GroundDirection == DeltaMoveXDirectionAxis;
-        private float ClimbDeltaMoveY => Sin(GroundAngle * Deg2Rad) * SlopeDistance;
-        private bool ClimbingSlope => GroundAngle < MinimumWallAngle && DeltaMove.y <= ClimbDeltaMoveY;
-
-        private IEnumerator SetSlopeBehavior()
-        {
-            if (SlopeBehavior)
-            {
-                if (DescendingSlope) DescendSlope();
-                else ClimbSlope();
-                StopForcesY();
-                slopeBehavior.Invoke();
-            }
-
-            yield return null;
-        }
-
-        private float SlopeDistance => Abs(DeltaMove.x);
-        private float SlopeDeltaMoveX => Cos(GroundAngle * Deg2Rad) * SlopeDistance * DeltaMoveXDirectionAxis;
-        private float DescendDeltaMoveY => -Sin(GroundAngle * Deg2Rad) * SlopeDistance;
-
-        private void DescendSlope()
-        {
-            Data.SetDeltaMove(SlopeDeltaMoveX, DescendDeltaMoveY);
-        }
-
-        private void StopForcesY()
-        {
-            Data.SetSpeedY(0);
-            Data.SetExternalForceY(0);
-        }
-
-        private void ClimbSlope()
-        {
-            Data.SetDeltaMove(SlopeDeltaMoveX, ClimbDeltaMoveY);
+            if (!SlopeBehavior) return;
+            Data.OnSetSlopeBehavior(GroundDirectionAxis, GroundAngle);
+            slopeBehavior.Invoke();
         }
 
         private RaycastHit2D Hit => raycastData.Hit;
         private float SkinWidth => raycastData.SkinWidth;
-        private float DistanceSansSkinWidth => Hit.distance - SkinWidth;
-        private float HorizontalHitSlopeDeltaMoveX => DistanceSansSkinWidth * DeltaMoveXDirectionAxis;
-
-        private IEnumerator ApplySlopeBehaviorToDeltaMoveX()
+        private void OnHorizontalCollisionHit()
         {
-            Data.ApplyToDeltaMoveX(-HorizontalHitSlopeDeltaMoveX);
-            ClimbSlope();
-            Data.ApplyToDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
-            yield return null;
-        }
-
-        private float HorizontalHitMaximumSlopeDeltaMoveX =>
-            Min(Abs(DeltaMove.x), DistanceSansSkinWidth) * DeltaMoveXDirectionAxis;
-
-        private bool StopDeltaMoveY => DeltaMove.y < 0;
-
-        private float HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY =>
-            Tan(GroundAngle * Deg2Rad) * Abs(DeltaMove.x) * Sign(DeltaMove.y);
-
-        private IEnumerator ApplyMaximumSlopeBehaviorToDeltaMoveX()
-        {
-            Data.SetDeltaMoveX(HorizontalHitMaximumSlopeDeltaMoveX);
-            yield return null;
-        }
-
-        private IEnumerator ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY()
-        {
-            if (StopDeltaMoveY) Data.SetDeltaMoveY(0);
-            else Data.SetDeltaMoveY(HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY);
-            yield return null;
-        }
-
-        private IEnumerator OnHorizontalHitWall()
-        {
-            StopForcesX();
-            yield return null;
-        }
-
-        private void StopForcesX()
-        {
-            Data.SetSpeedX(0);
-            Data.SetExternalForceX(0);
-        }
-
-        private IEnumerator OnHorizontalHitWallEdgeCase()
-        {
-            Data.SetSpeedX(0);
-            yield return null;
-        }
-
-        private int DeltaMoveYDirectionAxis => (int) Sign(DeltaMove.y);
-        private float VerticalHitDeltaMoveY => DistanceSansSkinWidth * DeltaMoveYDirectionAxis;
-
-        private IEnumerator ApplyVerticalHitToDeltaMoveY()
-        {
-            Data.SetDeltaMoveY(VerticalHitDeltaMoveY);
-            yield return null;
-        }
-
-        private float DeltaMoveXOnVerticalHitClimbingSlope =>
-            DeltaMove.y / Tan(GroundAngle * Deg2Rad) * DeltaMoveYDirectionAxis;
-
-        private IEnumerator ApplyClimbSlopeBehaviorOnVerticalHitToForces()
-        {
-            Data.SetDeltaMoveX(DeltaMoveXOnVerticalHitClimbingSlope);
-            StopForcesX();
-            yield return null;
-        }
-
-        private IEnumerator ApplyClimbSteepSlopeBehaviorToDeltaMoveX()
-        {
-            Data.SetDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
-            yield return null;
-        }
-
-        private float HitAngle => Angle(Hit.normal, up);
-        private bool PositiveHitAngle => HitAngle > 0;
-
-        private IEnumerator ApplyClimbMildSlopeBehaviorToDeltaMove()
-        {
-            float overshoot;
-            if (PositiveHitAngle)
-            {
-                var tanA = Tan(HitAngle * Deg2Rad);
-                var tanB = Tan(GroundAngle * Deg2Rad);
-                var sin = Sin(GroundAngle * Deg2Rad);
-                overshoot = (2 * tanA * Hit.distance - tanB * Hit.distance) / (tanA * sin - tanB * sin);
-            }
-            else
-            {
-                overshoot = Hit.distance / Sin(GroundAngle * Deg2Rad);
-            }
-
-            var removeX = Cos(GroundAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
-            var removeY = Sin(GroundAngle * Deg2Rad) * overshoot;
-            var addX = Cos(HitAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
-            var addY = Sin(HitAngle * Deg2Rad) * overshoot;
-            Data.ApplyToDeltaMove(new Vector2(addX - removeX, addY - removeY + SkinWidth));
-            yield return null;
-        }
-
-        private float DeltaMoveYOnDescendMildSlope => -(Hit.distance - SkinWidth);
-
-        private IEnumerator ApplyDescendMildSlopeBehaviorToDeltaMoveY()
-        {
-            Data.SetDeltaMoveY(DeltaMoveYOnDescendMildSlope);
-            yield return null;
-        }
-
-        private bool PositiveGroundAngle => GroundAngle > 0;
-
-        private IEnumerator ApplyDescendSteepSlopeBehaviorToDeltaMove()
-        {
-            float overshoot;
-            if (PositiveGroundAngle)
-            {
-                var sin = Sin(GroundAngle) * Deg2Rad;
-                var cos = Cos(GroundAngle) * Deg2Rad;
-                var tan = Tan(HitAngle * Deg2Rad);
-                overshoot = Hit.distance * cos / (tan / cos - sin);
-            }
-            else
-            {
-                overshoot = Hit.distance / Tan(HitAngle * Deg2Rad);
-            }
-
-            var removeX = Cos(GroundAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
-            var removeY = -Sin(GroundAngle * Deg2Rad) * overshoot;
-            var addX = Cos(HitAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
-            var addY = -Sin(HitAngle * Deg2Rad) * overshoot;
-            Data.ApplyToDeltaMove(new Vector2(addX - removeX, addY - removeY - SkinWidth));
-            yield return null;
-        }
-
-        private IEnumerator TranslateDeltaMove()
-        {
-            transform.Translate(DeltaMove);
-            yield return null;
-        }
-
-        private IEnumerator ApplyResetJumpCollisionBehaviorToForcesY()
-        {
-            StopForcesY();
-            yield return null;
-        }
-
-        private IEnumerator ResetFriction()
-        {
-            Data.SetIgnoreFriction(false);
-            yield return null;
+            Data.OnRaycastHorizontalCollisionHit(Hit, SkinWidth, GroundAngle);
         }
 
         #endregion
@@ -338,89 +120,236 @@ namespace VFEngine.Platformer.Physics
 
         public void OnPlatformerInitializeFrame()
         {
-            StartCoroutine(InitializeFrame());
+            InitializeFrame();
         }
 
         public void OnPlatformerSetForces()
         {
-            StartCoroutine(SetForces());
+            SetForces();
         }
 
         public void OnPlatformerSetSlopeBehavior()
         {
-            StartCoroutine(SetSlopeBehavior());
+            SetSlopeBehavior();
         }
 
-        public void OnRaycastHorizontalHitSlope()
+        public void OnRaycastHorizontalCollisionHitClimbingSlope()
         {
-            StartCoroutine(ApplySlopeBehaviorToDeltaMoveX());
-        }
-
-        public void OnRaycastHorizontalHitMaximumSlope()
-        {
-            StartCoroutine(ApplyMaximumSlopeBehaviorToDeltaMoveX());
-        }
-
-        public void OnRaycastHorizontalHitMaximumSlopeWithNonWallAngle()
-        {
-            StartCoroutine(ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY());
-        }
-
-        public void OnRaycastHorizontalHitWall()
-        {
-            StartCoroutine(OnHorizontalHitWall());
-        }
-
-        public void OnRaycastHorizontalHitWallEdgeCase()
-        {
-            StartCoroutine(OnHorizontalHitWallEdgeCase());
-        }
-
-        public void OnRaycastVerticalHit()
-        {
-            StartCoroutine(ApplyVerticalHitToDeltaMoveY());
-        }
-
-        public void OnRaycastVerticalHitClimbingSlope()
-        {
-            StartCoroutine(ApplyClimbSlopeBehaviorOnVerticalHitToForces());
-        }
-
-        public void OnRaycastHorizontalHitSteepClimbingSlope()
-        {
-            StartCoroutine(ApplyClimbSteepSlopeBehaviorToDeltaMoveX());
-        }
-
-        public void OnRaycastHorizontalHitMildClimbingSlope()
-        {
-            StartCoroutine(ApplyClimbMildSlopeBehaviorToDeltaMove());
-        }
-
-        public void OnRaycastHorizontalHitMildDescendingSlope()
-        {
-            StartCoroutine(ApplyDescendMildSlopeBehaviorToDeltaMoveY());
-        }
-
-        public void OnRaycastHorizontalHitSteepDescendingSlope()
-        {
-            StartCoroutine(ApplyDescendSteepSlopeBehaviorToDeltaMove());
-        }
-
-        public void OnPlatformerTranslateDeltaMove()
-        {
-            StartCoroutine(TranslateDeltaMove());
-        }
-
-        public void OnRaycastResetJumpCollision()
-        {
-            StartCoroutine(ApplyResetJumpCollisionBehaviorToForcesY());
-        }
-
-        public void OnPlatformerResetFriction()
-        {
-            StartCoroutine(ResetFriction());
+            OnHorizontalCollisionHit();//ApplyClimbingSlopeBehavior
+            //ApplySlopeBehaviorToDeltaMoveX
         }
 
         #endregion
     }
 }
+
+/*
+private RaycastHit2D Hit => raycastData.Hit;
+private float SkinWidth => raycastData.SkinWidth;
+private float DistanceSansSkinWidth => Hit.distance - SkinWidth;
+private float HorizontalHitSlopeDeltaMoveX => DistanceSansSkinWidth * DeltaMoveXDirectionAxis;
+
+private void ApplySlopeBehaviorToDeltaMoveX()
+{
+    Data.ApplyToDeltaMoveX(-HorizontalHitSlopeDeltaMoveX);
+    ClimbSlope();
+    Data.ApplyToDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
+}
+
+private float HorizontalHitMaximumSlopeDeltaMoveX =>
+    Min(Abs(DeltaMove.x), DistanceSansSkinWidth) * DeltaMoveXDirectionAxis;
+
+private bool StopDeltaMoveY => DeltaMove.y < 0;
+
+private float HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY =>
+    Tan(GroundAngle * Deg2Rad) * Abs(DeltaMove.x) * Sign(DeltaMove.y);
+
+private void ApplyMaximumSlopeBehaviorToDeltaMoveX()
+{
+    Data.SetDeltaMoveX(HorizontalHitMaximumSlopeDeltaMoveX);
+}
+
+private void ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY()
+{
+    if (StopDeltaMoveY) Data.SetDeltaMoveY(0);
+    else Data.SetDeltaMoveY(HorizontalHitMaximumSlopeWithNonWallAngleDeltaMoveY);
+}
+
+private void OnHorizontalHitWall()
+{
+    StopForcesX();
+}
+
+private void StopForcesX()
+{
+    Data.SetSpeedX(0);
+    Data.SetExternalForceX(0);
+}
+
+private void OnHorizontalHitWallEdgeCase()
+{
+    Data.SetSpeedX(0);
+}
+
+private float VerticalHitDeltaMoveY => DistanceSansSkinWidth * DeltaMoveYDirectionAxis;
+
+private void ApplyVerticalHitToDeltaMoveY()
+{
+    Data.SetDeltaMoveY(VerticalHitDeltaMoveY);
+}
+
+private float DeltaMoveXOnVerticalHitClimbingSlope =>
+    DeltaMove.y / Tan(GroundAngle * Deg2Rad) * DeltaMoveYDirectionAxis;
+
+private void ApplyClimbSlopeBehaviorOnVerticalHitToForces()
+{
+    Data.SetDeltaMoveX(DeltaMoveXOnVerticalHitClimbingSlope);
+    StopForcesX();
+}
+
+private void ApplyClimbSteepSlopeBehaviorToDeltaMoveX()
+{
+    Data.SetDeltaMoveX(HorizontalHitSlopeDeltaMoveX);
+}
+
+private float HitAngle => Angle(Hit.normal, up);
+private bool PositiveHitAngle => HitAngle > 0;
+
+private void ApplyClimbMildSlopeBehaviorToDeltaMove()
+{
+    float overshoot;
+    if (PositiveHitAngle)
+    {
+        var tanA = Tan(HitAngle * Deg2Rad);
+        var tanB = Tan(GroundAngle * Deg2Rad);
+        var sin = Sin(GroundAngle * Deg2Rad);
+        overshoot = (2 * tanA * Hit.distance - tanB * Hit.distance) / (tanA * sin - tanB * sin);
+    }
+    else
+    {
+        overshoot = Hit.distance / Sin(GroundAngle * Deg2Rad);
+    }
+
+    var removeX = Cos(GroundAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+    var removeY = Sin(GroundAngle * Deg2Rad) * overshoot;
+    var addX = Cos(HitAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+    var addY = Sin(HitAngle * Deg2Rad) * overshoot;
+    Data.ApplyToDeltaMove(new Vector2(addX - removeX, addY - removeY + SkinWidth));
+}
+
+private float DeltaMoveYOnDescendMildSlope => -(Hit.distance - SkinWidth);
+
+private void ApplyDescendMildSlopeBehaviorToDeltaMoveY()
+{
+    Data.SetDeltaMoveY(DeltaMoveYOnDescendMildSlope);
+}
+
+private bool PositiveGroundAngle => GroundAngle > 0;
+
+private void ApplyDescendSteepSlopeBehaviorToDeltaMove()
+{
+    float overshoot;
+    if (PositiveGroundAngle)
+    {
+        var sin = Sin(GroundAngle) * Deg2Rad;
+        var cos = Cos(GroundAngle) * Deg2Rad;
+        var tan = Tan(HitAngle * Deg2Rad);
+        overshoot = Hit.distance * cos / (tan / cos - sin);
+    }
+    else
+    {
+        overshoot = Hit.distance / Tan(HitAngle * Deg2Rad);
+    }
+
+    var removeX = Cos(GroundAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+    var removeY = -Sin(GroundAngle * Deg2Rad) * overshoot;
+    var addX = Cos(HitAngle * Deg2Rad) * overshoot * Sign(DeltaMove.x);
+    var addY = -Sin(HitAngle * Deg2Rad) * overshoot;
+    Data.ApplyToDeltaMove(new Vector2(addX - removeX, addY - removeY - SkinWidth));
+}
+
+private void TranslateDeltaMove()
+{
+    transform.Translate(DeltaMove);
+}
+
+private void ApplyResetJumpCollisionBehaviorToForcesY()
+{
+    StopForcesY();
+}
+
+private void ResetFriction()
+{
+    Data.SetIgnoreFriction(false);
+}
+*/
+/*
+public void OnRaycastHorizontalHitSlope()
+{
+    ApplySlopeBehaviorToDeltaMoveX();
+}
+
+public void OnRaycastHorizontalHitMaximumSlope()
+{
+    ApplyMaximumSlopeBehaviorToDeltaMoveX();
+}
+
+public void OnRaycastHorizontalHitMaximumSlopeWithNonWallAngle()
+{
+    ApplyMaximumSlopeWithNonWallAngleToDeltaMoveY();
+}
+
+public void OnRaycastHorizontalHitWall()
+{
+    OnHorizontalHitWall();
+}
+
+public void OnRaycastHorizontalHitWallEdgeCase()
+{
+    OnHorizontalHitWallEdgeCase();
+}
+
+public void OnRaycastVerticalHit()
+{
+    ApplyVerticalHitToDeltaMoveY();
+}
+
+public void OnRaycastVerticalHitClimbingSlope()
+{
+    ApplyClimbSlopeBehaviorOnVerticalHitToForces();
+}
+
+public void OnRaycastHorizontalHitSteepClimbingSlope()
+{
+    ApplyClimbSteepSlopeBehaviorToDeltaMoveX();
+}
+
+public void OnRaycastHorizontalHitMildClimbingSlope()
+{
+    ApplyClimbMildSlopeBehaviorToDeltaMove();
+}
+
+public void OnRaycastHorizontalHitMildDescendingSlope()
+{
+    ApplyDescendMildSlopeBehaviorToDeltaMoveY();
+}
+
+public void OnRaycastHorizontalHitSteepDescendingSlope()
+{
+    ApplyDescendSteepSlopeBehaviorToDeltaMove();
+}
+
+public void OnPlatformerTranslateDeltaMove()
+{
+    TranslateDeltaMove();
+}
+
+public void OnRaycastResetJumpCollision()
+{
+    ApplyResetJumpCollisionBehaviorToForcesY();
+}
+
+public void OnPlatformerResetFriction()
+{
+    ResetFriction();
+}*/

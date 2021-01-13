@@ -1,9 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VFEngine.Tools;
 
-namespace VFEngine.Platformer.Event.Raycast
+namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
 
@@ -13,12 +12,11 @@ namespace VFEngine.Platformer.Event.Raycast
     {
         #region properties
 
-        [SerializeField] public bool displayWarnings = true;
-        [SerializeField] public bool drawGizmos = true;
-        [SerializeField] public int totalHorizontalRays = 8;
-        [SerializeField] public int totalVerticalRays = 8;
         [SerializeField] public float spacing = 0.125f;
         [SerializeField] public float skinWidth = 0.015f;
+        [SerializeField] public float oneWayPlatformDelay = 0.1f;
+        [SerializeField] public float ladderClimbThreshold = 0.3f;
+        [SerializeField] public float ladderDelay = 0.3f;
 
         #endregion
     }

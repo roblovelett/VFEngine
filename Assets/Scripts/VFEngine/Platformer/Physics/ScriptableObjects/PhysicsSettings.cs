@@ -2,7 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
-namespace VFEngine.Platformer.Physics
+namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
 
@@ -12,14 +12,12 @@ namespace VFEngine.Platformer.Physics
     {
         #region properties
 
-        [SerializeField] public bool displayWarnings = true;
         [SerializeField] [Range(0, 90)] public float maximumSlopeAngle = 60f;
         [SerializeField] [Range(0, 90)] public float minimumWallAngle = 80f;
         [SerializeField] public float minimumMovementThreshold = 0.0001f;
         [SerializeField] public float gravity = -30f;
         [SerializeField] public float airFriction = 15f;
         [SerializeField] public float groundFriction = 30f;
-        [SerializeField] public float staggerSpeedFalloff = 50f;
 
         #endregion
     }

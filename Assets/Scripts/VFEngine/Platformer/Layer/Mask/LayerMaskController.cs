@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
@@ -55,19 +55,17 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        private IEnumerator InitializeFrame()
+        private void InitializeFrame()
         {
-            Data.SetSaved(character.layer);
+            Data.OnInitializeFrame(character.layer);
             character.layer = IgnoreRaycastLayer;
-            yield return null;
         }
 
         private LayerMask Saved => Data.Saved;
 
-        private IEnumerator SetLayerToSaved()
+        private void SetLayerToSaved()
         {
             character.layer = Saved;
-            yield return null;
         }
 
         #endregion
@@ -76,12 +74,12 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public void OnPlatformerInitializeFrame()
         {
-            StartCoroutine(InitializeFrame());
+            InitializeFrame();
         }
 
         public void OnPlatformerSetLayerMaskToSaved()
         {
-            StartCoroutine(SetLayerToSaved());
+            SetLayerToSaved();
         }
 
         #endregion

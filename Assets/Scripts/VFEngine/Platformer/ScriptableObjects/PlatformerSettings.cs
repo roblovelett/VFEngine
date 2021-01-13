@@ -2,7 +2,7 @@
 using UnityEngine;
 using VFEngine.Tools;
 
-namespace VFEngine.Platformer
+namespace VFEngine.Platformer.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
 
@@ -11,11 +11,6 @@ namespace VFEngine.Platformer
     public class PlatformerSettings : ScriptableObject
     {
         #region properties
-
-        [SerializeField] public bool displayWarnings = true;
-        [SerializeField] public float oneWayPlatformDelay = 0.1f;
-        [SerializeField] public float ladderClimbThreshold = 0.3f;
-        [SerializeField] public float ladderDelay = 0.3f;
 
         #endregion
     }
