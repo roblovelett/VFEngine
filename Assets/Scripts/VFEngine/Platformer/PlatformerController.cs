@@ -1,8 +1,17 @@
-﻿using Sirenix.OdinInspector;
+﻿using Packages.BetterEvent;
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
+using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
+using VFEngine.Platformer.Physics;
+using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
-using VFEngine.Tools.BetterEvent;
+using static VFEngine.Platformer.Event.Raycast.ScriptableObjects.RaycastData;
+using static VFEngine.Platformer.Layer.Mask.ScriptableObjects.LayerMaskData;
+using static VFEngine.Platformer.Physics.ScriptableObjects.PhysicsData;
 
 namespace VFEngine.Platformer
 {
@@ -12,9 +21,10 @@ namespace VFEngine.Platformer
     {
         #region events
 
-        /*
         public BetterEvent initializeFrame;
-        public BetterEvent groundCollision;
+        public BetterEvent groundCollisionRaycast;
+        public BetterEvent updateForces;
+        /*
         public BetterEvent setForces;
         public BetterEvent setSlopeBehavior;
         public BetterEvent horizontalCollision;
@@ -38,6 +48,12 @@ namespace VFEngine.Platformer
         #region fields
 
         [OdinSerialize] private PlatformerSettings settings;
+        [OdinSerialize] private RaycastController raycastController;
+        [OdinSerialize] private LayerMaskController layerMaskController;
+        [OdinSerialize] private PhysicsController physicsController;
+        private RaycastData raycastData;
+        private PhysicsData physicsData;
+        private LayerMaskData layerMaskData;
 
         #endregion
 
@@ -46,7 +62,18 @@ namespace VFEngine.Platformer
         private void Initialize()
         {
             if (!settings) settings = CreateInstance<PlatformerSettings>();
+            if (!raycastController) raycastController = GetComponent<RaycastController>();
+            if (!layerMaskController) layerMaskController = GetComponent<LayerMaskController>();
+            if (!physicsController) physicsController = GetComponent<PhysicsController>();
             if (!Data) Data = CreateInstance<PlatformerData>();
+            Data.OnInitialize();
+        }
+
+        private void SetDependencies()
+        {
+            raycastData = raycastController.Data;
+            physicsData = physicsController.Data;
+            layerMaskData = layerMaskController.Data;
         }
 
         #endregion
@@ -56,6 +83,11 @@ namespace VFEngine.Platformer
         private void Awake()
         {
             Initialize();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
         }
 
         private void FixedUpdate()
@@ -74,52 +106,33 @@ namespace VFEngine.Platformer
         private void Run()
         {
             InitializeFrame();
-            GroundCollision();
-            UpdateForces();
-            SlopeCollision();
-            CastRayTowardsMovement();
-            Move();
-            ResetJumpCollision();
-            OnFrameExit();
         }
 
         private void InitializeFrame()
         {
-            InitializeRaycast();
-            InitializeLayerMask();
+            initializeFrame.Invoke();
         }
 
-        private void InitializeRaycast()
-        {
-            /*
-            initializeRaycastForPlatformer.Invoke();
-            -resetRaycastCollision;
-            -updateRaycastBounds;
-            */
-        }
+        private bool RaycastInitializedFrame => raycastData.State == RaycastState.PlatformerInitializedFrame;
+        private bool LayerMaskInitializedFrame => layerMaskData.State == LayerMaskState.PlatformerInitializedFrame;
+        private bool PhysicsInitializedFrame => physicsData.State == PhysicsState.PlatformerInitializedFrame;
 
-        private void InitializeLayerMask()
+        private bool StartGroundCollision =>
+            RaycastInitializedFrame && LayerMaskInitializedFrame && PhysicsInitializedFrame;
+
+        private void OnStartGroundCollision()
         {
-            /*
-            initializeLayerMaskForPlatformer.Invoke();
-            -setSavedLayer;
-            -setLayerToIgnoreRaycast;
-            */
+            if (StartGroundCollision) GroundCollision();
         }
 
         private void GroundCollision()
         {
-            /*
-            setRaycastForGroundCollision.Invoke();
-            // if (setRaycastForGroundCollisionOneWayPlatform)
-                setRaycastForGroundCollisionOneWayPlatform.Invoke();
-            // if (hit)
-                setRaycastForGroundCollisionHit.Invoke();
-            */
+            groundCollisionRaycast.Invoke();
         }
 
         private void UpdateForces()
         {
+            updateForces.Invoke();
             /*
             updateForces.Invoke();
             //if (applyForcesToExternalForce)
@@ -172,7 +185,7 @@ namespace VFEngine.Platformer
 
         private void SlopeChangeCollision()
         {
-           // 
+            // 
         }
 
         private void CastRayTowardsMovement()
@@ -197,11 +210,30 @@ namespace VFEngine.Platformer
             setRaycastFrictionCollisionDetection.Invoke();
             */
         }
-        
-        
+
         #endregion
 
         #region event handlers
+
+        public void OnRaycastInitializedFrameForPlatformer()
+        {
+            OnStartGroundCollision();
+        }
+
+        public void OnLayerMaskInitializedFrameForPlatformer()
+        {
+            OnStartGroundCollision();
+        }
+
+        public void OnPhysicsInitializedFrameForPlatformer()
+        {
+            OnStartGroundCollision();
+        }
+
+        public void OnCastedGroundCollisionRaycastForPlatformer()
+        {
+            UpdateForces();
+        }
 
         #endregion
     }

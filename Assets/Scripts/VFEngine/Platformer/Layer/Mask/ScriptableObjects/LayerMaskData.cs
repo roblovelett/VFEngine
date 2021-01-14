@@ -4,6 +4,8 @@ using VFEngine.Tools;
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
+    using static Physics2D;
+    using static LayerMaskData.LayerMaskState;
 
     [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
     public class LayerMaskData : ScriptableObject
@@ -17,6 +19,14 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask Collision { get; private set; }
         public LayerMask Saved { get; private set; }
+        public LayerMaskState State { get; private set; } = None;
+
+        public enum LayerMaskState
+        {
+            None,
+            Initialized,
+            PlatformerInitializedFrame
+        }
 
         #endregion
 
@@ -29,16 +39,14 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         private LayerMask characterCollision;
         private LayerMask standOnCollision;
         private LayerMask interactive;
-        private GameObject characterObject;
 
         #endregion
 
         #region initialization
 
-        private void InitializeInternal(GameObject characterGameObject, LayerMaskSettings settings)
+        private void Initialize(LayerMaskSettings settings)
         {
             ApplySettings(settings);
-            InitializeCharacter(characterGameObject);
             InitializeDefault();
         }
 
@@ -54,44 +62,72 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             interactive = settings.interactive;
         }
 
-        private void InitializeCharacter(GameObject characterGameObject)
-        {
-            characterObject = characterGameObject;
-        }
-
         private void InitializeDefault()
         {
             Collision = characterCollision;
             Saved = 0;
+            SetState(Initialized);
         }
 
         #endregion
 
         #region public methods
 
-        public void Initialize(GameObject characterGameObject, LayerMaskSettings settings)
-        {
-            InitializeInternal(characterGameObject, settings);
-        }
-
-        public void SetSaved(LayerMask layer)
-        {
-            Saved = layer;
-        }
-
-        public void OnInitializeFrame(LayerMask layer)
-        {
-            Saved = layer;
-        }
-
         #endregion
 
         #region private methods
+
+        private void SetState(LayerMaskState state)
+        {
+            State = state;
+        }
+
+        private void InitializeFrame(ref GameObject characterObject)
+        {
+            SetSavedLayer(characterObject.layer);
+            SetLayer(ref characterObject, IgnoreRaycastLayer);
+            SetState(PlatformerInitializedFrame);
+        }
+
+        private void SetSavedLayer(LayerMask layer)
+        {
+            Saved = layer;
+        }
+
+        private static void SetLayer(ref GameObject characterObject, LayerMask layer)
+        {
+            characterObject.layer = layer;
+        }
 
         #endregion
 
         #region event handlers
 
+        public void OnInitialize(LayerMaskSettings settings)
+        {
+            Initialize(settings);
+        }
+
+        public void OnInitializeFrame(ref GameObject characterObject)
+        {
+            InitializeFrame(ref characterObject);
+        }
+
         #endregion
     }
 }
+
+#region hide
+
+/*
+        private void SetSavedLayerInternal(GameObject characterObject)
+        {
+            Saved = characterObject.layer;
+        }
+
+        private static void SetToIgnoreRaycastInternal(ref GameObject characterObject)
+        {
+            characterObject.layer = IgnoreRaycastLayer;
+        }*/
+
+#endregion

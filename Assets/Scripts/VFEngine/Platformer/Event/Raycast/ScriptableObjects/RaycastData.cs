@@ -7,6 +7,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
     using static Mathf;
     using static Vector2;
     using static Physics2D;
+    using static RaycastData.RaycastState;
     using static Debug;
     using static Color;
 
@@ -41,6 +42,15 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public bool CollidingAbove => collision.Above;
         public float IgnorePlatformsTime { get; private set; }
         public float Length { get; private set; }
+        public RaycastState State { get; private set; } = None;
+
+        public enum RaycastState
+        {
+            None,
+            Initialized,
+            PlatformerInitializedFrame,
+            PlatformerGroundCollisionRaycastHit
+        }
 
         #endregion
 
@@ -54,6 +64,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private float oneWayPlatformDelay;
         private float ladderClimbThreshold;
         private float ladderDelay;
+        private Vector2 origin;
         private Bounds bounds;
         private Collision collision;
 
@@ -82,20 +93,18 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             public RaycastHit2D VerticalHit { get; set; }
         }
 
-        
-
         #endregion
 
         #region initialization
 
-        private void InitializeInternal(Collider2D boxCollider, RaycastSettings settings)
+        private void Initialize(Collider2D boxCollider, RaycastSettings settings)
         {
             ApplySettings(settings);
             InitializeDefault();
-            SetBounds(boxCollider);
-            InitializeCollision();
-            InitializeCount();
-            InitializeSpacing();
+            SetRaycastBounds(boxCollider);
+            InitializeRaycastCollision();
+            InitializeRaycastCount();
+            InitializeRaycastSpacing();
         }
 
         private void ApplySettings(RaycastSettings settings)
@@ -114,139 +123,69 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             IgnorePlatformsTime = 0;
             Origin = new Vector2();
             Hit = new RaycastHit2D();
+            SetRaycastState(Initialized);
         }
 
-        private void InitializeCollision()
+        private void InitializeRaycastCollision()
         {
-            ResetCollision();
+            ResetRaycastCollision();
+            InitializeRaycastCollisionDefault();
+        }
+
+        private bool OnSlopeCollision => collision.OnGround && collision.GroundAngle != 0;
+
+        private void InitializeRaycastCollisionDefault()
+        {
             collision.GroundLayer = 0;
-            collision.OnSlope = collision.OnGround && collision.GroundAngle != 0;
+            collision.OnSlope = OnSlopeCollision;
         }
 
-        private void InitializeCount()
+        private void InitializeRaycastCount()
         {
-            HorizontalRays = (int) Round(bounds.Size.y / spacing);
-            VerticalRays = (int) Round(bounds.Size.x / spacing);
+            SetRaycastCount(bounds.Size);
         }
 
-        private void InitializeSpacing()
+        private void InitializeRaycastSpacing()
         {
-            HorizontalSpacing = bounds.Size.y / (HorizontalRays - 1);
-            VerticalSpacing = bounds.Size.x / (VerticalRays - 1);
+            SetRaycastSpacing(bounds.Size);
         }
 
         #endregion
 
         #region public methods
 
-        public void Initialize(BoxCollider2D boxCollider, RaycastSettings settings)
-        {
-            InitializeInternal(boxCollider, settings);
-        }
-
-        public void OnInitializeFrame(BoxCollider2D boxCollider)
-        {
-            ResetCollision();
-            SetBounds(boxCollider);
-        }
-
-        private bool SetHitForOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
-        private bool CastNextRay => Hit.distance <= 0;
-        public void OnGroundCollision(int deltaMoveXDirectionAxis, LayerMask collisionLayer, LayerMask oneWayPlatformLayer)
-        {
-            for (var i = 0; i < VerticalRays; i++)
-            {
-                SetGroundCollisionRaycast(deltaMoveXDirectionAxis, collisionLayer);
-                if (SetHitForOneWayPlatform)
-                {
-                    SetGroundCollisionRaycast(oneWayPlatformLayer);
-                    if (CastNextRay) continue;
-                }
-                if (!Hit) continue;
-                SetCollisionOnGround();
-                SetLengthOnGroundCollision();
-                CastRay(Origin, down * Length, blue);
-                break;
-            }
-        }
-
-        private void SetGroundCollisionRaycast(int deltaMoveXDirectionAxis, LayerMask collisionLayer)
-        {
-            Origin = GroundCollisionOrigin(deltaMoveXDirectionAxis);
-            SetGroundCollisionRaycast(collisionLayer);
-        }
-
-        private void SetGroundCollisionRaycast(LayerMask layerMask)
-        {
-            Hit = GroundCollisionHit(layerMask);
-        }
-        
-        private static void CastRay(Vector2 start, Vector2 direction, Color color)
-        {
-            DrawRay(start, direction, color);
-        }
-
-        public void OnSlopeBehaviorCollision()
-        {
-            collision.Below = true;
-        }
-
-        public void OnInitializeHorizontalCollisionRaycast(float deltaMoveX)
-        {
-            Length = HorizontalCollisionLength(deltaMoveX);
-        }
-
-        private float HorizontalCollisionLength(float deltaMoveX)
-        {
-            return Abs(deltaMoveX) + SkinWidth;
-        }
-
-        public void OnHorizontalCollision(int index, int deltaMoveXDirectionAxis, LayerMask collisionLayer)
-        {
-            SetHorizontalCollisionRaycast(index, deltaMoveXDirectionAxis, collisionLayer);
-        }
-
-        private void SetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, LayerMask collisionLayer)
-        {
-            Index = index;
-            Origin = HorizontalCollisionOrigin(deltaMoveXDirectionAxis);
-            Hit = HorizontalCollisionHit(deltaMoveXDirectionAxis, collisionLayer);
-            CastRay(Origin, right * deltaMoveXDirectionAxis * Length, red);
-        }
-
-        private Vector2 HorizontalCollisionOrigin(int deltaMoveXDirectionAxis)
-        {
-            return (deltaMoveXDirectionAxis == -1 ? bounds.BottomLeft : bounds.BottomRight) +
-                   up * (HorizontalSpacing * Index);
-        }
-
-        private RaycastHit2D HorizontalCollisionHit(int deltaMoveXDirectionAxis, LayerMask collisionLayer)
-        {
-            return Raycast(Origin, right * deltaMoveXDirectionAxis, Length, collisionLayer);
-        }
-
-        public void OnHorizontalCollisionHitClimbingSlope()
-        {
-            SetCollisionOnGround(true);
-        }
-
-        private float HitAngle => Angle(Hit.normal, up);
-        
-        /*private void SetCollisionOnGround()
-        {
-            collision.OnGround = true;
-            collision.GroundAngle = HitAngle;
-            collision.GroundDirection = HitDirection;
-            collision.GroundLayer = HitLayer;
-            collision.VerticalHit = Hit;
-            collision.Below = true;
-        }*/
-
         #endregion
 
         #region private methods
 
-        private void ResetCollision()
+        private void SetRaycastState(RaycastState state)
+        {
+            State = state;
+        }
+
+        private void SetRaycastCount(Vector2 size)
+        {
+            HorizontalRays = RaycastCount(size.y);
+            VerticalRays = RaycastCount(size.x);
+        }
+
+        private int RaycastCount(float size)
+        {
+            return (int) Round(size / spacing);
+        }
+
+        private void SetRaycastSpacing(Vector2 size)
+        {
+            HorizontalSpacing = RaycastSpacing(size.y, HorizontalRays);
+            VerticalSpacing = RaycastSpacing(size.x, VerticalRays);
+        }
+
+        private static float RaycastSpacing(float axis, int rays)
+        {
+            return axis / (rays - 1);
+        }
+
+        private void ResetRaycastCollision()
         {
             collision.Above = false;
             collision.Right = false;
@@ -259,7 +198,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             collision.VerticalHit = new RaycastHit2D();
         }
 
-        private void SetBounds(Collider2D boxCollider)
+        private void SetRaycastBounds(Collider2D boxCollider)
         {
             bounds._ = boxCollider.bounds;
             bounds._.Expand(SkinWidth * -2);
@@ -271,44 +210,108 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             bounds.TopRight = new Vector2(max.x, max.y);
         }
 
-        private Vector2 GroundCollisionOrigin(int deltaMoveXDirectionAxis)
+        private void InitializeFrame(Collider2D boxCollider)
         {
-            var origin = (deltaMoveXDirectionAxis == 1 ? bounds.BottomLeft : bounds.BottomRight) +
-                         (deltaMoveXDirectionAxis == 1 ? right : left) * VerticalSpacing * Index;
-            origin.y += SkinWidth * 2;
-            return origin;
+            ResetRaycastCollision();
+            SetRaycastBounds(boxCollider);
+            SetRaycastState(PlatformerInitializedFrame);
         }
 
-        private RaycastHit2D GroundCollisionHit(LayerMask layerMask)
+        private void SetGroundCollisionRaycast(int deltaMoveXDirectionAxis, int index, LayerMask layer)
         {
-            return Raycast(Origin, down, SkinWidth * 4, layerMask);
+            SetGroundCollisionRaycastOrigin(deltaMoveXDirectionAxis, index);
+            SetGroundCollisionRaycastHit(layer);
         }
 
-        private int HitDirection => (int) Sign(Hit.normal.x);
-        private LayerMask HitLayer => Hit.collider.gameObject.layer;
-        private void SetCollisionOnGround()
+        private float GroundCollisionRaycastOriginY => SkinWidth * 2;
+
+        private void SetGroundCollisionRaycastOrigin(int deltaMoveXDirectionAxis, int index)
         {
-            SetCollisionOnGround(true);
-            collision.GroundLayer = HitLayer;
+            Origin = GroundCollisionRaycastOrigin(deltaMoveXDirectionAxis, index);
+            ApplyToRaycastOriginY(GroundCollisionRaycastOriginY);
+        }
+
+        private Vector2 GroundCollisionRaycastOrigin(int deltaMoveXDirectionAxis, int index)
+        {
+            var positiveXDirection = deltaMoveXDirectionAxis == 1;
+            var initialOrigin = positiveXDirection ? bounds.BottomLeft : bounds.BottomRight;
+            var xDirection = positiveXDirection ? right : left;
+            return initialOrigin + xDirection * VerticalSpacing * index;
+        }
+
+        private void ApplyToRaycastOriginY(float y)
+        {
+            origin = Origin;
+            origin.y += y;
+            Origin = origin;
+        }
+
+        private void SetGroundCollisionRaycastHit(LayerMask layer)
+        {
+            Hit = GroundCollisionRaycastHit(layer);
+        }
+
+        private RaycastHit2D GroundCollisionRaycastHit(LayerMask layer)
+        {
+            return Raycast(Origin, down, SkinWidth * 4f, layer);
+        }
+
+        private Vector2 GroundCollisionRaycastDirection => down * SkinWidth * 2;
+
+        private void GroundCollisionRaycastHit()
+        {
+            SetCollisionOnGroundCollisionRaycastHit();
+            CastRay(Origin, GroundCollisionRaycastDirection, blue);
+            SetRaycastState(PlatformerGroundCollisionRaycastHit);
+        }
+
+        private float RaycastHitAngle => Angle(Hit.normal, up);
+        private int RaycastHitDirection => (int) Sign(Hit.normal.x);
+        private LayerMask RaycastHitLayer => Hit.collider.gameObject.layer;
+
+        private void SetCollisionOnGroundCollisionRaycastHit()
+        {
+            collision.OnGround = true;
+            collision.GroundAngle = RaycastHitAngle;
+            collision.GroundDirection = RaycastHitDirection;
+            collision.GroundLayer = RaycastHitLayer;
             collision.VerticalHit = Hit;
             collision.Below = true;
         }
-        
-        private void SetCollisionOnGround(bool onGround)
-        {
-            collision.OnGround = onGround;
-            collision.GroundAngle = HitAngle;
-            collision.GroundDirection = HitDirection;
-        }
 
-        private void SetLengthOnGroundCollision()
+        private static void CastRay(Vector2 start, Vector2 direction, Color color)
         {
-            Length = SkinWidth * 2;
+            DrawRay(start, direction, color);
         }
 
         #endregion
 
         #region event handlers
+
+        public void OnInitialize(BoxCollider2D boxCollider, RaycastSettings settings)
+        {
+            Initialize(boxCollider, settings);
+        }
+
+        public void OnInitializeFrame(BoxCollider2D boxCollider)
+        {
+            InitializeFrame(boxCollider);
+        }
+
+        public void OnSetGroundCollisionRaycast(int deltaMoveXDirectionAxis, int index, LayerMask layer)
+        {
+            SetGroundCollisionRaycast(deltaMoveXDirectionAxis, index, layer);
+        }
+
+        public void OnSetGroundCollisionRaycastHit(LayerMask layer)
+        {
+            SetGroundCollisionRaycastHit(layer);
+        }
+
+        public void OnGroundCollisionRaycastHit()
+        {
+            GroundCollisionRaycastHit();
+        }
 
         #endregion
     }

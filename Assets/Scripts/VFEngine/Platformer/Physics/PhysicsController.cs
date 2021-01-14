@@ -1,23 +1,22 @@
-﻿using Sirenix.OdinInspector;
+﻿using Packages.BetterEvent;
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Physics.ScriptableObjects;
-using VFEngine.Tools.BetterEvent;
 
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
-    using static Mathf;
     using static Time;
 
     public class PhysicsController : SerializedMonoBehaviour
     {
         #region events
 
-        public BetterEvent slopeBehavior;
+        public BetterEvent initializedFrameForPlatformer;
 
         #endregion
 
@@ -33,17 +32,6 @@ namespace VFEngine.Platformer.Physics
         [OdinSerialize] private PhysicsSettings settings;
         private RaycastData raycastData;
 
-        // Physics Data
-        private float MinimumWallAngle => Data.MinimumWallAngle;
-        private Vector2 DeltaMove => Data.DeltaMove;
-        private int DeltaMoveXDirectionAxis => Data.DeltaMoveXDirectionAxis;
-
-        // Raycast Data
-        private bool OnGround => raycastData.OnGround;
-        private bool OnSlope => raycastData.OnSlope;
-        private float GroundAngle => raycastData.GroundAngle;
-        private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
-
         #endregion
 
         #region initialization
@@ -53,7 +41,7 @@ namespace VFEngine.Platformer.Physics
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
             if (!Data) Data = CreateInstance<PhysicsData>();
-            Data.Initialize(settings);
+            Data.OnInitialize(settings);
         }
 
         private void SetDependencies()
@@ -88,6 +76,32 @@ namespace VFEngine.Platformer.Physics
             Data.OnInitializeFrame(fixedDeltaTime);
         }
 
+        private void UpdateForces()
+        {
+            //  
+        }
+
+        #endregion
+
+        #region event handlers
+
+        public void OnPlatformerInitializeFrame()
+        {
+            InitializeFrame();
+            initializedFrameForPlatformer.Invoke();
+        }
+
+        public void OnPlatformerUpdateForces()
+        {
+            UpdateForces();
+        }
+
+        #endregion
+    }
+}
+
+#region hide
+/*
         private void SetForces()
         {
             Data.OnSetForces(OnGround, OnSlope, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
@@ -104,7 +118,7 @@ namespace VFEngine.Platformer.Physics
         {
             if (!SlopeBehavior) return;
             Data.OnSetSlopeBehavior(GroundDirectionAxis, GroundAngle);
-            slopeBehavior.Invoke();
+            //slopeBehavior.Invoke();
         }
 
         private RaycastHit2D Hit => raycastData.Hit;
@@ -113,11 +127,8 @@ namespace VFEngine.Platformer.Physics
         {
             Data.OnRaycastHorizontalCollisionHit(Hit, SkinWidth, GroundAngle);
         }
-
-        #endregion
-
-        #region event handlers
-
+        */
+/*
         public void OnPlatformerInitializeFrame()
         {
             InitializeFrame();
@@ -138,11 +149,7 @@ namespace VFEngine.Platformer.Physics
             OnHorizontalCollisionHit();//ApplyClimbingSlopeBehavior
             //ApplySlopeBehaviorToDeltaMoveX
         }
-
-        #endregion
-    }
-}
-
+        */
 /*
 private RaycastHit2D Hit => raycastData.Hit;
 private float SkinWidth => raycastData.SkinWidth;
@@ -353,3 +360,4 @@ public void OnPlatformerResetFriction()
 {
     ResetFriction();
 }*/
+#endregion

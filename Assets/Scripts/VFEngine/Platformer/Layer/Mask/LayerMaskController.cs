@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Packages.BetterEvent;
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
@@ -7,11 +8,12 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
     using static ScriptableObject;
-    using static Physics2D;
 
     public class LayerMaskController : SerializedMonoBehaviour
     {
         #region events
+
+        public BetterEventEntry initializedFrameForPlatformer;
 
         #endregion
 
@@ -35,7 +37,7 @@ namespace VFEngine.Platformer.Layer.Mask
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<LayerMaskSettings>();
             if (!Data) Data = CreateInstance<LayerMaskData>();
-            Data.Initialize(character, settings);
+            Data.OnInitialize(settings);
         }
 
         #endregion
@@ -57,15 +59,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void InitializeFrame()
         {
-            Data.OnInitializeFrame(character.layer);
-            character.layer = IgnoreRaycastLayer;
-        }
-
-        private LayerMask Saved => Data.Saved;
-
-        private void SetLayerToSaved()
-        {
-            character.layer = Saved;
+            Data.OnInitializeFrame(ref character);
         }
 
         #endregion
@@ -75,11 +69,7 @@ namespace VFEngine.Platformer.Layer.Mask
         public void OnPlatformerInitializeFrame()
         {
             InitializeFrame();
-        }
-
-        public void OnPlatformerSetLayerMaskToSaved()
-        {
-            SetLayerToSaved();
+            initializedFrameForPlatformer.Invoke();
         }
 
         #endregion
