@@ -5,7 +5,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
     using static Physics2D;
-    using static LayerMaskData.LayerMaskState;
 
     [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
     public class LayerMaskData : ScriptableObject
@@ -19,14 +18,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask Collision { get; private set; }
         public LayerMask Saved { get; private set; }
-        public LayerMaskState State { get; private set; } = None;
-
-        public enum LayerMaskState
-        {
-            None,
-            Initialized,
-            PlatformerInitializedFrame
-        }
 
         #endregion
 
@@ -66,7 +57,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         {
             Collision = characterCollision;
             Saved = 0;
-            SetState(Initialized);
         }
 
         #endregion
@@ -77,16 +67,10 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         #region private methods
 
-        private void SetState(LayerMaskState state)
-        {
-            State = state;
-        }
-
         private void InitializeFrame(ref GameObject characterObject)
         {
             SetSavedLayer(characterObject.layer);
             SetLayer(ref characterObject, IgnoreRaycastLayer);
-            SetState(PlatformerInitializedFrame);
         }
 
         private void SetSavedLayer(LayerMask layer)
