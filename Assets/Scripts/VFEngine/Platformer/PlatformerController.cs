@@ -1,4 +1,6 @@
-﻿using Packages.BetterEvent;
+﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -9,33 +11,18 @@ using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
-using static VFEngine.Platformer.Event.Raycast.ScriptableObjects.RaycastData;
-using static VFEngine.Platformer.Layer.Mask.ScriptableObjects.LayerMaskData;
-using static VFEngine.Platformer.Physics.ScriptableObjects.PhysicsData;
 
 namespace VFEngine.Platformer
 {
+    using static UniTask;
+    using static Debug;
+    using static Mathf;
+    using static Time;
     using static ScriptableObject;
 
     public class PlatformerController : SerializedMonoBehaviour
     {
         #region events
-
-        public BetterEvent initializeFrame;
-        public BetterEvent groundCollisionRaycast;
-        public BetterEvent updateForces;
-        /*
-        public BetterEvent setForces;
-        public BetterEvent setSlopeBehavior;
-        public BetterEvent horizontalCollision;
-        public BetterEvent verticalCollision;
-        public BetterEvent slopeChangeCollision;
-        public BetterEvent castRayFromInitialPosition;
-        public BetterEvent translateDeltaMove;
-        public BetterEvent resetJumpCollision;
-        public BetterEvent setLayerMaskToSaved;
-        public BetterEvent resetFriction;
-        */
 
         #endregion
 
@@ -85,14 +72,10 @@ namespace VFEngine.Platformer
             Initialize();
         }
 
-        private void Start()
+        private async void Start()
         {
             SetDependencies();
-        }
-
-        private void FixedUpdate()
-        {
-            Run();
+            await Run();
         }
 
         #endregion
@@ -103,74 +86,106 @@ namespace VFEngine.Platformer
 
         #region private methods
 
-        private void Run()
+        private async UniTask Run()
         {
-            InitializeFrame();
+            var ct = this.GetCancellationTokenOnDestroy();
+            try
+            {
+                await RunPlatformer(ct);
+            }
+            catch (OperationCanceledException e)
+            {
+                Log(e.Message);
+            }
         }
 
-        private void InitializeFrame()
+        private async UniTask RunPlatformer(CancellationToken ct)
         {
-            initializeFrame.Invoke();
+            var run = true;
+            while (run)
+            {
+                if (ct.IsCancellationRequested) run = false;
+                await InitializeFrame();
+                await GroundCollision();
+                await UpdateForces();
+                await HorizontalDeltaMoveDetection();
+                Log($"Frame={frameCount} FixedTime={fixedTime}");
+                await WaitForFixedUpdate(ct);
+            }
         }
 
-        private bool RaycastInitializedFrame => raycastData.State == RaycastState.PlatformerInitializedFrame;
-        private bool LayerMaskInitializedFrame => layerMaskData.State == LayerMaskState.PlatformerInitializedFrame;
-        private bool PhysicsInitializedFrame => physicsData.State == PhysicsState.PlatformerInitializedFrame;
-
-        private bool StartGroundCollision =>
-            RaycastInitializedFrame && LayerMaskInitializedFrame && PhysicsInitializedFrame;
-
-        private void OnStartGroundCollision()
+        private async UniTask InitializeFrame()
         {
-            if (StartGroundCollision) GroundCollision();
+            var raycast = raycastController.OnPlatformerInitializeFrame();
+            var layerMask = layerMaskController.OnPlatformerInitializeFrame();
+            var physics = physicsController.OnPlatformerInitializeFrame();
+            await (raycast, layerMask, physics);
         }
 
-        private void GroundCollision()
+        private async UniTask GroundCollision()
         {
-            groundCollisionRaycast.Invoke();
+            await raycastController.OnPlatformerGroundCollisionRaycast();
         }
 
-        private void UpdateForces()
+        private async UniTask UpdateForces()
         {
-            updateForces.Invoke();
-            /*
-            updateForces.Invoke();
-            //if (applyForcesToExternalForce)
-                applyForcesToExternalForce.Invoke();
-            */
+            await physicsController.OnPlatformerUpdateForces();
         }
 
-        private void SlopeCollision()
+        private Vector2 DeltaMove => physicsData.DeltaMove;
+        private bool HorizontalDeltaMove => DeltaMove.x != 0;
+
+        private async UniTask HorizontalDeltaMoveDetection()
         {
-            /*
-            // if moving horizontally
-                // if descendingSlope
-                    DescendSlope();
-                // else
-                    ClimbSlope();
-                HorizontalCollision();
-            StopSpeedControl();
-            VerticalCollision();
-            SlopeChangeCollision();
-            */
+            if (HorizontalDeltaMove)
+            {
+                await SlopeCollision();
+                await HorizontalCollision();
+            }
+
+            await Yield();
         }
 
-        private void DescendSlope()
+        private bool OnSlope => raycastData.OnSlope;
+        private bool SlopeBehavior => DeltaMove.y <= 0 && OnSlope;
+        private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
+        private int DeltaMoveXDirectionAxis => physicsData.DeltaMoveXDirectionAxis;
+        private bool DescendingSlope => GroundDirectionAxis == DeltaMoveXDirectionAxis;
+        private float GroundAngle => raycastData.GroundAngle;
+        private float MinimumWallAngle => physicsData.MinimumWallAngle;
+        private float DeltaMoveDistanceX => physicsData.DeltaMoveDistanceX;
+        private float SlopeMoveDistance => Sin(GroundAngle * Deg2Rad) * DeltaMoveDistanceX;
+        private bool ClimbingSlope => GroundAngle < MinimumWallAngle && DeltaMove.x <= SlopeMoveDistance;
+
+        private async UniTask SlopeCollision()
         {
-            /*
-            setPhysicsOnDescendSlope.Invoke();
-            setRaycastCollisionOnDescendSlope.Invoke();
-            */
+            if (SlopeBehavior)
+            {
+                if (DescendingSlope) await DescendSlope();
+                else if (ClimbingSlope) await ClimbSlope();
+            }
+
+            await Yield();
         }
 
-        private void ClimbSlope()
+        private async UniTask DescendSlope()
         {
-            //
+            var raycast = raycastController.OnPlatformerSlopeBehavior();
+            var physics = physicsController.OnPlatformerDescendSlope();
+            await (raycast, physics);
         }
 
-        private void HorizontalCollision()
+        private async UniTask ClimbSlope()
         {
-            //
+            var raycast = raycastController.OnPlatformerSlopeBehavior();
+            var physics = physicsController.OnPlatformerClimbSlope();
+            await (raycast, physics);
+        }
+
+        private async UniTask HorizontalCollision()
+        {
+            Log("horizontal collision..");
+            await Yield();
         }
 
         private void StopSpeedControl()
@@ -214,26 +229,6 @@ namespace VFEngine.Platformer
         #endregion
 
         #region event handlers
-
-        public void OnRaycastInitializedFrameForPlatformer()
-        {
-            OnStartGroundCollision();
-        }
-
-        public void OnLayerMaskInitializedFrameForPlatformer()
-        {
-            OnStartGroundCollision();
-        }
-
-        public void OnPhysicsInitializedFrameForPlatformer()
-        {
-            OnStartGroundCollision();
-        }
-
-        public void OnCastedGroundCollisionRaycastForPlatformer()
-        {
-            UpdateForces();
-        }
 
         #endregion
     }

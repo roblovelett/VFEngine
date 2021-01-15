@@ -7,7 +7,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
     using static Mathf;
     using static Vector2;
     using static Physics2D;
-    using static RaycastData.RaycastState;
     using static Debug;
     using static Color;
 
@@ -31,7 +30,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public bool OnGround => collision.OnGround;
         public bool OnSlope => collision.OnSlope;
         public float GroundAngle => collision.GroundAngle;
-        public int GroundDirectionAxis => collision.GroundDirection;
+        public int GroundDirectionAxis => collision.GroundDirectionAxis;
         public int HorizontalRays { get; private set; }
         public float HorizontalSpacing { get; private set; }
         public Vector2 BoundsTopLeft => bounds.TopLeft;
@@ -42,15 +41,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public bool CollidingAbove => collision.Above;
         public float IgnorePlatformsTime { get; private set; }
         public float Length { get; private set; }
-        public RaycastState State { get; private set; } = None;
-
-        public enum RaycastState
-        {
-            None,
-            Initialized,
-            PlatformerInitializedFrame,
-            PlatformerGroundCollisionRaycastHit
-        }
 
         #endregion
 
@@ -86,7 +76,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             public bool Left { get; set; }
             public bool OnGround { get; set; }
             public bool OnSlope { get; set; }
-            public int GroundDirection { get; set; }
+            public int GroundDirectionAxis { get; set; }
             public float GroundAngle { get; set; }
             public LayerMask GroundLayer { get; set; }
             public RaycastHit2D HorizontalHit { get; set; }
@@ -123,7 +113,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             IgnorePlatformsTime = 0;
             Origin = new Vector2();
             Hit = new RaycastHit2D();
-            SetRaycastState(Initialized);
         }
 
         private void InitializeRaycastCollision()
@@ -158,11 +147,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         #region private methods
 
-        private void SetRaycastState(RaycastState state)
-        {
-            State = state;
-        }
-
         private void SetRaycastCount(Vector2 size)
         {
             HorizontalRays = RaycastCount(size.y);
@@ -189,10 +173,10 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             collision.Above = false;
             collision.Right = false;
-            collision.Below = false;
+            SetCollisionBelow(false);
             collision.Left = false;
             collision.OnGround = false;
-            collision.GroundDirection = 0;
+            collision.GroundDirectionAxis = 0;
             collision.GroundAngle = 0;
             collision.HorizontalHit = new RaycastHit2D();
             collision.VerticalHit = new RaycastHit2D();
@@ -214,7 +198,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             ResetRaycastCollision();
             SetRaycastBounds(boxCollider);
-            SetRaycastState(PlatformerInitializedFrame);
         }
 
         private void SetGroundCollisionRaycast(int deltaMoveXDirectionAxis, int index, LayerMask layer)
@@ -262,7 +245,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             SetCollisionOnGroundCollisionRaycastHit();
             CastRay(Origin, GroundCollisionRaycastDirection, blue);
-            SetRaycastState(PlatformerGroundCollisionRaycastHit);
         }
 
         private float RaycastHitAngle => Angle(Hit.normal, up);
@@ -273,15 +255,25 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             collision.OnGround = true;
             collision.GroundAngle = RaycastHitAngle;
-            collision.GroundDirection = RaycastHitDirection;
+            collision.GroundDirectionAxis = RaycastHitDirection;
             collision.GroundLayer = RaycastHitLayer;
             collision.VerticalHit = Hit;
-            collision.Below = true;
+            SetCollisionBelow(true);
         }
 
         private static void CastRay(Vector2 start, Vector2 direction, Color color)
         {
             DrawRay(start, direction, color);
+        }
+
+        private void SlopeBehavior()
+        {
+            SetCollisionBelow(true);
+        }
+
+        private void SetCollisionBelow(bool colliding)
+        {
+            collision.Below = colliding;
         }
 
         #endregion
@@ -311,6 +303,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public void OnGroundCollisionRaycastHit()
         {
             GroundCollisionRaycastHit();
+        }
+
+        public void OnSlopeBehavior()
+        {
+            SlopeBehavior();
         }
 
         #endregion

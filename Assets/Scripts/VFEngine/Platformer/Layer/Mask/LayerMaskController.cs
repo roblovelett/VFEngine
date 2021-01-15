@@ -1,4 +1,4 @@
-﻿using Packages.BetterEvent;
+﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -8,12 +8,11 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
     using static ScriptableObject;
+    using static UniTask;
 
     public class LayerMaskController : SerializedMonoBehaviour
     {
         #region events
-
-        public BetterEventEntry initializedFrameForPlatformer;
 
         #endregion
 
@@ -66,10 +65,10 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region event handlers
 
-        public void OnPlatformerInitializeFrame()
+        public async UniTask OnPlatformerInitializeFrame()
         {
             InitializeFrame();
-            initializedFrameForPlatformer.Invoke();
+            await Yield();
         }
 
         #endregion

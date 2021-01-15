@@ -1,4 +1,5 @@
-﻿using Packages.BetterEvent;
+﻿using Cysharp.Threading.Tasks;
+using Packages.BetterEvent;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -12,6 +13,7 @@ using VFEngine.Platformer.ScriptableObjects;
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObject;
+    using static UniTask;
 
     [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastController : SerializedMonoBehaviour
@@ -132,20 +134,31 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.OnSetGroundCollisionRaycastHit(layer);
         }
 
+        private void SlopeBehavior()
+        {
+            Data.OnSlopeBehavior();
+        }
+
         #endregion
 
         #region event handlers
 
-        public void OnPlatformerInitializeFrame()
+        public async UniTask OnPlatformerInitializeFrame()
         {
             InitializeFrame();
-            initializedFrameForPlatformer.Invoke();
+            await Yield();
         }
 
-        public void OnPlatformerGroundCollisionRaycast()
+        public async UniTask OnPlatformerGroundCollisionRaycast()
         {
             GroundCollisionRaycast();
-            castedGroundCollisionRaycastForPlatformer.Invoke();
+            await Yield();
+        }
+
+        public async UniTask OnPlatformerSlopeBehavior()
+        {
+            SlopeBehavior();
+            await Yield();
         }
 
         #endregion

@@ -1,22 +1,22 @@
-﻿using Packages.BetterEvent;
+﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Physics.ScriptableObjects;
+using VFEngine.Platformer.ScriptableObjects;
 
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
     using static Time;
+    using static UniTask;
 
     public class PhysicsController : SerializedMonoBehaviour
     {
         #region events
-
-        public BetterEvent initializedFrameForPlatformer;
 
         #endregion
 
@@ -31,6 +31,7 @@ namespace VFEngine.Platformer.Physics
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private PhysicsSettings settings;
         private RaycastData raycastData;
+        private PlatformerData platformerData;
 
         #endregion
 
@@ -47,6 +48,7 @@ namespace VFEngine.Platformer.Physics
         private void SetDependencies()
         {
             raycastData = GetComponent<RaycastController>().Data;
+            platformerData = GetComponent<PlatformerController>().Data;
         }
 
         #endregion
@@ -76,24 +78,52 @@ namespace VFEngine.Platformer.Physics
             Data.OnInitializeFrame(fixedDeltaTime);
         }
 
+        private bool OnGround => raycastData.OnGround;
+        private bool OnSlope => raycastData.OnSlope;
+        private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
+        private float GroundAngle => raycastData.GroundAngle;
+
         private void UpdateForces()
         {
-            //  
+            Data.OnUpdateForces(OnGround, OnSlope, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
+        }
+
+        private void DescendSlope()
+        {
+            Data.OnDescendSlope(GroundAngle);
+        }
+        
+        private void ClimbSlope()
+        {
+            Data.OnClimbSlope(GroundAngle);
         }
 
         #endregion
 
         #region event handlers
 
-        public void OnPlatformerInitializeFrame()
+        public async UniTask OnPlatformerInitializeFrame()
         {
             InitializeFrame();
-            initializedFrameForPlatformer.Invoke();
+            await Yield();
         }
 
-        public void OnPlatformerUpdateForces()
+        public async UniTask OnPlatformerUpdateForces()
         {
             UpdateForces();
+            await Yield();
+        }
+
+        public async UniTask OnPlatformerDescendSlope()
+        {
+            DescendSlope();
+            await Yield();
+        }
+
+        public async UniTask OnPlatformerClimbSlope()
+        {
+            ClimbSlope();
+            await Yield();
         }
 
         #endregion
@@ -101,6 +131,7 @@ namespace VFEngine.Platformer.Physics
 }
 
 #region hide
+
 /*
         private void SetForces()
         {
@@ -360,4 +391,5 @@ public void OnPlatformerResetFriction()
 {
     ResetFriction();
 }*/
+
 #endregion

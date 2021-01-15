@@ -6,7 +6,6 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
     using static Vector2;
     using static Mathf;
     using static ScriptableObjectExtensions;
-    using static PhysicsData.PhysicsState;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
@@ -32,14 +31,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public Vector2 TotalSpeed => Speed + ExternalForce;
         public int DeltaMoveXDirectionAxis => AxisDirection(DeltaMove.x);
         public int DeltaMoveYDirectionAxis => AxisDirection(DeltaMove.y);
-        public PhysicsState State { get; private set; } = None;
-
-        public enum PhysicsState
-        {
-            None,
-            Initialized,
-            PlatformerInitializedFrame
-        }
+        public float DeltaMoveDistanceX => Abs(DeltaMove.x);
 
         #endregion
 
@@ -77,7 +69,6 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             Speed = zero;
             ExternalForce = zero;
             DeltaMove = zero;
-            SetState(Initialized);
         }
 
         #endregion
@@ -96,7 +87,6 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         private void InitializeFrame(float deltaTime)
         {
             SetDeltaMove(DeltaMoveInitialized(deltaTime));
-            SetState(PlatformerInitializedFrame);
         }
 
         private Vector2 DeltaMoveInitialized(float deltaTime)
@@ -109,9 +99,144 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             DeltaMove = force;
         }
 
-        private void SetState(PhysicsState state)
+        private void UpdateForces(bool onGround, bool onSlope, int groundDirection, float groundAngle, float deltaTime)
         {
-            State = state;
+            UpdateExternalForce(onGround, deltaTime);
+            UpdateGravity(deltaTime);
+            UpdateExternalForceX(onSlope, groundDirection, groundAngle, deltaTime);
+        }
+
+        private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
+
+        private void UpdateExternalForce(bool onGround, float deltaTime)
+        {
+            if (IgnoreFriction) return;
+            var friction = OnGroundFriction(onGround);
+            SetExternalForce(GroundFrictionExternalForce(friction, deltaTime));
+            if (StopExternalForce) SetExternalForce(zero);
+        }
+
+        private float OnGroundFriction(bool onGround)
+        {
+            return onGround ? GroundFriction : AirFriction;
+        }
+
+        private Vector2 GroundFrictionExternalForce(float friction, float deltaTime)
+        {
+            return MoveTowards(ExternalForce, zero, ExternalForce.magnitude * friction * deltaTime);
+        }
+
+        private void SetExternalForce(Vector2 force)
+        {
+            ExternalForce = force;
+        }
+
+        private float GravityScaled => Gravity * GravityScale;
+        private bool ApplyGravityToSpeed => Speed.y > 0;
+
+        private void UpdateGravity(float deltaTime)
+        {
+            var gravityScaledToTime = GravityScaledToTime(deltaTime);
+            if (ApplyGravityToSpeed) ApplyToSpeedY(gravityScaledToTime);
+            else ApplyToExternalForceY(gravityScaledToTime);
+        }
+
+        private float GravityScaledToTime(float deltaTime)
+        {
+            return GravityScaled * deltaTime;
+        }
+
+        private void ApplyToSpeedY(float force)
+        {
+            speed = Speed;
+            speed.y += force;
+            SetSpeed(speed);
+        }
+
+        private void SetSpeed(Vector2 force)
+        {
+            Speed = force;
+        }
+
+        private void ApplyToExternalForceY(float force)
+        {
+            externalForce = ExternalForce;
+            externalForce.y += force;
+            SetExternalForce(externalForce);
+        }
+
+        private bool NoHorizontalSpeed => Speed.x == 0;
+
+        private void UpdateExternalForceX(bool onSlope, int groundDirection, float groundAngle, float deltaTime)
+        {
+            var applyCombinedForcesToExternalForceX = onSlope && groundAngle > MaximumSlopeAngle &&
+                                                      (groundAngle < MinimumWallAngle || NoHorizontalSpeed);
+            if (applyCombinedForcesToExternalForceX) ApplyToExternalForceX(CombinedForcesX(groundDirection, deltaTime));
+        }
+
+        private float CombinedForcesX(int groundDirection, float deltaTime)
+        {
+            return -Gravity * GroundFriction * groundDirection * deltaTime / 4;
+        }
+
+        private void ApplyToExternalForceX(float force)
+        {
+            externalForce = ExternalForce;
+            externalForce.x += force;
+            SetExternalForce(externalForce);
+        }
+
+        private void DescendSlope(float groundAngle)
+        {
+            SlopeBehavior(false, groundAngle);
+        }
+
+        private void SlopeBehavior(bool climbing, float groundAngle)
+        {
+            SetDeltaMove(SlopeDeltaMove(climbing, groundAngle));
+            StopForcesY();
+        }
+
+        private Vector2 SlopeDeltaMove(bool climbing, float groundAngle)
+        {
+            return climbing
+                ? new Vector2(SlopeDeltaMoveX(groundAngle), SlopeDeltaMoveY(groundAngle))
+                : new Vector2(SlopeDeltaMoveX(groundAngle), -SlopeDeltaMoveY(groundAngle));
+        }
+
+        private float SlopeDeltaMoveX(float groundAngle)
+        {
+            return Cos(groundAngle * Deg2Rad) * DeltaMoveDistanceX * DeltaMoveXDirectionAxis;
+        }
+
+        private float SlopeDeltaMoveY(float groundAngle)
+        {
+            return Sin(groundAngle * Deg2Rad) * DeltaMoveDistanceX;
+        }
+
+        private void StopForcesY()
+        {
+            SetSpeedY(0);
+            SetExternalForceY(0);
+        }
+
+        private void SetSpeedY(float y)
+        {
+            speed = Speed;
+            speed.y = y;
+            SetSpeed(speed);
+        }
+
+        private void SetExternalForceY(float y)
+        {
+            externalForce = ExternalForce;
+            externalForce.y = y;
+            SetExternalForce(externalForce);
+        }
+
+        private void ClimbSlope(float groundAngle)
+        {
+            SlopeBehavior(true, groundAngle);
         }
 
         #endregion
@@ -126,6 +251,21 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public void OnInitializeFrame(float deltaTime)
         {
             InitializeFrame(deltaTime);
+        }
+
+        public void OnUpdateForces(bool onGround, bool onSlope, int groundDirection, float groundAngle, float deltaTime)
+        {
+            UpdateForces(onGround, onSlope, groundDirection, groundAngle, deltaTime);
+        }
+
+        public void OnDescendSlope(float groundAngle)
+        {
+            DescendSlope(groundAngle);
+        }
+
+        public void OnClimbSlope(float groundAngle)
+        {
+            ClimbSlope(groundAngle);
         }
 
         #endregion
