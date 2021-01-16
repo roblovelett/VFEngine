@@ -239,6 +239,43 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SlopeBehavior(true, groundAngle);
         }
 
+        private void HitClimbingSlope(float groundAngle, float hitDistance, float skinWidth)
+        {
+            var deltaMoveXHitClimbingSlope = DeltaMoveXHitClimbingSlope(hitDistance, skinWidth); 
+            ApplyToDeltaMoveX(-deltaMoveXHitClimbingSlope);
+            ClimbSlope(groundAngle);
+            ApplyToDeltaMoveX(deltaMoveXHitClimbingSlope);
+        }
+
+        private float DeltaMoveXHitClimbingSlope(float hitDistance, float skinWidth)
+        {
+            return (hitDistance - skinWidth) * DeltaMoveXDirectionAxis;
+        }
+
+        private void ApplyToDeltaMoveX(float x)
+        {
+            deltaMove = DeltaMove;
+            deltaMove.x += x;
+            SetDeltaMove(deltaMove);
+        }
+
+        private void HitMaximumSlope(float hitDistance, float skinWidth)
+        {
+            SetDeltaMoveX(HitMaximumSlopeDeltaMoveX(hitDistance, skinWidth));
+        }
+
+        private float HitMaximumSlopeDeltaMoveX(float hitDistance, float skinWidth)
+        {
+            return Min(DeltaMoveDistanceX, hitDistance - skinWidth) * DeltaMoveXDirectionAxis;
+        }
+
+        private void SetDeltaMoveX(float x)
+        {
+            deltaMove = DeltaMove;
+            deltaMove.x = x;
+            SetDeltaMove(deltaMove);
+        }
+
         #endregion
 
         #region event handlers
@@ -266,6 +303,28 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public void OnClimbSlope(float groundAngle)
         {
             ClimbSlope(groundAngle);
+        }
+
+        public void OnHitClimbingSlope(float groundAngle, float hitDistance, float skinWidth)
+        {
+            HitClimbingSlope(groundAngle, hitDistance, skinWidth);
+        }
+
+        public void OnHitMaximumSlope(float hitDistance, float skinWidth)
+        {
+            HitMaximumSlope(hitDistance, skinWidth);
+        }
+
+        public void OnHitSlopedGroundAngle(float groundAngle)
+        {
+            /*
+            if (deltaMove.y < 0) {
+                deltaMove.y = 0;
+            } else {
+                deltaMove.y = Mathf.Tan(collisions.groundAngle * Mathf.Deg2Rad) *
+                              Mathf.Abs(deltaMove.x) * Mathf.Sign(deltaMove.y);
+            }
+            */
         }
 
         #endregion

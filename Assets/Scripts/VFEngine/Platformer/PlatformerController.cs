@@ -182,10 +182,10 @@ namespace VFEngine.Platformer
             await (raycast, physics);
         }
 
+        private int HorizontalRays => raycastData.HorizontalRays;
         private async UniTask HorizontalCollision()
         {
-            Log("horizontal collision..");
-            await Yield();
+            await raycastController.OnPlatformerHorizontalCollision();
         }
 
         private void StopSpeedControl()

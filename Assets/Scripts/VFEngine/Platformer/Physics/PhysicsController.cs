@@ -98,6 +98,24 @@ namespace VFEngine.Platformer.Physics
             Data.OnClimbSlope(GroundAngle);
         }
 
+        private RaycastHit2D Hit => raycastData.Hit;
+        private float SkinWidth => raycastData.SkinWidth;
+        
+        private void HitClimbingSlope()
+        {
+            Data.OnHitClimbingSlope(GroundAngle, Hit.distance, SkinWidth);
+        }
+
+        private void HitMaximumSlope()
+        {
+            Data.OnHitMaximumSlope(Hit.distance, SkinWidth);
+        }
+
+        private void HitSlopedGroundAngle()
+        {
+            Data.OnHitSlopedGroundAngle(GroundAngle);
+        }
+
         #endregion
 
         #region event handlers
@@ -123,6 +141,29 @@ namespace VFEngine.Platformer.Physics
         public async UniTask OnPlatformerClimbSlope()
         {
             ClimbSlope();
+            await Yield();
+        }
+
+        public async UniTask OnRaycastHorizontalCollisionRaycastHitClimbingSlope()
+        {
+            HitClimbingSlope();
+            await Yield();
+        }
+
+        public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlopeSetDeltaMoveX()
+        {
+            HitMaximumSlope();
+            await Yield();
+        }
+
+        public async UniTask OnHorizontalCollisionRaycastHitSlopedGroundAngle()
+        {
+            HitSlopedGroundAngle();
+            await Yield();
+        }
+        
+        public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlope()
+        {
             await Yield();
         }
 
