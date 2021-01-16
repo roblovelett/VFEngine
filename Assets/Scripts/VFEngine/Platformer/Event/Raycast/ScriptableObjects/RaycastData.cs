@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable NotAccessedField.Local
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
@@ -109,11 +111,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void InitializeDefault()
         {
-            Index = 0;
-            Length = 0;
+            SetIndex(0);
+            SetRaycastLength(0);
             IgnorePlatformsTime = 0;
-            Origin = new Vector2();
-            Hit = new RaycastHit2D();
+            SetRaycastOrigin(new Vector2());
+            SetRaycastHit(new RaycastHit2D());
         }
 
         private void InitializeRaycastCollision()
@@ -126,8 +128,13 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void InitializeRaycastCollisionDefault()
         {
-            collision.GroundLayer = 0;
+            SetCollisionGroundLayer(0);
             collision.OnSlope = OnSlopeCollision;
+        }
+
+        private void SetCollisionGroundLayer(LayerMask layer)
+        {
+            collision.GroundLayer = layer;
         }
 
         private void InitializeRaycastCount()
@@ -173,14 +180,44 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private void ResetRaycastCollision()
         {
             collision.Above = false;
-            collision.Right = false;
+            SetCollisionRight(false);
             SetCollisionBelow(false);
-            collision.Left = false;
-            collision.OnGround = false;
-            collision.GroundDirectionAxis = 0;
-            collision.GroundAngle = 0;
-            collision.HorizontalHit = new RaycastHit2D();
-            collision.VerticalHit = new RaycastHit2D();
+            SetCollisionLeft(false);
+            SetCollisionOnGround(false);
+            SetCollisionGroundDirectionAxis(0);
+            SetCollisionGroundAngle(0);
+            SetCollisionHorizontalHit(new RaycastHit2D());
+            SetCollisionVerticalHit(new RaycastHit2D());
+        }
+
+        private void SetCollisionRight(bool colliding)
+        {
+            collision.Right = colliding;
+        }
+
+        private void SetCollisionLeft(bool colliding)
+        {
+            collision.Left = colliding;
+        }
+
+        private void SetCollisionOnGround(bool colliding)
+        {
+            collision.OnGround = colliding;
+        }
+
+        private void SetCollisionGroundDirectionAxis(int axis)
+        {
+            collision.GroundDirectionAxis = axis;
+        }
+
+        private void SetCollisionHorizontalHit(RaycastHit2D hit)
+        {
+            collision.HorizontalHit = hit;
+        }
+
+        private void SetCollisionVerticalHit(RaycastHit2D hit)
+        {
+            collision.VerticalHit = hit;
         }
 
         private void SetRaycastBounds(Collider2D boxCollider)
@@ -248,16 +285,21 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private void SetCollisionOnGroundCollisionRaycastHit()
         {
             SetCollisionOnRaycastHitGround(true);
-            collision.GroundLayer = RaycastHitLayer;
-            collision.VerticalHit = Hit;
+            SetCollisionGroundLayer(RaycastHitLayer);
+            SetCollisionVerticalHit(Hit);
             SetCollisionBelow(true);
         }
 
         private void SetCollisionOnRaycastHitGround(bool onGround)
         {
-            collision.OnGround = onGround;
-            collision.GroundAngle = HitAngle;
-            collision.GroundDirectionAxis = RaycastHitDirection;
+            SetCollisionOnGround(onGround);
+            SetCollisionGroundAngle(HitAngle);
+            SetCollisionGroundDirectionAxis(RaycastHitDirection);
+        }
+
+        private void SetCollisionGroundAngle(float angle)
+        {
+            collision.GroundAngle = angle;
         }
 
         private static void CastRay(Vector2 start, Vector2 direction, Color color)
@@ -275,11 +317,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             collision.Below = colliding;
         }
 
-        private void SetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, float deltaMoveX,
+        private void SetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, float deltaMoveDistanceX,
             LayerMask layer)
         {
             SetIndex(index);
-            SetRaycastLength(HorizontalCollisionRaycastLength(deltaMoveX));
+            SetRaycastLength(HorizontalCollisionRaycastLength(deltaMoveDistanceX));
             SetRaycastOrigin(HorizontalCollisionRaycastOrigin(deltaMoveXDirectionAxis));
             SetRaycastHit(HorizontalCollisionRaycastHit(deltaMoveXDirectionAxis, layer));
             CastRay(Origin, right * deltaMoveXDirectionAxis * Length, red);
@@ -290,9 +332,9 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             Length = length;
         }
 
-        private float HorizontalCollisionRaycastLength(float deltaMoveX)
+        private float HorizontalCollisionRaycastLength(float deltaMoveDistanceX)
         {
-            return Abs(deltaMoveX) + SkinWidth;
+            return deltaMoveDistanceX + SkinWidth;
         }
 
         private RaycastHit2D HorizontalCollisionRaycastHit(int deltaMoveXDirectionAxis, LayerMask layer)
@@ -314,7 +356,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private Vector2 RaycastOrigin(bool directionAxis, int index, float raycastSpacing, Vector2 direction)
         {
             return (directionAxis ? bounds.BottomLeft : bounds.BottomRight) + direction * (raycastSpacing * index);
-            ;
         }
 
         private void SetRaycastOrigin(Vector2 raycastOrigin)
@@ -335,6 +376,25 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private float HorizontalCollisionHitClimbingSlopeLength(float deltaMoveDistanceX)
         {
             return Min(deltaMoveDistanceX + SkinWidth, Hit.distance);
+        }
+
+        private void SetCollisionOnHorizontalCollisionHitMaximumSlope(int deltaMoveXDirectionAxis)
+        {
+            SetCollisionLeft(deltaMoveXDirectionAxis < 0);
+            SetCollisionRight(deltaMoveXDirectionAxis > 0);
+            SetCollisionHorizontalHit(Hit);
+        }
+
+        private void StopHorizontalSpeed(LayerMask layer)
+        {
+            SetRaycastOrigin(bounds.BottomRight);
+            SetCollisionHorizontalHit(StopHorizontalSpeedHit(layer));
+        }
+
+        private Vector2 StopHorizontalSpeedRaycastDirection => left * collision.GroundDirectionAxis;
+        private RaycastHit2D StopHorizontalSpeedHit(LayerMask layer)
+        {
+            return Raycast(Origin, StopHorizontalSpeedRaycastDirection, 1f, layer);
         }
 
         #endregion
@@ -371,10 +431,10 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             SlopeBehavior();
         }
 
-        public void OnSetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, float deltaMoveX,
+        public void OnSetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, float deltaMoveDistanceX,
             LayerMask layer)
         {
-            SetHorizontalCollisionRaycast(index, deltaMoveXDirectionAxis, deltaMoveX, layer);
+            SetHorizontalCollisionRaycast(index, deltaMoveXDirectionAxis, deltaMoveDistanceX, layer);
         }
 
         public void OnHorizontalCollisionRaycastHitClimbingSlope()
@@ -387,9 +447,14 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             SetRaycastLength(HorizontalCollisionHitClimbingSlopeLength(deltaMoveDistanceX));
         }
 
-        public void OnHorizontalCollisionRaycastHitMaximumSlope(float deltaMoveDistanceX)
+        public void OnHorizontalCollisionRaycastHitMaximumSlope(int deltaMoveXDirectionAxis)
         {
-            SetRaycastLength(HorizontalCollisionHitClimbingSlopeLength(deltaMoveDistanceX));
+            SetCollisionOnHorizontalCollisionHitMaximumSlope(deltaMoveXDirectionAxis);
+        }
+
+        public void OnStopHorizontalSpeed(LayerMask layer)
+        {
+            StopHorizontalSpeed(layer);
         }
 
 

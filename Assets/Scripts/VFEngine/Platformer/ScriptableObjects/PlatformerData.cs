@@ -15,6 +15,7 @@ namespace VFEngine.Platformer.ScriptableObjects
         #region properties
 
         public int Index { get; private set; }
+        public float Tolerance { get; } = 0f;
 
         #endregion
 

@@ -241,7 +241,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void HitClimbingSlope(float groundAngle, float hitDistance, float skinWidth)
         {
-            var deltaMoveXHitClimbingSlope = DeltaMoveXHitClimbingSlope(hitDistance, skinWidth); 
+            var deltaMoveXHitClimbingSlope = DeltaMoveXHitClimbingSlope(hitDistance, skinWidth);
             ApplyToDeltaMoveX(-deltaMoveXHitClimbingSlope);
             ClimbSlope(groundAngle);
             ApplyToDeltaMoveX(deltaMoveXHitClimbingSlope);
@@ -274,6 +274,45 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             deltaMove = DeltaMove;
             deltaMove.x = x;
             SetDeltaMove(deltaMove);
+        }
+
+        private bool NegativeDeltaMoveY => DeltaMove.y < 0;
+        private void HitSlopedGroundAngle(float groundAngle)
+        {
+            if (NegativeDeltaMoveY) SetDeltaMoveY(0);
+            else SetDeltaMoveY(HitSlopedGroundAngleDeltaMoveY(groundAngle));
+        }
+
+        private void SetDeltaMoveY(float y)
+        {
+            deltaMove = DeltaMove;
+            deltaMove.y = y;
+            SetDeltaMove(DeltaMove);
+        }
+
+        private float HitSlopedGroundAngleDeltaMoveY(float groundAngle)
+        {
+            return Tan(groundAngle * Deg2Rad) * DeltaMoveDistanceX * DeltaMoveYDirectionAxis;
+        }
+
+        private void StopForcesX()
+        {
+            SetSpeedX(0);
+            SetExternalForceX(0);
+        }
+
+        private void SetSpeedX(float x)
+        {
+            speed = Speed;
+            speed.x = x;
+            SetSpeed(speed);
+        }
+
+        private void SetExternalForceX(float x)
+        {
+            externalForce = ExternalForce;
+            externalForce.x = x;
+            SetExternalForce(externalForce);
         }
 
         #endregion
@@ -314,17 +353,20 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             HitMaximumSlope(hitDistance, skinWidth);
         }
-
+        
         public void OnHitSlopedGroundAngle(float groundAngle)
         {
-            /*
-            if (deltaMove.y < 0) {
-                deltaMove.y = 0;
-            } else {
-                deltaMove.y = Mathf.Tan(collisions.groundAngle * Mathf.Deg2Rad) *
-                              Mathf.Abs(deltaMove.x) * Mathf.Sign(deltaMove.y);
-            }
-            */
+            HitSlopedGroundAngle(groundAngle);
+        }
+
+        public void OnHitMaximumSlope()
+        {
+            StopForcesX();
+        }
+
+        public void OnStopHorizontalSpeed()
+        {
+            SetSpeedX(0);
         }
 
         #endregion

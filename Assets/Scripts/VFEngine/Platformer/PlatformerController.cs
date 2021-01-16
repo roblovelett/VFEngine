@@ -7,10 +7,10 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Layer.Mask;
-using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
+// ReSharper disable UnusedMember.Local
 
 namespace VFEngine.Platformer
 {
@@ -40,7 +40,6 @@ namespace VFEngine.Platformer
         [OdinSerialize] private PhysicsController physicsController;
         private RaycastData raycastData;
         private PhysicsData physicsData;
-        private LayerMaskData layerMaskData;
 
         #endregion
 
@@ -60,7 +59,6 @@ namespace VFEngine.Platformer
         {
             raycastData = raycastController.Data;
             physicsData = physicsController.Data;
-            layerMaskData = layerMaskController.Data;
         }
 
         #endregion
@@ -109,6 +107,8 @@ namespace VFEngine.Platformer
                 await GroundCollision();
                 await UpdateForces();
                 await HorizontalDeltaMoveDetection();
+                await StopHorizontalSpeedControl();
+                await VerticalCollision();
                 Log($"Frame={frameCount} FixedTime={fixedTime}");
                 await WaitForFixedUpdate(ct);
             }
@@ -142,7 +142,6 @@ namespace VFEngine.Platformer
                 await SlopeCollision();
                 await HorizontalCollision();
             }
-
             await Yield();
         }
 
@@ -182,20 +181,30 @@ namespace VFEngine.Platformer
             await (raycast, physics);
         }
 
-        private int HorizontalRays => raycastData.HorizontalRays;
         private async UniTask HorizontalCollision()
         {
             await raycastController.OnPlatformerHorizontalCollision();
         }
 
-        private void StopSpeedControl()
+        private float Tolerance => Data.Tolerance;
+        private Vector2 Speed => physicsData.Speed;
+        private bool StoppingHorizontalSpeed => OnSlope && GroundAngle >= MinimumWallAngle && Abs(GroundAngle - DeltaMoveXDirectionAxis) > Tolerance && Speed.y < 0;
+        private async UniTask StopHorizontalSpeedControl()
         {
-            //
+            if (StoppingHorizontalSpeed) await StopHorizontalSpeed();
+            await Yield();
         }
 
-        private void VerticalCollision()
+        private async UniTask StopHorizontalSpeed()
         {
-            //
+            var raycast = raycastController.OnPlatformerStopHorizontalSpeed();
+            var physics = physicsController.OnPlatformerStopHorizontalSpeed();
+            await (raycast, physics);
+        }
+
+        private async UniTask VerticalCollision()
+        {
+            await raycastController.OnPlatformerVerticalCollision();
         }
 
         private void SlopeChangeCollision()

@@ -8,7 +8,6 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
-using VFEngine.Platformer.ScriptableObjects;
 
 namespace VFEngine.Platformer.Event.Raycast
 {
@@ -41,7 +40,6 @@ namespace VFEngine.Platformer.Event.Raycast
         [OdinSerialize] private PhysicsController physicsController;
         private LayerMaskData layerMaskData;
         private PhysicsData physicsData;
-        private PlatformerData platformerData;
 
         #endregion
 
@@ -77,7 +75,6 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             layerMaskData = layerMaskController.Data;
             physicsData = physicsController.Data;
-            platformerData = platformerController.Data;
         }
 
         #endregion
@@ -138,10 +135,8 @@ namespace VFEngine.Platformer.Event.Raycast
         {
             Data.OnSlopeBehavior();
         }
-        
+
         private int HorizontalRays => Data.HorizontalRays;
-        private Vector2 DeltaMove => physicsData.DeltaMove;
-        //private float DeltaMoveX => physicsData.DeltaMove.x;
         private float HitAngle => Data.HitAngle;
         private int Index => Data.Index;
         private bool OnSlope => Data.OnSlope;
@@ -155,7 +150,7 @@ namespace VFEngine.Platformer.Event.Raycast
         private bool HitSlopedGroundAngle => OnSlope && GroundAngle < MinimumWallAngle;
         private float DeltaMoveDistanceX => physicsData.DeltaMoveDistanceX;
 
-        private async UniTaskVoid HorizontalCollision()
+        private async UniTask HorizontalCollision()
         {
             for (var i = 0; i < HorizontalRays; i++)
             {
@@ -183,9 +178,9 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetHorizontalCollisionRaycast(int index)
         {
-            Data.OnSetHorizontalCollisionRaycast(index, DeltaMoveXDirectionAxis, DeltaMove.x, Collision);
+            Data.OnSetHorizontalCollisionRaycast(index, DeltaMoveXDirectionAxis, DeltaMoveDistanceX, Collision);
         }
-        
+
         private void SetCollisionOnHorizontalCollisionRaycastHitClimbingSlope()
         {
             Data.OnHorizontalCollisionRaycastHitClimbingSlope();
@@ -213,7 +208,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void SetCollisionOnHorizontalCollisionRaycastHitMaximumSlope()
         {
-            //Data.OnHorizontalCollisionRaycastHitMaximumSlope();
+            Data.OnHorizontalCollisionRaycastHitMaximumSlope(DeltaMoveXDirectionAxis);
         }
 
         private async UniTask SetPhysicsOnHorizontalCollisionRaycastHitMaximumSlope()
@@ -221,7 +216,17 @@ namespace VFEngine.Platformer.Event.Raycast
             await physicsController.OnRaycastHorizontalCollisionRaycastHitMaximumSlope();
         }
 
-        
+        private async UniTask StopHorizontalSpeed()
+        {
+            Data.OnStopHorizontalSpeed(Collision);
+            await Yield();
+        }
+
+        private async UniTask VerticalCollision()
+        {
+            // VERTICAL COLLISION
+            await Yield();
+        }
 
         #endregion
 
@@ -247,8 +252,17 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerHorizontalCollision()
         {
-            HorizontalCollision();
-            await Yield();
+            await HorizontalCollision();
+        }
+
+        public async UniTask OnPlatformerStopHorizontalSpeed()
+        {
+            await StopHorizontalSpeed();
+        }
+
+        public async UniTask OnPlatformerVerticalCollision()
+        {
+            await VerticalCollision();
         }
 
         #endregion
@@ -256,6 +270,7 @@ namespace VFEngine.Platformer.Event.Raycast
 }
 
 #region hide
+
 /*
 private Vector2 DeltaMove => physicsData.DeltaMove;
 private float HorizontalLength => Abs(DeltaMove.x) + SkinWidth;
@@ -464,4 +479,5 @@ public void OnPlatformerResetJumpCollision()
 {
     ResetJumpCollision();
 }*/
+
 #endregion

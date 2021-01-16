@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
@@ -23,7 +26,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         #region fields
 
-        private bool displayWarnings;
         private LayerMask ground;
         private LayerMask ladder;
         private LayerMask character;
@@ -43,7 +45,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         private void ApplySettings(LayerMaskSettings settings)
         {
-            displayWarnings = settings.displayWarnings;
             ground = settings.ground;
             OneWayPlatform = settings.oneWayPlatform;
             ladder = settings.ladder;

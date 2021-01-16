@@ -5,7 +5,6 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Physics.ScriptableObjects;
-using VFEngine.Platformer.ScriptableObjects;
 
 namespace VFEngine.Platformer.Physics
 {
@@ -31,7 +30,6 @@ namespace VFEngine.Platformer.Physics
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private PhysicsSettings settings;
         private RaycastData raycastData;
-        private PlatformerData platformerData;
 
         #endregion
 
@@ -48,7 +46,6 @@ namespace VFEngine.Platformer.Physics
         private void SetDependencies()
         {
             raycastData = GetComponent<RaycastController>().Data;
-            platformerData = GetComponent<PlatformerController>().Data;
         }
 
         #endregion
@@ -92,7 +89,7 @@ namespace VFEngine.Platformer.Physics
         {
             Data.OnDescendSlope(GroundAngle);
         }
-        
+
         private void ClimbSlope()
         {
             Data.OnClimbSlope(GroundAngle);
@@ -100,20 +97,30 @@ namespace VFEngine.Platformer.Physics
 
         private RaycastHit2D Hit => raycastData.Hit;
         private float SkinWidth => raycastData.SkinWidth;
-        
+
         private void HitClimbingSlope()
         {
             Data.OnHitClimbingSlope(GroundAngle, Hit.distance, SkinWidth);
         }
 
-        private void HitMaximumSlope()
+        private void HitMaximumSlope(float hitDistance, float skinWidth)
         {
-            Data.OnHitMaximumSlope(Hit.distance, SkinWidth);
+            Data.OnHitMaximumSlope(hitDistance, skinWidth);
         }
 
         private void HitSlopedGroundAngle()
         {
             Data.OnHitSlopedGroundAngle(GroundAngle);
+        }
+
+        private void HitMaximumSlope()
+        {
+            Data.OnHitMaximumSlope();
+        }
+
+        private void StopHorizontalSpeed()
+        {
+            Data.OnStopHorizontalSpeed();
         }
 
         #endregion
@@ -152,7 +159,7 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlopeSetDeltaMoveX()
         {
-            HitMaximumSlope();
+            HitMaximumSlope(Hit.distance, SkinWidth);
             await Yield();
         }
 
@@ -161,9 +168,16 @@ namespace VFEngine.Platformer.Physics
             HitSlopedGroundAngle();
             await Yield();
         }
-        
+
         public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlope()
         {
+            HitMaximumSlope();
+            await Yield();
+        }
+
+        public async UniTask OnPlatformerStopHorizontalSpeed()
+        {
+            StopHorizontalSpeed();
             await Yield();
         }
 
