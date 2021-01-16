@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Packages.BetterEvent;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -18,9 +17,6 @@ namespace VFEngine.Platformer.Event.Raycast
     public class RaycastController : SerializedMonoBehaviour
     {
         #region events
-
-        public BetterEvent initializedFrameForPlatformer;
-        public BetterEvent castedGroundCollisionRaycastForPlatformer;
 
         #endregion
 

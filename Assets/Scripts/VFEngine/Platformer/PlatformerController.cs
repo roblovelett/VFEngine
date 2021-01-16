@@ -10,8 +10,8 @@ using VFEngine.Platformer.Layer.Mask;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
-// ReSharper disable UnusedMember.Local
 
+// ReSharper disable UnusedMember.Local
 namespace VFEngine.Platformer
 {
     using static UniTask;
@@ -34,7 +34,6 @@ namespace VFEngine.Platformer
 
         #region fields
 
-        [OdinSerialize] private PlatformerSettings settings;
         [OdinSerialize] private RaycastController raycastController;
         [OdinSerialize] private LayerMaskController layerMaskController;
         [OdinSerialize] private PhysicsController physicsController;
@@ -47,12 +46,10 @@ namespace VFEngine.Platformer
 
         private void Initialize()
         {
-            if (!settings) settings = CreateInstance<PlatformerSettings>();
             if (!raycastController) raycastController = GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = GetComponent<LayerMaskController>();
             if (!physicsController) physicsController = GetComponent<PhysicsController>();
             if (!Data) Data = CreateInstance<PlatformerData>();
-            Data.OnInitialize();
         }
 
         private void SetDependencies()
@@ -142,6 +139,7 @@ namespace VFEngine.Platformer
                 await SlopeCollision();
                 await HorizontalCollision();
             }
+
             await Yield();
         }
 
@@ -188,7 +186,10 @@ namespace VFEngine.Platformer
 
         private float Tolerance => Data.Tolerance;
         private Vector2 Speed => physicsData.Speed;
-        private bool StoppingHorizontalSpeed => OnSlope && GroundAngle >= MinimumWallAngle && Abs(GroundAngle - DeltaMoveXDirectionAxis) > Tolerance && Speed.y < 0;
+
+        private bool StoppingHorizontalSpeed => OnSlope && GroundAngle >= MinimumWallAngle &&
+                                                Abs(GroundAngle - DeltaMoveXDirectionAxis) > Tolerance && Speed.y < 0;
+
         private async UniTask StopHorizontalSpeedControl()
         {
             if (StoppingHorizontalSpeed) await StopHorizontalSpeed();

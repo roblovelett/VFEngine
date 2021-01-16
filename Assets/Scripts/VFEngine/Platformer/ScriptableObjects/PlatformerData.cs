@@ -14,7 +14,6 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region properties
 
-        public int Index { get; private set; }
         public float Tolerance { get; } = 0f;
 
         #endregion
@@ -25,16 +24,6 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region initialization
 
-        private void Initialize()
-        {
-            InitializeDefault();
-        }
-
-        private void InitializeDefault()
-        {
-            SetIndex(0);
-        }
-
         #endregion
 
         #region public methods
@@ -43,19 +32,9 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region private methods
 
-        private void SetIndex(int index)
-        {
-            Index = index;
-        }
-
         #endregion
 
         #region event handlers
-
-        public void OnInitialize()
-        {
-            Initialize();
-        }
 
         #endregion
     }
