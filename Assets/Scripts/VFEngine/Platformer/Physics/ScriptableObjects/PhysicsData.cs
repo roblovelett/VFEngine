@@ -32,6 +32,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public int DeltaMoveXDirectionAxis => AxisDirection(DeltaMove.x);
         public int DeltaMoveYDirectionAxis => AxisDirection(DeltaMove.y);
         public float DeltaMoveDistanceX => Abs(DeltaMove.x);
+        public float DeltaMoveDistanceY => Abs(DeltaMove.y);
 
         #endregion
 
@@ -315,6 +316,72 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SetExternalForce(externalForce);
         }
 
+        private void VerticalCollision(float hitDistance, float skinWidth)
+        {
+            SetDeltaMoveY(VerticalCollisionDeltaMoveY(hitDistance, skinWidth));
+        }
+
+        private float VerticalCollisionDeltaMoveY(float hitDistance, float skinWidth)
+        {
+            return (hitDistance - skinWidth) * DeltaMoveYDirectionAxis;
+        }
+
+        private void VerticalCollisionHitClimbingSlope(float groundAngle)
+        {
+            SetDeltaMoveX(VerticalCollisionHitClimbingSlopeDeltaMoveX(groundAngle));
+            StopForcesX();
+        }
+
+        private float VerticalCollisionHitClimbingSlopeDeltaMoveX(float groundAngle)
+        {
+            return DeltaMove.y / Tan(groundAngle * Deg2Rad) * DeltaMoveXDirectionAxis;
+        }
+
+        private float ClimbSteepSlopeDeltaMoveX(float hitDistance, float skinWidth)
+        {
+            return (hitDistance - skinWidth) * DeltaMoveXDirectionAxis;
+        }
+
+        private void ClimbSteepSlope(float hitDistance, float skinWidth)
+        {
+            SetDeltaMoveX(ClimbSteepSlopeDeltaMoveX(hitDistance, skinWidth));
+        }
+
+        private void ClimbMildSlope(float hitAngle, float groundAngle, float hitDistance, float skinWidth)
+        {
+            ApplyToDeltaMove(ClimbMildSlopeDeltaMove(hitAngle, groundAngle, hitDistance, skinWidth));
+        }
+
+        private Vector2 ClimbMildSlopeDeltaMove(float hitAngle, float groundAngle, float hitDistance, float skinWidth)
+        {
+            float overshoot;
+            var groundAngleSin = Sin(groundAngle * Deg2Rad);
+            if (hitAngle > 0)
+            {
+                var tanA = Tan(hitAngle * Deg2Rad);
+                var tanB = Tan(groundAngle * Deg2Rad);
+                overshoot = (2 * tanA * hitDistance - tanB * hitDistance) /
+                            (tanA * groundAngleSin - tanB * groundAngleSin);
+            }
+            else
+            {
+                overshoot = hitDistance / groundAngleSin;
+            }
+
+            var removeX = Cos(groundAngle * Deg2Rad) * overshoot * DeltaMoveXDirectionAxis;
+            var removeY = groundAngleSin * overshoot;
+            var addX = Cos(hitAngle * Deg2Rad) * overshoot * DeltaMoveXDirectionAxis;
+            var addY = Sin(hitAngle * Deg2Rad) * overshoot;
+            return new Vector2(addX - removeX, addY - removeY + skinWidth);
+        }
+
+        private void ApplyToDeltaMove(Vector2 force)
+        {
+            deltaMove = DeltaMove;
+            deltaMove += force;
+            SetDeltaMove(deltaMove);
+        }
+        
         #endregion
 
         #region event handlers
@@ -367,6 +434,26 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public void OnStopHorizontalSpeed()
         {
             SetSpeedX(0);
+        }
+
+        public void OnVerticalCollision(float hitDistance, float skinWidth)
+        {
+            VerticalCollision(hitDistance, skinWidth);
+        }
+
+        public void OnVerticalCollisionHitClimbingSlope(float groundAngle)
+        {
+            VerticalCollisionHitClimbingSlope(groundAngle);
+        }
+
+        public void OnClimbSteepSlope(float hitDistance, float skinWidth)
+        {
+            ClimbSteepSlope(hitDistance, skinWidth);
+        }
+
+        public void OnClimbMildSlope(float hitAngle, float groundAngle, float hitDistance, float skinWidth)
+        {
+            ClimbMildSlope(hitAngle, groundAngle, hitDistance, skinWidth);
         }
 
         #endregion

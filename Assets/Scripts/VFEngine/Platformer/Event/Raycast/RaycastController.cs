@@ -81,21 +81,22 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
-        private void InitializeFrame()
+        private async UniTask InitializeFrame()
         {
             Data.OnInitializeFrame(boxCollider);
+            await Yield();
         }
 
         private int VerticalRays => Data.VerticalRays;
         private int DeltaMoveXDirectionAxis => physicsData.DeltaMoveXDirectionAxis;
         private LayerMask Collision => layerMaskData.Collision;
         private LayerMask OneWayPlatform => layerMaskData.OneWayPlatform;
-        private RaycastHit2D RaycastHit => Data.Hit;
+        private RaycastHit2D Hit => Data.Hit;
         private float IgnorePlatformsTime => Data.IgnorePlatformsTime;
-        private bool CastGroundCollisionRaycastForOneWayPlatform => !RaycastHit && IgnorePlatformsTime <= 0;
-        private bool RaycastHitMissed => RaycastHit.distance <= 0;
+        private bool CastGroundCollisionRaycastForOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
+        private bool RaycastHitMissed => Hit.distance <= 0;
 
-        private void GroundCollisionRaycast()
+        private async UniTask GroundCollisionRaycast()
         {
             for (var i = 0; i < VerticalRays; i++)
             {
@@ -106,10 +107,12 @@ namespace VFEngine.Platformer.Event.Raycast
                     if (RaycastHitMissed) continue;
                 }
 
-                if (!RaycastHit) continue;
+                if (!Hit) continue;
                 OnGroundCollisionRaycastHit();
                 break;
             }
+
+            await Yield();
         }
 
         private void OnGroundCollisionRaycastHit()
@@ -127,9 +130,10 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.OnSetGroundCollisionRaycastHit(layer);
         }
 
-        private void SlopeBehavior()
+        private async UniTask SlopeBehavior()
         {
             Data.OnSlopeBehavior();
+            await Yield();
         }
 
         private int HorizontalRays => Data.HorizontalRays;
@@ -151,7 +155,7 @@ namespace VFEngine.Platformer.Event.Raycast
             for (var i = 0; i < HorizontalRays; i++)
             {
                 SetHorizontalCollisionRaycast(i);
-                if (!RaycastHit) continue;
+                if (!Hit) continue;
                 if (FirstHitClimbingSlope)
                 {
                     SetCollisionOnHorizontalCollisionRaycastHitClimbingSlope();
@@ -218,9 +222,75 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
+        private bool RaycastHitMissedWhileFalling => !Hit && DeltaMoveYDirectionAxis < 0;
+        private bool RaycastHitClimbingSlope => OnSlope && DeltaMoveYDirectionAxis == 1;
+
         private async UniTask VerticalCollision()
         {
-            // VERTICAL COLLISION
+            for (var i = 0; i < VerticalRays; i++)
+            {
+                SetVerticalCollisionRaycast(i);
+                if (RaycastHitMissedWhileFalling) SetVerticalCollisionRaycastHit(OneWayPlatform);
+                if (!Hit) continue;
+                await SetDeltaMoveYOnVerticalCollisionRaycastHit();
+                SetVerticalCollisionRaycastLengthOnHit();
+                if (RaycastHitClimbingSlope) await SetPhysicsOnVerticalCollisionRaycastHitClimbingSlope();
+                SetCollisionOnVerticalCollisionRaycastHit();
+            }
+
+            await Yield();
+        }
+
+        private int DeltaMoveYDirectionAxis => physicsData.DeltaMoveYDirectionAxis;
+        private float DeltaMoveDistanceY => physicsData.DeltaMoveDistanceY;
+        private Vector2 DeltaMove => physicsData.DeltaMove;
+
+        private void SetVerticalCollisionRaycast(int index)
+        {
+            Data.OnSetVerticalCollisionRaycast(index, DeltaMoveYDirectionAxis, DeltaMoveDistanceY, DeltaMove.x,
+                Collision);
+        }
+
+        private void SetVerticalCollisionRaycastHit(LayerMask layer)
+        {
+            Data.OnSetVerticalCollisionRaycastHit(DeltaMoveYDirectionAxis, layer);
+        }
+
+        private async UniTask SetDeltaMoveYOnVerticalCollisionRaycastHit()
+        {
+            await physicsController.OnRaycastVerticalCollisionRaycastHit();
+        }
+
+        private void SetVerticalCollisionRaycastLengthOnHit()
+        {
+            Data.OnSetVerticalCollisionRaycastLengthOnHit();
+        }
+
+        private async UniTask SetPhysicsOnVerticalCollisionRaycastHitClimbingSlope()
+        {
+            await physicsController.OnRaycastVerticalCollisionRaycastHitClimbingSlope();
+        }
+
+        private void SetCollisionOnVerticalCollisionRaycastHit()
+        {
+            Data.OnVerticalCollisionRaycastHit(DeltaMoveYDirectionAxis);
+        }
+
+        private async UniTask ClimbSteepSlope()
+        {
+            Data.OnClimbSteepSlope(DeltaMoveXDirectionAxis, DeltaMoveDistanceX, DeltaMove.y, Collision);
+            await Yield();
+        }
+
+        private async UniTask OnClimbSteepSlopeHit()
+        {
+            Data.OnClimbSteepSlopeHit();
+            await Yield();
+        }
+
+        private async UniTask ClimbMildSlope()
+        {
+            Data.OnClimbMildSlope(DeltaMoveXDirectionAxis, DeltaMove, Collision);
             await Yield();
         }
 
@@ -230,20 +300,17 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerInitializeFrame()
         {
-            InitializeFrame();
-            await Yield();
+            await InitializeFrame();
         }
 
         public async UniTask OnPlatformerGroundCollisionRaycast()
         {
-            GroundCollisionRaycast();
-            await Yield();
+            await GroundCollisionRaycast();
         }
 
         public async UniTask OnPlatformerSlopeBehavior()
         {
-            SlopeBehavior();
-            await Yield();
+            await SlopeBehavior();
         }
 
         public async UniTask OnPlatformerHorizontalCollision()
@@ -259,6 +326,21 @@ namespace VFEngine.Platformer.Event.Raycast
         public async UniTask OnPlatformerVerticalCollision()
         {
             await VerticalCollision();
+        }
+
+        public async UniTask OnPlatformerClimbSteepSlope()
+        {
+            await ClimbSteepSlope();
+        }
+
+        public async UniTask OnPlatformerClimbSteepSlopeHit()
+        {
+            await OnClimbSteepSlopeHit();
+        }
+
+        public async UniTask OnPlatformerClimbMildSlope()
+        {
+            await ClimbMildSlope();
         }
 
         #endregion

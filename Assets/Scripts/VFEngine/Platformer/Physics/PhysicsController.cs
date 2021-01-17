@@ -70,9 +70,10 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private void InitializeFrame()
+        private async UniTask InitializeFrame()
         {
             Data.OnInitializeFrame(fixedDeltaTime);
+            await Yield();
         }
 
         private bool OnGround => raycastData.OnGround;
@@ -80,47 +81,80 @@ namespace VFEngine.Platformer.Physics
         private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
         private float GroundAngle => raycastData.GroundAngle;
 
-        private void UpdateForces()
+        private async UniTask UpdateForces()
         {
             Data.OnUpdateForces(OnGround, OnSlope, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
+            await Yield();
         }
 
-        private void DescendSlope()
+        private async UniTask DescendSlope()
         {
             Data.OnDescendSlope(GroundAngle);
+            await Yield();
         }
 
-        private void ClimbSlope()
+        private async UniTask ClimbSlope()
         {
             Data.OnClimbSlope(GroundAngle);
+            await Yield();
         }
 
         private RaycastHit2D Hit => raycastData.Hit;
         private float SkinWidth => raycastData.SkinWidth;
 
-        private void HitClimbingSlope()
+        private async UniTask HitClimbingSlope()
         {
             Data.OnHitClimbingSlope(GroundAngle, Hit.distance, SkinWidth);
+            await Yield();
         }
 
-        private void HitMaximumSlope(float hitDistance, float skinWidth)
+        private async UniTask HitMaximumSlope(float hitDistance, float skinWidth)
         {
             Data.OnHitMaximumSlope(hitDistance, skinWidth);
+            await Yield();
         }
 
-        private void HitSlopedGroundAngle()
+        private async UniTask HitSlopedGroundAngle()
         {
             Data.OnHitSlopedGroundAngle(GroundAngle);
+            await Yield();
         }
 
-        private void HitMaximumSlope()
+        private async UniTask HitMaximumSlope()
         {
             Data.OnHitMaximumSlope();
+            await Yield();
         }
 
-        private void StopHorizontalSpeed()
+        private async UniTask StopHorizontalSpeed()
         {
             Data.OnStopHorizontalSpeed();
+            await Yield();
+        }
+
+        private async UniTask VerticalCollision()
+        {
+            Data.OnVerticalCollision(Hit.distance, SkinWidth);
+            await Yield();
+        }
+
+        private async UniTask VerticalCollisionHitClimbingSlope()
+        {
+            Data.OnVerticalCollisionHitClimbingSlope(GroundAngle);
+            await Yield();
+        }
+
+        private async UniTask ClimbSteepSlope()
+        {
+            Data.OnClimbSteepSlope(Hit.distance, SkinWidth);
+            await Yield();
+        }
+
+        private float HitAngle => raycastData.HitAngle;
+        private async UniTask ClimbMildSlope()
+        {
+            Data.OnClimbMildSlope(HitAngle, GroundAngle, Hit.distance, SkinWidth);
+            await Yield();
         }
 
         #endregion
@@ -129,56 +163,67 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerInitializeFrame()
         {
-            InitializeFrame();
-            await Yield();
+            await InitializeFrame();
         }
 
         public async UniTask OnPlatformerUpdateForces()
         {
-            UpdateForces();
-            await Yield();
+            await UpdateForces();
         }
 
         public async UniTask OnPlatformerDescendSlope()
         {
-            DescendSlope();
-            await Yield();
+            await DescendSlope();
         }
 
         public async UniTask OnPlatformerClimbSlope()
         {
-            ClimbSlope();
-            await Yield();
+            await ClimbSlope();
         }
 
         public async UniTask OnRaycastHorizontalCollisionRaycastHitClimbingSlope()
         {
-            HitClimbingSlope();
-            await Yield();
+            await HitClimbingSlope();
         }
 
         public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlopeSetDeltaMoveX()
         {
-            HitMaximumSlope(Hit.distance, SkinWidth);
-            await Yield();
+            await HitMaximumSlope(Hit.distance, SkinWidth);
         }
 
         public async UniTask OnHorizontalCollisionRaycastHitSlopedGroundAngle()
         {
-            HitSlopedGroundAngle();
-            await Yield();
+            await HitSlopedGroundAngle();
         }
 
         public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlope()
         {
-            HitMaximumSlope();
-            await Yield();
+            await HitMaximumSlope();
         }
 
         public async UniTask OnPlatformerStopHorizontalSpeed()
         {
-            StopHorizontalSpeed();
-            await Yield();
+            await StopHorizontalSpeed();
+        }
+
+        public async UniTask OnRaycastVerticalCollisionRaycastHit()
+        {
+            await VerticalCollision();
+        }
+
+        public async UniTask OnRaycastVerticalCollisionRaycastHitClimbingSlope()
+        {
+            await VerticalCollisionHitClimbingSlope();
+        }
+
+        public async UniTask OnPlatformerClimbSteepSlopeHit()
+        {
+            await ClimbSteepSlope();
+        }
+
+        public async UniTask OnPlatformerClimbMildSlopeHit()
+        {
+            await ClimbMildSlope();
         }
 
         #endregion

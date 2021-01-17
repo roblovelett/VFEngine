@@ -7,6 +7,7 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Layer.Mask;
+using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
@@ -38,6 +39,7 @@ namespace VFEngine.Platformer
         [OdinSerialize] private LayerMaskController layerMaskController;
         [OdinSerialize] private PhysicsController physicsController;
         private RaycastData raycastData;
+        private LayerMaskData layerMaskData;
         private PhysicsData physicsData;
 
         #endregion
@@ -56,6 +58,7 @@ namespace VFEngine.Platformer
         {
             raycastData = raycastController.Data;
             physicsData = physicsController.Data;
+            layerMaskData = layerMaskController.Data;
         }
 
         #endregion
@@ -106,6 +109,7 @@ namespace VFEngine.Platformer
                 await HorizontalDeltaMoveDetection();
                 await StopHorizontalSpeedControl();
                 await VerticalCollision();
+                await SlopeChangeCollisionControl();
                 Log($"Frame={frameCount} FixedTime={fixedTime}");
                 await WaitForFixedUpdate(ct);
             }
@@ -208,9 +212,76 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerVerticalCollision();
         }
 
-        private void SlopeChangeCollision()
+        private bool OnGround => raycastData.OnGround;
+        private bool SlopeChanging => OnGround && DeltaMove.x != 0 && Speed.y <= 0;
+
+        private async UniTask SlopeChangeCollisionControl()
         {
-            // 
+            if (SlopeChanging) await SlopeChangeCollision();
+            await Yield();
+        }
+
+        private bool Climbing => DeltaMove.y > 0;
+        private async UniTask SlopeChangeCollision()
+        {
+            if (Climbing) await ClimbSlopeChangeCollision();
+            else await DescendSlopeChangeCollision();
+            await Yield();
+        }
+
+        private RaycastHit2D Hit => raycastData.Hit;
+        private float HitAngle => raycastData.HitAngle;
+        private bool ClimbSteepSlopeHit => Hit && Abs(HitAngle - GroundAngle) > Tolerance;
+        private async UniTask ClimbSlopeChangeCollision()
+        {
+            await ClimbSteepSlope();
+            if (ClimbSteepSlopeHit) await OnClimbSteepSlopeHit();
+            else await ClimbMildSlope();
+        }
+
+        private async UniTask OnClimbSteepSlopeHit()
+        {
+            var physics = physicsController.OnPlatformerClimbSteepSlopeHit();
+            var raycast = raycastController.OnPlatformerClimbSteepSlopeHit();
+            await (physics, raycast);
+        }
+
+        private async UniTask ClimbSteepSlope()
+        {
+            await raycastController.OnPlatformerClimbSteepSlope();
+        }
+
+        private LayerMask GroundLayer => layerMaskData.Ground;
+        private bool ClimbMildSlopeHit => Hit && Hit.collider.gameObject.layer == GroundLayer && HitAngle < GroundAngle; 
+        private async UniTask ClimbMildSlope()
+        {
+            await raycastController.OnPlatformerClimbMildSlope();
+            if (ClimbMildSlopeHit) await OnClimbMildSlopeHit();
+        }
+
+        private async UniTask OnClimbMildSlopeHit()
+        {
+            await physicsController.OnPlatformerClimbMildSlopeHit();
+        }
+
+        private async UniTask DescendSlopeChangeCollision()
+        {
+            await DescendMildSlope();
+            //if (HitMildSlope)
+            {
+            }
+            //else await DescendSteepSlope();
+            await Yield();
+        }
+
+        private async UniTask DescendMildSlope()
+        {
+            await Yield();
+        }
+
+        private async UniTask DescendSteepSlope()
+        {
+            await Yield();
         }
 
         private void CastRayTowardsMovement()

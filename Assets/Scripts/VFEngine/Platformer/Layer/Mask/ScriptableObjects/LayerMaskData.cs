@@ -20,13 +20,14 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask Collision { get; private set; }
+        public LayerMask Ground { get; private set; }
+
         public LayerMask Saved { get; private set; }
 
         #endregion
 
         #region fields
 
-        private LayerMask ground;
         private LayerMask ladder;
         private LayerMask character;
         private LayerMask characterCollision;
@@ -45,7 +46,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         private void ApplySettings(LayerMaskSettings settings)
         {
-            ground = settings.ground;
+            Ground = settings.ground;
             OneWayPlatform = settings.oneWayPlatform;
             ladder = settings.ladder;
             character = settings.character;
