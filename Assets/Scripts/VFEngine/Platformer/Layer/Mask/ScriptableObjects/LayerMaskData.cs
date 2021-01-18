@@ -102,18 +102,3 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         #endregion
     }
 }
-
-#region hide
-
-/*
-        private void SetSavedLayerInternal(GameObject characterObject)
-        {
-            Saved = characterObject.layer;
-        }
-
-        private static void SetToIgnoreRaycastInternal(ref GameObject characterObject)
-        {
-            characterObject.layer = IgnoreRaycastLayer;
-        }*/
-
-#endregion

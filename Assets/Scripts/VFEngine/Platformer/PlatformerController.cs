@@ -110,6 +110,8 @@ namespace VFEngine.Platformer
                 await StopHorizontalSpeedControl();
                 await VerticalCollision();
                 await SlopeChangeCollisionControl();
+                await Move();
+                await OnFrameExit();
                 Log($"Frame={frameCount} FixedTime={fixedTime}");
                 await WaitForFixedUpdate(ct);
             }
@@ -222,6 +224,7 @@ namespace VFEngine.Platformer
         }
 
         private bool Climbing => DeltaMove.y > 0;
+
         private async UniTask SlopeChangeCollision()
         {
             if (Climbing) await ClimbSlopeChangeCollision();
@@ -232,6 +235,7 @@ namespace VFEngine.Platformer
         private RaycastHit2D Hit => raycastData.Hit;
         private float HitAngle => raycastData.HitAngle;
         private bool ClimbSteepSlopeHit => Hit && Abs(HitAngle - GroundAngle) > Tolerance;
+
         private async UniTask ClimbSlopeChangeCollision()
         {
             await ClimbSteepSlope();
@@ -252,11 +256,13 @@ namespace VFEngine.Platformer
         }
 
         private LayerMask GroundLayer => layerMaskData.Ground;
-        private bool ClimbMildSlopeHit => Hit && Hit.collider.gameObject.layer == GroundLayer && HitAngle < GroundAngle; 
+        private bool ClimbMildSlopeHit => Hit && Hit.collider.gameObject.layer == GroundLayer && HitAngle < GroundAngle;
+
         private async UniTask ClimbMildSlope()
         {
             await raycastController.OnPlatformerClimbMildSlope();
             if (ClimbMildSlopeHit) await OnClimbMildSlopeHit();
+            await Yield();
         }
 
         private async UniTask OnClimbMildSlopeHit()
@@ -264,47 +270,69 @@ namespace VFEngine.Platformer
             await physicsController.OnPlatformerClimbMildSlopeHit();
         }
 
+        private bool DescendMildSlopeHit => Hit && HitAngle < GroundAngle;
+        private bool FacingRight => physicsData.FacingRight;
+
+        private bool DescendSteepSlopeHit => Hit && Abs(Sign(Hit.normal.x) - DeltaMoveXDirectionAxis) < Tolerance &&
+                                             Hit.collider.gameObject.layer == GroundLayer && HitAngle > GroundAngle &&
+                                             Abs(Sign(Hit.normal.x) - (FacingRight ? 1 : -1)) < Tolerance;
+
         private async UniTask DescendSlopeChangeCollision()
         {
             await DescendMildSlope();
-            //if (HitMildSlope)
-            {
-            }
-            //else await DescendSteepSlope();
+            if (DescendMildSlopeHit) await OnDescendMildSlopeHit();
+            else await DescendSteepSlope();
+            if (DescendSteepSlopeHit) await OnDescendSteepSlopeHit();
             await Yield();
         }
 
         private async UniTask DescendMildSlope()
         {
-            await Yield();
+            await raycastController.OnPlatformerDescendMildSlope();
+        }
+
+        private async UniTask OnDescendMildSlopeHit()
+        {
+            var physics = physicsController.OnPlatformerDescendMildSlopeHit();
+            var raycast = raycastController.OnPlatformerDescendMildSlopeHit();
+            await (physics, raycast);
         }
 
         private async UniTask DescendSteepSlope()
         {
-            await Yield();
+            await raycastController.OnPlatformerDescendSteepSlope();
         }
 
-        private void CastRayTowardsMovement()
+        private async UniTask OnDescendSteepSlopeHit()
         {
-            //
+            await physicsController.OnPlatformerDescendSteepSlopeHit();
         }
 
-        private void Move()
+        private async UniTask Move()
         {
-            //
+            var raycast = raycastController.OnPlatformerMove();
+            var physics = physicsController.OnPlatformerMove();
+            await (raycast, physics);
         }
 
-        private void ResetJumpCollision()
+        private async UniTask OnFrameExit()
         {
-            //
+            var physics = ResetJumpCollision();
+            var layerMask = ResetLayerMask();
+            var raycast = ResetFriction();
+            await (physics, layerMask, raycast);
         }
 
-        private void OnFrameExit()
+        private async UniTask ResetJumpCollision()
         {
-            /*
-            setLayerMaskToSaved.Invoke();
-            setRaycastFrictionCollisionDetection.Invoke();
-            */
+        }
+
+        private async UniTask ResetLayerMask()
+        {
+        }
+
+        private async UniTask ResetFriction()
+        {
         }
 
         #endregion
