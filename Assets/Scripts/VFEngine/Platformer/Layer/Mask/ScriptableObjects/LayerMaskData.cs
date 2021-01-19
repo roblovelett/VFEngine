@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable NotAccessedField.Local
+
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
@@ -18,11 +17,10 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         #region properties
 
+        public LayerMask Collision => characterCollision;
         public LayerMask OneWayPlatform { get; private set; }
-        public LayerMask Collision { get; private set; }
         public LayerMask Ground { get; private set; }
-
-        public LayerMask Saved { get; private set; }
+        private LayerMask Saved { get; set; }
 
         #endregion
 
@@ -30,9 +28,9 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         private LayerMask ladder;
         private LayerMask character;
-        private LayerMask characterCollision;
         private LayerMask standOnCollision;
         private LayerMask interactive;
+        private LayerMask characterCollision;
 
         #endregion
 
@@ -48,17 +46,15 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         {
             Ground = settings.ground;
             OneWayPlatform = settings.oneWayPlatform;
+            characterCollision = settings.characterCollision;
             ladder = settings.ladder;
             character = settings.character;
-            characterCollision = settings.characterCollision;
             standOnCollision = settings.standOnCollision;
             interactive = settings.interactive;
         }
 
         private void InitializeDefault()
         {
-            Collision = characterCollision;
-            Saved = 0;
         }
 
         #endregion
@@ -71,20 +67,17 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         private void InitializeFrame(ref GameObject characterObject)
         {
-            SetSavedLayer(characterObject.layer);
-            SetLayer(ref characterObject, IgnoreRaycastLayer);
+            Saved = characterObject.layer;
+            characterObject.layer = IgnoreRaycastLayer;
+            Debug.Log("Init frame... Character's layer is: " + LayerMask.LayerToName(characterObject.layer));
         }
 
-        private void SetSavedLayer(LayerMask layer)
+        private void ResetLayerMask(ref GameObject characterObject)
         {
-            Saved = layer;
+            characterObject.layer = Saved;
+            Debug.Log("Exit frame... Character's layer is: " + LayerMask.LayerToName(characterObject.layer));
         }
-
-        private static void SetLayer(ref GameObject characterObject, LayerMask layer)
-        {
-            characterObject.layer = layer;
-        }
-
+        
         #endregion
 
         #region event handlers
@@ -97,6 +90,11 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public void OnInitializeFrame(ref GameObject characterObject)
         {
             InitializeFrame(ref characterObject);
+        }
+
+        public void OnResetLayerMask(ref GameObject characterObject)
+        {
+            ResetLayerMask(ref characterObject);
         }
 
         #endregion

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
 
-// ReSharper disable NotAccessedField.Local
+// ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
@@ -21,21 +22,22 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         #region properties
 
+        public bool IgnoreFriction { get; private set; }
         public int Index { get; private set; }
         public int VerticalRays { get; private set; }
         public float SkinWidth { get; private set; }
-        public float VerticalSpacing { get; private set; }
+        private float VerticalSpacing { get; set; }
         public float HitAngle => Angle(Hit.normal, up);
         public RaycastHit2D Hit { get; private set; }
         public Vector2 BoundsBottomLeft => bounds.BottomLeft;
         public Vector2 BoundsBottomRight => bounds.BottomRight;
-        public Vector2 Origin { get; private set; }
+        private Vector2 Origin { get; set; }
         public bool OnGround => collision.OnGround;
         public bool OnSlope => collision.OnSlope;
         public float GroundAngle => collision.GroundAngle;
         public int GroundDirectionAxis => collision.GroundDirectionAxis;
         public int HorizontalRays { get; private set; }
-        public float HorizontalSpacing { get; private set; }
+        private float HorizontalSpacing { get; set; }
         public Vector2 BoundsTopLeft => bounds.TopLeft;
         public const float Tolerance = 0;
         public LayerMask GroundLayer => collision.GroundLayer;
@@ -43,7 +45,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public bool CollidingBelow => collision.Below;
         public bool CollidingAbove => collision.Above;
         public float IgnorePlatformsTime { get; private set; }
-        public float Length { get; private set; }
+        private float Length { get; set; }
 
         #endregion
 
@@ -51,8 +53,6 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private bool displayWarnings;
         private bool drawGizmos;
-        private int totalHorizontalRays;
-        private int totalVerticalRays;
         private float spacing;
         private float oneWayPlatformDelay;
         private float ladderClimbThreshold;
@@ -95,9 +95,9 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             ApplySettings(settings);
             InitializeDefault();
             SetRaycastBounds(boxCollider);
-            InitializeRaycastCollision();
-            InitializeRaycastCount();
-            InitializeRaycastSpacing();
+            InitializeRaycastCollisionDefault();
+            SetRaycastCount(bounds.Size);
+            SetRaycastSpacing(bounds.Size);
         }
 
         private void ApplySettings(RaycastSettings settings)
@@ -111,6 +111,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void InitializeDefault()
         {
+            SetIgnoreFriction(false);
             SetIndex(0);
             SetRaycastLength(0);
             IgnorePlatformsTime = 0;
@@ -118,33 +119,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             SetRaycastHit(new RaycastHit2D());
         }
 
-        private void InitializeRaycastCollision()
-        {
-            ResetRaycastCollision();
-            InitializeRaycastCollisionDefault();
-        }
-
         private bool OnSlopeCollision => collision.OnGround && collision.GroundAngle != 0;
 
         private void InitializeRaycastCollisionDefault()
         {
-            SetCollisionGroundLayer(0);
             collision.OnSlope = OnSlopeCollision;
-        }
-
-        private void SetCollisionGroundLayer(LayerMask layer)
-        {
-            collision.GroundLayer = layer;
-        }
-
-        private void InitializeRaycastCount()
-        {
-            SetRaycastCount(bounds.Size);
-        }
-
-        private void InitializeRaycastSpacing()
-        {
-            SetRaycastSpacing(bounds.Size);
         }
 
         #endregion
@@ -229,6 +208,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             bounds.BottomRight = new Vector2(max.x, min.y);
             bounds.TopLeft = new Vector2(min.x, max.y);
             bounds.TopRight = new Vector2(max.x, max.y);
+            bounds.Size = bounds._.size;
         }
 
         private void InitializeFrame(Collider2D boxCollider)
@@ -293,6 +273,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             SetCollisionOnGround(onGround);
             SetGroundCollision(HitAngle, RaycastHitDirection);
+        }
+        
+        private void SetCollisionGroundLayer(LayerMask layer)
+        {
+            collision.GroundLayer = layer;
         }
 
         private void SetCollisionGroundAngle(float angle)
@@ -507,6 +492,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             SetGroundCollision(HitAngle, (int) Sign(Hit.normal.x));
         }
+
         private void DescendSteepSlope(int deltaMoveXDirectionAxis, Vector2 deltaMove, LayerMask layer)
         {
             SetRaycastOrigin(DescendSteepSlopeOrigin(deltaMoveXDirectionAxis, deltaMove));
@@ -522,6 +508,16 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private RaycastHit2D DescendSteepSlopeHit(LayerMask layer)
         {
             return Raycast(Origin, down, 1f, layer);
+        }
+
+        private void ResetFriction()
+        {
+            SetIgnoreFriction(false);
+        }
+
+        private void SetIgnoreFriction(bool ignore)
+        {
+            IgnoreFriction = ignore;
         }
 
         #endregion
@@ -556,6 +552,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public void OnSlopeBehavior()
         {
             SlopeBehavior();
+        }
+
+        private static void Move(Transform transform, Vector2 deltaMove)
+        {
+            CastRay(transform.position, deltaMove * 3f, green);
         }
 
         public void OnSetHorizontalCollisionRaycast(int index, int deltaMoveXDirectionAxis, float deltaMoveDistanceX,
@@ -635,6 +636,16 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         public void OnDescendSteepSlope(int deltaMoveXDirectionAxis, Vector2 deltaMove, LayerMask layer)
         {
             DescendSteepSlope(deltaMoveXDirectionAxis, deltaMove, layer);
+        }
+
+        public static void OnMove(GameObject character, Vector2 deltaMove)
+        {
+            Move(character.transform, deltaMove);
+        }
+
+        public void OnResetFriction()
+        {
+            ResetFriction();
         }
 
         #endregion

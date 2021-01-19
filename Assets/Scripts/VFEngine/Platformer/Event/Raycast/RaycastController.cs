@@ -314,7 +314,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private async UniTask Move()
         {
-            Data.OnMove();
+            RaycastData.OnMove(character, DeltaMove);
+            await Yield();
+        }
+
+        private async UniTask ResetFriction()
+        {
+            Data.OnResetFriction();
             await Yield();
         }
 
@@ -385,6 +391,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public async UniTask OnPlatformerMove()
         {
             await Move();
+        }
+
+        public async UniTask OnPlatformerResetFriction()
+        {
+            await ResetFriction();
         }
 
         #endregion

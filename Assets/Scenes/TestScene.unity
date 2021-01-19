@@ -273,9 +273,6 @@ MonoBehaviour:
     - Name: settings
       Entry: 10
       Data: 2
-  initializedFrameForPlatformer:
-    unityReferences: []
-    bytes: 042f00000000014f0000005600460045006e00670069006e0065002e0054006f006f006c0073002e004200650074007400650072004500760065006e0074002e004200650074007400650072004500760065006e00740045006e007400720079002b004f00640069006e00530065007200690061006c0069007a006500640044006100740061002c00200041007300730065006d0062006c0079002d004300530068006100720070002d0108000000640065006c00650067006100740065002d010f00000070006100720061006d006500740065007200560061006c0075006500730005
 --- !u!114 &136625310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,10 +322,6 @@ MonoBehaviour:
     - Name: physicsController
       Entry: 10
       Data: 6
-  initializedFrameForPlatformer:
-    events: []
-  castedGroundCollisionRaycastForPlatformer:
-    events: []
 --- !u!61 &136625311
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -372,7 +365,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 886d42794c492f8429a301709578932f, type: 2}
-    - {fileID: 11400000, guid: ef2367178b181e346b77cf8ff472faa7, type: 2}
     - {fileID: 136625310}
     - {fileID: 136625309}
     - {fileID: 136625313}
@@ -384,24 +376,15 @@ MonoBehaviour:
     - Name: Data
       Entry: 10
       Data: 0
-    - Name: settings
-      Entry: 10
-      Data: 1
     - Name: raycastController
       Entry: 10
-      Data: 2
+      Data: 1
     - Name: layerMaskController
       Entry: 10
-      Data: 3
+      Data: 2
     - Name: physicsController
       Entry: 10
-      Data: 4
-  initializeFrame:
-    events: []
-  groundCollisionRaycast:
-    events: []
-  updateForces:
-    events: []
+      Data: 3
 --- !u!114 &136625313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,8 +418,6 @@ MonoBehaviour:
     - Name: settings
       Entry: 10
       Data: 2
-  initializedFrameForPlatformer:
-    events: []
 --- !u!50 &136625314
 Rigidbody2D:
   serializedVersion: 4
@@ -590,7 +571,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1152504023102057808}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 1.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 136625308}

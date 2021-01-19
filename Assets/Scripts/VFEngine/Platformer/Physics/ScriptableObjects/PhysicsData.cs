@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
-// ReSharper disable InvertIf
 
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
@@ -18,13 +17,12 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         #region properties
 
         public Vector2 DeltaMove { get; private set; }
-        public bool IgnoreFriction { get; private set; }
-        public float GroundFriction { get; private set; }
-        public float AirFriction { get; private set; }
-        public Vector2 ExternalForce { get; private set; }
-        public float MinimumMoveThreshold { get; private set; }
-        public float Gravity { get; private set; }
-        public float GravityScale { get; private set; }
+        private float GroundFriction { get; set; }
+        private float AirFriction { get; set; }
+        private Vector2 ExternalForce { get; set; }
+        private float MinimumMoveThreshold { get; set; }
+        private float Gravity { get; set; }
+        private float GravityScale { get; set; }
         public Vector2 Speed { get; private set; }
         public float MaximumSlopeAngle { get; private set; }
         public float MinimumWallAngle { get; private set; }
@@ -66,7 +64,6 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         private void InitializeDefault()
         {
             FacingRight = true;
-            IgnoreFriction = false;
             GravityScale = 1;
             Speed = zero;
             ExternalForce = zero;
@@ -101,18 +98,19 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             DeltaMove = force;
         }
 
-        private void UpdateForces(bool onGround, bool onSlope, int groundDirection, float groundAngle, float deltaTime)
+        private void UpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
+            float groundAngle, float deltaTime)
         {
-            UpdateExternalForce(onGround, deltaTime);
+            UpdateExternalForce(onGround, ignoreFriction, deltaTime);
             UpdateGravity(deltaTime);
             UpdateExternalForceX(onSlope, groundDirection, groundAngle, deltaTime);
         }
 
         private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
 
-        private void UpdateExternalForce(bool onGround, float deltaTime)
+        private void UpdateExternalForce(bool onGround, bool ignoreFriction, float deltaTime)
         {
-            if (IgnoreFriction) return;
+            if (ignoreFriction) return;
             var friction = OnGroundFriction(onGround);
             SetExternalForce(GroundFrictionExternalForce(friction, deltaTime));
             if (StopExternalForce) SetExternalForce(zero);
@@ -370,84 +368,84 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             return -(hitDistance - skinWidth);
         }
+
         private void DescendSteepSlope(float hitAngle, float groundAngle, float hitDistance, float skinWidth)
         {
             ApplyToDeltaMove(EdgeCaseDeltaMove(true, groundAngle, hitDistance, hitAngle, skinWidth));
         }
-        private Vector2 EdgeCaseDeltaMove(bool descending, float groundAngle, float hitDistance, float hitAngle, float skinWidth)
+
+        private Vector2 EdgeCaseDeltaMove(bool descending, float groundAngle, float hitDistance, float hitAngle,
+            float skinWidth)
         {
             float overshoot;
-            
             var groundAngleSin = Sin(groundAngle * Deg2Rad);
             var hitAngleTan = Tan(hitAngle * Deg2Rad);
-            
             if (descending)
-            {
                 overshoot = groundAngle > 0
                     ? OvershootDescendingSteepSlope(groundAngle, hitAngleTan, hitDistance, groundAngleSin)
                     : OvershootDefault(hitDistance, hitAngleTan);
-            }
             else
-            {
-                overshoot = hitAngle > 0 ? OvershootClimbingMildSlope(groundAngle, hitAngleTan, hitDistance, groundAngleSin) 
+                overshoot = hitAngle > 0
+                    ? OvershootClimbingMildSlope(groundAngle, hitAngleTan, hitDistance, groundAngleSin)
                     : OvershootDefault(hitDistance, groundAngleSin);
-            }
-
             var removeX = RemoveX(groundAngle, overshoot);
             var removeY = RemoveY(groundAngleSin, overshoot);
             var addX = AddX(hitAngle, overshoot);
             var addY = AddY(hitAngle, overshoot);
-
-            if (descending)
-            {
-                removeY = -removeY;
-                addY = -addY;
-                skinWidth = -skinWidth;
-            }
-            
+            if (!descending) return new Vector2(addX - removeX, addY - removeY + skinWidth);
+            removeY = -removeY;
+            addY = -addY;
+            skinWidth = -skinWidth;
             return new Vector2(addX - removeX, addY - removeY + skinWidth);
-
-            static float OvershootDescendingSteepSlope(float angle, float angleTan, float distance,
-                float angleSin)
-            {
-                var cos = Cos(angle * Deg2Rad);
-                return (distance * cos) / (angleTan / cos - angleSin);
-            }
-
-            static float OvershootClimbingMildSlope(float angle, float angleTan, float distance,
-                float angleSin)
-            {
-                var tan = Tan(angle * Deg2Rad);
-                return (2 * angleTan * distance - tan * distance) /
-                       (angleTan * angleSin - tan * angleSin);
-            }
-
-            static float OvershootDefault(float distance, float angle)
-            {
-                return distance / angle;
-            }
-            
-            float RemoveX(float angle, float err)
-            {
-                return Cos(angle * Deg2Rad) * err * DeltaMoveXDirectionAxis;
-            }
-
-            static float RemoveY(float angle, float err)
-            {
-                return angle * err;
-            }
-
-            float AddX(float angle, float err)
-            {
-                return Cos(angle * Deg2Rad) * err * DeltaMoveXDirectionAxis;
-            }
-
-            static float AddY(float angle, float err)
-            {
-                return Sin(angle * Deg2Rad) * err;
-            }
         }
-        
+
+        private static float OvershootDescendingSteepSlope(float angle, float angleTan, float distance, float angleSin)
+        {
+            var cos = Cos(angle * Deg2Rad);
+            return distance * cos / (angleTan / cos - angleSin);
+        }
+
+        private static float OvershootClimbingMildSlope(float angle, float angleTan, float distance, float angleSin)
+        {
+            var tan = Tan(angle * Deg2Rad);
+            return (2 * angleTan * distance - tan * distance) / (angleTan * angleSin - tan * angleSin);
+        }
+
+        private static float OvershootDefault(float distance, float angle)
+        {
+            return distance / angle;
+        }
+
+        private float RemoveX(float angle, float err)
+        {
+            return Cos(angle * Deg2Rad) * err * DeltaMoveXDirectionAxis;
+        }
+
+        private static float RemoveY(float angle, float err)
+        {
+            return angle * err;
+        }
+
+        private float AddX(float angle, float err)
+        {
+            return Cos(angle * Deg2Rad) * err * DeltaMoveXDirectionAxis;
+        }
+
+        private static float AddY(float angle, float err)
+        {
+            return Sin(angle * Deg2Rad) * err;
+        }
+
+        private void Move(ref GameObject character)
+        {
+            character.transform.Translate(DeltaMove);
+        }
+
+        private void ResetJumpCollision()
+        {
+            StopForcesY();
+        }
+
         #endregion
 
         #region event handlers
@@ -462,9 +460,10 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             InitializeFrame(deltaTime);
         }
 
-        public void OnUpdateForces(bool onGround, bool onSlope, int groundDirection, float groundAngle, float deltaTime)
+        public void OnUpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
+            float groundAngle, float deltaTime)
         {
-            UpdateForces(onGround, onSlope, groundDirection, groundAngle, deltaTime);
+            UpdateForces(onGround, onSlope, ignoreFriction, groundDirection, groundAngle, deltaTime);
         }
 
         public void OnDescendSlope(float groundAngle)
@@ -530,6 +529,16 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public void OnDescendSteepSlope(float hitAngle, float groundAngle, float hitDistance, float skinWidth)
         {
             DescendSteepSlope(hitAngle, groundAngle, hitDistance, skinWidth);
+        }
+
+        public void OnMove(ref GameObject character)
+        {
+            Move(ref character);
+        }
+
+        public void OnResetJumpCollision()
+        {
+            ResetJumpCollision();
         }
 
         #endregion

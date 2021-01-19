@@ -61,6 +61,11 @@ namespace VFEngine.Platformer.Layer.Mask
             Data.OnInitializeFrame(ref character);
         }
 
+        private void ResetLayerMask()
+        {
+            Data.OnResetLayerMask(ref character);
+        }
+
         #endregion
 
         #region event handlers
@@ -68,6 +73,12 @@ namespace VFEngine.Platformer.Layer.Mask
         public async UniTask OnPlatformerInitializeFrame()
         {
             InitializeFrame();
+            await Yield();
+        }
+
+        public async UniTask OnPlatformerResetLayerMask()
+        {
+            ResetLayerMask();
             await Yield();
         }
 

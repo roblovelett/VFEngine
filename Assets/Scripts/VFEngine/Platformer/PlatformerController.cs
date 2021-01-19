@@ -12,13 +12,11 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
 
-// ReSharper disable UnusedMember.Local
 namespace VFEngine.Platformer
 {
     using static UniTask;
     using static Debug;
     using static Mathf;
-    using static Time;
     using static ScriptableObject;
 
     public class PlatformerController : SerializedMonoBehaviour
@@ -112,7 +110,7 @@ namespace VFEngine.Platformer
                 await SlopeChangeCollisionControl();
                 await Move();
                 await OnFrameExit();
-                Log($"Frame={frameCount} FixedTime={fixedTime}");
+                Log($"Frame={Time.frameCount} FixedTime={Time.fixedTime}");
                 await WaitForFixedUpdate(ct);
             }
         }
@@ -323,16 +321,28 @@ namespace VFEngine.Platformer
             await (physics, layerMask, raycast);
         }
 
+        private RaycastHit2D VerticalHit => raycastData.VerticalHit;
+        private bool CollidingBelow => raycastData.CollidingBelow;
+        private Vector2 TotalSpeed => physicsData.TotalSpeed;
+        private bool CollidingAbove => raycastData.CollidingAbove;
+
+        private bool StopForcesY => VerticalHit && CollidingBelow && TotalSpeed.y < 0 ||
+                                    CollidingAbove && TotalSpeed.y > 0 && (!OnSlope || GroundAngle < MinimumWallAngle);
+
         private async UniTask ResetJumpCollision()
         {
+            if (StopForcesY) await physicsController.OnPlatformerResetJumpCollision();
+            await Yield();
         }
 
         private async UniTask ResetLayerMask()
         {
+            await layerMaskController.OnPlatformerResetLayerMask();
         }
 
         private async UniTask ResetFriction()
         {
+            await raycastController.OnPlatformerResetFriction();
         }
 
         #endregion

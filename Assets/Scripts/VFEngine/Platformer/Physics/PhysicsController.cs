@@ -78,12 +78,13 @@ namespace VFEngine.Platformer.Physics
 
         private bool OnGround => raycastData.OnGround;
         private bool OnSlope => raycastData.OnSlope;
+        private bool IgnoreFriction => raycastData.IgnoreFriction;
         private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
         private float GroundAngle => raycastData.GroundAngle;
 
         private async UniTask UpdateForces()
         {
-            Data.OnUpdateForces(OnGround, OnSlope, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
+            Data.OnUpdateForces(OnGround, OnSlope, IgnoreFriction, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
             await Yield();
         }
 
@@ -151,6 +152,7 @@ namespace VFEngine.Platformer.Physics
         }
 
         private float HitAngle => raycastData.HitAngle;
+
         private async UniTask ClimbMildSlope()
         {
             Data.OnClimbMildSlope(HitAngle, GroundAngle, Hit.distance, SkinWidth);
@@ -171,9 +173,16 @@ namespace VFEngine.Platformer.Physics
 
         private async UniTask Move()
         {
-            Data.OnMove();
+            Data.OnMove(ref character);
             await Yield();
         }
+
+        private async UniTask ResetJumpCollision()
+        {
+            Data.OnResetJumpCollision();
+            await Yield();
+        }
+
         #endregion
 
         #region event handlers
@@ -256,6 +265,11 @@ namespace VFEngine.Platformer.Physics
         public async UniTask OnPlatformerMove()
         {
             await Move();
+        }
+
+        public async UniTask OnPlatformerResetJumpCollision()
+        {
+            await ResetJumpCollision();
         }
 
         #endregion

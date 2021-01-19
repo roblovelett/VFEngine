@@ -12,22 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd1ebb3388674cb1b4ac4aeeac94c7be, type: 3}
   m_Name: LayerMaskSettings
   m_EditorClassIdentifier: 
-  displayWarnings: 0
   ground:
     serializedVersion: 2
     m_Bits: 256
   oneWayPlatform:
     serializedVersion: 2
     m_Bits: 4608
+  characterCollision:
+    serializedVersion: 2
+    m_Bits: 256
   ladder:
     serializedVersion: 2
     m_Bits: 1024
   character:
     serializedVersion: 2
     m_Bits: 2048
-  characterCollision:
-    serializedVersion: 2
-    m_Bits: 256
   standOnCollision:
     serializedVersion: 2
     m_Bits: 6144
