@@ -6,6 +6,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
     using static Vector2;
     using static Mathf;
     using static ScriptableObjectExtensions;
+    using static Time;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
@@ -19,8 +20,9 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public Vector2 DeltaMove { get; private set; }
         private float GroundFriction { get; set; }
         private float AirFriction { get; set; }
-        private Vector2 ExternalForce { get; set; }
-        private float MinimumMoveThreshold { get; set; }
+        private float Friction { get; set; }
+        public Vector2 ExternalForce { get; private set; }
+        public float MinimumMoveThreshold { get; private set; }
         private float Gravity { get; set; }
         private float GravityScale { get; set; }
         public Vector2 Speed { get; private set; }
@@ -28,8 +30,8 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public float MinimumWallAngle { get; private set; }
         public bool FacingRight { get; private set; }
         public Vector2 TotalSpeed => Speed + ExternalForce;
-        public int DeltaMoveXDirectionAxis => AxisDirection(DeltaMove.x);
-        public int DeltaMoveYDirectionAxis => AxisDirection(DeltaMove.y);
+        public int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);//AxisDirection(DeltaMove.x);
+        public int DeltaMoveYDirectionAxis => (int) Sign(DeltaMove.y);//AxisDirection(DeltaMove.y);
         public float DeltaMoveDistanceX => Abs(DeltaMove.x);
         public float DeltaMoveDistanceY => Abs(DeltaMove.y);
 
@@ -78,27 +80,26 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         #region private methods
 
-        private static int AxisDirection(float axis)
+        private void InitializeDeltaMove()
         {
-            return (int) Sign(axis);
+            DeltaMove = TotalSpeed * fixedDeltaTime;
         }
-
-        private void InitializeFrame(float deltaTime)
+        /*private void InitializeFrame(float deltaTime)
         {
             SetDeltaMove(DeltaMoveInitialized(deltaTime));
-        }
+        }*/
 
-        private Vector2 DeltaMoveInitialized(float deltaTime)
+        /*private Vector2 DeltaMoveInitialized(float deltaTime)
         {
             return TotalSpeed * deltaTime;
-        }
+        }*/
 
-        private void SetDeltaMove(Vector2 force)
+        /*private void SetDeltaMove(Vector2 force)
         {
             DeltaMove = force;
-        }
+        }*/
 
-        private void UpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
+        /*private void UpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
             float groundAngle, float deltaTime)
         {
             UpdateExternalForce(onGround, ignoreFriction, deltaTime);
@@ -129,21 +130,44 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         private void SetExternalForce(Vector2 force)
         {
             ExternalForce = force;
+        }*/
+
+        private void UpdateExternalForce(bool onGround)
+        {
+            SetFriction(UpdatedFriction(onGround));
+            SetExternalForce(UpdatedExternalForce());
         }
 
-        private float GravityScaled => Gravity * GravityScale;
-        private bool ApplyGravityToSpeed => Speed.y > 0;
-
-        private void UpdateGravity(float deltaTime)
+        private float UpdatedFriction(bool onGround)
         {
-            var gravityScaledToTime = GravityScaledToTime(deltaTime);
-            if (ApplyGravityToSpeed) ApplyToSpeedY(gravityScaledToTime);
-            else ApplyToExternalForceY(gravityScaledToTime);
+            return onGround ? GroundFriction : AirFriction;
         }
 
-        private float GravityScaledToTime(float deltaTime)
+        private void SetFriction(float friction)
         {
-            return GravityScaled * deltaTime;
+            Friction = friction;
+        }
+
+        private Vector2 UpdatedExternalForce()
+        {
+            return MoveTowards(ExternalForce, zero, ExternalForce.magnitude * Friction * fixedDeltaTime);
+        }
+
+        private void SetExternalForce(Vector2 force)
+        {
+            ExternalForce = force;
+        }
+
+        private void StopExternalForce()
+        {
+            SetExternalForce(zero);
+        }
+
+        private float GravityScaledToTime => Gravity * GravityScale * fixedDeltaTime;
+        
+        private void ApplyGravityToSpeed()
+        {
+            ApplyToSpeedY(GravityScaledToTime);
         }
 
         private void ApplyToSpeedY(float force)
@@ -158,6 +182,10 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             Speed = force;
         }
 
+        private void ApplyExternalForceToGravity()
+        {
+            ApplyToExternalForceY(GravityScaledToTime);
+        }
         private void ApplyToExternalForceY(float force)
         {
             externalForce = ExternalForce;
@@ -165,19 +193,25 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SetExternalForce(externalForce);
         }
 
-        private bool NoHorizontalSpeed => Speed.x == 0;
+        //private bool NoHorizontalSpeed => Speed.x == 0;
 
-        private void UpdateExternalForceX(bool onSlope, int groundDirection, float groundAngle, float deltaTime)
+        private void UpdateExternalForceX(int groundDirectionAxis)
         {
-            var applyCombinedForcesToExternalForceX = onSlope && groundAngle > MaximumSlopeAngle &&
+            ApplyToExternalForceX(AppliedForcesX(groundDirectionAxis));
+            /*var applyCombinedForcesToExternalForceX = onSlope && groundAngle > MaximumSlopeAngle &&
                                                       (groundAngle < MinimumWallAngle || NoHorizontalSpeed);
-            if (applyCombinedForcesToExternalForceX) ApplyToExternalForceX(CombinedForcesX(groundDirection, deltaTime));
+            if (applyCombinedForcesToExternalForceX) ApplyToExternalForceX(CombinedForcesX(groundDirection, deltaTime));*/
         }
 
-        private float CombinedForcesX(int groundDirection, float deltaTime)
+        private float AppliedForcesX(int groundDirectionAxis)
+        {
+            return -Gravity * GroundFriction * groundDirectionAxis * fixedDeltaTime / 4;
+        }
+
+        /*private float CombinedForcesX(int groundDirection, float deltaTime)
         {
             return -Gravity * GroundFriction * groundDirection * deltaTime / 4;
-        }
+        }*/
 
         private void ApplyToExternalForceX(float force)
         {
@@ -193,7 +227,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void SlopeBehavior(bool climbing, float groundAngle)
         {
-            SetDeltaMove(SlopeDeltaMove(climbing, groundAngle));
+            //SetDeltaMove(SlopeDeltaMove(climbing, groundAngle));
             StopForcesY();
         }
 
@@ -256,7 +290,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             deltaMove = DeltaMove;
             deltaMove.x += x;
-            SetDeltaMove(deltaMove);
+            //SetDeltaMove(deltaMove);
         }
 
         private void HitMaximumSlope(float hitDistance, float skinWidth)
@@ -273,7 +307,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             deltaMove = DeltaMove;
             deltaMove.x = x;
-            SetDeltaMove(deltaMove);
+            //SetDeltaMove(deltaMove);
         }
 
         private bool NegativeDeltaMoveY => DeltaMove.y < 0;
@@ -288,7 +322,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             deltaMove = DeltaMove;
             deltaMove.y = y;
-            SetDeltaMove(DeltaMove);
+            //SetDeltaMove(DeltaMove);
         }
 
         private float HitSlopedGroundAngleDeltaMoveY(float groundAngle)
@@ -356,7 +390,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             deltaMove = DeltaMove;
             deltaMove += force;
-            SetDeltaMove(deltaMove);
+            //SetDeltaMove(deltaMove);
         }
 
         private void DescendMildSlope(float hitDistance, float skinWidth)
@@ -436,7 +470,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             return Sin(angle * Deg2Rad) * err;
         }
 
-        private void Move(ref GameObject character)
+        private void MoveCharacter(ref GameObject character)
         {
             character.transform.Translate(DeltaMove);
         }
@@ -455,17 +489,36 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             Initialize(settings);
         }
 
-        public void OnInitializeFrame(float deltaTime)
+        public void OnInitializeDeltaMove()
         {
-            InitializeFrame(deltaTime);
+            InitializeDeltaMove();
         }
 
-        public void OnUpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
-            float groundAngle, float deltaTime)
+        public void OnUpdateExternalForce(bool onGround)
         {
-            UpdateForces(onGround, onSlope, ignoreFriction, groundDirection, groundAngle, deltaTime);
+            UpdateExternalForce(onGround);
         }
 
+        public void OnStopExternalForce()
+        {
+            StopExternalForce();
+        }
+
+        public void OnApplyGravityToSpeed()
+        {
+            ApplyGravityToSpeed();
+        }
+
+        public void OnApplyExternalForceToGravity()
+        {
+            ApplyExternalForceToGravity();
+        }
+
+        public void OnUpdateExternalForceX(int groundDirectionAxis)
+        {
+            UpdateExternalForceX(groundDirectionAxis);
+        }
+        
         public void OnDescendSlope(float groundAngle)
         {
             DescendSlope(groundAngle);
@@ -531,9 +584,9 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             DescendSteepSlope(hitAngle, groundAngle, hitDistance, skinWidth);
         }
 
-        public void OnMove(ref GameObject character)
+        public void OnMoveCharacter(ref GameObject character)
         {
-            Move(ref character);
+            MoveCharacter(ref character);
         }
 
         public void OnResetJumpCollision()

@@ -65,11 +65,17 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         #region private methods
 
-        private void InitializeFrame(ref GameObject characterObject)
+        /*private void InitializeFrame(ref GameObject characterObject)
         {
             Saved = characterObject.layer;
             characterObject.layer = IgnoreRaycastLayer;
             Debug.Log("Init frame... Character's layer is: " + LayerMask.LayerToName(characterObject.layer));
+        }*/
+
+        private void SetSavedLayer(ref GameObject characterObject)
+        {
+            Saved = characterObject.layer;
+            characterObject.layer = IgnoreRaycastLayer;
         }
 
         private void ResetLayerMask(ref GameObject characterObject)
@@ -87,9 +93,14 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             Initialize(settings);
         }
 
-        public void OnInitializeFrame(ref GameObject characterObject)
+        /*public void OnInitializeFrame(ref GameObject characterObject)
         {
             InitializeFrame(ref characterObject);
+        }*/
+
+        public void OnSetSavedLayer(ref GameObject characterObject)
+        {
+            SetSavedLayer(ref characterObject);
         }
 
         public void OnResetLayerMask(ref GameObject characterObject)

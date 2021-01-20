@@ -14,6 +14,7 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region properties
 
+        public int Index { get; private set; }
         public float Tolerance { get; } = 0f;
 
         #endregion
@@ -28,14 +29,31 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region public methods
 
+
         #endregion
 
         #region private methods
+
+        private void GroundCollision(int index)
+        {
+            SetIndex(index);
+        }
+
+        private void SetIndex(int index)
+        {
+            Index = index;
+        }
 
         #endregion
 
         #region event handlers
 
+        
+        public void OnGroundCollision(int index)
+        {
+            GroundCollision(index);
+        }
+        
         #endregion
     }
 }

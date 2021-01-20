@@ -70,9 +70,9 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private async UniTask InitializeFrame()
+        private async UniTask InitializeDeltaMove()
         {
-            Data.OnInitializeFrame(fixedDeltaTime);
+            Data.OnInitializeDeltaMove();
             await Yield();
         }
 
@@ -82,12 +82,35 @@ namespace VFEngine.Platformer.Physics
         private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
         private float GroundAngle => raycastData.GroundAngle;
 
-        private async UniTask UpdateForces()
+        private async UniTask UpdateExternalForce()
         {
-            Data.OnUpdateForces(OnGround, OnSlope, IgnoreFriction, GroundDirectionAxis, GroundAngle, fixedDeltaTime);
+            Data.OnUpdateExternalForce(OnGround);
             await Yield();
         }
 
+        private async UniTask StopExternalForce()
+        {
+            Data.OnStopExternalForce();
+            await Yield();
+        }
+
+        private async UniTask ApplyGravityToSpeed()
+        {
+            Data.OnApplyGravityToSpeed();
+            await Yield();
+        }
+
+        private async UniTask ApplyExternalForceToGravity()
+        {
+            Data.OnApplyExternalForceToGravity();
+            await Yield();
+        }
+
+        private async UniTask UpdateExternalForceX()
+        {
+            Data.OnUpdateExternalForceX(GroundDirectionAxis);
+            await Yield();
+        }
         private async UniTask DescendSlope()
         {
             Data.OnDescendSlope(GroundAngle);
@@ -171,9 +194,9 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
-        private async UniTask Move()
+        private async UniTask MoveCharacter()
         {
-            Data.OnMove(ref character);
+            Data.OnMoveCharacter(ref character);
             await Yield();
         }
 
@@ -187,16 +210,36 @@ namespace VFEngine.Platformer.Physics
 
         #region event handlers
 
-        public async UniTask OnPlatformerInitializeFrame()
+        public async UniTask OnPlatformerInitializeDeltaMove()
         {
-            await InitializeFrame();
+            await InitializeDeltaMove();
+        }
+        
+        public async UniTask OnPlatformerUpdateExternalForce()
+        {
+            await UpdateExternalForce();
         }
 
-        public async UniTask OnPlatformerUpdateForces()
+        public async UniTask OnPlatformerStopExternalForce()
         {
-            await UpdateForces();
+            await StopExternalForce();
         }
 
+        public async UniTask OnPlatformerApplyGravityToSpeed()
+        {
+            await ApplyGravityToSpeed();
+        }
+
+        public async UniTask OnPlatformerApplyExternalForceToGravity()
+        {
+            await ApplyExternalForceToGravity();
+        }
+
+        public async UniTask OnPlatformerUpdateExternalForceX()
+        {
+            await UpdateExternalForceX();
+        }
+        
         public async UniTask OnPlatformerDescendSlope()
         {
             await DescendSlope();
@@ -262,9 +305,9 @@ namespace VFEngine.Platformer.Physics
             await DescendSteepSlope();
         }
 
-        public async UniTask OnPlatformerMove()
+        public async UniTask OnPlatformerMoveCharacter()
         {
-            await Move();
+            await MoveCharacter();
         }
 
         public async UniTask OnPlatformerResetJumpCollision()

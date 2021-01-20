@@ -56,9 +56,14 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        private void InitializeFrame()
+        /*private void InitializeFrame()
         {
             Data.OnInitializeFrame(ref character);
+        }*/
+
+        private void SetSavedLayer()
+        {
+            Data.OnSetSavedLayer(ref character);
         }
 
         private void ResetLayerMask()
@@ -70,9 +75,15 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region event handlers
 
-        public async UniTask OnPlatformerInitializeFrame()
+        /*public async UniTask OnPlatformerInitializeFrame()
         {
             InitializeFrame();
+            await Yield();
+        }*/
+
+        public async UniTask OnPlatformerSetSavedLayer()
+        {
+            SetSavedLayer();
             await Yield();
         }
 

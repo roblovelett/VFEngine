@@ -104,10 +104,11 @@ namespace VFEngine.Platformer
                 await InitializeFrame();
                 await GroundCollision();
                 await UpdateForces();
-                await HorizontalDeltaMoveDetection();
-                await StopHorizontalSpeedControl();
-                await VerticalCollision();
-                await SlopeChangeCollisionControl();
+                //await UpdateForces();
+                //await HorizontalDeltaMoveDetection();
+                //await StopHorizontalSpeedControl();
+                //await VerticalCollision();
+                //await SlopeChangeCollisionControl();
                 await Move();
                 await OnFrameExit();
                 Log($"Frame={Time.frameCount} FixedTime={Time.fixedTime}");
@@ -117,22 +118,140 @@ namespace VFEngine.Platformer
 
         private async UniTask InitializeFrame()
         {
-            var raycast = raycastController.OnPlatformerInitializeFrame();
-            var layerMask = layerMaskController.OnPlatformerInitializeFrame();
-            var physics = physicsController.OnPlatformerInitializeFrame();
-            await (raycast, layerMask, physics);
+            await ResetCollision();
+            await InitializeDeltaMove();
+            await SetSavedLayer();
+            await UpdateOrigins();
         }
 
+        private async UniTask ResetCollision()
+        {
+            await raycastController.OnPlatformerResetCollision();
+        }
+
+        private async UniTask InitializeDeltaMove()
+        {
+            await physicsController.OnPlatformerInitializeDeltaMove();
+        }
+
+        private async UniTask SetSavedLayer()
+        {
+            await layerMaskController.OnPlatformerSetSavedLayer();
+        }
+
+        private async UniTask UpdateOrigins()
+        {
+            await raycastController.OnPlatformerUpdateOrigins();
+        }
+
+        private int VerticalRays => raycastData.VerticalRays;
+        private float IgnorePlatformsTime => raycastData.IgnorePlatformsTime;
+        private bool CastGroundCollisionForOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
+        private bool CastNextGroundCollisionRay => (Hit.distance <= 0);
         private async UniTask GroundCollision()
         {
-            await raycastController.OnPlatformerGroundCollisionRaycast();
+            for (var i = 0; i < VerticalRays; i++)
+            {
+                Data.OnGroundCollision(i);
+                await SetGroundCollisionRaycast();
+                if (CastGroundCollisionForOneWayPlatform)
+                {
+                    await SetGroundCollisionRaycastForOneWayPlatform();
+                    if (CastNextGroundCollisionRay) continue;
+                }
+
+                if (!Hit) continue;
+                await SetCollisionOnGroundCollisionRaycastHit();
+                await CastGroundCollisionRay();
+                break;
+            }
+
+            await Yield();
+        }
+
+        private async UniTask SetGroundCollisionRaycast()
+        {
+            await raycastController.OnPlatformerSetGroundCollisionRaycast();
+        }
+
+        private async UniTask SetGroundCollisionRaycastForOneWayPlatform()
+        {
+            await raycastController.OnPlatformerSetGroundCollisionRaycastForOneWayPlatform();
+        }
+
+        private async UniTask SetCollisionOnGroundCollisionRaycastHit()
+        {
+            await raycastController.OnPlatformerSetCollisionOnGroundCollisionRaycastHit();
+        }
+
+        private async UniTask CastGroundCollisionRay()
+        {
+            await raycastController.OnPlatformerCastGroundCollisionRay();
         }
 
         private async UniTask UpdateForces()
         {
-            await physicsController.OnPlatformerUpdateForces();
+            await UpdateExternalForce();
+            await UpdateGravity();
+            await UpdateExternalForceX();
         }
 
+        private bool IgnoreFriction => raycastData.IgnoreFriction;
+        private Vector2 ExternalForce => physicsData.ExternalForce;
+        private float MinimumMoveThreshold => physicsData.MinimumMoveThreshold;
+        private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
+        private async UniTask UpdateExternalForce()
+        {
+            if (!IgnoreFriction)
+            {
+                await UpdateExternalForceInternal();
+                if (StopExternalForce) await StopExternalForceInternal();
+            }
+            await Yield();
+        }
+
+        private async UniTask UpdateExternalForceInternal()
+        {
+            await physicsController.OnPlatformerUpdateExternalForce();
+        }
+
+        private async UniTask StopExternalForceInternal()
+        {
+            await physicsController.OnPlatformerStopExternalForce();
+        }
+
+        private bool ApplyGravity => Speed.y > 0;
+        private async UniTask UpdateGravity()
+        {
+            if (ApplyGravity) await ApplyGravityToSpeed();
+            else await ApplyExternalForceToGravity();
+            await Yield();
+        }
+
+        private async UniTask ApplyGravityToSpeed()
+        {
+            await physicsController.OnPlatformerApplyGravityToSpeed();
+        }
+
+        private async UniTask ApplyExternalForceToGravity()
+        {
+            await physicsController.OnPlatformerApplyExternalForceToGravity();
+        }
+
+        private float MaximumSlopeAngle => physicsData.MaximumSlopeAngle;
+        private bool ApplyForcesToExternalForceX => OnSlope && GroundAngle > MaximumSlopeAngle &&
+                                                    (GroundAngle < MinimumWallAngle || Speed.x == 0);
+        private async UniTask UpdateExternalForceX()
+        {
+            if (ApplyForcesToExternalForceX) await UpdateExternalForceXInternal();
+            await Yield();
+        }
+
+        private async UniTask UpdateExternalForceXInternal()
+        {
+            await physicsController.OnPlatformerUpdateExternalForceX();
+        }
+        
         private Vector2 DeltaMove => physicsData.DeltaMove;
         private bool HorizontalDeltaMove => DeltaMove.x != 0;
 
@@ -308,17 +427,25 @@ namespace VFEngine.Platformer
 
         private async UniTask Move()
         {
-            var raycast = raycastController.OnPlatformerMove();
-            var physics = physicsController.OnPlatformerMove();
-            await (raycast, physics);
+            await CastRayOnMove();
+            await MoveCharacter();
+        }
+
+        private async UniTask CastRayOnMove()
+        {
+            await raycastController.OnPlatformerCastRayOnMove();
+        }
+
+        private async UniTask MoveCharacter()
+        {
+            await physicsController.OnPlatformerMoveCharacter();
         }
 
         private async UniTask OnFrameExit()
         {
-            var physics = ResetJumpCollision();
-            var layerMask = ResetLayerMask();
-            var raycast = ResetFriction();
-            await (physics, layerMask, raycast);
+            await ResetJumpCollision();
+            await ResetLayerMask();
+            await ResetFriction();
         }
 
         private RaycastHit2D VerticalHit => raycastData.VerticalHit;
