@@ -12,13 +12,13 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
     {
         #region properties
 
-        [SerializeField] public LayerMask ground;
+        [SerializeField] public bool displayWarnings = true;
+        [SerializeField] public LayerMask platform;
+        [SerializeField] public LayerMask movingPlatform;
         [SerializeField] public LayerMask oneWayPlatform;
-        [SerializeField] public LayerMask characterCollision;
-        [SerializeField] public LayerMask ladder;
-        [SerializeField] public LayerMask character;
-        [SerializeField] public LayerMask standOnCollision;
-        [SerializeField] public LayerMask interactive;
+        [SerializeField] public LayerMask movingOneWayPlatform;
+        [SerializeField] public LayerMask midHeightOneWayPlatform;
+        [SerializeField] public LayerMask stairs;
 
         #endregion
     }

@@ -29,31 +29,23 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         #region public methods
 
-
         #endregion
 
         #region private methods
 
-        private void GroundCollision(int index)
+        private void Initialize()
         {
-            SetIndex(index);
-        }
-
-        private void SetIndex(int index)
-        {
-            Index = index;
         }
 
         #endregion
 
         #region event handlers
 
-        
-        public void OnGroundCollision(int index)
+        public void OnInitialize()
         {
-            GroundCollision(index);
+            Initialize();
         }
-        
+
         #endregion
     }
 }

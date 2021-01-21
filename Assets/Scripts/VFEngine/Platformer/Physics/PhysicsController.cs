@@ -10,7 +10,6 @@ namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
-    using static Time;
     using static UniTask;
 
     public class PhysicsController : SerializedMonoBehaviour
@@ -40,7 +39,7 @@ namespace VFEngine.Platformer.Physics
             if (!character) character = Find("Character");
             if (!settings) settings = CreateInstance<PhysicsSettings>();
             if (!Data) Data = CreateInstance<PhysicsData>();
-            Data.OnInitialize(settings);
+            Data.OnInitialize(settings, ref character);
         }
 
         private void SetDependencies()
@@ -70,7 +69,73 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private async UniTask InitializeDeltaMove()
+        private async UniTask SetCurrentGravity()
+        {
+            Data.OnSetCurrentGravity();
+            await Yield();
+        }
+
+        private async UniTask ApplyAscentMultiplierToCurrentGravity()
+        {
+            Data.OnApplyAscentMultiplierToCurrentGravity();
+            await Yield();
+        }
+
+        private async UniTask ApplyFallMultiplierToCurrentGravity()
+        {
+            Data.OnApplyFallMultiplierToCurrentGravity();
+            await Yield();
+        }
+
+        private async UniTask ApplyGravityToSpeedY()
+        {
+            Data.OnApplyGravityToSpeedY();
+            await Yield();
+        }
+
+        private async UniTask ApplyFallSlowFactorToSpeedY()
+        {
+            Data.OnApplyFallSlowFactorToSpeedY();
+            await Yield();
+        }
+
+        #endregion
+
+        #region event handlers
+
+        public async UniTask OnPlatformerSetCurrentGravity()
+        {
+            await SetCurrentGravity();
+        }
+
+        public async UniTask OnPlatformerApplyAscentMultiplierToCurrentGravity()
+        {
+            await ApplyAscentMultiplierToCurrentGravity();
+        }
+
+        public async UniTask OnPlatformerApplyFallMultiplierToCurrentGravity()
+        {
+            await ApplyFallMultiplierToCurrentGravity();
+        }
+
+        public async UniTask OnPlatformerApplyGravityToSpeedY()
+        {
+            await ApplyGravityToSpeedY();
+        }
+
+        public async UniTask OnPlatformerApplyFallSlowFactorToSpeedY()
+        {
+            await ApplyFallSlowFactorToSpeedY();
+        }
+
+        #endregion
+    }
+}
+
+#region hide
+
+/*
+ * private async UniTask InitializeDeltaMove()
         {
             Data.OnInitializeDeltaMove();
             await Yield();
@@ -205,11 +270,6 @@ namespace VFEngine.Platformer.Physics
             Data.OnResetJumpCollision();
             await Yield();
         }
-
-        #endregion
-
-        #region event handlers
-
         public async UniTask OnPlatformerInitializeDeltaMove()
         {
             await InitializeDeltaMove();
@@ -314,7 +374,6 @@ namespace VFEngine.Platformer.Physics
         {
             await ResetJumpCollision();
         }
+ */
 
-        #endregion
-    }
-}
+#endregion

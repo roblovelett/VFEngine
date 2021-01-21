@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
@@ -8,7 +7,6 @@ namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
     using static ScriptableObject;
-    using static UniTask;
 
     public class LayerMaskController : SerializedMonoBehaviour
     {
@@ -56,43 +54,45 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        /*private void InitializeFrame()
-        {
-            Data.OnInitializeFrame(ref character);
-        }*/
-
-        private void SetSavedLayer()
-        {
-            Data.OnSetSavedLayer(ref character);
-        }
-
-        private void ResetLayerMask()
-        {
-            Data.OnResetLayerMask(ref character);
-        }
-
         #endregion
 
         #region event handlers
 
-        /*public async UniTask OnPlatformerInitializeFrame()
-        {
-            InitializeFrame();
-            await Yield();
-        }*/
-
-        public async UniTask OnPlatformerSetSavedLayer()
-        {
-            SetSavedLayer();
-            await Yield();
-        }
-
-        public async UniTask OnPlatformerResetLayerMask()
-        {
-            ResetLayerMask();
-            await Yield();
-        }
-
         #endregion
     }
 }
+
+#region hide
+
+/*private void InitializeFrame()
+        {
+            Data.OnInitializeFrame(ref character);
+        }*/ /*
+
+private void SetSavedLayer()
+{
+    Data.OnSetSavedLayer(ref character);
+}
+
+private void ResetLayerMask()
+{
+    Data.OnResetLayerMask(ref character);
+}/*public async UniTask OnPlatformerInitializeFrame()
+        {
+            InitializeFrame();
+            await Yield();
+        }*/ /*
+
+public async UniTask OnPlatformerSetSavedLayer()
+{
+    SetSavedLayer();
+    await Yield();
+}
+
+public async UniTask OnPlatformerResetLayerMask()
+{
+    ResetLayerMask();
+    await Yield();
+}*/
+
+#endregion

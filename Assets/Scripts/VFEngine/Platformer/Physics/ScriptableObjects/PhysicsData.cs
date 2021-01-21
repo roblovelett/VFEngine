@@ -3,10 +3,8 @@ using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
-    using static Vector2;
-    using static Mathf;
     using static ScriptableObjectExtensions;
-    using static Time;
+    using static Quaternion;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
@@ -17,7 +15,164 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         #region properties
 
-        public Vector2 DeltaMove { get; private set; }
+        public Vector2 Speed { get; private set; }
+        public bool GravityActive => state.GravityActive;
+        public float FallSlowFactor { get; private set; }
+        public int MovementDirection { get; private set; }
+
+        #endregion
+
+        #region fields
+
+        private bool displayWarnings;
+        private float gravity;
+        private float fallMultiplier;
+        private float ascentMultiplier;
+        private Vector2 maximumVelocity;
+        private float speedAccelerationOnGround;
+        private float speedAccelerationInAir;
+        private float speedFactor;
+        private float maximumSlopeAngle;
+        private AnimationCurve slopeAngleSpeedFactor;
+        private bool physics2DInteraction;
+        private float physics2DPushForce;
+        private bool safeSetTransform;
+        private bool automaticGravityControl;
+        private bool stickToSlopeBehavior;
+        private Vector2 worldSpeed;
+        private Vector2 appliedForces;
+        private float currentGravity;
+        private Vector2 externalForce;
+        private Vector2 newPosition;
+        private bool gravityActive;
+        private int savedMovementDirection;
+        private float movementDirectionThreshold;
+        private State state;
+        private Transform transform;
+
+        private struct State
+        {
+            public bool IsFalling { get; set; }
+            public bool IsJumping { get; set; }
+            public bool GravityActive { get; set; }
+
+            public void Reset()
+            {
+                IsFalling = true;
+            }
+        }
+
+        #endregion
+
+        #region initialization
+
+        private void Initialize(PhysicsSettings settings, ref GameObject character)
+        {
+            ApplySettings(settings);
+            InitializeDefault(ref character);
+        }
+
+        private void ApplySettings(PhysicsSettings settings)
+        {
+            displayWarnings = settings.displayWarnings;
+            gravity = settings.gravity;
+            fallMultiplier = settings.fallMultiplier;
+            ascentMultiplier = settings.ascentMultiplier;
+            maximumVelocity = settings.maximumVelocity;
+            speedAccelerationOnGround = settings.speedAccelerationOnGround;
+            speedAccelerationInAir = settings.speedAccelerationInAir;
+            speedFactor = settings.speedFactor;
+            maximumSlopeAngle = settings.maximumSlopeAngle;
+            slopeAngleSpeedFactor = settings.slopeAngleSpeedFactor;
+            physics2DInteraction = settings.physics2DInteraction;
+            physics2DPushForce = settings.physics2DPushForce;
+            safeSetTransform = settings.safeSetTransform;
+            automaticGravityControl = settings.automaticGravityControl;
+            stickToSlopeBehavior = settings.stickToSlopeBehavior;
+            movementDirectionThreshold = settings.movementDirectionThreshold;
+        }
+
+        private void InitializeDefault(ref GameObject character)
+        {
+            if (automaticGravityControl) character.transform.rotation = identity;
+            transform = character.transform;
+            state.Reset();
+            state.GravityActive = true;
+            currentGravity = 0;
+            savedMovementDirection = 1;
+        }
+
+        #endregion
+
+        #region public methods
+
+        #endregion
+
+        #region private methods
+
+        private void SetCurrentGravity()
+        {
+        }
+
+        private void ApplyAscentMultiplierToCurrentGravity()
+        {
+        }
+
+        private void ApplyFallMultiplierToCurrentGravity()
+        {
+        }
+
+        private void ApplyGravityToSpeedY()
+        {
+        }
+
+        private void ApplyFallSlowFactorToSpeedY()
+        {
+        }
+
+        #endregion
+
+        #region event handlers
+
+        public void OnInitialize(PhysicsSettings settings, ref GameObject character)
+        {
+            Initialize(settings, ref character);
+        }
+
+        public void OnSetCurrentGravity()
+        {
+            SetCurrentGravity();
+        }
+
+        public void OnApplyAscentMultiplierToCurrentGravity()
+        {
+            ApplyAscentMultiplierToCurrentGravity();
+        }
+
+        public void OnApplyFallMultiplierToCurrentGravity()
+        {
+            ApplyFallMultiplierToCurrentGravity();
+        }
+
+        public void OnApplyGravityToSpeedY()
+        {
+            ApplyGravityToSpeedY();
+        }
+
+        public void OnApplyFallSlowFactorToSpeedY()
+        {
+            ApplyFallSlowFactorToSpeedY();
+        }
+
+        #endregion
+    }
+}
+
+#region hide
+
+/*private Vector2 speed;
+        private Vector2 externalForce;
+        private Vector2 deltaMove;public Vector2 DeltaMove { get; private set; }
         private float GroundFriction { get; set; }
         private float AirFriction { get; set; }
         private float Friction { get; set; }
@@ -33,105 +188,20 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public int DeltaMoveXDirectionAxis => (int) Sign(DeltaMove.x);//AxisDirection(DeltaMove.x);
         public int DeltaMoveYDirectionAxis => (int) Sign(DeltaMove.y);//AxisDirection(DeltaMove.y);
         public float DeltaMoveDistanceX => Abs(DeltaMove.x);
-        public float DeltaMoveDistanceY => Abs(DeltaMove.y);
-
-        #endregion
-
-        #region fields
-
-        private Vector2 speed;
-        private Vector2 externalForce;
-        private Vector2 deltaMove;
-
-        #endregion
-
-        #region initialization
-
-        private void Initialize(PhysicsSettings settings)
-        {
-            ApplySettings(settings);
-            InitializeDefault();
-        }
-
-        private void ApplySettings(PhysicsSettings settings)
-        {
-            MaximumSlopeAngle = settings.maximumSlopeAngle;
-            MinimumWallAngle = settings.minimumWallAngle;
-            MinimumMoveThreshold = settings.minimumMovementThreshold;
-            Gravity = settings.gravity;
-            AirFriction = settings.airFriction;
-            GroundFriction = settings.groundFriction;
-        }
-
-        private void InitializeDefault()
-        {
-            FacingRight = true;
-            GravityScale = 1;
-            Speed = zero;
-            ExternalForce = zero;
-            DeltaMove = zero;
-        }
-
-        #endregion
-
-        #region public methods
-
-        #endregion
-
-        #region private methods
-
-        private void InitializeDeltaMove()
+        public float DeltaMoveDistanceY => Abs(DeltaMove.y);MaximumSlopeAngle = settings.maximumSlopeAngle;
+        MinimumWallAngle = settings.minimumWallAngle;
+        MinimumMoveThreshold = settings.minimumMovementThreshold;
+        Gravity = settings.gravity;
+        AirFriction = settings.airFriction;
+        GroundFriction = settings.groundFriction;FacingRight = true;
+        GravityScale = 1;
+        Speed = zero;
+        ExternalForce = zero;
+        DeltaMove = zero;
+ * private void InitializeDeltaMove()
         {
             DeltaMove = TotalSpeed * fixedDeltaTime;
         }
-        /*private void InitializeFrame(float deltaTime)
-        {
-            SetDeltaMove(DeltaMoveInitialized(deltaTime));
-        }*/
-
-        /*private Vector2 DeltaMoveInitialized(float deltaTime)
-        {
-            return TotalSpeed * deltaTime;
-        }*/
-
-        /*private void SetDeltaMove(Vector2 force)
-        {
-            DeltaMove = force;
-        }*/
-
-        /*private void UpdateForces(bool onGround, bool onSlope, bool ignoreFriction, int groundDirection,
-            float groundAngle, float deltaTime)
-        {
-            UpdateExternalForce(onGround, ignoreFriction, deltaTime);
-            UpdateGravity(deltaTime);
-            UpdateExternalForceX(onSlope, groundDirection, groundAngle, deltaTime);
-        }
-
-        private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
-
-        private void UpdateExternalForce(bool onGround, bool ignoreFriction, float deltaTime)
-        {
-            if (ignoreFriction) return;
-            var friction = OnGroundFriction(onGround);
-            SetExternalForce(GroundFrictionExternalForce(friction, deltaTime));
-            if (StopExternalForce) SetExternalForce(zero);
-        }
-
-        private float OnGroundFriction(bool onGround)
-        {
-            return onGround ? GroundFriction : AirFriction;
-        }
-
-        private Vector2 GroundFrictionExternalForce(float friction, float deltaTime)
-        {
-            return MoveTowards(ExternalForce, zero, ExternalForce.magnitude * friction * deltaTime);
-        }
-
-        private void SetExternalForce(Vector2 force)
-        {
-            ExternalForce = force;
-        }*/
-
         private void UpdateExternalForce(bool onGround)
         {
             SetFriction(UpdatedFriction(onGround));
@@ -193,26 +263,16 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SetExternalForce(externalForce);
         }
 
-        //private bool NoHorizontalSpeed => Speed.x == 0;
-
         private void UpdateExternalForceX(int groundDirectionAxis)
         {
             ApplyToExternalForceX(AppliedForcesX(groundDirectionAxis));
-            /*var applyCombinedForcesToExternalForceX = onSlope && groundAngle > MaximumSlopeAngle &&
-                                                      (groundAngle < MinimumWallAngle || NoHorizontalSpeed);
-            if (applyCombinedForcesToExternalForceX) ApplyToExternalForceX(CombinedForcesX(groundDirection, deltaTime));*/
         }
 
         private float AppliedForcesX(int groundDirectionAxis)
         {
             return -Gravity * GroundFriction * groundDirectionAxis * fixedDeltaTime / 4;
         }
-
-        /*private float CombinedForcesX(int groundDirection, float deltaTime)
-        {
-            return -Gravity * GroundFriction * groundDirection * deltaTime / 4;
-        }*/
-
+        
         private void ApplyToExternalForceX(float force)
         {
             externalForce = ExternalForce;
@@ -479,16 +539,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             StopForcesY();
         }
-
-        #endregion
-
-        #region event handlers
-
-        public void OnInitialize(PhysicsSettings settings)
-        {
-            Initialize(settings);
-        }
-
+        
         public void OnInitializeDeltaMove()
         {
             InitializeDeltaMove();
@@ -593,7 +644,6 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             ResetJumpCollision();
         }
+ */
 
-        #endregion
-    }
-}
+#endregion
