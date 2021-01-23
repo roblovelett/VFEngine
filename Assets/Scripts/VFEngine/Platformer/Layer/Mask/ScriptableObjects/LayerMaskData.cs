@@ -15,22 +15,24 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         #region properties
 
+        public LayerMask Platform { get; private set; }
+        public LayerMask BelowPlatforms { get; private set; }
+        public LayerMask SavedBelow { get; private set; }
+        public LayerMask MidHeightOneWayPlatform { get; private set; }
+        public LayerMask Stairs { get; private set; }
+        public LayerMask OneWayPlatform { get; private set; }
+        public LayerMask MovingOneWayPlatform { get; private set; }
+        
+
         #endregion
 
         #region fields
 
         private bool displayWarnings;
-        private LayerMask platform;
         private LayerMask movingPlatform;
-        private LayerMask oneWayPlatform;
-        private LayerMask movingOneWayPlatform;
-        private LayerMask midHeightOneWayPlatform;
-        private LayerMask stairs;
-        private LayerMask saved;
-        private LayerMask belowPlatforms;
+        private LayerMask platformSaved;
         private LayerMask belowPlatformsWithoutOneWay;
         private LayerMask belowPlatformsWithoutMidHeight;
-        private LayerMask savedBelow;
 
         #endregion
 
@@ -45,26 +47,28 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         private void ApplySettings(LayerMaskSettings settings)
         {
             displayWarnings = settings.displayWarnings;
-            platform = settings.platform;
+            Platform = settings.platform;
             movingPlatform = settings.movingPlatform;
-            oneWayPlatform = settings.oneWayPlatform;
-            movingOneWayPlatform = settings.movingOneWayPlatform;
-            midHeightOneWayPlatform = settings.midHeightOneWayPlatform;
-            stairs = settings.stairs;
+            OneWayPlatform = settings.oneWayPlatform;
+            MovingOneWayPlatform = settings.movingOneWayPlatform;
+            MidHeightOneWayPlatform = settings.midHeightOneWayPlatform;
+            Stairs = settings.stairs;
         }
 
         private void InitializeDefault()
         {
-            saved = platform;
-            platform |= oneWayPlatform;
-            platform |= movingPlatform;
-            platform |= movingOneWayPlatform;
-            platform |= midHeightOneWayPlatform;
+            platformSaved = Platform;
+            Platform |= OneWayPlatform;
+            Platform |= movingPlatform;
+            Platform |= MovingOneWayPlatform;
+            Platform |= MidHeightOneWayPlatform;
         }
 
         #endregion
 
         #region public methods
+
+        
 
         #endregion
 

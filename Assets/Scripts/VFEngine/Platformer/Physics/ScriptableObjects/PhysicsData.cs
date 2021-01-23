@@ -1,10 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
     using static Quaternion;
+    using static Time;
+    using static Vector2;
+    using static Space;
+    using static Mathf;
+    using static RigidbodyType2D;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
@@ -19,36 +25,39 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public bool GravityActive => state.GravityActive;
         public float FallSlowFactor { get; private set; }
         public int MovementDirection { get; private set; }
+        public Vector2 NewPosition { get; private set; }
+        public bool Physics2DInteraction { get; private set; }
+        public float MovementDirectionThreshold { get; private set; }
+        public Vector2 ExternalForce { get; private set; }
+        public float MaximumSlopeAngle { get; private set; }
+        public float Gravity { get; private set; }
+        public bool IsFalling => state.IsFalling;
+        public bool StickToSlopeBehavior { get; private set; }
 
         #endregion
 
         #region fields
 
         private bool displayWarnings;
-        private float gravity;
         private float fallMultiplier;
         private float ascentMultiplier;
         private Vector2 maximumVelocity;
         private float speedAccelerationOnGround;
         private float speedAccelerationInAir;
         private float speedFactor;
-        private float maximumSlopeAngle;
         private AnimationCurve slopeAngleSpeedFactor;
-        private bool physics2DInteraction;
         private float physics2DPushForce;
         private bool safeSetTransform;
         private bool automaticGravityControl;
-        private bool stickToSlopeBehavior;
         private Vector2 worldSpeed;
-        private Vector2 appliedForces;
+        private Vector2 forcesApplied;
+        private Vector2 newPositionInternal;
         private float currentGravity;
-        private Vector2 externalForce;
-        private Vector2 newPosition;
         private bool gravityActive;
         private int savedMovementDirection;
-        private float movementDirectionThreshold;
         private State state;
         private Transform transform;
+        private Vector2 speedInternal;
 
         private struct State
         {
@@ -75,21 +84,21 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         private void ApplySettings(PhysicsSettings settings)
         {
             displayWarnings = settings.displayWarnings;
-            gravity = settings.gravity;
+            Gravity = settings.gravity;
             fallMultiplier = settings.fallMultiplier;
             ascentMultiplier = settings.ascentMultiplier;
             maximumVelocity = settings.maximumVelocity;
             speedAccelerationOnGround = settings.speedAccelerationOnGround;
             speedAccelerationInAir = settings.speedAccelerationInAir;
             speedFactor = settings.speedFactor;
-            maximumSlopeAngle = settings.maximumSlopeAngle;
+            MaximumSlopeAngle = settings.maximumSlopeAngle;
             slopeAngleSpeedFactor = settings.slopeAngleSpeedFactor;
-            physics2DInteraction = settings.physics2DInteraction;
+            Physics2DInteraction = settings.physics2DInteraction;
             physics2DPushForce = settings.physics2DPushForce;
             safeSetTransform = settings.safeSetTransform;
             automaticGravityControl = settings.automaticGravityControl;
-            stickToSlopeBehavior = settings.stickToSlopeBehavior;
-            movementDirectionThreshold = settings.movementDirectionThreshold;
+            StickToSlopeBehavior = settings.stickToSlopeBehavior;
+            MovementDirectionThreshold = settings.movementDirectionThreshold;
         }
 
         private void InitializeDefault(ref GameObject character)
@@ -110,24 +119,251 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         #region private methods
 
+        private float CurrentGravityAscentMultiplierApplied => currentGravity / ascentMultiplier;
+
         private void SetCurrentGravity()
         {
+            ApplyAscentMultiplierToCurrentGravity();
+        }
+
+        private void SetCurrentGravity(float force)
+        {
+            currentGravity = force;
         }
 
         private void ApplyAscentMultiplierToCurrentGravity()
         {
+            SetCurrentGravity(CurrentGravityAscentMultiplierApplied);
         }
+
+        private float CurrentGravityFallMultiplierApplied => currentGravity * fallMultiplier;
 
         private void ApplyFallMultiplierToCurrentGravity()
         {
+            SetCurrentGravity(CurrentGravityFallMultiplierApplied);
         }
 
-        private void ApplyGravityToSpeedY()
+        private float SpeedYGravityApplied(float movingPlatformCurrentGravity)
         {
+            return (currentGravity + movingPlatformCurrentGravity) * deltaTime;
+        }
+
+        private void ApplyGravityToSpeedY(float movingPlatformCurrentGravity)
+        {
+            AddToSpeedY(SpeedYGravityApplied(movingPlatformCurrentGravity));
+        }
+
+        private void AddToSpeedY(float y)
+        {
+            speedInternal = Speed;
+            speedInternal.y += y;
+            SetSpeed(speedInternal);
+        }
+
+        private void SetSpeed(Vector2 force)
+        {
+            Speed = force;
         }
 
         private void ApplyFallSlowFactorToSpeedY()
         {
+            ApplyToSpeedY(FallSlowFactor);
+        }
+
+        private void ApplyToSpeedY(float y)
+        {
+            speedInternal = Speed;
+            speedInternal.y *= y;
+            SetSpeed(speedInternal);
+        }
+
+        private Vector2 NewPositionInitialized => Speed * deltaTime;
+
+        private void InitializeFrame()
+        {
+            SetNewPosition(NewPositionInitialized);
+            state.Reset();
+        }
+
+        private void SetNewPosition(Vector2 position)
+        {
+            NewPosition = position;
+        }
+
+        private void ApplyForces()
+        {
+            SetForcesApplied(Speed);
+        }
+
+        private void SetForcesApplied(Vector2 forces)
+        {
+            forcesApplied = forces;
+        }
+
+        private void StopNewPosition()
+        {
+            SetNewPosition(zero);
+        }
+
+        private void MoveCharacter(ref GameObject character)
+        {
+            character.transform.Translate(NewPosition, Self);
+        }
+
+        private Vector2 NewSpeed => NewPosition / deltaTime;
+
+        private void SetNewSpeed()
+        {
+            SetSpeed(NewSpeed);
+        }
+
+        private void ApplySlopeSpeedFactor(float belowSlopeAngle)
+        {
+            ApplyToSpeedX(SpeedXSlopeAngleSpeedFactorApplied(belowSlopeAngle));
+        }
+
+        private float SpeedXSlopeAngleSpeedFactorApplied(float belowSlopeAngle)
+        {
+            return slopeAngleSpeedFactor.Evaluate(Abs(belowSlopeAngle) * Sign(Speed.y));
+        }
+
+        private void ApplyToSpeedX(float x)
+        {
+            speedInternal = Speed;
+            speedInternal.x *= x;
+            SetSpeed(speedInternal);
+        }
+
+        private Vector2 SpeedClampedToMaximumVelocity => new Vector2(SpeedAxisClamped(Speed.x, maximumVelocity.x),
+            SpeedAxisClamped(Speed.y, maximumVelocity.y));
+
+        private void ClampSpeedToMaximumVelocity()
+        {
+            SetSpeed(SpeedClampedToMaximumVelocity);
+        }
+
+        private float SpeedAxisClamped(float speedAxis, float maximumVelocityAxis)
+        {
+            return Clamp(speedAxis, -maximumVelocityAxis, maximumVelocityAxis);
+        }
+
+        private Vector2 PushRigidBodyDirection => new Vector2(ExternalForce.x, 0);
+
+        private void Physics2DInteractionInternal(IEnumerable<RaycastHit2D> contactList)
+        {
+            foreach (var contact in contactList)
+            {
+                var rigidBody = contact.collider.attachedRigidbody;
+                var cannotPushRigidBody = rigidBody == null || rigidBody.isKinematic || rigidBody.bodyType == Static;
+                if (cannotPushRigidBody) return;
+                rigidBody.velocity = PushRigidBodyDirection.normalized * physics2DPushForce;
+            }
+        }
+
+        private void StopExternalForce()
+        {
+            SetExternalForce(zero);
+        }
+
+        private void SetExternalForce(Vector2 force)
+        {
+            ExternalForce = force;
+        }
+
+        private void UpdateWorldSpeed()
+        {
+            SetWorldSpeed(Speed);
+        }
+
+        private void SetWorldSpeed(Vector2 speed)
+        {
+            worldSpeed = speed;
+        }
+
+        private void TranslateMovingPlatformSpeedToTransform(ref GameObject character,
+            Vector2 movingPlatformCurrentSpeed)
+        {
+            character.transform.Translate(movingPlatformCurrentSpeed * deltaTime);
+        }
+
+        private Vector2 SpeedOnMovingPlatform => -NewPosition / deltaTime;
+        private float SpeedOnMovingPlatformX => -Speed.x;
+
+        private void ApplyMovingPlatformBehavior(float movingPlatformCurrentSpeedY)
+        {
+            SetGravityActive(true);
+            SetNewPositionY(NewPositionOnMovingPlatformY(movingPlatformCurrentSpeedY));
+            SetSpeedOnMovingPlatform();
+        }
+
+        private void SetSpeedOnMovingPlatform()
+        {
+            SetSpeed(SpeedOnMovingPlatform);
+            SetSpeedX(SpeedOnMovingPlatformX);
+        }
+
+        private void SetGravityActive(bool active)
+        {
+            state.GravityActive = active;
+        }
+
+        private float NewPositionOnMovingPlatformY(float movingPlatformCurrentSpeedY)
+        {
+            return movingPlatformCurrentSpeedY * deltaTime;
+        }
+
+        private void SetSpeedX(float x)
+        {
+            speedInternal = Speed;
+            speedInternal.x = x;
+            SetSpeed(speedInternal);
+        }
+
+        private void SetNewPositionY(float y)
+        {
+            newPositionInternal = NewPosition;
+            newPositionInternal.y = y;
+            SetNewPosition(newPositionInternal);
+        }
+
+        private void SetMovementDirectionToSaved()
+        {
+            SetMovementDirection(savedMovementDirection);
+        }
+
+        private void SetMovementDirection(int direction)
+        {
+            MovementDirection = direction;
+        }
+
+        private void SetNegativeMovementDirection()
+        {
+            SetMovementDirection(-1);
+        }
+
+        private void SetPositiveMovementDirection()
+        {
+            SetMovementDirection(1);
+        }
+
+        private void ApplyMovingPlatformCurrentSpeedToMovementDirection(float movingPlatformCurrentSpeedX)
+        {
+            SetMovementDirection(MovementDirectionOnMovingPlatform(movingPlatformCurrentSpeedX));
+        }
+
+        private int MovementDirectionOnMovingPlatform(float movingPlatformCurrentSpeedX)
+        {
+            return (int) Sign(movingPlatformCurrentSpeedX);
+        }
+
+        private void SetSavedMovementDirection()
+        {
+            SetSavedMovementDirection(MovementDirection);
+        }
+
+        private void SetSavedMovementDirection(int direction)
+        {
+            savedMovementDirection = direction;
         }
 
         #endregion
@@ -154,14 +390,100 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             ApplyFallMultiplierToCurrentGravity();
         }
 
-        public void OnApplyGravityToSpeedY()
+        public void OnApplyGravityToSpeedY(float movingPlatformCurrentGravity)
         {
-            ApplyGravityToSpeedY();
+            ApplyGravityToSpeedY(movingPlatformCurrentGravity);
         }
 
         public void OnApplyFallSlowFactorToSpeedY()
         {
             ApplyFallSlowFactorToSpeedY();
+        }
+
+        public void OnInitializeFrame()
+        {
+            InitializeFrame();
+        }
+
+        public void OnApplyForces()
+        {
+            ApplyForces();
+        }
+
+        public void OnStopNewPosition()
+        {
+            StopNewPosition();
+        }
+
+        public void OnMoveCharacter(ref GameObject character)
+        {
+            MoveCharacter(ref character);
+        }
+
+        public void OnSetNewSpeed()
+        {
+            SetNewSpeed();
+        }
+
+        public void OnApplySlopeSpeedFactor(float belowSlopeAngle)
+        {
+            ApplySlopeSpeedFactor(belowSlopeAngle);
+        }
+
+        public void OnClampSpeedToMaximumVelocity()
+        {
+            ClampSpeedToMaximumVelocity();
+        }
+
+        public void OnPhysics2DInteraction(IEnumerable<RaycastHit2D> contactList)
+        {
+            Physics2DInteractionInternal(contactList);
+        }
+
+        public void OnStopExternalForce()
+        {
+            StopExternalForce();
+        }
+
+        public void OnUpdateWorldSpeed()
+        {
+            UpdateWorldSpeed();
+        }
+
+        public void OnTranslateMovingPlatformSpeedToTransform(ref GameObject character,
+            Vector2 movingPlatformCurrentSpeed)
+        {
+            TranslateMovingPlatformSpeedToTransform(ref character, movingPlatformCurrentSpeed);
+        }
+
+        public void OnApplyMovingPlatformBehavior(float movingPlatformCurrentSpeedY)
+        {
+            ApplyMovingPlatformBehavior(movingPlatformCurrentSpeedY);
+        }
+
+        public void OnSetMovementDirectionToSaved()
+        {
+            SetMovementDirectionToSaved();
+        }
+
+        public void OnSetNegativeMovementDirection()
+        {
+            SetNegativeMovementDirection();
+        }
+
+        public void OnSetPositiveMovementDirection()
+        {
+            SetPositiveMovementDirection();
+        }
+
+        public void OnApplyMovingPlatformCurrentSpeedToMovementDirection(float movingPlatformCurrentSpeedX)
+        {
+            ApplyMovingPlatformCurrentSpeedToMovementDirection(movingPlatformCurrentSpeedX);
+        }
+
+        public void OnSetSavedMovementDirection()
+        {
+            SetSavedMovementDirection();
         }
 
         #endregion

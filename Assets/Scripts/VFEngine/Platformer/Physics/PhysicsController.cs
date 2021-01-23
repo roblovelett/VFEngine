@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -87,15 +88,125 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
+        private float MovingPlatformCurrentGravity => raycastData.MovingPlatformCurrentGravity;
+
         private async UniTask ApplyGravityToSpeedY()
         {
-            Data.OnApplyGravityToSpeedY();
+            Data.OnApplyGravityToSpeedY(MovingPlatformCurrentGravity);
             await Yield();
         }
 
         private async UniTask ApplyFallSlowFactorToSpeedY()
         {
             Data.OnApplyFallSlowFactorToSpeedY();
+            await Yield();
+        }
+
+        private async UniTask InitializeFrame()
+        {
+            Data.OnInitializeFrame();
+            await Yield();
+        }
+
+        private async UniTask ApplyForces()
+        {
+            Data.OnApplyForces();
+            await Yield();
+        }
+
+        private async UniTask StopNewPosition()
+        {
+            Data.OnStopNewPosition();
+            await Yield();
+        }
+
+        private async UniTask MoveCharacter()
+        {
+            Data.OnMoveCharacter(ref character);
+            await Yield();
+        }
+
+        private async UniTask SetNewSpeed()
+        {
+            Data.OnSetNewSpeed();
+            await Yield();
+        }
+
+        private float BelowSlopeAngle => raycastData.BelowSlopeAngle;
+
+        private async UniTask ApplySlopeSpeedFactor()
+        {
+            Data.OnApplySlopeSpeedFactor(BelowSlopeAngle);
+            await Yield();
+        }
+
+        private async UniTask ClampSpeedToMaximumVelocity()
+        {
+            Data.OnClampSpeedToMaximumVelocity();
+            await Yield();
+        }
+
+        private IEnumerable<RaycastHit2D> ContactList => raycastData.ContactList;
+
+        private async UniTask Physics2DInteraction()
+        {
+            Data.OnPhysics2DInteraction(ContactList);
+            await Yield();
+        }
+
+        private async UniTask StopExternalForce()
+        {
+            Data.OnStopExternalForce();
+            await Yield();
+        }
+
+        private async UniTask UpdateWorldSpeed()
+        {
+            Data.OnUpdateWorldSpeed();
+            await Yield();
+        }
+
+        private Vector2 MovingPlatformCurrentSpeed => raycastData.MovingPlatformCurrentSpeed;
+
+        private async UniTask TranslateMovingPlatformSpeedToTransform()
+        {
+            Data.OnTranslateMovingPlatformSpeedToTransform(ref character, MovingPlatformCurrentSpeed);
+            await Yield();
+        }
+
+        private async UniTask ApplyMovingPlatformBehavior()
+        {
+            Data.OnApplyMovingPlatformBehavior(MovingPlatformCurrentSpeed.y);
+            await Yield();
+        }
+
+        private async UniTask SetMovementDirectionToSaved()
+        {
+            Data.OnSetMovementDirectionToSaved();
+            await Yield();
+        }
+
+        private async UniTask SetNegativeMovementDirection()
+        {
+            Data.OnSetNegativeMovementDirection();
+            await Yield();
+        }
+
+        private async UniTask SetPositiveMovementDirection()
+        {
+            Data.OnSetPositiveMovementDirection();
+            await Yield();
+        }
+
+        private async UniTask ApplyMovingPlatformCurrentSpeedToMovementDirection()
+        {
+            Data.OnApplyMovingPlatformCurrentSpeedToMovementDirection(MovingPlatformCurrentSpeed.x);
+            await Yield();
+        }
+
+        private async UniTask SetSavedMovementDirection()
+        {
+            Data.OnSetSavedMovementDirection();
             await Yield();
         }
 
@@ -126,6 +237,91 @@ namespace VFEngine.Platformer.Physics
         public async UniTask OnPlatformerApplyFallSlowFactorToSpeedY()
         {
             await ApplyFallSlowFactorToSpeedY();
+        }
+
+        public async UniTask OnPlatformerOnInitializeFrame()
+        {
+            await InitializeFrame();
+        }
+
+        public async UniTask OnPlatformerApplyForces()
+        {
+            await ApplyForces();
+        }
+
+        public async UniTask OnPlatformerStopNewPosition()
+        {
+            await StopNewPosition();
+        }
+
+        public async UniTask OnPlatformerMoveCharacter()
+        {
+            await MoveCharacter();
+        }
+
+        public async UniTask OnPlatformerSetNewSpeed()
+        {
+            await SetNewSpeed();
+        }
+
+        public async UniTask OnPlatformerApplySlopeSpeedFactor()
+        {
+            await ApplySlopeSpeedFactor();
+        }
+
+        public async UniTask OnPlatformerClampSpeedToMaximumVelocity()
+        {
+            await ClampSpeedToMaximumVelocity();
+        }
+
+        public async UniTask OnPlatformerPhysics2DInteraction()
+        {
+            await Physics2DInteraction();
+        }
+
+        public async UniTask OnPlatformerStopExternalForce()
+        {
+            await StopExternalForce();
+        }
+
+        public async UniTask OnPlatformerUpdateWorldSpeed()
+        {
+            await UpdateWorldSpeed();
+        }
+
+        public async UniTask OnPlatformerTranslateMovingPlatformSpeedToTransform()
+        {
+            await TranslateMovingPlatformSpeedToTransform();
+        }
+
+        public async UniTask OnPlatformerApplyMovingPlatformBehavior()
+        {
+            await ApplyMovingPlatformBehavior();
+        }
+
+        public async UniTask OnPlatformerSetMovementDirectionToSaved()
+        {
+            await SetMovementDirectionToSaved();
+        }
+
+        public async UniTask OnPlatformerSetNegativeMovementDirection()
+        {
+            await SetNegativeMovementDirection();
+        }
+
+        public async UniTask OnPlatformerSetPositiveMovementDirection()
+        {
+            await SetPositiveMovementDirection();
+        }
+
+        public async UniTask OnPlatformerApplyMovingPlatformCurrentSpeedToMovementDirection()
+        {
+            await ApplyMovingPlatformCurrentSpeedToMovementDirection();
+        }
+
+        public async UniTask OnPlatformerSetSavedMovementDirection()
+        {
+            await SetSavedMovementDirection();
         }
 
         #endregion

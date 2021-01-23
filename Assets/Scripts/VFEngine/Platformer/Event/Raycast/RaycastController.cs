@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
@@ -11,6 +12,7 @@ using VFEngine.Platformer.ScriptableObjects;
 namespace VFEngine.Platformer.Event.Raycast
 {
     using static ScriptableObject;
+    using static UniTask;
 
     [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastController : SerializedMonoBehaviour
@@ -53,6 +55,13 @@ namespace VFEngine.Platformer.Event.Raycast
             Data.OnInitialize(ref boxCollider, ref character, settings);
         }
 
+        private void SetDependencies()
+        {
+            layerMaskData = layerMaskController.Data;
+            physicsData = physicsController.Data;
+            platformerData = platformerController.Data;
+        }
+
         #endregion
 
         #region unity events
@@ -67,13 +76,6 @@ namespace VFEngine.Platformer.Event.Raycast
             SetDependencies();
         }
 
-        private void SetDependencies()
-        {
-            layerMaskData = layerMaskController.Data;
-            physicsData = physicsController.Data;
-            platformerData = platformerController.Data;
-        }
-
         #endregion
 
         #region public methods
@@ -82,9 +84,207 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region private methods
 
+        private async UniTask InitializeFrame()
+        {
+            Data.OnInitializeFrame();
+            await Yield();
+        }
+
+        private async UniTask UpdateBounds()
+        {
+            Data.OnUpdateBounds(boxCollider, character);
+            await Yield();
+        }
+
+        private Vector2 NewPosition => physicsData.NewPosition;
+        private LayerMask Platform => layerMaskData.Platform;
+
+        private async UniTask PerformSafetyBoxcast()
+        {
+            Data.OnPerformSafetyBoxcast(character, NewPosition, Platform);
+            await Yield();
+        }
+
+        private async UniTask SetGroundedEvent()
+        {
+            Data.OnSetGroundedEvent();
+            await Yield();
+        }
+
+        private LayerMask BelowPlatforms => layerMaskData.BelowPlatforms;
+
+        private async UniTask SetDistanceToGroundRaycast()
+        {
+            Data.OnSetDistanceToGroundRaycast(character, BelowPlatforms);
+            await Yield();
+        }
+
+        private async UniTask SetDistanceToGroundOnRaycastHit()
+        {
+            Data.OnSetDistanceToGroundOnRaycastHit();
+            await Yield();
+        }
+
+        private async UniTask SetDistanceToGround()
+        {
+            Data.OnSetDistanceToGround();
+            await Yield();
+        }
+
+        private LayerMask SavedBelow => layerMaskData.SavedBelow;
+
+        private async UniTask SetStandingOnLastFrameLayerToSavedBelow()
+        {
+            Data.OnSetStandingOnLastFrameLayerToSavedBelow(SavedBelow);
+            await Yield();
+        }
+
+        private async UniTask ApplyMovingPlatformBehavior()
+        {
+            Data.OnApplyMovingPlatformBehavior();
+            await Yield();
+        }
+
+        private async UniTask SetCurrentRaycastDirectionToLeft()
+        {
+            Data.OnSetCurrentRaycastDirectionToLeft();
+            await Yield();
+        }
+
+        private async UniTask SetCurrentRaycastDirectionToRight()
+        {
+            Data.OnSetCurrentRaycastDirectionToRight();
+            await Yield();
+        }
+
+        private async UniTask SetHorizontalRaycast()
+        {
+            Data.OnSetHorizontalRaycast();
+            await Yield();
+        }
+
+        private async UniTask ResizeHorizontalHitStorage()
+        {
+            Data.OnResizeHorizontalHitStorage();
+            await Yield();
+        }
+
+        private int Index => platformerData.Index;
+
+        private async UniTask SetHorizontalHitAngle()
+        {
+            Data.OnSetHorizontalHitAngle(Index, character);
+            await Yield();
+        }
+
+        private int SmallestDistanceIndex => platformerData.SmallestDistanceIndex;
+
+        private async UniTask FrictionTest()
+        {
+            Data.OnFrictionTest(SmallestDistanceIndex);
+            await Yield();
+        }
+
+        private async UniTask SetFriction()
+        {
+            Data.OnSetFriction();
+            await Yield();
+        }
+
+        private async UniTask MovingPlatformTest()
+        {
+            Data.OnMovingPlatformTest(SmallestDistanceIndex);
+            await Yield();
+        }
+
         #endregion
 
         #region event handlers
+
+        public async UniTask OnPlatformerInitializeFrame()
+        {
+            await InitializeFrame();
+        }
+
+        public async UniTask OnPlatformerUpdateRaycastBounds()
+        {
+            await UpdateBounds();
+        }
+
+        public async UniTask OnPlatformerPerformSafetyBoxcast()
+        {
+            await PerformSafetyBoxcast();
+        }
+
+        public async UniTask OnPlatformerSetGroundedEvent()
+        {
+            await SetGroundedEvent();
+        }
+
+        public async UniTask OnPlatformerSetDistanceToGroundRaycast()
+        {
+            await SetDistanceToGroundRaycast();
+        }
+
+        public async UniTask OnPlatformerSetDistanceToGroundOnRaycastHit()
+        {
+            await SetDistanceToGroundOnRaycastHit();
+        }
+
+        public async UniTask OnPlatformerSetDistanceToGround()
+        {
+            await SetDistanceToGround();
+        }
+
+        public async UniTask OnPlatformerSetStandingOnLastFrameLayerToSavedBelow()
+        {
+            await SetStandingOnLastFrameLayerToSavedBelow();
+        }
+
+        public async UniTask OnPlatformerApplyMovingPlatformBehavior()
+        {
+            await ApplyMovingPlatformBehavior();
+        }
+
+        public async UniTask OnPlatformerSetCurrentRaycastDirectionToLeft()
+        {
+            await SetCurrentRaycastDirectionToLeft();
+        }
+
+        public async UniTask OnPlatformerSetCurrentRaycastDirectionToRight()
+        {
+            await SetCurrentRaycastDirectionToRight();
+        }
+
+        public async UniTask OnPlatformerSetHorizontalRaycast()
+        {
+            await SetHorizontalRaycast();
+        }
+
+        public async UniTask OnPlatformerResizeHorizontalHitStorage()
+        {
+            await ResizeHorizontalHitStorage();
+        }
+
+        public async UniTask OnPlatformerSetHorizontalHitAngle()
+        {
+            await SetHorizontalHitAngle();
+        }
+
+        public async UniTask OnPlatformerFrictionTest()
+        {
+            await FrictionTest();
+        }
+
+        public async UniTask OnPlatformerSetFriction()
+        {
+            await SetFriction();
+        }
+
+        public async UniTask OnPlatformerMovingPlatformTest()
+        {
+            await MovingPlatformTest();
+        }
 
         #endregion
     }
