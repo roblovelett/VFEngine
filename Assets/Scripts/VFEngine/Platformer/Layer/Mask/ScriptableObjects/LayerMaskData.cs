@@ -22,7 +22,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public LayerMask Stairs { get; private set; }
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask MovingOneWayPlatform { get; private set; }
-        
+        public LayerMask BelowPlatformsWithoutOneWay { get; private set; }
 
         #endregion
 
@@ -31,7 +31,6 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         private bool displayWarnings;
         private LayerMask movingPlatform;
         private LayerMask platformSaved;
-        private LayerMask belowPlatformsWithoutOneWay;
         private LayerMask belowPlatformsWithoutMidHeight;
 
         #endregion
@@ -67,12 +66,62 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         #endregion
 
         #region public methods
-
         
-
         #endregion
 
         #region private methods
+
+        private void SetRaysBelowPlatforms()
+        {
+            SetBelowPlatforms(Platform);
+            SetBelowPlatformsWithoutOneWay(Platform & ~MidHeightOneWayPlatform & ~OneWayPlatform & ~MovingOneWayPlatform);
+            SetBelowPlatformsWithoutMidHeight(BelowPlatforms & ~MidHeightOneWayPlatform);
+        }
+
+        private void SetBelowPlatforms(LayerMask layer)
+        {
+            BelowPlatforms = layer;
+        }
+
+        private void SetBelowPlatformsWithoutOneWay(LayerMask layer)
+        {
+            BelowPlatformsWithoutOneWay = layer;
+        }
+
+        private void SetBelowPlatformsWithoutMidHeight(LayerMask layer)
+        {
+            belowPlatformsWithoutMidHeight = layer;
+        }
+
+        private void SetSavedBelowLayerToStandingOnLastFrame(LayerMask layer)
+        {
+            SetSavedBelow(layer);
+        }
+
+        private void SetSavedBelow(LayerMask layer)
+        {
+            SavedBelow = layer;
+        }
+
+        private void SetRaysBelowToPlatformsWithoutMidHeight()
+        {
+            SetRaysBelowPlatforms(belowPlatformsWithoutMidHeight);
+        }
+
+        private void SetRaysBelowPlatforms(LayerMask layer)
+        {
+            SetBelowPlatforms(layer);
+        }
+
+        private void SetRaysBelowToPlatformsAndOneWayOrStairs()
+        {
+            SetBelowPlatforms(BelowPlatforms & ~OneWayPlatform | Stairs);
+        }
+
+        private void SetRaysBelowToOneWayPlatform()
+        {
+            SetBelowPlatforms(BelowPlatforms & ~OneWayPlatform);
+        }
 
         #endregion
 
@@ -83,6 +132,31 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             Initialize(settings);
         }
 
+        public void OnSetRaysBelowPlatforms()
+        {
+            SetRaysBelowPlatforms();
+        }
+
+        public void OnSetSavedBelowLayerToStandingOnLastFrame(LayerMask layer)
+        {
+            SetSavedBelowLayerToStandingOnLastFrame(layer);
+        }
+
+        public void OnSetRaysBelowToPlatformsWithoutMidHeight()
+        {
+            SetRaysBelowToPlatformsWithoutMidHeight();
+        }
+
+        public void OnSetRaysBelowToPlatformsAndOneWayOrStairs()
+        {
+            SetRaysBelowToPlatformsAndOneWayOrStairs();
+        }
+
+        public void OnSetRaysBelowToOneWayPlatform()
+        {
+            SetRaysBelowToOneWayPlatform();
+        }
+        
         #endregion
     }
 }

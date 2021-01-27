@@ -1,12 +1,16 @@
-﻿using Sirenix.OdinInspector;
+﻿using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast;
+using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 
 namespace VFEngine.Platformer.Layer.Mask
 {
     using static GameObject;
     using static ScriptableObject;
+    using static UniTask;
 
     public class LayerMaskController : SerializedMonoBehaviour
     {
@@ -24,6 +28,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private LayerMaskSettings settings;
+        private RaycastData raycastData;
 
         #endregion
 
@@ -37,6 +42,11 @@ namespace VFEngine.Platformer.Layer.Mask
             Data.OnInitialize(settings);
         }
 
+        private void SetDependencies()
+        {
+            raycastData = GetComponent<RaycastController>().Data;
+        }
+
         #endregion
 
         #region unity events
@@ -44,6 +54,11 @@ namespace VFEngine.Platformer.Layer.Mask
         private void Awake()
         {
             Initialize();
+        }
+
+        private void Start()
+        {
+            SetDependencies();
         }
 
         #endregion
@@ -54,9 +69,65 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
+        private async UniTask SetRaysBelowPlatforms()
+        {
+            Data.OnSetRaysBelowPlatforms();
+            await Yield();
+        }
+
+        private LayerMask StandingOnLastFrame => raycastData.StandingOnLastFrame.layer;
+        private async UniTask SetSavedBelowLayerToStandingOnLastFrame()
+        {
+            Data.OnSetSavedBelowLayerToStandingOnLastFrame(StandingOnLastFrame);
+            await Yield();
+        }
+
+        private async UniTask SetRaysBelowToPlatformsWithoutMidHeight()
+        {
+            Data.OnSetRaysBelowToPlatformsWithoutMidHeight();
+            await Yield();
+        }
+
+        private async UniTask SetRaysBelowToPlatformsAndOneWayOrStairs()
+        {
+            Data.OnSetRaysBelowToPlatformsAndOneWayOrStairs();
+            await Yield();
+        }
+
+        private async UniTask SetRaysBelowToOneWayPlatform()
+        {
+            Data.OnSetRaysBelowToOneWayPlatform();
+            await Yield();
+        }
+        
         #endregion
 
         #region event handlers
+
+        public async UniTask OnPlatformerSetRaysBelowPlatforms()
+        {
+            await SetRaysBelowPlatforms();
+        }
+
+        public async UniTask OnPlatformerSetSavedBelowLayerToStandingOnLastFrame()
+        {
+            await SetSavedBelowLayerToStandingOnLastFrame();
+        }
+
+        public async UniTask OnPlatformerSetRaysBelowToPlatformsWithoutMidHeight()
+        {
+            await SetRaysBelowToPlatformsWithoutMidHeight();
+        }
+
+        public async UniTask OnPlatformerSetRaysBelowToPlatformsAndOneWayOrStairs()
+        {
+            await SetRaysBelowToPlatformsAndOneWayOrStairs();
+        }
+
+        public async UniTask OnPlatformerSetRaysBelowToOneWayPlatform()
+        {
+            await SetRaysBelowToOneWayPlatform();
+        }
 
         #endregion
     }

@@ -157,9 +157,11 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
+        private Vector2 Speed => physicsData.Speed;
+
         private async UniTask SetHorizontalRaycast()
         {
-            Data.OnSetHorizontalRaycast();
+            Data.OnSetHorizontalRaycast(character, Speed.x);
             await Yield();
         }
 
@@ -171,9 +173,55 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private int Index => platformerData.Index;
 
+        private async UniTask SetHorizontalRaycastOrigin()
+        {
+            Data.OnSetHorizontalRaycastOrigin(Index);
+            await Yield();
+        }
+
+        private async UniTask SetHorizontalRaycastForPlatform()
+        {
+            Data.OnSetHorizontalRaycastForPlatform(Index, character, Platform);
+            await Yield();
+        }
+
+        private LayerMask OneWayPlatform => layerMaskData.OneWayPlatform;
+        private LayerMask MovingOneWayPlatform => layerMaskData.MovingOneWayPlatform;
+
+        private async UniTask SetHorizontalRaycastForSpecialPlatforms()
+        {
+            Data.OnSetHorizontalRaycastForSpecialPlatforms(Index, character, Platform, OneWayPlatform,
+                MovingOneWayPlatform);
+            await Yield();
+        }
+
         private async UniTask SetHorizontalHitAngle()
         {
             Data.OnSetHorizontalHitAngle(Index, character);
+            await Yield();
+        }
+
+        private async UniTask SetLateralSlopeAngle()
+        {
+            Data.OnSetLateralSlopeAngle();
+            await Yield();
+        }
+
+        private async UniTask SetCollisionOnHitWall()
+        {
+            Data.OnSetCollisionOnHitWall(Index);
+            await Yield();
+        }
+
+        private async UniTask SetCollisionOnHitWallInMovementDirection()
+        {
+            Data.OnSetCollisionOnHitWallInMovementDirection(Index);
+            await Yield();
+        }
+
+        private async UniTask AddHorizontalContact()
+        {
+            Data.OnAddHorizontalContact(Index);
             await Yield();
         }
 
@@ -194,6 +242,110 @@ namespace VFEngine.Platformer.Event.Raycast
         private async UniTask MovingPlatformTest()
         {
             Data.OnMovingPlatformTest(SmallestDistanceIndex);
+            await Yield();
+        }
+
+        private async UniTask SetCurrentRaycastDirectionToDown()
+        {
+            Data.OnSetCurrentRaycastDirectionToDown();
+            await Yield();
+        }
+
+        private async UniTask InitializeFriction()
+        {
+            Data.OnInitializeFriction();
+            await Yield();
+        }
+
+        private async UniTask SetNotCollidingBelow()
+        {
+            Data.OnSetNotCollidingBelow();
+            await Yield();
+        }
+
+        private async UniTask SetVerticalRaycastLength()
+        {
+            Data.OnSetVerticalRaycastLength();
+            await Yield();
+        }
+
+        private async UniTask SetVerticalRaycastLengthOnMovingPlatform()
+        {
+            Data.OnSetVerticalRaycastLengthOnMovingPlatform();
+            await Yield();
+        }
+
+        private async UniTask ApplyNewPositionYToVerticalRaycastLength()
+        {
+            Data.OnApplyNewPositionYToVerticalRaycastLength(NewPosition.y);
+            await Yield();
+        }
+
+        private async UniTask SetVerticalRaycast()
+        {
+            Data.OnSetVerticalRaycast(character, NewPosition.x);
+            await Yield();
+        }
+
+        private async UniTask ResizeBelowHitStorage()
+        {
+            Data.OnResizeBelowHitStorage();
+            await Yield();
+        }
+
+        private async UniTask SetStandingOnLastFrameLayerToPlatforms()
+        {
+            Data.OnSetStandingOnLastFrameLayerToPlatforms();
+            await Yield();
+        }
+
+        private async UniTask SetBelowRaycastOrigin()
+        {
+            Data.OnSetBelowRaycastOrigin(Index);
+            await Yield();
+        }
+
+        private LayerMask BelowPlatformsWithoutOneWay => layerMaskData.BelowPlatformsWithoutOneWay;
+
+        private async UniTask SetBelowRaycastToBelowPlatformsWithoutOneWay()
+        {
+            Data.OnSetBelowRaycastToBelowPlatformsWithoutOneWay(Index, character, BelowPlatformsWithoutOneWay);
+            await Yield();
+        }
+
+        private async UniTask SetBelowRaycastToBelowPlatforms()
+        {
+            Data.OnSetBelowRaycastToBelowPlatforms(Index, character, BelowPlatforms);
+            await Yield();
+        }
+
+        private async UniTask SetBelowRaycastDistance()
+        {
+            Data.OnSetBelowRaycastDistance(SmallestDistanceIndex);
+            await Yield();
+        }
+
+        private async UniTask SetCollisionOnBelowRaycastHit()
+        {
+            Data.OnSetCollisionOnBelowRaycastHit(Index, character);
+            await Yield();
+        }
+
+        private async UniTask SetNegativeBelowSlopeAngle()
+        {
+            Data.OnSetNegativeBelowSlopeAngle();
+            await Yield();
+        }
+
+        private async UniTask SetStandingOnOnSmallestHitConnected()
+        {
+            Data.OnSetStandingOnOnSmallestHitConnected(SmallestDistanceIndex);
+            await Yield();
+        }
+
+        private async UniTask SetCollidingBelow()
+        {
+            Data.OnSetCollidingBelow();
             await Yield();
         }
 
@@ -266,9 +418,39 @@ namespace VFEngine.Platformer.Event.Raycast
             await ResizeHorizontalHitStorage();
         }
 
+        public async UniTask OnPlatformerSetHorizontalRaycastOrigin()
+        {
+            await SetHorizontalRaycastOrigin();
+        }
+
+        public async UniTask OnPlatformerSetHorizontalRaycastForPlatform()
+        {
+            await SetHorizontalRaycastForPlatform();
+        }
+
+        public async UniTask OnPlatformerSetHorizontalRaycastForSpecialPlatforms()
+        {
+            await SetHorizontalRaycastForSpecialPlatforms();
+        }
+
         public async UniTask OnPlatformerSetHorizontalHitAngle()
         {
             await SetHorizontalHitAngle();
+        }
+
+        public async UniTask OnPlatformerSetLateralSlopeAngle()
+        {
+            await SetLateralSlopeAngle();
+        }
+
+        public async UniTask OnPlatformerSetCollisionOnHitWall()
+        {
+            await SetCollisionOnHitWall();
+        }
+
+        public async UniTask OnPlatformerSetCollisionOnHitWallInMovementDirection()
+        {
+            await SetCollisionOnHitWallInMovementDirection();
         }
 
         public async UniTask OnPlatformerFrictionTest()
@@ -284,6 +466,96 @@ namespace VFEngine.Platformer.Event.Raycast
         public async UniTask OnPlatformerMovingPlatformTest()
         {
             await MovingPlatformTest();
+        }
+
+        public async UniTask OnPlatformerAddHorizontalContact()
+        {
+            await AddHorizontalContact();
+        }
+
+        public async UniTask OnPlatformerSetCurrentRaycastDirectionToDown()
+        {
+            await SetCurrentRaycastDirectionToDown();
+        }
+
+        public async UniTask OnPlatformerInitializeFriction()
+        {
+            await InitializeFriction();
+        }
+
+        public async UniTask OnPlatformerSetNotCollidingBelow()
+        {
+            await SetNotCollidingBelow();
+        }
+
+        public async UniTask OnPlatformerSetVerticalRaycastLength()
+        {
+            await SetVerticalRaycastLength();
+        }
+
+        public async UniTask OnPlatformerSetVerticalRaycastLengthOnMovingPlatform()
+        {
+            await SetVerticalRaycastLengthOnMovingPlatform();
+        }
+
+        public async UniTask OnPlatformerApplyNewPositionYToVerticalRaycastLength()
+        {
+            await ApplyNewPositionYToVerticalRaycastLength();
+        }
+
+        public async UniTask OnPlatformerSetVerticalRaycast()
+        {
+            await SetVerticalRaycast();
+        }
+
+        public async UniTask OnPlatformerResizeBelowHitStorage()
+        {
+            await ResizeBelowHitStorage();
+        }
+
+        public async UniTask OnPlatformerSetStandingOnLastFrameLayerToPlatforms()
+        {
+            await SetStandingOnLastFrameLayerToPlatforms();
+        }
+
+        public async UniTask OnPlatformerSetBelowRaycastOrigin()
+        {
+            await SetBelowRaycastOrigin();
+        }
+
+        public async UniTask OnPlatformerSetBelowRaycastToBelowPlatformsWithoutOneWay()
+        {
+            await SetBelowRaycastToBelowPlatformsWithoutOneWay();
+        }
+
+        public async UniTask OnPlatformerSetBelowRaycastToBelowPlatforms()
+        {
+            await SetBelowRaycastToBelowPlatforms();
+        }
+
+        public async UniTask OnPlatformerSetBelowRaycastDistance()
+        {
+            await SetBelowRaycastDistance();
+        }
+
+        public async UniTask OnPlatformerSetCollisionOnBelowRaycastHit()
+        {
+            await SetCollisionOnBelowRaycastHit();
+        }
+
+        public async UniTask OnPlatformerSetNegativeBelowSlopeAngle()
+        {
+            await SetNegativeBelowSlopeAngle();
+        }
+
+        public async UniTask OnPlatformerSetStandingOnOnSmallestHitConnected()
+        {
+            await SetStandingOnOnSmallestHitConnected();
+        }
+
+        public async UniTask OnPlatformerSetCollidingBelow()
+        {
+            await SetCollidingBelow();
         }
 
         #endregion

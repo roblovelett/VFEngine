@@ -20,7 +20,7 @@ namespace VFEngine.Platformer.ScriptableObjects
         public float SmallestDistance { get; private set; }
         public int SmallestDistanceIndex { get; private set; }
         public bool SmallestDistanceHitConnected { get; private set; }
-
+        
         #endregion
 
         #region fields
@@ -40,6 +40,7 @@ namespace VFEngine.Platformer.ScriptableObjects
         private void Initialize()
         {
             SetIndex(0);
+            InitializeSmallestDistanceProperties();
         }
 
         private void SetIndex(int index)
@@ -79,7 +80,13 @@ namespace VFEngine.Platformer.ScriptableObjects
             SetSmallestDistanceIndex(index);
             SetSmallestDistance(belowRaycastHitDistance);
         }
-        
+
+        private void SetSmallestDistanceProperties(int index)
+        {
+            SetSmallestDistanceIndex(index);
+            SetSmallestDistanceHitConnected(true);
+        }
+
         #endregion
 
         #region event handlers
@@ -107,6 +114,16 @@ namespace VFEngine.Platformer.ScriptableObjects
         public void OnSetSmallestDistanceProperties(int index, float belowRaycastHitDistance)
         {
             SetSmallestDistanceProperties(index, belowRaycastHitDistance);
+        }
+
+        public void OnSetSmallestDistancePropertiesOnAboveRaycastHit(int index)
+        {
+            SetSmallestDistanceProperties(index);
+        }
+
+        public void OnSetSmallestDistance(float distance)
+        {
+            SetSmallestDistance(distance);
         }
 
         #endregion

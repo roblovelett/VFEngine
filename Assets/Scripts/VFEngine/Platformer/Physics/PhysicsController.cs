@@ -6,12 +6,16 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Physics.ScriptableObjects;
+using VFEngine.Platformer.ScriptableObjects;
+using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics
 {
     using static ScriptableObject;
     using static GameObject;
     using static UniTask;
+    using static RaycastData;
+    using static MathsExtensions;
 
     public class PhysicsController : SerializedMonoBehaviour
     {
@@ -30,6 +34,7 @@ namespace VFEngine.Platformer.Physics
         [OdinSerialize] private GameObject character;
         [OdinSerialize] private PhysicsSettings settings;
         private RaycastData raycastData;
+        private PlatformerData platformerData;
 
         #endregion
 
@@ -46,6 +51,7 @@ namespace VFEngine.Platformer.Physics
         private void SetDependencies()
         {
             raycastData = GetComponent<RaycastController>().Data;
+            platformerData = GetComponent<PlatformerController>().Data;
         }
 
         #endregion
@@ -210,6 +216,51 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
+        private Direction RaycastDirection => raycastData.CurrentDirection;
+        private int Index => platformerData.Index;
+        private Vector2 CurrentHorizontalHitPoint => raycastData.HorizontalHitStorage[Index].point;
+        private Vector2 HorizontalRaycastFromBottom => raycastData.HorizontalRaycastFromBottom;
+        private Vector2 HorizontalRaycastToTop => raycastData.HorizontalRaycastToTop;
+        private float NewPositionXOnHitWallInMovementDirectionDistance =>
+            DistanceBetweenPointAndLine(CurrentHorizontalHitPoint, HorizontalRaycastFromBottom, HorizontalRaycastToTop);
+        private float BoundsWidth => raycastData.BoundsWidth;
+        private float RayOffset => raycastData.RayOffset;
+        private async UniTask SetPhysicsOnHitWallInMovementDirection()
+        {
+            Data.OnSetPhysicsOnHitWallInMovementDirection(RaycastDirection, NewPositionXOnHitWallInMovementDirectionDistance, BoundsWidth, RayOffset);
+            await Yield();
+        }
+
+        private async UniTask StopNewPositionX()
+        {
+            Data.OnStopNewPositionX();
+            await Yield();
+        }
+
+        private async UniTask StopSpeedX()
+        {
+            Data.OnStopSpeedX();
+            await Yield();
+        }
+
+        private async UniTask SetIsFalling()
+        {
+            Data.OnSetIsFalling();
+            await Yield();
+        }
+
+        private async UniTask SetIsNotFalling()
+        {
+            Data.OnSetIsNotFalling();
+            await Yield();
+        }
+
+        private async UniTask ApplySpeedToNewPositionY()
+        {
+            Data.OnApplySpeedToNewPositionY();
+            await Yield();
+        }
+
         #endregion
 
         #region event handlers
@@ -322,6 +373,36 @@ namespace VFEngine.Platformer.Physics
         public async UniTask OnPlatformerSetSavedMovementDirection()
         {
             await SetSavedMovementDirection();
+        }
+
+        public async UniTask OnPlatformerSetPhysicsOnHitWallInMovementDirection()
+        {
+            await SetPhysicsOnHitWallInMovementDirection();
+        }
+
+        public async UniTask OnPlatformerStopNewPositionX()
+        {
+            await StopNewPositionX();
+        }
+
+        public async UniTask OnPlatformerStopSpeedX()
+        {
+            await StopSpeedX();
+        }
+
+        public async UniTask OnPlatformerSetIsFalling()
+        {
+            await SetIsFalling();
+        }
+
+        public async UniTask OnPlatformerSetNotFalling()
+        {
+            await SetIsNotFalling();
+        }
+
+        public async UniTask OnPlatformerApplySpeedToNewPositionY()
+        {
+            await ApplySpeedToNewPositionY();
         }
 
         #endregion

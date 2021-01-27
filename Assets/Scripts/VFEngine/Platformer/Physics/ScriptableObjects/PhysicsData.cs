@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.ScriptableObjects
@@ -11,6 +12,8 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
     using static Space;
     using static Mathf;
     using static RigidbodyType2D;
+    using static RaycastData;
+    using static RaycastData.Direction;
 
     [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
@@ -33,6 +36,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public float Gravity { get; private set; }
         public bool IsFalling => state.IsFalling;
         public bool StickToSlopeBehavior { get; private set; }
+        public bool IsJumping => state.IsJumping;
 
         #endregion
 
@@ -366,6 +370,75 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             savedMovementDirection = direction;
         }
 
+        private void SetPhysicsOnHitWallInMovementDirection(Direction raycastDirection, float distance,
+            float boundsWidth, float rayOffset)
+        {
+            if (raycastDirection == Left) SetPhysicsOnHitWallInMovementDirectionLeft(distance, boundsWidth, rayOffset);
+            else SetPhysicsOnHitWallInMovementDirectionRight(distance, boundsWidth, rayOffset);
+        }
+
+        private void SetPhysicsOnHitWallInMovementDirectionLeft(float distance, float boundsWidth, float rayOffset)
+        {
+            SetNewPositionX(NewPositionXOnHitWallInMovementDirectionLeft(distance, boundsWidth, rayOffset));
+        }
+
+        private static float NewPositionXOnHitWallInMovementDirectionLeft(float distance, float boundsWidth,
+            float rayOffset)
+        {
+            return -distance + boundsWidth / 2 + rayOffset * 2;
+        }
+
+        private void SetPhysicsOnHitWallInMovementDirectionRight(float distance, float boundsWidth, float rayOffset)
+        {
+            SetNewPositionX(NewPositionXOnHitWallInMovementDirectionRight(distance, boundsWidth, rayOffset));
+        }
+
+        private static float NewPositionXOnHitWallInMovementDirectionRight(float distance, float boundsWidth,
+            float rayOffset)
+        {
+            return distance - boundsWidth / 2 - rayOffset * 2;
+        }
+
+        private void SetNewPositionX(float x)
+        {
+            newPositionInternal = NewPosition;
+            newPositionInternal.x = x;
+            SetNewPosition(newPositionInternal);
+        }
+
+        private void StopNewPositionX()
+        {
+            SetNewPositionX(0);
+        }
+
+        private void StopSpeedX()
+        {
+            SetNewSpeedX(0);
+        }
+
+        private void SetNewSpeedX(float x)
+        {
+            speedInternal = Speed;
+            speedInternal.x = x;
+            SetSpeed(speedInternal);
+        }
+
+        private void SetIsFalling(bool falling = true)
+        {
+            state.IsFalling = falling;
+        }
+
+        private void SetIsNotFalling()
+        {
+            SetIsFalling(false);
+        }
+
+        private float NewPositionYOnExternalForceApplied => Speed.y * deltaTime;
+        private void ApplySpeedToNewPositionY()
+        {
+            SetNewPositionY(NewPositionYOnExternalForceApplied);
+        }
+        
         #endregion
 
         #region event handlers
@@ -484,6 +557,37 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         public void OnSetSavedMovementDirection()
         {
             SetSavedMovementDirection();
+        }
+
+        public void OnSetPhysicsOnHitWallInMovementDirection(Direction rayDirection, float distance, float boundsWidth,
+            float rayOffset)
+        {
+            SetPhysicsOnHitWallInMovementDirection(rayDirection, distance, boundsWidth, rayOffset);
+        }
+        
+        public void OnStopNewPositionX()
+        {
+            StopNewPositionX();
+        }
+
+        public void OnStopSpeedX()
+        {
+            StopSpeedX();
+        }
+
+        public void OnSetIsFalling()
+        {
+            SetIsFalling();
+        }
+
+        public void OnSetIsNotFalling()
+        {
+            SetIsNotFalling();
+        }
+
+        public void OnApplySpeedToNewPositionY()
+        {
+            ApplySpeedToNewPositionY();
         }
 
         #endregion

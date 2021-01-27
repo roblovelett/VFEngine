@@ -372,18 +372,15 @@ namespace VFEngine.Platformer
                     if (StopCastingHorizontalRays) break;
                     await SetHorizontalHitAngle();
                     if (SetLateralSlopeAngle) await OnSetLateralSlopeAngle();
-                    if (HitWall)
+                    if (!HitWall) continue;
+                    await SetCollisionOnHitWall();
+                    if (SetCollisionOnHitWallInMovementDirection)
                     {
-                        await SetCollisionOnHitWall();
-                        if (SetCollisionOnHitWallInMovementDirection)
-                        {
-                            await OnSetCollisionOnHitWallInMovementDirection();
-                            await SetNewPositionXOnHitWall();
-                        }
-
-                        if (StopAirborneCharacter) await OnStopAirborneCharacter();
-                        await AddContactOnHitWall();
-                        await StopSpeedXOnHitWall();
+                        await OnSetCollisionOnHitWallInMovementDirection();
+                        await SetPhysicsOnHitWallInMovementDirection();
+                        if (StopAirborneCharacter) await StopNewPositionX();
+                        await AddHorizontalContact();
+                        await StopSpeedX();
                     }
 
                     break;
@@ -413,45 +410,14 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetHorizontalRaycastOrigin();
         }
 
-        private bool CastingLeft => CurrentDirection == Left;
-
         private async UniTask OnSetHorizontalRaycastForPlatform()
         {
-            if (CastingLeft) await SetLeftRaycastForPlatform();
-            else await SetRightRaycastForPlatform();
-            await Yield();
-        }
-
-        private async UniTask SetLeftRaycastForPlatform()
-        {
-            await raycastController.OnPlatformerSetLeftRaycastForPlatform();
-        }
-
-        private async UniTask SetRightRaycastForPlatform()
-        {
-            await raycastController.OnPlatformerSetRightRaycastForPlatform();
+            await raycastController.OnPlatformerSetHorizontalRaycastForPlatform();
         }
 
         private async UniTask SetHorizontalRaycastForSpecialPlatforms()
         {
-            if (CastingLeft) await SetLeftRaycastForSpecialPlatforms();
-            else await SetRightRaycastForSpecialPlatforms();
-            await Yield();
-        }
-
-        private async UniTask SetLeftRaycastForSpecialPlatforms()
-        {
-            await raycastController.OnPlatformerSetLeftRaycastForSpecialPlatforms();
-        }
-
-        private async UniTask SetRightRaycastForSpecialPlatforms()
-        {
-            await raycastController.OnPlatformerSetRightRaycastForSpecialPlatforms();
-        }
-
-        private async UniTask OnSetLateralSlopeAngle()
-        {
-            await raycastController.OnPlatformerSetLateralSlopeAngle();
+            await raycastController.OnPlatformerSetHorizontalRaycastForSpecialPlatforms();
         }
 
         private async UniTask SetHorizontalHitAngle()
@@ -459,21 +425,14 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetHorizontalHitAngle();
         }
 
+        private async UniTask OnSetLateralSlopeAngle()
+        {
+            await raycastController.OnPlatformerSetLateralSlopeAngle();
+        }
+
         private async UniTask SetCollisionOnHitWall()
         {
-            if (CastingLeft) await SetCollisionOnLeftRaycastHitWall();
-            else await SetCollisionOnRightRaycastHitWall();
-            await Yield();
-        }
-
-        private async UniTask SetCollisionOnLeftRaycastHitWall()
-        {
-            await raycastController.OnPlatformerSetCollisionOnLeftRaycastHitWall();
-        }
-
-        private async UniTask SetCollisionOnRightRaycastHitWall()
-        {
-            await raycastController.OnPlatformerSetCollisionOnRightRaycastHitWall();
+            await raycastController.OnPlatformerSetCollisionOnHitWall();
         }
 
         private async UniTask OnSetCollisionOnHitWallInMovementDirection()
@@ -481,36 +440,24 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetCollisionOnHitWallInMovementDirection();
         }
 
-        private async UniTask SetNewPositionXOnHitWall()
+        private async UniTask SetPhysicsOnHitWallInMovementDirection()
         {
-            if (CastingLeft) await SetNewPositionOnLeftRaycastHitWall();
-            else await SetNewPositionOnRightRaycastHitWall();
-            await Yield();
+            await physicsController.OnPlatformerSetPhysicsOnHitWallInMovementDirection();
         }
 
-        private async UniTask SetNewPositionOnLeftRaycastHitWall()
+        private async UniTask StopNewPositionX()
         {
-            await physicsController.OnPlatformerSetNewPositionOnLeftRaycastHitWall();
+            await physicsController.OnPlatformerStopNewPositionX();
         }
 
-        private async UniTask SetNewPositionOnRightRaycastHitWall()
+        private async UniTask AddHorizontalContact()
         {
-            await physicsController.OnPlatformerSetNewPositionOnRightRaycastHitWall();
+            await raycastController.OnPlatformerAddHorizontalContact();
         }
 
-        private async UniTask OnStopAirborneCharacter()
+        private async UniTask StopSpeedX()
         {
-            await physicsController.OnPlatformerStopAirborneCharacter();
-        }
-
-        private async UniTask AddContactOnHitWall()
-        {
-            await raycastController.OnPlatformerAddContactOnHitWall();
-        }
-
-        private async UniTask StopSpeedXOnHitWall()
-        {
-            await physicsController.OnPlatformerStopSpeedXOnHitWall();
+            await physicsController.OnPlatformerStopSpeedX();
         }
 
         private float SmallValue => Data.SmallValue;
@@ -518,7 +465,7 @@ namespace VFEngine.Platformer
         private float Gravity => physicsData.Gravity;
         private bool IsFalling => physicsData.IsFalling;
         private bool SetNotCollidingBelow => Gravity > 0 && !IsFalling;
-        private bool SetDoubleVerticalRaycastLength => OnMovingPlatform;
+        private bool SetVerticalRaycastLengthOnMovingPlatform => OnMovingPlatform;
         private bool ApplyNewPositionYToVerticalRaycastLength => NewPosition.y < 0;
         private int NumberOfVerticalRays => raycastData.NumberOfVerticalRays;
         private RaycastHit2D[] BelowHitStorage => raycastData.BelowHitStorage;
@@ -573,6 +520,7 @@ namespace VFEngine.Platformer
 
         private async UniTask CastRaysBelow()
         {
+            await SetCurrentRaycastDirectionToDown();
             await InitializeFriction();
             if (SetIsFalling) await OnSetIsFalling();
             else await SetNotFalling();
@@ -583,7 +531,7 @@ namespace VFEngine.Platformer
             else
             {
                 await SetVerticalRaycastLength();
-                if (SetDoubleVerticalRaycastLength) await OnSetDoubleVerticalRaycastLength();
+                if (SetVerticalRaycastLengthOnMovingPlatform) await OnSetVerticalRaycastLengthOnMovingPlatform();
                 if (ApplyNewPositionYToVerticalRaycastLength) await OnApplyNewPositionYToVerticalRaycastLength();
                 await SetVerticalRaycast();
                 if (ResizeBelowHitStorage) await OnResizeBelowHitStorage();
@@ -602,8 +550,8 @@ namespace VFEngine.Platformer
                 {
                     SetIndex(i);
                     await SetBelowRaycastOrigin();
-                    if (SetBelowRaycastToPlatformsWithoutOneWay) await OnSetBelowRaycastToPlatformsWithoutOneWay();
-                    else await SetBelowRaycastToPlatforms();
+                    if (SetBelowRaycastToPlatformsWithoutOneWay) await OnSetBelowRaycastToBelowPlatformsWithoutOneWay();
+                    else await SetBelowRaycastToBelowPlatforms();
                     await SetBelowRaycastDistance();
                     if (BelowRaycastHit)
                     {
@@ -620,6 +568,7 @@ namespace VFEngine.Platformer
                 if (SmallestDistanceHitConnected)
                 {
                     await SetStandingOnOnSmallestHitConnected();
+                    
                     if (SetNotCollidingBelowOnSmallestHitConnected)
                     {
                         await OnSetNotCollidingBelow();
@@ -628,6 +577,7 @@ namespace VFEngine.Platformer
 
                     await SetNotFalling();
                     await SetCollidingBelow();
+                    
                     if (ApplySpeedToNewPositionY)
                     {
                         await OnApplySpeedToNewPositionY();
@@ -658,6 +608,11 @@ namespace VFEngine.Platformer
             await Yield();
         }
 
+        private async UniTask SetCurrentRaycastDirectionToDown()
+        {
+            await raycastController.OnPlatformerSetCurrentRaycastDirectionToDown();
+        }
+
         private async UniTask InitializeFriction()
         {
             await raycastController.OnPlatformerInitializeFriction();
@@ -683,9 +638,9 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetVerticalRaycastLength();
         }
 
-        private async UniTask OnSetDoubleVerticalRaycastLength()
+        private async UniTask OnSetVerticalRaycastLengthOnMovingPlatform()
         {
-            await raycastController.OnPlatformerSetDoubleVerticalRaycastLength();
+            await raycastController.OnPlatformerSetVerticalRaycastLengthOnMovingPlatform();
         }
 
         private async UniTask OnApplyNewPositionYToVerticalRaycastLength()
@@ -705,7 +660,7 @@ namespace VFEngine.Platformer
 
         private async UniTask SetRaysBelowPlatformsLayer()
         {
-            await layerMaskController.OnPlatformerSetRaysBelowPlatformers();
+            await layerMaskController.OnPlatformerSetRaysBelowPlatforms();
         }
 
         private async UniTask OnSetSavedBelowLayerToStandingOnLastFrame()
@@ -738,14 +693,14 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetBelowRaycastOrigin();
         }
 
-        private async UniTask OnSetBelowRaycastToPlatformsWithoutOneWay()
+        private async UniTask OnSetBelowRaycastToBelowPlatformsWithoutOneWay()
         {
-            await raycastController.OnPlatformerSetBelowRaycastToPlatformsWithoutOneWay();
+            await raycastController.OnPlatformerSetBelowRaycastToBelowPlatformsWithoutOneWay();
         }
 
-        private async UniTask SetBelowRaycastToPlatforms()
+        private async UniTask SetBelowRaycastToBelowPlatforms()
         {
-            await raycastController.OnPlatformerSetBelowRaycastToPlatforms();
+            await raycastController.OnPlatformerSetBelowRaycastToBelowPlatforms();
         }
 
         private async UniTask SetBelowRaycastDistance()
@@ -828,41 +783,269 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerMovingPlatformTest();
         }
 
+        private bool CannotDetach => !MovingPlatformNotNull;
+        private bool Detach => !CannotDetach;
+
         private async UniTask OnDetachFromMovingPlatform()
         {
-            // ---------------------------------
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // ---------------------------------
+            if (Detach)
+            {
+                await SetPhysicsOnDetachFromMovingPlatform();
+                await SetCollisionOnDetachFromMovingPlatform();
+            }
+
             await Yield();
         }
+
+        private async UniTask SetPhysicsOnDetachFromMovingPlatform()
+        {
+            await physicsController.OnPlatformerSetPhysicsOnDetachFromMovingPlatform();
+        }
+
+        private async UniTask SetCollisionOnDetachFromMovingPlatform()
+        {
+            await raycastController.OnPlatformerSetCollisionOnDetachFromMovingPlatform();
+        }
+
+        private float StickToSlopeOffsetY => raycastData.StickToSlopeOffsetY;
+        private bool IsJumping => physicsData.IsJumping;
+
+        private bool CannotStickToSlope => NewPosition.y >= StickToSlopeOffsetY ||
+                                           NewPosition.y <= -StickToSlopeOffsetY || IsJumping ||
+                                           !StickToSlopeBehavior || !GroundedLastFrame || ExternalForce.y > 0 ||
+                                           MovingPlatformNotNull && !(!GroundedLastFrame &&
+                                                                      StandingOnLastFrameNotNull &&
+                                                                      Stairs.Contains(StandingOnLastFrame.layer) &&
+                                                                      !IsJumping);
+
+        private bool StickToSlope => !CannotStickToSlope;
+        private float StickToSlopeRayLength => raycastData.StickToSlopeRayLength;
+        private bool UpdateStickToSlopeRayLength => StickToSlopeRayLength == 0;
+        private Vector3 CrossBelowSlopeAngleLeft => raycastData.CrossBelowSlopeAngleLeft;
+        private bool SetNegativeBelowSlopeAngleLeft => CrossBelowSlopeAngleLeft.z < 0;
+        private Vector3 CrossBelowSlopeAngleRight => raycastData.CrossBelowSlopeAngleRight;
+        private bool SetNegativeBelowSlopeAngleRight => CrossBelowSlopeAngleRight.z < 0;
+        private float BelowSlopeAngleLeft => raycastData.BelowSlopeAngleLeft;
+        private float BelowSlopeAngleRight => raycastData.BelowSlopeAngleRight;
+        private float Tolerance => Data.Tolerance;
+
+        private bool SetStickToSlopeRaycastPropertiesOnSlope =>
+            Abs(BelowSlopeAngleLeft - BelowSlopeAngleRight) < Tolerance;
+
+        private bool SetStickToSlopeRaycastPropertiesOnRightSlopeOnLeftGround =>
+            BelowSlopeAngleLeft == 0 && BelowSlopeAngleRight != 0;
+
+        private bool SetStickToSlopeRaycastPropertiesOnLeftSlopeOnRightGround =>
+            BelowSlopeAngleLeft != 0 && BelowSlopeAngleRight == 0;
+
+        private bool SetStickToSlopeRaycastPropertiesOnSlopes => BelowSlopeAngleLeft != 0 && BelowSlopeAngleRight != 0;
+        private bool SetStickToSlopeRaycastOnMaximumAngle => BelowSlopeAngleLeft > 0 && BelowSlopeAngleRight < 0;
+        private RaycastHit2D StickToSlopeRaycast => raycastData.StickToSlopeRaycast;
 
         private async UniTask OnStickToSlopeBehavior()
         {
-            // ---------------------------------
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // |
-            // ---------------------------------
+            if (StickToSlope)
+            {
+                await InitializeStickToSlopesRayLength();
+                if (UpdateStickToSlopeRayLength) await OnUpdateStickToSlopesRayLength();
+                else await SetRayLengthToStickToSlopes();
+                await SetStickToSlopesRaycastProperties();
+                if (SetNegativeBelowSlopeAngleLeft) await OnSetNegativeBelowSlopeAngleLeft();
+                if (SetNegativeBelowSlopeAngleRight) await OnSetNegativeBelowSlopeAngleRight();
+                await UpdateStickToSlopesRaycastProperties();
+                if (SetStickToSlopeRaycastPropertiesOnSlope) await OnSetStickToSlopesRaycastPropertiesOnSlope();
+                if (SetStickToSlopeRaycastPropertiesOnRightSlopeOnLeftGround)
+                    await OnSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround();
+                if (SetStickToSlopeRaycastPropertiesOnLeftSlopeOnRightGround)
+                    await OnSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround();
+                if (SetStickToSlopeRaycastPropertiesOnSlopes) await OnSetStickToSlopesRaycastPropertiesOnSlopes();
+                if (SetStickToSlopeRaycastOnMaximumAngle)
+                {
+                    await OnSetStickToSlopesRaycastOnMaximumAngle();
+                    await OnStickToSlopeRaycastHit();
+                }
+
+                await SetStickToSlopeRaycastWithCastLeft();
+                await OnStickToSlopeRaycastHit();
+            }
+
             await Yield();
         }
 
+        private async UniTask InitializeStickToSlopesRayLength()
+        {
+            await raycastController.OnPlatformerInitializeStickToSlopesRayLength();
+        }
+
+        private async UniTask OnUpdateStickToSlopesRayLength()
+        {
+            await raycastController.OnPlatformerUpdateStickToSlopesRayLength();
+        }
+
+        private async UniTask SetRayLengthToStickToSlopes()
+        {
+            await raycastController.OnPlatformerSetRayLengthToStickToSlopes();
+        }
+
+        private async UniTask SetStickToSlopesRaycastProperties()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastProperties();
+        }
+
+        private async UniTask OnSetNegativeBelowSlopeAngleLeft()
+        {
+            await raycastController.OnPlatformerSetNegativeBelowSlopeAngleLeft();
+        }
+
+        private async UniTask OnSetNegativeBelowSlopeAngleRight()
+        {
+            await raycastController.OnPlatformerSetNegativeBelowSlopeAngleRight();
+        }
+
+        private async UniTask UpdateStickToSlopesRaycastProperties()
+        {
+            await raycastController.OnPlatformerUpdateStickToSlopesRaycastProperties();
+        }
+
+        private async UniTask OnSetStickToSlopesRaycastPropertiesOnSlope()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnSlope();
+        }
+
+        private async UniTask OnSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround();
+        }
+
+        private async UniTask OnSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround();
+        }
+
+        private async UniTask OnSetStickToSlopesRaycastPropertiesOnSlopes()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnSlopes();
+        }
+
+        private async UniTask OnSetStickToSlopesRaycastOnMaximumAngle()
+        {
+            await raycastController.OnPlatformerSetStickToSlopesRaycastOnMaximumAngle();
+        }
+
+        private bool StickToSlopeRaycastHit => StickToSlopeRaycast && StickToSlopeRaycast.collider != IgnoredCollider;
+
+        private async UniTask OnStickToSlopeRaycastHit()
+        {
+            if (StickToSlopeRaycastHit)
+            {
+                await SetNewPositionYOnStickToSlopeRaycastHit();
+                await SetCollisionOnStickToSlopeRaycastHit();
+            }
+
+            await Yield();
+        }
+
+        private async UniTask SetNewPositionYOnStickToSlopeRaycastHit()
+        {
+            await physicsController.OnPlatformerSetNewPositionYOnStickToSlopeRaycastHit();
+        }
+
+        private async UniTask SetCollisionOnStickToSlopeRaycastHit()
+        {
+            await raycastController.OnPlatformerSetCollisionOnStickToSlopeRaycastHit();
+        }
+
+        private async UniTask SetStickToSlopeRaycastWithCastLeft()
+        {
+            await raycastController.OnPlatformerSetStickToSlopeRaycastWithCastLeft();
+        }
+
+        private RaycastHit2D[] AboveHitStorage => raycastData.AboveHitStorage;
+        private bool ResizeAboveHitStorage => AboveHitStorage.Length != NumberOfVerticalRays;
+        private bool AboveRaycastHit => AboveHitStorage[Index];
+        private bool AboveRaycastHitIgnoredCollider => AboveHitStorage[Index].collider == IgnoredCollider;
+        private float CurrentAboveHitStorageDistance => AboveHitStorage[Index].distance;
+        private bool SetSmallestDistanceToAboveRaycastHitDistance => CurrentAboveHitStorageDistance < SmallestDistance;
+        private bool AboveRaycastSmallestDistanceHit => Data.SmallestDistanceHitConnected;
+        private bool StopNewPositionYOnAboveRaycastSmallestDistanceHit => IsGrounded && NewPosition.y < 0;
+        private bool SetSpeedOnAboveRaycastSmallestDistanceHit => !CollidedWithCeilingLastFrame;
+
         private async UniTask CastRaysAbove()
         {
+            await SetCurrentRaycastDirectionToUp();
+            await SetAboveRaycast();
+            if (ResizeAboveHitStorage) await OnResizeAboveHitStorage();
+            InitializeSmallestDistanceProperties();
+            for (var i = 0; i < NumberOfVerticalRays; i++)
+            {
+                SetIndex(i);
+                await SetAboveRaycastOrigin();
+                if (!AboveRaycastHit) continue;
+                SetSmallestDistancePropertiesOnAboveRaycastHit(i);
+                if (AboveRaycastHitIgnoredCollider) break;
+                if (SetSmallestDistanceToAboveRaycastHitDistance) OnSetSmallestDistanceToAboveRaycastHitDistance();
+            }
+
+            if (AboveRaycastSmallestDistanceHit)
+            {
+                await SetNewPositionYOnAboveRaycastSmallestDistanceHit();
+                if (StopNewPositionYOnAboveRaycastSmallestDistanceHit) await OnStopNewPositionY();
+                await SetCollisionOnAboveRaycastSmallestDistanceHit();
+                if (SetSpeedOnAboveRaycastSmallestDistanceHit) await OnSetSpeedOnAboveRaycastSmallestDistanceHit();
+                await StopForcesY();
+            }
+
             await Yield();
+        }
+
+        private async UniTask SetCurrentRaycastDirectionToUp()
+        {
+            await raycastController.OnPlatformerSetCurrentRaycastDirectionToUp();
+        }
+
+        private async UniTask SetAboveRaycast()
+        {
+            await raycastController.OnPlatformerSetAboveRaycast();
+        }
+
+        private async UniTask OnResizeAboveHitStorage()
+        {
+            await raycastController.OnPlatformerResizeAboveHitStorage();
+        }
+
+        private async UniTask SetAboveRaycastOrigin()
+        {
+            await raycastController.OnPlatformerSetAboveRaycastOrigin();
+        }
+
+        private void SetSmallestDistancePropertiesOnAboveRaycastHit(int index)
+        {
+            Data.OnSetSmallestDistancePropertiesOnAboveRaycastHit(index);
+        }
+
+        private void OnSetSmallestDistanceToAboveRaycastHitDistance()
+        {
+            Data.OnSetSmallestDistance(CurrentAboveHitStorageDistance);
+        }
+
+        private async UniTask SetNewPositionYOnAboveRaycastSmallestDistanceHit()
+        {
+            await physicsController.OnPlatformerSetNewPositionYOnAboveRaycastSmallestDistanceHit();
+        }
+
+        private async UniTask SetCollisionOnAboveRaycastSmallestDistanceHit()
+        {
+            await raycastController.OnPlatformerSetCollisionOnAboveRaycastSmallestDistanceHit();
+        }
+
+        private async UniTask OnSetSpeedOnAboveRaycastSmallestDistanceHit()
+        {
+            await physicsController.OnPlatformerSetSpeedOnAboveRaycastSmallestDistanceHit();
+        }
+
+        private async UniTask StopForcesY()
+        {
+            await physicsController.OnPlatformerStopForcesY();
         }
 
         private bool PerformSafetyBoxcast => raycastData.PerformSafetyBoxcast;
