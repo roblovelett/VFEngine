@@ -3,6 +3,8 @@ using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Tools;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
     using static ScriptableObjectExtensions;
@@ -24,19 +26,19 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         #region properties
 
-        public Vector2 Speed { get; private set; }
         public bool GravityActive => state.GravityActive;
-        public float FallSlowFactor { get; private set; }
-        public int MovementDirection { get; private set; }
-        public Vector2 NewPosition { get; private set; }
+        public bool IsFalling => state.IsFalling;
+        public bool IsJumping => state.IsJumping;
         public bool Physics2DInteraction { get; private set; }
+        public bool StickToSlopeBehavior { get; private set; }
+        public int MovementDirection { get; private set; }
         public float MovementDirectionThreshold { get; private set; }
-        public Vector2 ExternalForce { get; private set; }
+        public float FallSlowFactor { get; private set; }
         public float MaximumSlopeAngle { get; private set; }
         public float Gravity { get; private set; }
-        public bool IsFalling => state.IsFalling;
-        public bool StickToSlopeBehavior { get; private set; }
-        public bool IsJumping => state.IsJumping;
+        public Vector2 Speed { get; private set; }
+        public Vector2 NewPosition { get; private set; }
+        public Vector2 ExternalForce { get; private set; }
 
         #endregion
 
@@ -247,7 +249,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SetSpeed(SpeedClampedToMaximumVelocity);
         }
 
-        private float SpeedAxisClamped(float speedAxis, float maximumVelocityAxis)
+        private static float SpeedAxisClamped(float speedAxis, float maximumVelocityAxis)
         {
             return Clamp(speedAxis, -maximumVelocityAxis, maximumVelocityAxis);
         }
@@ -312,7 +314,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             state.GravityActive = active;
         }
 
-        private float NewPositionOnMovingPlatformY(float movingPlatformCurrentSpeedY)
+        private static float NewPositionOnMovingPlatformY(float movingPlatformCurrentSpeedY)
         {
             return movingPlatformCurrentSpeedY * deltaTime;
         }
@@ -356,7 +358,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             SetMovementDirection(MovementDirectionOnMovingPlatform(movingPlatformCurrentSpeedX));
         }
 
-        private int MovementDirectionOnMovingPlatform(float movingPlatformCurrentSpeedX)
+        private static int MovementDirectionOnMovingPlatform(float movingPlatformCurrentSpeedX)
         {
             return (int) Sign(movingPlatformCurrentSpeedX);
         }
@@ -609,7 +611,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             UpdateWorldSpeed();
         }
 
-        public void OnTranslateMovingPlatformSpeedToTransform(ref GameObject character,
+        public static void OnTranslateMovingPlatformSpeedToTransform(ref GameObject character,
             Vector2 movingPlatformCurrentSpeed)
         {
             TranslateMovingPlatformSpeedToTransform(ref character, movingPlatformCurrentSpeed);

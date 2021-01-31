@@ -471,6 +471,12 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
+        private async UniTask SetStandingOnLastFrameNotNull()
+        {
+            Data.OnSetStandingOnLastFrameNotNull();
+            await Yield();
+        }
+
         #endregion
 
         #region event handlers
@@ -778,6 +784,11 @@ namespace VFEngine.Platformer.Event.Raycast
         public async UniTask OnPlatformerSetStandingOnColliderContainsBottomCenterPosition()
         {
             await SetStandingOnColliderContainsBottomCenterPosition();
+        }
+
+        public async UniTask OnPlatformerSetStandingOnLastFrameNotNull()
+        {
+            await SetStandingOnLastFrameNotNull();
         }
 
         #endregion

@@ -16,6 +16,7 @@
         public const string PlatformerRaycastSettingsPath = "VFEngine/Platformer/Event/Raycast/ScriptableObjects/Raycast Settings";
         public const string PlatformerPhysicsDataPath = "VFEngine/Platformer/Physics/ScriptableObjects/Physics Data";
         public const string PlatformerPhysicsSettingsPath = "VFEngine/Platformer/Physics/ScriptableObjects/Physics Settings";
+        public const string PlatformerCharacterSettingsPath = "VFEngine/Platformer/Physics/Character/Character Settings";
 
         #endregion
     }

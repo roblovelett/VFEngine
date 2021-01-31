@@ -176,7 +176,7 @@ namespace VFEngine.Platformer.Physics
 
         private async UniTask TranslateMovingPlatformSpeedToTransform()
         {
-            Data.OnTranslateMovingPlatformSpeedToTransform(ref character, MovingPlatformCurrentSpeed);
+            PhysicsData.OnTranslateMovingPlatformSpeedToTransform(ref character, MovingPlatformCurrentSpeed);
             await Yield();
         }
 

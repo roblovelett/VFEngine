@@ -478,7 +478,7 @@ namespace VFEngine.Platformer
                                                                 StandingOnLastFrameNotNull && GroundedLastFrame;
 
         private bool StandingOnColliderContainsBottomCenterPosition =>
-            raycastData.StandingOnColliderContainsBottomCenterPosition;
+            raycastData.StandingOnContainsBottomCenter;
 
         private bool StairsContainsStandingOnLastFrame => layerMaskData.StairsContainsStandingOnLastFrame;
 
@@ -532,6 +532,7 @@ namespace VFEngine.Platformer
                 await SetVerticalRaycast();
                 if (ResizeBelowHitStorage) await OnResizeBelowHitStorage();
                 await SetRaysBelowPlatformsLayer();
+                await SetStandingOnLastFrameNotNull();
                 if (SetSavedBelowLayerToStandingOnLastFrame)
                 {
                     await OnSetSavedBelowLayerToStandingOnLastFrame();
@@ -659,6 +660,11 @@ namespace VFEngine.Platformer
         private async UniTask SetRaysBelowPlatformsLayer()
         {
             await layerMaskController.OnPlatformerSetRaysBelowPlatforms();
+        }
+
+        private async UniTask SetStandingOnLastFrameNotNull()
+        {
+            await raycastController.OnPlatformerSetStandingOnLastFrameNotNull();
         }
 
         private async UniTask OnSetSavedBelowLayerToStandingOnLastFrame()

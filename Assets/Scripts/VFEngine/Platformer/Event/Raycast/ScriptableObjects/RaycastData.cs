@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VFEngine.Platformer.Physics.Friction;
 using VFEngine.Platformer.Physics.MovingPlatform;
@@ -33,52 +35,50 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         #region properties
 
         public bool CastRaysOnBothSides { get; private set; }
-        public float MovingPlatformCurrentGravity { get; private set; }
         public bool PerformSafetyBoxcast { get; private set; }
-        public RaycastHit2D SafetyBoxcastHit => collision.SafetyBoxcast;
-        public bool IsGrounded => collision.IsGrounded;
-        public bool OnMovingPlatform => collision.OnMovingPlatform;
-        public float BelowSlopeAngle => collision.BelowSlopeAngle;
+        public int NumberOfHorizontalRays { get; private set; }
+        public int NumberOfVerticalRays { get; private set; }
+        public float DistanceToGroundRaycastMaximumLength { get; private set; }
+        public float StickToSlopeOffsetY { get; private set; }
+        public float RayOffset { get; private set; }
+        public Vector2 HorizontalRaycastFromBottom => collision.HorizontalRaycastFromBottom;
+        public Vector2 HorizontalRaycastToTop => collision.HorizontalRaycastToTop;
+        public Vector2 RaycastOrigin => collision.RaycastOrigin;
         public bool GroundedLastFrame => collision.GroundedLastFrame;
         public bool CollidingAbove => collision.Above;
         public bool Colliding => collision.Colliding;
-        public IEnumerable<RaycastHit2D> ContactList => collision.ContactList;
-        public float DistanceToGroundRaycastMaximumLength { get; private set; }
-        public RaycastHit2D DistanceToGroundRaycastHit => collision.DistanceToGroundRaycast;
-        public Collider2D IgnoredCollider => collision.IgnoredCollider;
-        public GameObject StandingOnLastFrame => collision.StandingOnLastFrame;
-        public bool StandingOnLastFrameNotNull => collision.StandingOnLastFrame != null;
+        public bool StandingOnContainsBottomCenter => collision.StandingOnContainsBottomCenter;
+        public bool StandingOnLastFrameNotNull => collision.StandingOnLastFrameNotNull;
+        public bool IsGrounded => collision.IsGrounded;
+        public bool OnMovingPlatform => collision.OnMovingPlatform;
         public bool MovingPlatformNotNull => collision.MovingPlatformNotNull;
-        public Vector2 MovingPlatformCurrentSpeed => collision.MovingPlatformCurrentSpeed;
         public bool CollidedWithCeilingLastFrame => collision.CollidedWithCeilingLastFrame;
-        public Direction CurrentDirection { get; private set; }
-        public RaycastHit2D[] HorizontalHitStorage => collision.HorizontalHitStorage;
-        public int NumberOfHorizontalRays { get; private set; }
+        public bool FrictionNotNull => collision.FrictionNotNull;
+        public float MovingPlatformCurrentGravity => collision.MovingPlatformCurrentGravity;
+        public float BelowSlopeAngle => collision.BelowSlopeAngle;
         public float HorizontalHitAngle => collision.HorizontalHitAngle;
-        public int NumberOfVerticalRays { get; private set; }
-        public RaycastHit2D[] BelowHitStorage => collision.BelowHitStorage;
-        public Collider2D StandingOnCollider => collision.StandingOnCollider;
-        //public Vector2 ColliderBottomCenterPosition { get; private set; }
-        public Vector3 CrossBelowSlopeAngle => collision.CrossBelowSlopeAngle;
         public float BelowRaycastDistance => collision.BelowDistance;
         public float BoundsHeight => bounds.Height;
-        public GameObject StandingOn => collision.StandingOn;
-        public bool FrictionNotNull => collision.FrictionNotNull;
         public float Friction => collision.Friction;
-        public float StickToSlopeOffsetY { get; private set; }
-        public float StickToSlopeRayLength { get; private set; }
-        public Vector3 CrossBelowSlopeAngleLeft => collision.CrossBelowSlopeAngleLeft;
-        public Vector3 CrossBelowSlopeAngleRight => collision.CrossBelowSlopeAngleRight;
         public float BelowSlopeAngleLeft => collision.BelowSlopeAngleLeft;
         public float BelowSlopeAngleRight => collision.BelowSlopeAngleRight;
-        public RaycastHit2D StickToSlopeRaycast => collision.StickToSlopeRaycast;
-        public RaycastHit2D[] AboveHitStorage => collision.AboveHitStorage;
-        public Vector2 HorizontalRaycastFromBottom { get; private set; }
-        public Vector2 HorizontalRaycastToTop { get; private set; }
         public float BoundsWidth => bounds.Width;
-        public float RayOffset { get; private set; }
-        public Vector2 RaycastOrigin { get; private set; }
-        public bool StandingOnColliderContainsBottomCenterPosition { get; private set; }
+        public Vector2 MovingPlatformCurrentSpeed => collision.MovingPlatformCurrentSpeed;
+        public Vector3 CrossBelowSlopeAngle => collision.CrossBelowSlopeAngle;
+        public Vector3 CrossBelowSlopeAngleLeft => collision.CrossBelowSlopeAngleLeft;
+        public Vector3 CrossBelowSlopeAngleRight => collision.CrossBelowSlopeAngleRight;
+        public GameObject StandingOnLastFrame => collision.StandingOnLastFrame;
+        public GameObject StandingOn => collision.StandingOn;
+        public Collider2D IgnoredCollider => collision.IgnoredCollider;
+        public Collider2D StandingOnCollider => collision.StandingOnCollider;
+        public RaycastHit2D SafetyBoxcastHit => collision.SafetyBoxcast;
+        public RaycastHit2D DistanceToGroundRaycastHit => collision.DistanceToGroundRaycast;
+        public RaycastHit2D StickToSlopeRaycast => collision.StickToSlopeRaycast;
+        public RaycastHit2D[] HorizontalHitStorage => collision.HorizontalHitStorage;
+        public RaycastHit2D[] BelowHitStorage => collision.BelowHitStorage;
+        public RaycastHit2D[] AboveHitStorage => collision.AboveHitStorage;
+        public IEnumerable<RaycastHit2D> ContactList => collision.ContactList;
+        public Direction CurrentDirection => collision.CurrentRaycastDirection;
 
         public enum Direction
         {
@@ -109,6 +109,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private float horizontalRaycastLength;
         private float verticalRaycastLength;
         private float aboveRaycastLength;
+        private float stickToSlopeRayLength;
         private Vector2 verticalRaycastFromLeft;
         private Vector2 verticalRaycastToRight;
         private Vector2 aboveRaycastStart;
@@ -118,53 +119,59 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private struct Collision
         {
+            public bool StandingOnContainsBottomCenter { get; set; }
+            public bool StandingOnLastFrameNotNull { get; set; }
             public bool FrictionNotNull { get; set; }
             public bool MovingPlatformNotNull { get; set; }
             public bool Right { get; set; }
             public bool Left { get; set; }
             public bool Above { get; set; }
             public bool Below { get; set; }
+            public bool PassedSlopeAngle { get; set; }
+            public bool OnMovingPlatform { get; set; }
+            public bool IsGrounded => Below;
+            public bool GroundedLastFrame { get; private set; }
+            public bool CollidedWithCeilingLastFrame { get; private set; }
+            public bool GroundedEvent { get; set; }
+            public bool StickToSlopeRaycastCastingLeft { get; set; }
+            public bool CastStickToSlopeRaycastLeft { get; set; }
+            public bool AboveRaycastHitConnected { get; set; }
             public bool Colliding => Right || Left || Above || Below;
             public float DistanceToLeftCollider { get; set; }
             public float DistanceToRightCollider { get; set; }
             public float LateralSlopeAngle { get; set; }
             public float BelowSlopeAngle { get; set; }
-            public bool PassedSlopeAngle { get; set; }
-            public bool OnMovingPlatform { get; set; }
-            public bool IsGrounded => Below;
-            public bool GroundedLastFrame { get; set; }
-            public bool CollidedWithCeilingLastFrame { get; set; }
-            public bool GroundedEvent { get; set; }
-            public GameObject StandingOn { get; set; }
-            public GameObject StandingOnLastFrame { get; set; }
-            public Collider2D StandingOnCollider { get; set; }
-            public GameObject CurrentWallCollider { get; set; }
-            public FrictionController FrictionController { get; set; }
             public float Friction { get; set; }
             public float DistanceToGround { get; set; }
             public float BelowDistance { get; set; }
             public float HorizontalHitAngle { get; set; }
             public float MovingPlatformCurrentGravity { get; set; }
-            public Collider2D IgnoredCollider { get; set; }
+            public float BelowSlopeAngleLeft { get; set; }
+            public float BelowSlopeAngleRight { get; set; }
+            public Vector2 RaycastOrigin { get; set; }
+            public Vector2 HorizontalRaycastToTop { get; set; }
+            public Vector2 HorizontalRaycastFromBottom { get; set; }
+            public Vector2 MovingPlatformCurrentSpeed { get; set; }
             public Vector3 CrossBelowSlopeAngle { get; set; }
             public Vector3 CrossBelowSlopeAngleLeft { get; set; }
             public Vector3 CrossBelowSlopeAngleRight { get; set; }
-            public bool CastStickToSlopeRaycastLeft { get; set; }
-            public bool AboveRaycastHitConnected { get; set; }
-            public float BelowSlopeAngleLeft { get; set; }
-            public float BelowSlopeAngleRight { get; set; }
-            public MovingPlatformController MovingPlatformController { get; set; }
-            public Vector2 MovingPlatformCurrentSpeed { get; set; }
-            public RaycastHit2D[] HorizontalHitStorage { get; set; }
-            public RaycastHit2D[] BelowHitStorage { get; set; }
-            public RaycastHit2D[] AboveHitStorage { get; set; }
+            public GameObject StandingOn { get; set; }
+            public GameObject StandingOnLastFrame { get; private set; }
+            [CanBeNull] public GameObject CurrentWallCollider { get; set; }
+            public Collider2D StandingOnCollider { get; set; }
+            public Collider2D IgnoredCollider { get; set; }
             public RaycastHit2D StickToSlopeRaycast { get; set; }
-            public bool StickToSlopeRaycastCastingLeft { get; set; }
             public RaycastHit2D LeftStickToSlopeRaycast { get; set; }
             public RaycastHit2D RightStickToSlopeRaycast { get; set; }
             public RaycastHit2D DistanceToGroundRaycast { get; set; }
             public RaycastHit2D SafetyBoxcast { get; set; }
+            public RaycastHit2D[] HorizontalHitStorage { get; set; }
+            public RaycastHit2D[] BelowHitStorage { get; set; }
+            public RaycastHit2D[] AboveHitStorage { get; set; }
             public List<RaycastHit2D> ContactList { get; set; }
+            public FrictionController FrictionController { get; set; }
+            public MovingPlatformController MovingPlatformController { get; set; }
+            public Direction CurrentRaycastDirection { get; set; }
 
             public void Reset()
             {
@@ -228,7 +235,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             CastRaysOnBothSides = settings.castRaysOnBothSides;
             DistanceToGroundRaycastMaximumLength = settings.distanceToGroundRaycastMaximumLength;
             PerformSafetyBoxcast = settings.performSafetyBoxcast;
-            StickToSlopeRayLength = settings.stickToSlopeRaycastLength;
+            stickToSlopeRayLength = settings.stickToSlopeRaycastLength;
             StickToSlopeOffsetY = settings.stickToSlopeOffsetY;
             obstacleHeightTolerance = settings.obstacleHeightTolerance;
         }
@@ -242,26 +249,27 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             originalColliderSize = collider.size;
             originalColliderOffset = collider.offset;
             if (DisplayBoxColliderWarning) LogWarning("collider x offset must be zero.");
-            collision.Friction = 0;
+            SetFriction(0);
             collision.ContactList = new List<RaycastHit2D>();
-            collision.HorizontalHitStorage = new RaycastHit2D[NumberOfHorizontalRays];
-            collision.BelowHitStorage = new RaycastHit2D[NumberOfVerticalRays];
-            collision.AboveHitStorage = new RaycastHit2D[NumberOfVerticalRays];
-            collision.CurrentWallCollider = null;
+            SetHorizontalHitStorage(new RaycastHit2D[NumberOfHorizontalRays]);
+            SetBelowHitStorage(new RaycastHit2D[NumberOfVerticalRays]);
+            SetAboveHitStorage(new RaycastHit2D[NumberOfVerticalRays]);
+            SetCurrentWallColliderNull();
             collision.Reset();
             UpdateBounds(collider, character);
-            bounds.RaycastBounds = new Vector2(bounds.Width, bounds.Height);
-            bounds.Top = (bounds.TopLeft + bounds.TopRight) / 2;
-            bounds.Bottom = (bounds.BottomLeft + bounds.BottomRight) / 2;
-            bounds.Right = (bounds.TopRight + bounds.BottomRight) / 2;
-            bounds.Left = (bounds.TopLeft + bounds.BottomLeft) / 2;
-            HorizontalRaycastFromBottom = zero;
-            HorizontalRaycastToTop = zero;
-            verticalRaycastFromLeft = zero;
-            verticalRaycastToRight = zero;
-            aboveRaycastStart = zero;
-            aboveRaycastEnd = zero;
-            RaycastOrigin = zero;
+            SetRaycastBounds(new Vector2(bounds.Width, bounds.Height));
+            SetBoundsTop((bounds.TopLeft + bounds.TopRight) / 2);
+            SetBoundsBottom((bounds.BottomLeft + bounds.BottomRight) / 2);
+            SetBoundsRight((bounds.TopRight + bounds.BottomRight) / 2);
+            SetBoundsLeft((bounds.TopLeft + bounds.BottomLeft) / 2);
+            SetHorizontalRaycastFromBottom(zero);
+            SetHorizontalRaycastToTop(zero);
+            SetVerticalRaycastFromLeft(zero);
+            SetVerticalRaycastToRight(zero);
+            SetAboveRaycastStart(zero);
+            SetAboveRaycastEnd(zero);
+            SetRaycastOrigin(zero);
+            SetCurrentRaycastDirection(None);
         }
 
         #endregion
@@ -272,10 +280,34 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         #region private methods
 
+        private void SetRaycastBounds(Vector2 raycastBounds)
+        {
+            bounds.RaycastBounds = raycastBounds;
+        }
+
+        private void SetBoundsTop(Vector2 top)
+        {
+            bounds.Top = top;
+        }
+
+        private void SetBoundsBottom(Vector2 bottom)
+        {
+            bounds.Bottom = bottom;
+        }
+
+        private void SetBoundsRight(Vector2 right)
+        {
+            bounds.Right = right;
+        }
+
+        private void SetBoundsLeft(Vector2 left)
+        {
+            bounds.Left = left;
+        }
+
         private void UpdateBounds(BoxCollider2D collider, GameObject character)
         {
             var boundsInternal = collider.bounds;
-            
             var offset = collider.offset;
             var size = collider.size;
             var top = offset.y + size.y / 2f;
@@ -296,7 +328,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             SetBoundsCenter(center);
             SetBoundsBottomCenter(bottomCenter);
         }
-        
+
         private void SetBoundsBottomCenter(Vector2 bottomCenter)
         {
             bounds.BottomCenter = bottomCenter;
@@ -437,8 +469,8 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private RaycastHit2D DistanceToGroundRaycast(GameObject character, LayerMask belowPlatforms)
         {
-            return RayCast(RaycastOrigin, -character.transform.up, DistanceToGroundRaycastMaximumLength, belowPlatforms,
-                blue, drawRaycastGizmosControl);
+            return RayCast(collision.RaycastOrigin, -character.transform.up, DistanceToGroundRaycastMaximumLength,
+                belowPlatforms, blue, drawRaycastGizmosControl);
         }
 
         private void SetDistanceToGroundRaycast(RaycastHit2D raycast)
@@ -448,7 +480,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetRaycastOrigin(Vector2 origin)
         {
-            RaycastOrigin = origin;
+            collision.RaycastOrigin = origin;
         }
 
         private static RaycastHit2D RayCast(Vector2 origin, Vector2 direction, float distance, LayerMask layer,
@@ -504,17 +536,17 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetCurrentRaycastDirectionToLeft()
         {
-            SetDirection(Left);
+            SetCurrentRaycastDirection(Left);
         }
 
         private void SetCurrentRaycastDirectionToRight()
         {
-            SetDirection(Right);
+            SetCurrentRaycastDirection(Right);
         }
 
-        private void SetDirection(Direction direction)
+        private void SetCurrentRaycastDirection(Direction direction)
         {
-            CurrentDirection = direction;
+            collision.CurrentRaycastDirection = direction;
         }
 
         private void SetHorizontalRaycast(GameObject character, float speedX)
@@ -555,12 +587,12 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetHorizontalRaycastFromBottom(Vector2 raycast)
         {
-            HorizontalRaycastFromBottom = raycast;
+            collision.HorizontalRaycastFromBottom = raycast;
         }
 
         private void SetHorizontalRaycastToTop(Vector2 raycast)
         {
-            HorizontalRaycastToTop = raycast;
+            collision.HorizontalRaycastToTop = raycast;
         }
 
         private void SetHorizontalRaycastLength(float length)
@@ -585,7 +617,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private Vector2 HorizontalRaycastOrigin(int index)
         {
-            return Lerp(HorizontalRaycastFromBottom, HorizontalRaycastToTop,
+            return Lerp(collision.HorizontalRaycastFromBottom, collision.HorizontalRaycastToTop,
                 index / (float) (NumberOfHorizontalRays - 1));
         }
 
@@ -657,7 +689,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             get
             {
-                switch (CurrentDirection)
+                switch (collision.CurrentRaycastDirection)
                 {
                     case Left:
                     case Down: return -1;
@@ -675,8 +707,13 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetHorizontalHitStorage(int index, Vector2 direction, LayerMask layer)
         {
-            collision.HorizontalHitStorage[index] = RayCast(RaycastOrigin, direction, horizontalRaycastLength, layer,
-                blue, drawRaycastGizmosControl);
+            collision.HorizontalHitStorage[index] = RayCast(collision.RaycastOrigin, direction, horizontalRaycastLength,
+                layer, blue, drawRaycastGizmosControl);
+        }
+
+        private void SetHorizontalHitStorage(RaycastHit2D[] hitStorage)
+        {
+            collision.HorizontalHitStorage = hitStorage;
         }
 
         private void SetHorizontalRaycastForSpecialPlatforms(int index, GameObject character, LayerMask layer1,
@@ -698,7 +735,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetCollisionOnHitWall(int index)
         {
-            if (CurrentDirection == Left) SetCollisionLeftOnHitWall(index);
+            if (collision.CurrentRaycastDirection == Left) SetCollisionLeftOnHitWall(index);
             else SetCollisionRightOnHitWall(index);
         }
 
@@ -750,6 +787,11 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
             collision.CurrentWallCollider = wallCollider;
         }
 
+        private void SetCurrentWallColliderNull()
+        {
+            collision.CurrentWallCollider = null;
+        }
+
         private void AddHorizontalContact(int index)
         {
             collision.ContactList.Add(HorizontalHitStorage[index]);
@@ -757,7 +799,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetCurrentRaycastDirectionToDown()
         {
-            SetDirection(Down);
+            SetCurrentRaycastDirection(Down);
         }
 
         private void InitializeFriction()
@@ -863,8 +905,8 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetBelowHitStorage(int index, GameObject character, LayerMask layer)
         {
-            collision.BelowHitStorage[index] = RayCast(RaycastOrigin, -character.transform.up, verticalRaycastLength,
-                layer, blue, drawRaycastGizmosControl);
+            collision.BelowHitStorage[index] = RayCast(collision.RaycastOrigin, -character.transform.up,
+                verticalRaycastLength, layer, blue, drawRaycastGizmosControl);
         }
 
         private void SetBelowRaycastToBelowPlatforms(int index, GameObject character, LayerMask layer)
@@ -960,7 +1002,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetStickToSlopeRayLength(float length)
         {
-            StickToSlopeRayLength = length;
+            stickToSlopeRayLength = length;
         }
 
         private void SetStickToSlopeRayLengthInternal(float maximumSlopeAngle)
@@ -1001,7 +1043,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private RaycastHit2D StickToSlopeRaycastInternal(GameObject character, LayerMask layer)
         {
-            return RayCast(RaycastOrigin, -character.transform.up, StickToSlopeRayLength, layer, cyan,
+            return RayCast(collision.RaycastOrigin, -character.transform.up, stickToSlopeRayLength, layer, cyan,
                 drawRaycastGizmosControl);
         }
 
@@ -1119,7 +1161,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             var transformUp = character.transform.up;
             return BoxCast(bounds.Center, bounds.BoundsInternal, Angle(transformUp, up), -transformUp,
-                StickToSlopeRayLength, layer, red, drawRaycastGizmosControl);
+                stickToSlopeRayLength, layer, red, drawRaycastGizmosControl);
         }
 
         private void SetStickToSlopeRaycast(RaycastHit2D raycast)
@@ -1143,7 +1185,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private void SetCurrentRaycastDirectionToUp()
         {
-            SetDirection(Up);
+            SetCurrentRaycastDirection(Up);
         }
 
         private void SetAboveRaycast(Vector2 newPosition, GameObject character) //float newPositionY)
@@ -1212,7 +1254,7 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 
         private RaycastHit2D AboveRaycast(GameObject character, LayerMask layer)
         {
-            return RayCast(RaycastOrigin, character.transform.up, aboveRaycastLength, layer, cyan,
+            return RayCast(collision.RaycastOrigin, character.transform.up, aboveRaycastLength, layer, cyan,
                 drawRaycastGizmosControl);
         }
 
@@ -1239,11 +1281,24 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         private void SetStandingOnColliderContainsBottomCenterPosition()
         {
             var bottomCenter = new Vector3(bounds.BottomCenter.x, bounds.BottomCenter.y, 0);
-            if (collision.StandingOnCollider == null) StandingOnColliderContainsBottomCenterPosition = false;
-            else if (collision.StandingOnCollider.bounds.Contains(bottomCenter)) StandingOnColliderContainsBottomCenterPosition = true;
-            else StandingOnColliderContainsBottomCenterPosition = false;
+            if (collision.StandingOnCollider == null)
+                SetStandingOnColliderContainsBottomCenterPosition(
+                    false); //StandingOnColliderContainsBottomCenterPosition = false;
+            else if (collision.StandingOnCollider.bounds.Contains(bottomCenter))
+                SetStandingOnColliderContainsBottomCenterPosition(true); // = true;
+            else SetStandingOnColliderContainsBottomCenterPosition(false); // = false;
         }
-        
+
+        private void SetStandingOnColliderContainsBottomCenterPosition(bool containsBottomCenterPosition)
+        {
+            collision.StandingOnContainsBottomCenter = containsBottomCenterPosition;
+        }
+
+        private void SetStandingOnLastFrameNotNull()
+        {
+            collision.StandingOnLastFrameNotNull = collision.StandingOnLastFrame != null;
+        }
+
         #endregion
 
         #region event handlers
@@ -1528,30 +1583,40 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         {
             UpdateStickToSlopeRaycast();
         }
-        
+
         public void OnSetCurrentRaycastDirectionToUp()
         {
             SetCurrentRaycastDirectionToUp();
         }
+
         public void OnSetAboveRaycast(Vector2 newPosition, GameObject character)
         {
             SetAboveRaycast(newPosition, character);
         }
+
         public void OnResizeAboveHitStorage()
         {
             ResizeAboveHitStorage();
         }
+
         public void OnUpdateAboveRaycast(int index, GameObject character, LayerMask layer)
         {
             UpdateAboveRaycast(index, character, layer);
         }
+
         public void OnSetCollisionOnAboveRaycastSmallestDistanceHit()
         {
             SetCollisionOnAboveRaycastSmallestDistanceHit();
         }
+
         public void OnSetStandingOnColliderContainsBottomCenterPosition()
         {
             SetStandingOnColliderContainsBottomCenterPosition();
+        }
+
+        public void OnSetStandingOnLastFrameNotNull()
+        {
+            SetStandingOnLastFrameNotNull();
         }
 
         #endregion
