@@ -221,13 +221,17 @@ namespace VFEngine.Platformer.Physics
         private Vector2 CurrentHorizontalHitPoint => raycastData.HorizontalHitStorage[Index].point;
         private Vector2 HorizontalRaycastFromBottom => raycastData.HorizontalRaycastFromBottom;
         private Vector2 HorizontalRaycastToTop => raycastData.HorizontalRaycastToTop;
+
         private float NewPositionXOnHitWallInMovementDirectionDistance =>
             DistanceBetweenPointAndLine(CurrentHorizontalHitPoint, HorizontalRaycastFromBottom, HorizontalRaycastToTop);
+
         private float BoundsWidth => raycastData.BoundsWidth;
         private float RayOffset => raycastData.RayOffset;
+
         private async UniTask SetPhysicsOnHitWallInMovementDirection()
         {
-            Data.OnSetPhysicsOnHitWallInMovementDirection(RaycastDirection, NewPositionXOnHitWallInMovementDirectionDistance, BoundsWidth, RayOffset);
+            Data.OnSetPhysicsOnHitWallInMovementDirection(RaycastDirection,
+                NewPositionXOnHitWallInMovementDirectionDistance, BoundsWidth, RayOffset);
             await Yield();
         }
 
@@ -261,6 +265,60 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
+        private float BelowRaycastDistance => raycastData.BelowRaycastDistance;
+        private float BoundsHeight => raycastData.BoundsHeight;
+
+        private async UniTask SetNewPositionYOnSmallestDistanceHit()
+        {
+            Data.OnSetNewPositionYOnSmallestDistanceHit(BelowRaycastDistance, BoundsHeight, RayOffset);
+            await Yield();
+        }
+
+        private async UniTask ApplySpeedYToNewPositionY()
+        {
+            Data.OnApplySpeedYToNewPositionY();
+            await Yield();
+        }
+
+        private async UniTask StopNewPositionY()
+        {
+            Data.OnStopNewPositionY();
+            await Yield();
+        }
+
+        private async UniTask SetPhysicsOnDetachFromMovingPlatform()
+        {
+            Data.OnSetPhysicsOnDetachFromMovingPlatform();
+            await Yield();
+        }
+
+        private RaycastHit2D StickToSlopeRaycast => raycastData.StickToSlopeRaycast;
+        private Vector2 RaycastOrigin => raycastData.RaycastOrigin;
+        private async UniTask SetNewPositionYOnStickToSlopeRaycastHit()
+        {
+            Data.OnSetNewPositionYOnStickToSlopeRaycastHit(StickToSlopeRaycast.point.y, RaycastOrigin.y, BoundsHeight);
+            await Yield();
+        }
+
+        private float SmallestDistance => platformerData.SmallestDistance;
+        private async UniTask SetNewPositionYOnAboveRaycastSmallestDistanceHit()
+        {
+            Data.OnSetNewPositionYOnAboveRaycastSmallestDistanceHit(SmallestDistance, BoundsHeight);
+            await Yield();
+        }
+        
+        private async UniTask SetSpeedOnAboveRaycastSmallestDistanceHit()
+        {
+            Data.OnSetSpeedOnAboveRaycastSmallestDistanceHit();
+            await Yield();
+        }
+        
+        private async UniTask StopForcesY()
+        {
+            Data.OnStopForcesY();
+            await Yield();
+        }
+        
         #endregion
 
         #region event handlers
@@ -405,252 +463,44 @@ namespace VFEngine.Platformer.Physics
             await ApplySpeedToNewPositionY();
         }
 
+        public async UniTask OnPlatformerSetNewPositionYOnSmallestDistanceHit()
+        {
+            await SetNewPositionYOnSmallestDistanceHit();
+        }
+
+        public async UniTask OnPlatformerApplySpeedYToNewPositionY()
+        {
+            await ApplySpeedYToNewPositionY();
+        }
+
+        public async UniTask OnPlatformerStopNewPositionY()
+        {
+            await StopNewPositionY();
+        }
+
+        public async UniTask OnPlatformerSetPhysicsOnDetachFromMovingPlatform()
+        {
+            await SetPhysicsOnDetachFromMovingPlatform();
+        }
+
+        public async UniTask OnPlatformerSetNewPositionYOnStickToSlopeRaycastHit()
+        {
+            await SetNewPositionYOnStickToSlopeRaycastHit();
+        }
+
+        public async UniTask OnPlatformerSetNewPositionYOnAboveRaycastSmallestDistanceHit()
+        {
+            await SetNewPositionYOnAboveRaycastSmallestDistanceHit();
+        }
+        public async UniTask OnPlatformerSetSpeedOnAboveRaycastSmallestDistanceHit()
+        {
+            await SetSpeedOnAboveRaycastSmallestDistanceHit();
+        }
+        public async UniTask OnPlatformerStopForcesY()
+        {
+            await StopForcesY();
+        }
+
         #endregion
     }
 }
-
-#region hide
-
-/*
- * private async UniTask InitializeDeltaMove()
-        {
-            Data.OnInitializeDeltaMove();
-            await Yield();
-        }
-
-        private bool OnGround => raycastData.OnGround;
-        private bool OnSlope => raycastData.OnSlope;
-        private bool IgnoreFriction => raycastData.IgnoreFriction;
-        private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
-        private float GroundAngle => raycastData.GroundAngle;
-
-        private async UniTask UpdateExternalForce()
-        {
-            Data.OnUpdateExternalForce(OnGround);
-            await Yield();
-        }
-
-        private async UniTask StopExternalForce()
-        {
-            Data.OnStopExternalForce();
-            await Yield();
-        }
-
-        private async UniTask ApplyGravityToSpeed()
-        {
-            Data.OnApplyGravityToSpeed();
-            await Yield();
-        }
-
-        private async UniTask ApplyExternalForceToGravity()
-        {
-            Data.OnApplyExternalForceToGravity();
-            await Yield();
-        }
-
-        private async UniTask UpdateExternalForceX()
-        {
-            Data.OnUpdateExternalForceX(GroundDirectionAxis);
-            await Yield();
-        }
-        private async UniTask DescendSlope()
-        {
-            Data.OnDescendSlope(GroundAngle);
-            await Yield();
-        }
-
-        private async UniTask ClimbSlope()
-        {
-            Data.OnClimbSlope(GroundAngle);
-            await Yield();
-        }
-
-        private RaycastHit2D Hit => raycastData.Hit;
-        private float SkinWidth => raycastData.SkinWidth;
-
-        private async UniTask HitClimbingSlope()
-        {
-            Data.OnHitClimbingSlope(GroundAngle, Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private async UniTask HitMaximumSlope(float hitDistance, float skinWidth)
-        {
-            Data.OnHitMaximumSlope(hitDistance, skinWidth);
-            await Yield();
-        }
-
-        private async UniTask HitSlopedGroundAngle()
-        {
-            Data.OnHitSlopedGroundAngle(GroundAngle);
-            await Yield();
-        }
-
-        private async UniTask HitMaximumSlope()
-        {
-            Data.OnHitMaximumSlope();
-            await Yield();
-        }
-
-        private async UniTask StopHorizontalSpeed()
-        {
-            Data.OnStopHorizontalSpeed();
-            await Yield();
-        }
-
-        private async UniTask VerticalCollision()
-        {
-            Data.OnVerticalCollision(Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private async UniTask VerticalCollisionHitClimbingSlope()
-        {
-            Data.OnVerticalCollisionHitClimbingSlope(GroundAngle);
-            await Yield();
-        }
-
-        private async UniTask ClimbSteepSlope()
-        {
-            Data.OnClimbSteepSlope(Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private float HitAngle => raycastData.HitAngle;
-
-        private async UniTask ClimbMildSlope()
-        {
-            Data.OnClimbMildSlope(HitAngle, GroundAngle, Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private async UniTask DescendMildSlope()
-        {
-            Data.OnDescendMildSlope(Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private async UniTask DescendSteepSlope()
-        {
-            Data.OnDescendSteepSlope(HitAngle, GroundAngle, Hit.distance, SkinWidth);
-            await Yield();
-        }
-
-        private async UniTask MoveCharacter()
-        {
-            Data.OnMoveCharacter(ref character);
-            await Yield();
-        }
-
-        private async UniTask ResetJumpCollision()
-        {
-            Data.OnResetJumpCollision();
-            await Yield();
-        }
-        public async UniTask OnPlatformerInitializeDeltaMove()
-        {
-            await InitializeDeltaMove();
-        }
-        
-        public async UniTask OnPlatformerUpdateExternalForce()
-        {
-            await UpdateExternalForce();
-        }
-
-        public async UniTask OnPlatformerStopExternalForce()
-        {
-            await StopExternalForce();
-        }
-
-        public async UniTask OnPlatformerApplyGravityToSpeed()
-        {
-            await ApplyGravityToSpeed();
-        }
-
-        public async UniTask OnPlatformerApplyExternalForceToGravity()
-        {
-            await ApplyExternalForceToGravity();
-        }
-
-        public async UniTask OnPlatformerUpdateExternalForceX()
-        {
-            await UpdateExternalForceX();
-        }
-        
-        public async UniTask OnPlatformerDescendSlope()
-        {
-            await DescendSlope();
-        }
-
-        public async UniTask OnPlatformerClimbSlope()
-        {
-            await ClimbSlope();
-        }
-
-        public async UniTask OnRaycastHorizontalCollisionRaycastHitClimbingSlope()
-        {
-            await HitClimbingSlope();
-        }
-
-        public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlopeSetDeltaMoveX()
-        {
-            await HitMaximumSlope(Hit.distance, SkinWidth);
-        }
-
-        public async UniTask OnHorizontalCollisionRaycastHitSlopedGroundAngle()
-        {
-            await HitSlopedGroundAngle();
-        }
-
-        public async UniTask OnRaycastHorizontalCollisionRaycastHitMaximumSlope()
-        {
-            await HitMaximumSlope();
-        }
-
-        public async UniTask OnPlatformerStopHorizontalSpeed()
-        {
-            await StopHorizontalSpeed();
-        }
-
-        public async UniTask OnRaycastVerticalCollisionRaycastHit()
-        {
-            await VerticalCollision();
-        }
-
-        public async UniTask OnRaycastVerticalCollisionRaycastHitClimbingSlope()
-        {
-            await VerticalCollisionHitClimbingSlope();
-        }
-
-        public async UniTask OnPlatformerClimbSteepSlopeHit()
-        {
-            await ClimbSteepSlope();
-        }
-
-        public async UniTask OnPlatformerClimbMildSlopeHit()
-        {
-            await ClimbMildSlope();
-        }
-
-        public async UniTask OnPlatformerDescendMildSlopeHit()
-        {
-            await DescendMildSlope();
-        }
-
-        public async UniTask OnPlatformerDescendSteepSlopeHit()
-        {
-            await DescendSteepSlope();
-        }
-
-        public async UniTask OnPlatformerMoveCharacter()
-        {
-            await MoveCharacter();
-        }
-
-        public async UniTask OnPlatformerResetJumpCollision()
-        {
-            await ResetJumpCollision();
-        }
- */
-
-#endregion

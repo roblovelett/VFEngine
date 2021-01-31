@@ -1,14 +1,12 @@
 ﻿using Sirenix.OdinInspector;
-using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
-using VFEngine.Platformer.Physics.Friction.ScriptableObjects;
 using VFEngine.Platformer.Physics.MovingPlatform.ScriptableObjects;
-
 
 namespace VFEngine.Platformer.Physics.MovingPlatform
 {
     using static ScriptableObject;
+
     public class MovingPlatformController : SerializedMonoBehaviour
     {
         #region events

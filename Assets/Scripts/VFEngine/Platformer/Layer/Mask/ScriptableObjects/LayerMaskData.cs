@@ -23,6 +23,10 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask MovingOneWayPlatform { get; private set; }
         public LayerMask BelowPlatformsWithoutOneWay { get; private set; }
+        public bool MidHeightOneWayPlatformContainsStandingOnLastFrame { get; private set; }
+        public bool StairsContainsStandingOnLastFrame { get; private set; }
+        public bool OneWayPlatformContainsStandingOn { get; private set; }
+        public bool MovingOneWayPlatformContainsStandingOn { get; private set; }
 
         #endregion
 
@@ -103,6 +107,14 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             SavedBelow = layer;
         }
 
+        private void SetMidHeightOneWayPlatformContainsStandingOnLastFrame(GameObject standingOnLastFrame)
+        {
+            if (standingOnLastFrame == null) MidHeightOneWayPlatformContainsStandingOnLastFrame = false;
+            else if (MidHeightOneWayPlatform.Contains(standingOnLastFrame))
+                MidHeightOneWayPlatformContainsStandingOnLastFrame = true;
+            else MidHeightOneWayPlatformContainsStandingOnLastFrame = false;
+        }
+
         private void SetRaysBelowToPlatformsWithoutMidHeight()
         {
             SetRaysBelowPlatforms(belowPlatformsWithoutMidHeight);
@@ -123,6 +135,52 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             SetBelowPlatforms(BelowPlatforms & ~OneWayPlatform);
         }
 
+        private void SetStairsContainsStandingOnLastFrame(GameObject standingOnLastFrame)
+        {
+            if (standingOnLastFrame == null) StairsContainsStandingOnLastFrame = false;
+            else if (Stairs.Contains(standingOnLastFrame)) StairsContainsStandingOnLastFrame = true;
+            else StairsContainsStandingOnLastFrame = false;
+        }
+
+        private void SetPlatformsContainsStandingOn(GameObject standingOn)
+        {
+            if (standingOn == null)
+            {
+                SetPlatformsContainsStandingOn(false);
+            }
+            else
+            {
+                SetOneWayPlatformsContainsStandingOn(standingOn);
+                SetMovingOneWayPlatformContainsStandingOn(standingOn);
+            }
+        }
+
+        private void SetOneWayPlatformsContainsStandingOn(GameObject standingOn)
+        {
+            SetOneWayPlatformsContainsStandingOn(OneWayPlatform.Contains(standingOn.layer));
+        }
+        
+        private void SetMovingOneWayPlatformContainsStandingOn(GameObject standingOn)
+        {
+            SetMovingOneWayPlatformContainsStandingOn(MovingOneWayPlatform.Contains(standingOn.layer));
+        }
+
+        private void SetPlatformsContainsStandingOn(bool contains)
+        {
+            SetOneWayPlatformsContainsStandingOn(contains);
+            SetMovingOneWayPlatformContainsStandingOn(contains);
+        }
+
+        private void SetOneWayPlatformsContainsStandingOn(bool contains)
+        {
+            OneWayPlatformContainsStandingOn = contains;
+        }
+
+        private void SetMovingOneWayPlatformContainsStandingOn(bool contains)
+        {
+            MovingOneWayPlatformContainsStandingOn = contains;
+        }
+        
         #endregion
 
         #region event handlers
@@ -142,6 +200,11 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             SetSavedBelowLayerToStandingOnLastFrame(layer);
         }
 
+        public void OnSetMidHeightOneWayPlatformContainsStandingOnLastFrame(GameObject standingOnLastFrame)
+        {
+            SetMidHeightOneWayPlatformContainsStandingOnLastFrame(standingOnLastFrame);
+        }
+
         public void OnSetRaysBelowToPlatformsWithoutMidHeight()
         {
             SetRaysBelowToPlatformsWithoutMidHeight();
@@ -157,63 +220,16 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             SetRaysBelowToOneWayPlatform();
         }
         
+        public void OnSetStairsContainsStandingOnLastFrame(GameObject standingOnLastFrame)
+        {
+            SetStairsContainsStandingOnLastFrame(standingOnLastFrame);
+        }
+
+        public void OnSetPlatformsContainStandingOn(GameObject standingOn)
+        {
+            SetPlatformsContainsStandingOn(standingOn);
+        }
+
         #endregion
     }
 }
-
-#region hide
-
-/*
-public LayerMask Collision => characterCollision;
-public LayerMask OneWayPlatform { get; private set; }
-public LayerMask Ground { get; private set; }
-private LayerMask Saved { get; set; }private LayerMask ladder;
-private LayerMask character;
-private LayerMask standOnCollision;
-private LayerMask interactive;
-private LayerMask characterCollision;
-Ground = settings.ground;
-OneWayPlatform = settings.oneWayPlatform;
-characterCollision = settings.characterCollision;
-ladder = settings.ladder;
-character = settings.character;
-standOnCollision = settings.standOnCollision;
-interactive = settings.interactive;/*private void InitializeFrame(ref GameObject characterObject)
-        {
-            Saved = characterObject.layer;
-            characterObject.layer = IgnoreRaycastLayer;
-            Debug.Log("Init frame... Character's layer is: " + LayerMask.LayerToName(characterObject.layer));
-        }*/
-/*
-private void SetSavedLayer(ref GameObject characterObject)
-{
-    Saved = characterObject.layer;
-    characterObject.layer = IgnoreRaycastLayer;
-}
-
-private void ResetLayerMask(ref GameObject characterObject)
-{
-    characterObject.layer = Saved;
-    Debug.Log("Exit frame... Character's layer is: " + LayerMask.LayerToName(characterObject.layer));
-}public void OnInitialize(LayerMaskSettings settings)
-{
-    Initialize(settings);
-}
-
-/*public void OnInitializeFrame(ref GameObject characterObject)
-{
-    InitializeFrame(ref characterObject);
-}*/
-/*
-public void OnSetSavedLayer(ref GameObject characterObject)
-{
-    SetSavedLayer(ref characterObject);
-}
-
-public void OnResetLayerMask(ref GameObject characterObject)
-{
-    ResetLayerMask(ref characterObject);
-}
-*/
-
-#endregion

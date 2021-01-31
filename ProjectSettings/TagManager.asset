@@ -13,27 +13,27 @@ TagManager:
   - UI
   - 
   - 
-  - Ground
-  - OneWayPlatform
-  - Ladder
-  - Character
-  - Box
-  - Interactive
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Platforms
+  - Player
+  - Volumes
+  - OneWayPlatforms
+  - Projectiles
+  - Enemies
+  - LevelBounds
+  - Ladders
+  - PlayerProjectiles
+  - MovingObjects
+  - MovingPlatforms
+  - Foreground
+  - MovingOneWayPlatforms
+  - NoCollision
+  - Background
+  - Friendlies
+  - Invulnerable
+  - PlatformsPlayersOnly
+  - MidHeightOneWayPlatforms
+  - Pushables
+  - Stairs
   - 
   - 
   - 

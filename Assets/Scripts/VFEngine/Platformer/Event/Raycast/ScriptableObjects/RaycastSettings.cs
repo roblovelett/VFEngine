@@ -23,8 +23,8 @@ namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
         [SerializeField] public bool castRaysOnBothSides;
         [SerializeField] public float distanceToGroundRaycastMaximumLength = 100f;
         [SerializeField] public bool performSafetyBoxcast;
-        [SerializeField] public float stickToSlopesRaycastLength;
-        [SerializeField] public float stickToSlopesOffsetY = 0.2f;
+        [SerializeField] public float stickToSlopeRaycastLength;
+        [SerializeField] public float stickToSlopeOffsetY = 0.2f;
         [SerializeField] public DetachmentMethods detachmentMethod = Layer;
         [SerializeField] public float obstacleHeightTolerance = 0.05f;
         public enum DetachmentMethods

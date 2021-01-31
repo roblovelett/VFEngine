@@ -12,9 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba2d322d7624d069a1c0e57ca66df85, type: 3}
   m_Name: RaycastSettings
   m_EditorClassIdentifier: 
-  displayWarnings: 0
-  drawGizmos: 1
-  totalHorizontalRays: 8
-  totalVerticalRays: 8
-  spacing: 0.125
-  skinWidth: 0.015
+  drawRaycastGizmosControl: 1
+  displayWarnings: 1
+  numberOfHorizontalRays: 4
+  numberOfVerticalRays: 4
+  rayOffset: 0.05
+  crouchedRaycastLengthMultiplier: 1
+  castRaysOnBothSides: 0
+  distanceToGroundRaycastMaximumLength: 100
+  performSafetyBoxcast: 0
+  stickToSlopeRaycastLength: 0.5
+  stickToSlopeOffsetY: 0.5
+  detachmentMethod: 0
+  obstacleHeightTolerance: 0.05

@@ -75,16 +75,22 @@ namespace VFEngine.Platformer.Layer.Mask
             await Yield();
         }
 
-        private LayerMask StandingOnLastFrame => raycastData.StandingOnLastFrame.layer;
+        private GameObject StandingOnLastFrame => raycastData.StandingOnLastFrame;
         private async UniTask SetSavedBelowLayerToStandingOnLastFrame()
         {
-            Data.OnSetSavedBelowLayerToStandingOnLastFrame(StandingOnLastFrame);
+            Data.OnSetSavedBelowLayerToStandingOnLastFrame(StandingOnLastFrame.layer);
             await Yield();
         }
 
         private async UniTask SetRaysBelowToPlatformsWithoutMidHeight()
         {
             Data.OnSetRaysBelowToPlatformsWithoutMidHeight();
+            await Yield();
+        }
+
+        private async UniTask SetMidHeightOneWayPlatformContainsStandingOnLastFrame()
+        {
+            Data.OnSetMidHeightOneWayPlatformContainsStandingOnLastFrame(StandingOnLastFrame);
             await Yield();
         }
 
@@ -97,6 +103,19 @@ namespace VFEngine.Platformer.Layer.Mask
         private async UniTask SetRaysBelowToOneWayPlatform()
         {
             Data.OnSetRaysBelowToOneWayPlatform();
+            await Yield();
+        }
+
+        private async UniTask SetStairsContainsStandingOnLastFrame()
+        {
+            Data.OnSetStairsContainsStandingOnLastFrame(StandingOnLastFrame);
+            await Yield();
+        }
+
+        private GameObject StandingOn => raycastData.StandingOn;
+        private async UniTask SetPlatformsContainStandingOn()
+        {
+            Data.OnSetPlatformsContainStandingOn(StandingOn);
             await Yield();
         }
         
@@ -114,6 +133,11 @@ namespace VFEngine.Platformer.Layer.Mask
             await SetSavedBelowLayerToStandingOnLastFrame();
         }
 
+        public async UniTask OnPlatformerSetMidHeightOneWayPlatformContainsStandingOnLastFrame()
+        {
+            await SetMidHeightOneWayPlatformContainsStandingOnLastFrame();
+        }
+
         public async UniTask OnPlatformerSetRaysBelowToPlatformsWithoutMidHeight()
         {
             await SetRaysBelowToPlatformsWithoutMidHeight();
@@ -129,41 +153,16 @@ namespace VFEngine.Platformer.Layer.Mask
             await SetRaysBelowToOneWayPlatform();
         }
 
+        public async UniTask OnPlatformerSetStairsContainsStandingOnLastFrame()
+        {
+            await SetStairsContainsStandingOnLastFrame();
+        }
+
+        public async UniTask OnPlatformerSetPlatformsContainStandingOn()
+        {
+            await SetPlatformsContainStandingOn();
+        }
+        
         #endregion
     }
 }
-
-#region hide
-
-/*private void InitializeFrame()
-        {
-            Data.OnInitializeFrame(ref character);
-        }*/ /*
-
-private void SetSavedLayer()
-{
-    Data.OnSetSavedLayer(ref character);
-}
-
-private void ResetLayerMask()
-{
-    Data.OnResetLayerMask(ref character);
-}/*public async UniTask OnPlatformerInitializeFrame()
-        {
-            InitializeFrame();
-            await Yield();
-        }*/ /*
-
-public async UniTask OnPlatformerSetSavedLayer()
-{
-    SetSavedLayer();
-    await Yield();
-}
-
-public async UniTask OnPlatformerResetLayerMask()
-{
-    ResetLayerMask();
-    await Yield();
-}*/
-
-#endregion

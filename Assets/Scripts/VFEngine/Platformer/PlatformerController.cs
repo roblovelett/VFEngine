@@ -11,9 +11,7 @@ using VFEngine.Platformer.Layer.Mask.ScriptableObjects;
 using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
-using VFEngine.Tools;
 
-// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 // ReSharper disable ConvertIfStatementToSwitchExpression
 // ReSharper disable ConvertIfStatementToSwitchStatement
 namespace VFEngine.Platformer
@@ -472,22 +470,21 @@ namespace VFEngine.Platformer
         private bool ResizeBelowHitStorage => BelowHitStorage.Length != NumberOfVerticalRays;
         private bool StandingOnLastFrameNotNull => raycastData.StandingOnLastFrameNotNull;
         private bool SetSavedBelowLayerToStandingOnLastFrame => StandingOnLastFrameNotNull;
-        private GameObject StandingOnLastFrame => raycastData.StandingOnLastFrame;
-        private LayerMask MidHeightOneWayPlatform => layerMaskData.MidHeightOneWayPlatform;
 
         private bool SetStandingOnLastFrameLayerToPlatforms =>
-            MidHeightOneWayPlatform.Contains(StandingOnLastFrame.layer);
+            layerMaskData.MidHeightOneWayPlatformContainsStandingOnLastFrame;
 
         private bool SetRaysBelowToPlatformsWithoutMidHeight => !SetStandingOnLastFrameLayerToPlatforms &&
                                                                 StandingOnLastFrameNotNull && GroundedLastFrame;
 
-        private Collider2D StandingOnCollider => raycastData.StandingOnCollider;
-        private Vector2 ColliderBottomCenterPosition => raycastData.ColliderBottomCenterPosition;
-        private LayerMask Stairs => layerMaskData.Stairs;
+        private bool StandingOnColliderContainsBottomCenterPosition =>
+            raycastData.StandingOnColliderContainsBottomCenterPosition;
 
-        private bool SetRaysBelowToPlatformsAndOneWayOrStairs =>
-            StandingOnCollider.bounds.Contains(ColliderBottomCenterPosition) &&
-            Stairs.Contains(StandingOnLastFrame.layer) && StandingOnLastFrameNotNull && GroundedLastFrame;
+        private bool StairsContainsStandingOnLastFrame => layerMaskData.StairsContainsStandingOnLastFrame;
+
+        private bool SetRaysBelowToPlatformsAndOneWayOrStairs => StandingOnColliderContainsBottomCenterPosition &&
+                                                                 StairsContainsStandingOnLastFrame &&
+                                                                 StandingOnLastFrameNotNull && GroundedLastFrame;
 
         private bool SetRaysBelowToOneWayPlatform => OnMovingPlatform && NewPosition.y > 0;
         private bool SetBelowRaycastToPlatformsWithoutOneWay => NewPosition.y > 0 && !GroundedLastFrame;
@@ -501,14 +498,13 @@ namespace VFEngine.Platformer
         private bool StopCastingRaysBelow => BelowRaycastDistance < SmallValue;
         private bool SmallestDistanceHitConnected => Data.SmallestDistanceHitConnected;
         private float BoundsHeight => raycastData.BoundsHeight;
-        private GameObject StandingOn => raycastData.StandingOn;
-        private LayerMask OneWayPlatform => layerMaskData.OneWayPlatform;
-        private LayerMask MovingOneWayPlatform => layerMaskData.MovingOneWayPlatform;
+        private bool OneWayPlatformContainsStandingOn => layerMaskData.OneWayPlatformContainsStandingOn;
+        private bool MovingOneWayPlatformContainsStandingOn => layerMaskData.MovingOneWayPlatformContainsStandingOn;
 
         private bool SetNotCollidingBelowOnSmallestHitConnected => !GroundedLastFrame &&
                                                                    SmallestDistance < BoundsHeight / 2 &&
-                                                                   (OneWayPlatform.Contains(StandingOn.layer) ||
-                                                                    MovingOneWayPlatform.Contains(StandingOn.layer));
+                                                                   OneWayPlatformContainsStandingOn ||
+                                                                   MovingOneWayPlatformContainsStandingOn;
 
         private bool ApplySpeedToNewPositionY => ExternalForce.y > 0 && Speed.y > 0;
         private bool ApplySpeedYToNewPositionY => !GroundedLastFrame && Speed.y > 0;
@@ -539,10 +535,13 @@ namespace VFEngine.Platformer
                 if (SetSavedBelowLayerToStandingOnLastFrame)
                 {
                     await OnSetSavedBelowLayerToStandingOnLastFrame();
+                    await SetMidHeightOneWayPlatformContainsStandingOnLastFrame();
                     if (SetStandingOnLastFrameLayerToPlatforms) await OnSetStandingOnLastFrameLayerToPlatforms();
                 }
 
                 if (SetRaysBelowToPlatformsWithoutMidHeight) await OnSetRaysBelowToPlatformsWithoutMidHeight();
+                await SetStandingOnColliderContainsBottomCenterPosition();
+                await SetStairsContainsStandingOnLastFrame();
                 if (SetRaysBelowToPlatformsAndOneWayOrStairs) await OnSetRaysBelowToPlatformsAndOneWayOrStairs();
                 if (SetRaysBelowToOneWayPlatform) await OnSetRaysBelowToOneWayPlatform();
                 InitializeSmallestDistanceProperties();
@@ -568,7 +567,7 @@ namespace VFEngine.Platformer
                 if (SmallestDistanceHitConnected)
                 {
                     await SetStandingOnOnSmallestHitConnected();
-                    
+                    await SetPlatformsContainStandingOn();
                     if (SetNotCollidingBelowOnSmallestHitConnected)
                     {
                         await OnSetNotCollidingBelow();
@@ -577,7 +576,6 @@ namespace VFEngine.Platformer
 
                     await SetNotFalling();
                     await SetCollidingBelow();
-                    
                     if (ApplySpeedToNewPositionY)
                     {
                         await OnApplySpeedToNewPositionY();
@@ -585,8 +583,8 @@ namespace VFEngine.Platformer
                     }
                     else
                     {
-                        await SetBelowRaycastDistanceOnSmallestDistanceHitConnected();
-                        await SetNewPositionYOnSmallestDistanceHitConnected();
+                        await SetBelowRaycastDistanceOnSmallestDistanceHit();
+                        await SetNewPositionYOnSmallestDistanceHit();
                     }
 
                     if (ApplySpeedYToNewPositionY) await OnApplySpeedYToNewPositionY();
@@ -668,6 +666,11 @@ namespace VFEngine.Platformer
             await layerMaskController.OnPlatformerSetSavedBelowLayerToStandingOnLastFrame();
         }
 
+        private async UniTask SetMidHeightOneWayPlatformContainsStandingOnLastFrame()
+        {
+            await layerMaskController.OnPlatformerSetMidHeightOneWayPlatformContainsStandingOnLastFrame();
+        }
+
         private async UniTask OnSetStandingOnLastFrameLayerToPlatforms()
         {
             await raycastController.OnPlatformerSetStandingOnLastFrameLayerToPlatforms();
@@ -676,6 +679,16 @@ namespace VFEngine.Platformer
         private async UniTask OnSetRaysBelowToPlatformsWithoutMidHeight()
         {
             await layerMaskController.OnPlatformerSetRaysBelowToPlatformsWithoutMidHeight();
+        }
+
+        private async UniTask SetStandingOnColliderContainsBottomCenterPosition()
+        {
+            await raycastController.OnPlatformerSetStandingOnColliderContainsBottomCenterPosition();
+        }
+
+        private async UniTask SetStairsContainsStandingOnLastFrame()
+        {
+            await layerMaskController.OnPlatformerSetStairsContainsStandingOnLastFrame();
         }
 
         private async UniTask OnSetRaysBelowToPlatformsAndOneWayOrStairs()
@@ -738,6 +751,11 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetStandingOnOnSmallestHitConnected();
         }
 
+        private async UniTask SetPlatformsContainStandingOn()
+        {
+            await layerMaskController.OnPlatformerSetPlatformsContainStandingOn();
+        }
+
         private async UniTask SetCollidingBelow()
         {
             await raycastController.OnPlatformerSetCollidingBelow();
@@ -748,14 +766,14 @@ namespace VFEngine.Platformer
             await physicsController.OnPlatformerApplySpeedToNewPositionY();
         }
 
-        private async UniTask SetBelowRaycastDistanceOnSmallestDistanceHitConnected()
+        private async UniTask SetBelowRaycastDistanceOnSmallestDistanceHit()
         {
-            await raycastController.OnPlatformerSetBelowRaycastDistanceOnSmallestDistanceHitConnected();
+            await raycastController.OnPlatformerSetBelowRaycastDistanceOnSmallestDistanceHit();
         }
 
-        private async UniTask SetNewPositionYOnSmallestDistanceHitConnected()
+        private async UniTask SetNewPositionYOnSmallestDistanceHit()
         {
-            await physicsController.OnPlatformerSetNewPositionYOnSmallestDistanceHitConnected();
+            await physicsController.OnPlatformerSetNewPositionYOnSmallestDistanceHit();
         }
 
         private async UniTask OnApplySpeedYToNewPositionY()
@@ -809,18 +827,16 @@ namespace VFEngine.Platformer
 
         private float StickToSlopeOffsetY => raycastData.StickToSlopeOffsetY;
         private bool IsJumping => physicsData.IsJumping;
+        private bool StairsContainsStandOnLastFrame => layerMaskData.StairsContainsStandingOnLastFrame;
 
         private bool CannotStickToSlope => NewPosition.y >= StickToSlopeOffsetY ||
                                            NewPosition.y <= -StickToSlopeOffsetY || IsJumping ||
                                            !StickToSlopeBehavior || !GroundedLastFrame || ExternalForce.y > 0 ||
                                            MovingPlatformNotNull && !(!GroundedLastFrame &&
                                                                       StandingOnLastFrameNotNull &&
-                                                                      Stairs.Contains(StandingOnLastFrame.layer) &&
-                                                                      !IsJumping);
+                                                                      StairsContainsStandOnLastFrame && !IsJumping);
 
         private bool StickToSlope => !CannotStickToSlope;
-        private float StickToSlopeRayLength => raycastData.StickToSlopeRayLength;
-        private bool UpdateStickToSlopeRayLength => StickToSlopeRayLength == 0;
         private Vector3 CrossBelowSlopeAngleLeft => raycastData.CrossBelowSlopeAngleLeft;
         private bool SetNegativeBelowSlopeAngleLeft => CrossBelowSlopeAngleLeft.z < 0;
         private Vector3 CrossBelowSlopeAngleRight => raycastData.CrossBelowSlopeAngleRight;
@@ -828,14 +844,12 @@ namespace VFEngine.Platformer
         private float BelowSlopeAngleLeft => raycastData.BelowSlopeAngleLeft;
         private float BelowSlopeAngleRight => raycastData.BelowSlopeAngleRight;
         private float Tolerance => Data.Tolerance;
+        private bool SetStickToSlopeRaycastOnSlope => Abs(BelowSlopeAngleLeft - BelowSlopeAngleRight) < Tolerance;
 
-        private bool SetStickToSlopeRaycastPropertiesOnSlope =>
-            Abs(BelowSlopeAngleLeft - BelowSlopeAngleRight) < Tolerance;
-
-        private bool SetStickToSlopeRaycastPropertiesOnRightSlopeOnLeftGround =>
+        private bool SetStickToSlopeRaycastOnRightSlopeOnLeftGround =>
             BelowSlopeAngleLeft == 0 && BelowSlopeAngleRight != 0;
 
-        private bool SetStickToSlopeRaycastPropertiesOnLeftSlopeOnRightGround =>
+        private bool SetStickToSlopeRaycastOnLeftSlopeOnRightGround =>
             BelowSlopeAngleLeft != 0 && BelowSlopeAngleRight == 0;
 
         private bool SetStickToSlopeRaycastPropertiesOnSlopes => BelowSlopeAngleLeft != 0 && BelowSlopeAngleRight != 0;
@@ -846,50 +860,38 @@ namespace VFEngine.Platformer
         {
             if (StickToSlope)
             {
-                await InitializeStickToSlopesRayLength();
-                if (UpdateStickToSlopeRayLength) await OnUpdateStickToSlopesRayLength();
-                else await SetRayLengthToStickToSlopes();
-                await SetStickToSlopesRaycastProperties();
+                await SetStickToSlopeRayLength();
+                await SetStickToSlopeRaycast();
                 if (SetNegativeBelowSlopeAngleLeft) await OnSetNegativeBelowSlopeAngleLeft();
                 if (SetNegativeBelowSlopeAngleRight) await OnSetNegativeBelowSlopeAngleRight();
-                await UpdateStickToSlopesRaycastProperties();
-                if (SetStickToSlopeRaycastPropertiesOnSlope) await OnSetStickToSlopesRaycastPropertiesOnSlope();
-                if (SetStickToSlopeRaycastPropertiesOnRightSlopeOnLeftGround)
-                    await OnSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround();
-                if (SetStickToSlopeRaycastPropertiesOnLeftSlopeOnRightGround)
-                    await OnSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround();
-                if (SetStickToSlopeRaycastPropertiesOnSlopes) await OnSetStickToSlopesRaycastPropertiesOnSlopes();
+                await SetCastStickToSlopeRaycastLeft();
+                if (SetStickToSlopeRaycastOnSlope) await OnSetStickToSlopeRaycastOnSlope();
+                if (SetStickToSlopeRaycastOnRightSlopeOnLeftGround)
+                    await OnSetStickToSlopeRaycastOnRightSlopeOnLeftGround();
+                if (SetStickToSlopeRaycastOnLeftSlopeOnRightGround)
+                    await OnSetStickToSlopeRaycastOnLeftSlopeOnRightGround();
+                if (SetStickToSlopeRaycastPropertiesOnSlopes) await OnSetStickToSlopeRaycastOnSlopes();
                 if (SetStickToSlopeRaycastOnMaximumAngle)
                 {
-                    await OnSetStickToSlopesRaycastOnMaximumAngle();
+                    await OnSetStickToSlopeRaycastOnMaximumAngle();
                     await OnStickToSlopeRaycastHit();
                 }
 
-                await SetStickToSlopeRaycastWithCastLeft();
+                await UpdateStickToSlopeRaycast();
                 await OnStickToSlopeRaycastHit();
             }
 
             await Yield();
         }
 
-        private async UniTask InitializeStickToSlopesRayLength()
+        private async UniTask SetStickToSlopeRayLength()
         {
-            await raycastController.OnPlatformerInitializeStickToSlopesRayLength();
+            await raycastController.OnPlatformerSetStickToSlopeRayLength();
         }
 
-        private async UniTask OnUpdateStickToSlopesRayLength()
+        private async UniTask SetStickToSlopeRaycast()
         {
-            await raycastController.OnPlatformerUpdateStickToSlopesRayLength();
-        }
-
-        private async UniTask SetRayLengthToStickToSlopes()
-        {
-            await raycastController.OnPlatformerSetRayLengthToStickToSlopes();
-        }
-
-        private async UniTask SetStickToSlopesRaycastProperties()
-        {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastProperties();
+            await raycastController.OnPlatformerSetStickToSlopesRaycast();
         }
 
         private async UniTask OnSetNegativeBelowSlopeAngleLeft()
@@ -902,34 +904,34 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetNegativeBelowSlopeAngleRight();
         }
 
-        private async UniTask UpdateStickToSlopesRaycastProperties()
+        private async UniTask SetCastStickToSlopeRaycastLeft()
         {
-            await raycastController.OnPlatformerUpdateStickToSlopesRaycastProperties();
+            await raycastController.OnPlatformerSetCastStickToSlopeRaycastLeft();
         }
 
-        private async UniTask OnSetStickToSlopesRaycastPropertiesOnSlope()
+        private async UniTask OnSetStickToSlopeRaycastOnSlope()
         {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnSlope();
+            await raycastController.OnPlatformerSetStickToSlopeRaycastOnSlope();
         }
 
-        private async UniTask OnSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround()
+        private async UniTask OnSetStickToSlopeRaycastOnRightSlopeOnLeftGround()
         {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnRightSlopeOnLeftGround();
+            await raycastController.OnPlatformerSetStickToSlopeRaycastOnRightSlopeOnLeftGround();
         }
 
-        private async UniTask OnSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround()
+        private async UniTask OnSetStickToSlopeRaycastOnLeftSlopeOnRightGround()
         {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnLeftSlopeOnRightGround();
+            await raycastController.OnPlatformerSetStickToSlopeRaycastOnLeftSlopeOnRightGround();
         }
 
-        private async UniTask OnSetStickToSlopesRaycastPropertiesOnSlopes()
+        private async UniTask OnSetStickToSlopeRaycastOnSlopes()
         {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastPropertiesOnSlopes();
+            await raycastController.OnPlatformerSetStickToSlopeRaycastOnSlopes();
         }
 
-        private async UniTask OnSetStickToSlopesRaycastOnMaximumAngle()
+        private async UniTask OnSetStickToSlopeRaycastOnMaximumAngle()
         {
-            await raycastController.OnPlatformerSetStickToSlopesRaycastOnMaximumAngle();
+            await raycastController.OnPlatformerSetStickToSlopeRaycastOnMaximumAngle();
         }
 
         private bool StickToSlopeRaycastHit => StickToSlopeRaycast && StickToSlopeRaycast.collider != IgnoredCollider;
@@ -955,9 +957,9 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerSetCollisionOnStickToSlopeRaycastHit();
         }
 
-        private async UniTask SetStickToSlopeRaycastWithCastLeft()
+        private async UniTask UpdateStickToSlopeRaycast()
         {
-            await raycastController.OnPlatformerSetStickToSlopeRaycastWithCastLeft();
+            await raycastController.OnPlatformerUpdateStickToSlopeRaycast();
         }
 
         private RaycastHit2D[] AboveHitStorage => raycastData.AboveHitStorage;
@@ -979,7 +981,7 @@ namespace VFEngine.Platformer
             for (var i = 0; i < NumberOfVerticalRays; i++)
             {
                 SetIndex(i);
-                await SetAboveRaycastOrigin();
+                await UpdateAboveRaycast();
                 if (!AboveRaycastHit) continue;
                 SetSmallestDistancePropertiesOnAboveRaycastHit(i);
                 if (AboveRaycastHitIgnoredCollider) break;
@@ -1013,9 +1015,9 @@ namespace VFEngine.Platformer
             await raycastController.OnPlatformerResizeAboveHitStorage();
         }
 
-        private async UniTask SetAboveRaycastOrigin()
+        private async UniTask UpdateAboveRaycast()
         {
-            await raycastController.OnPlatformerSetAboveRaycastOrigin();
+            await raycastController.OnPlatformerUpdateAboveRaycast();
         }
 
         private void SetSmallestDistancePropertiesOnAboveRaycastHit(int index)
@@ -1218,365 +1220,3 @@ namespace VFEngine.Platformer
         #endregion
     }
 }
-
-#region hide
-
-/*
-private async UniTask InitializeFrame()
-{
-    await ResetCollision();
-    await InitializeDeltaMove();
-    await SetSavedLayer();
-    await UpdateOrigins();
-}
-
-private async UniTask ResetCollision()
-{
-    await raycastController.OnPlatformerResetCollision();
-}
-
-private async UniTask InitializeDeltaMove()
-{
-    await physicsController.OnPlatformerInitializeDeltaMove();
-}
-
-private async UniTask SetSavedLayer()
-{
-    await layerMaskController.OnPlatformerSetSavedLayer();
-}
-
-private async UniTask UpdateOrigins()
-{
-    await raycastController.OnPlatformerUpdateOrigins();
-}
-
-private int VerticalRays => raycastData.VerticalRays;
-private float IgnorePlatformsTime => raycastData.IgnorePlatformsTime;
-private bool CastGroundCollisionForOneWayPlatform => !Hit && IgnorePlatformsTime <= 0;
-private bool CastNextGroundCollisionRay => (Hit.distance <= 0);
-private async UniTask GroundCollision()
-{
-    for (var i = 0; i < VerticalRays; i++)
-    {
-        Data.OnGroundCollision(i);
-        await SetGroundCollisionRaycast();
-        if (CastGroundCollisionForOneWayPlatform)
-        {
-            await SetGroundCollisionRaycastForOneWayPlatform();
-            if (CastNextGroundCollisionRay) continue;
-        }
-
-        if (!Hit) continue;
-        await SetCollisionOnGroundCollisionRaycastHit();
-        await CastGroundCollisionRay();
-        break;
-    }
-
-    await Yield();
-}
-
-private async UniTask SetGroundCollisionRaycast()
-{
-    await raycastController.OnPlatformerSetGroundCollisionRaycast();
-}
-
-private async UniTask SetGroundCollisionRaycastForOneWayPlatform()
-{
-    await raycastController.OnPlatformerSetGroundCollisionRaycastForOneWayPlatform();
-}
-
-private async UniTask SetCollisionOnGroundCollisionRaycastHit()
-{
-    await raycastController.OnPlatformerSetCollisionOnGroundCollisionRaycastHit();
-}
-
-private async UniTask CastGroundCollisionRay()
-{
-    await raycastController.OnPlatformerCastGroundCollisionRay();
-}
-
-private async UniTask UpdateForces()
-{
-    await UpdateExternalForce();
-    await UpdateGravity();
-    await UpdateExternalForceX();
-}
-
-private bool IgnoreFriction => raycastData.IgnoreFriction;
-private Vector2 ExternalForce => physicsData.ExternalForce;
-private float MinimumMoveThreshold => physicsData.MinimumMoveThreshold;
-private bool StopExternalForce => ExternalForce.magnitude <= MinimumMoveThreshold;
-private async UniTask UpdateExternalForce()
-{
-    if (!IgnoreFriction)
-    {
-        await UpdateExternalForceInternal();
-        if (StopExternalForce) await StopExternalForceInternal();
-    }
-    await Yield();
-}
-
-private async UniTask UpdateExternalForceInternal()
-{
-    await physicsController.OnPlatformerUpdateExternalForce();
-}
-
-private async UniTask StopExternalForceInternal()
-{
-    await physicsController.OnPlatformerStopExternalForce();
-}
-
-private bool ApplyGravity => Speed.y > 0;
-private async UniTask UpdateGravity()
-{
-    if (ApplyGravity) await ApplyGravityToSpeed();
-    else await ApplyExternalForceToGravity();
-    await Yield();
-}
-
-private async UniTask ApplyGravityToSpeed()
-{
-    await physicsController.OnPlatformerApplyGravityToSpeed();
-}
-
-private async UniTask ApplyExternalForceToGravity()
-{
-    await physicsController.OnPlatformerApplyExternalForceToGravity();
-}
-
-private float MaximumSlopeAngle => physicsData.MaximumSlopeAngle;
-private bool ApplyForcesToExternalForceX => OnSlope && GroundAngle > MaximumSlopeAngle &&
-                                            (GroundAngle < MinimumWallAngle || Speed.x == 0);
-private async UniTask UpdateExternalForceX()
-{
-    if (ApplyForcesToExternalForceX) await UpdateExternalForceXInternal();
-    await Yield();
-}
-
-private async UniTask UpdateExternalForceXInternal()
-{
-    await physicsController.OnPlatformerUpdateExternalForceX();
-}
-
-private Vector2 DeltaMove => physicsData.DeltaMove;
-private bool HorizontalDeltaMove => DeltaMove.x != 0;
-
-private async UniTask HorizontalDeltaMoveDetection()
-{
-    if (HorizontalDeltaMove)
-    {
-        await SlopeCollision();
-        await HorizontalCollision();
-    }
-
-    await Yield();
-}
-
-private bool OnSlope => raycastData.OnSlope;
-private bool SlopeBehavior => DeltaMove.y <= 0 && OnSlope;
-private int GroundDirectionAxis => raycastData.GroundDirectionAxis;
-private int DeltaMoveXDirectionAxis => physicsData.DeltaMoveXDirectionAxis;
-private bool DescendingSlope => GroundDirectionAxis == DeltaMoveXDirectionAxis;
-private float GroundAngle => raycastData.GroundAngle;
-private float MinimumWallAngle => physicsData.MinimumWallAngle;
-private float DeltaMoveDistanceX => physicsData.DeltaMoveDistanceX;
-private float SlopeMoveDistance => Sin(GroundAngle * Deg2Rad) * DeltaMoveDistanceX;
-private bool ClimbingSlope => GroundAngle < MinimumWallAngle && DeltaMove.x <= SlopeMoveDistance;
-
-private async UniTask SlopeCollision()
-{
-    if (SlopeBehavior)
-    {
-        if (DescendingSlope) await DescendSlope();
-        else if (ClimbingSlope) await ClimbSlope();
-    }
-
-    await Yield();
-}
-
-private async UniTask DescendSlope()
-{
-    var raycast = raycastController.OnPlatformerSlopeBehavior();
-    var physics = physicsController.OnPlatformerDescendSlope();
-    await (raycast, physics);
-}
-
-private async UniTask ClimbSlope()
-{
-    var raycast = raycastController.OnPlatformerSlopeBehavior();
-    var physics = physicsController.OnPlatformerClimbSlope();
-    await (raycast, physics);
-}
-
-private async UniTask HorizontalCollision()
-{
-    await raycastController.OnPlatformerHorizontalCollision();
-}
-
-private float Tolerance => Data.Tolerance;
-private Vector2 Speed => physicsData.Speed;
-
-private bool StoppingHorizontalSpeed => OnSlope && GroundAngle >= MinimumWallAngle &&
-                                        Abs(GroundAngle - DeltaMoveXDirectionAxis) > Tolerance && Speed.y < 0;
-
-private async UniTask StopHorizontalSpeedControl()
-{
-    if (StoppingHorizontalSpeed) await StopHorizontalSpeed();
-    await Yield();
-}
-
-private async UniTask StopHorizontalSpeed()
-{
-    var raycast = raycastController.OnPlatformerStopHorizontalSpeed();
-    var physics = physicsController.OnPlatformerStopHorizontalSpeed();
-    await (raycast, physics);
-}
-
-private async UniTask VerticalCollision()
-{
-    await raycastController.OnPlatformerVerticalCollision();
-}
-
-private bool OnGround => raycastData.OnGround;
-private bool SlopeChanging => OnGround && DeltaMove.x != 0 && Speed.y <= 0;
-
-private async UniTask SlopeChangeCollisionControl()
-{
-    if (SlopeChanging) await SlopeChangeCollision();
-    await Yield();
-}
-
-private bool Climbing => DeltaMove.y > 0;
-
-private async UniTask SlopeChangeCollision()
-{
-    if (Climbing) await ClimbSlopeChangeCollision();
-    else await DescendSlopeChangeCollision();
-    await Yield();
-}
-
-private RaycastHit2D Hit => raycastData.Hit;
-private float HitAngle => raycastData.HitAngle;
-private bool ClimbSteepSlopeHit => Hit && Abs(HitAngle - GroundAngle) > Tolerance;
-
-private async UniTask ClimbSlopeChangeCollision()
-{
-    await ClimbSteepSlope();
-    if (ClimbSteepSlopeHit) await OnClimbSteepSlopeHit();
-    else await ClimbMildSlope();
-}
-
-private async UniTask OnClimbSteepSlopeHit()
-{
-    var physics = physicsController.OnPlatformerClimbSteepSlopeHit();
-    var raycast = raycastController.OnPlatformerClimbSteepSlopeHit();
-    await (physics, raycast);
-}
-
-private async UniTask ClimbSteepSlope()
-{
-    await raycastController.OnPlatformerClimbSteepSlope();
-}
-
-private LayerMask GroundLayer => layerMaskData.Ground;
-private bool ClimbMildSlopeHit => Hit && Hit.collider.gameObject.layer == GroundLayer && HitAngle < GroundAngle;
-
-private async UniTask ClimbMildSlope()
-{
-    await raycastController.OnPlatformerClimbMildSlope();
-    if (ClimbMildSlopeHit) await OnClimbMildSlopeHit();
-    await Yield();
-}
-
-private async UniTask OnClimbMildSlopeHit()
-{
-    await physicsController.OnPlatformerClimbMildSlopeHit();
-}
-
-private bool DescendMildSlopeHit => Hit && HitAngle < GroundAngle;
-private bool FacingRight => physicsData.FacingRight;
-
-private bool DescendSteepSlopeHit => Hit && Abs(Sign(Hit.normal.x) - DeltaMoveXDirectionAxis) < Tolerance &&
-                                     Hit.collider.gameObject.layer == GroundLayer && HitAngle > GroundAngle &&
-                                     Abs(Sign(Hit.normal.x) - (FacingRight ? 1 : -1)) < Tolerance;
-
-private async UniTask DescendSlopeChangeCollision()
-{
-    await DescendMildSlope();
-    if (DescendMildSlopeHit) await OnDescendMildSlopeHit();
-    else await DescendSteepSlope();
-    if (DescendSteepSlopeHit) await OnDescendSteepSlopeHit();
-    await Yield();
-}
-
-private async UniTask DescendMildSlope()
-{
-    await raycastController.OnPlatformerDescendMildSlope();
-}
-
-private async UniTask OnDescendMildSlopeHit()
-{
-    var physics = physicsController.OnPlatformerDescendMildSlopeHit();
-    var raycast = raycastController.OnPlatformerDescendMildSlopeHit();
-    await (physics, raycast);
-}
-
-private async UniTask DescendSteepSlope()
-{
-    await raycastController.OnPlatformerDescendSteepSlope();
-}
-
-private async UniTask OnDescendSteepSlopeHit()
-{
-    await physicsController.OnPlatformerDescendSteepSlopeHit();
-}
-
-private async UniTask Move()
-{
-    await CastRayOnMove();
-    await MoveCharacter();
-}
-
-private async UniTask CastRayOnMove()
-{
-    await raycastController.OnPlatformerCastRayOnMove();
-}
-
-private async UniTask MoveCharacter()
-{
-    await physicsController.OnPlatformerMoveCharacter();
-}
-
-private async UniTask OnFrameExit()
-{
-    await ResetJumpCollision();
-    await ResetLayerMask();
-    await ResetFriction();
-}
-
-private RaycastHit2D VerticalHit => raycastData.VerticalHit;
-private bool CollidingBelow => raycastData.CollidingBelow;
-private Vector2 TotalSpeed => physicsData.TotalSpeed;
-private bool CollidingAbove => raycastData.CollidingAbove;
-
-private bool StopForcesY => VerticalHit && CollidingBelow && TotalSpeed.y < 0 ||
-                            CollidingAbove && TotalSpeed.y > 0 && (!OnSlope || GroundAngle < MinimumWallAngle);
-
-private async UniTask ResetJumpCollision()
-{
-    if (StopForcesY) await physicsController.OnPlatformerResetJumpCollision();
-    await Yield();
-}
-
-private async UniTask ResetLayerMask()
-{
-    await layerMaskController.OnPlatformerResetLayerMask();
-}
-
-private async UniTask ResetFriction()
-{
-    await raycastController.OnPlatformerResetFriction();
-}
-*/
-
-#endregion

@@ -12,11 +12,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce247ea3bdd74d0391d336fc91c90a56, type: 3}
   m_Name: PhysicsSettings
   m_EditorClassIdentifier: 
-  displayWarnings: 0
-  maximumSlopeAngle: 60
-  minimumWallAngle: 80
-  minimumMovementThreshold: 0.0001
+  displayWarnings: 1
   gravity: -30
-  airFriction: 1
-  groundFriction: 15
-  staggerSpeedFalloff: 50
+  fallMultiplier: 1
+  ascentMultiplier: 1
+  maximumVelocity: {x: 100, y: 100}
+  speedAccelerationOnGround: 20
+  speedAccelerationInAir: 5
+  speedFactor: 1
+  maximumSlopeAngle: 45
+  slopeAngleSpeedFactor:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -90
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 90
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  physics2DInteraction: 1
+  physics2DPushForce: 2
+  safeSetTransform: 0
+  automaticGravityControl: 1
+  stickToSlopeBehavior: 1
+  movementDirectionThreshold: 0.0001
