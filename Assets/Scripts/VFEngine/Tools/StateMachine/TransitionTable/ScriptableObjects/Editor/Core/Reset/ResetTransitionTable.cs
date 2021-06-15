@@ -2,9 +2,7 @@
 using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
 
 namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.Reset
-{
-    using static ScriptableObject;
-
+{using static ScriptableObject;
     internal class TransitionTableReset
     {
         private ResetTransitionTableData data;

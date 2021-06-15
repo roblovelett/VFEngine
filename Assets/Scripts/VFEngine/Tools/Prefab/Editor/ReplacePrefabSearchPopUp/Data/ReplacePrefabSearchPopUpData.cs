@@ -3,34 +3,32 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
 using VFEngine.Tools.GameObject.Editor.ReplaceTool;
+using VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView;
 using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ScriptableObjects;
 using UnityGameObject = UnityEngine.GameObject;
-using ReplacePrefabSearchPopUpData = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data.Data;
-using PrefabSelectionTreeViewController = VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Controller;
-using ReplacePrefabSearchPopUpController = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Controller;
 using ReplacePrefabSearchPopUpModel = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Model;
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
 {
     using static ScriptableObject;
 
-    public class Data
+    internal class ReplacePrefabSearchPopUpData
     {
         private Rect layout;
         internal SearchField SearchField { get; private set; }
         internal ReplacePrefabSearchPopUpModel Model { get; private set; }
         internal ReplaceToolController ReplaceToolController { get; private set; }
-        internal GameObject.Editor.GameObjectPreview.GameObjectPreviewController SelectionPreview { get; private set; }
+        internal GameObjectPreviewController SelectionPreview { get; private set; }
         internal bool CloseWindow { get; set; }
-        internal Styles Styles { get; set; }
+        internal ReplacePrefabSearchPopUpStyles Styles { get; set; }
         internal EditorWindow FocusedWindow { get; set; }
-        internal TreeViewStateSO ViewState { get; set; }
+        internal ReplacePrefabSearchPopUpSO ViewState { get; set; }
         internal UnityGameObject[] SelectedGameObjects { get; set; }
-        internal WindowProperties WindowProperties { get; set; }
+        internal ReplacePrefabSearchPopUpWindow WindowProperties { get; set; }
         internal PrefabSelectionTreeViewController Tree { get; set; }
-        internal ReplacePrefabSearchPopUpController Controller { get; set; }
-        internal ReplacePrefabSearchPopUpController[] Windows { get; set; }
         internal ReplacePrefabSearchPopUpController Window { get; set; }
+        internal ReplacePrefabSearchPopUpController[] Windows { get; set; }
+        internal ReplacePrefabSearchPopUpController Controller { get; set; }
 
         internal float LayoutX
         {
@@ -102,14 +100,14 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
         {
             Controller = null;
             Model = null;
-            Styles = new Styles();
+            Styles = new ReplacePrefabSearchPopUpStyles();
             SearchField = new SearchField();
-            ViewState = CreateInstance<TreeViewStateSO>();
-            SelectionPreview = new GameObject.Editor.GameObjectPreview.GameObjectPreviewController();
+            ViewState = CreateInstance<ReplacePrefabSearchPopUpSO>();
+            SelectionPreview = new GameObjectPreviewController();
             Tree = null;
             Windows = null;
             Window = null;
-            WindowProperties = new WindowProperties();
+            WindowProperties = new ReplacePrefabSearchPopUpWindow();
             FocusedWindow = null;
             CloseWindow = new bool();
             layout = new Rect();
@@ -117,7 +115,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
             SelectedGameObjects = null;
         }
 
-        internal Data()
+        internal ReplacePrefabSearchPopUpData()
         {
             Initialize();
         }

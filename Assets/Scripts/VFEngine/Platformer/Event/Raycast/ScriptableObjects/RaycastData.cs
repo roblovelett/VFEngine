@@ -4,6 +4,7 @@ using UnityEngine;
 using VFEngine.Platformer.Physics.Friction;
 using VFEngine.Platformer.Physics.MovingPlatform;
 using VFEngine.Tools;
+using VFEngine.Tools.GameObject;
 using static UnityEngine.LayerMask;
 using static UnityEngine.Vector3;
 

@@ -5,14 +5,13 @@ using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
-namespace VFEngine.Tools.StateMachine.Core.Templates
-{
+namespace VFEngine.Tools.StateMachine.Templates
+{using static ScriptableObject;
     using static File;
     using static Path;
     using static AssetDatabase;
     using static EditorGUIUtility;
     using static ProjectWindowUtil;
-    using static ScriptableObject;
     using static ScriptTemplates.Text;
 
     [UsedImplicitly]

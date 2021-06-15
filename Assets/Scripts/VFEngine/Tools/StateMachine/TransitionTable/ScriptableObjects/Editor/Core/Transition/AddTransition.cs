@@ -16,14 +16,13 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
     using static GC;
     using static GUI;
     using static GUIContent;
-    using static ScriptableObject;
     using static Object;
     using static AddTransition.Text.Label;
     using static AddTransition.Text.Property;
     using static AddTransition.Text.Button;
     using static GUILayoutUtility;
     using static ReorderableList;
-
+    using static ScriptableObject;
     public class AddTransition : IDisposable
     {
         private SerializedTransition SerializedTransition { get; }

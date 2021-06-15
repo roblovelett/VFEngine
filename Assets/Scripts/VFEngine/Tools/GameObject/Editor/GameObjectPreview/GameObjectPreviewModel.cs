@@ -15,9 +15,9 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
     using static BindingFlags;
     using static CameraClearFlags;
     using static GUI;
-    using static ScriptableObject;
     using static GameObjectPreviewText;
     using static EditorUnity;
+    using static ScriptableObject;
 
     internal class GameObjectPreviewModel
     {
@@ -238,7 +238,7 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 
         private static bool HasComponent<T>() where T : Component
         {
-            //Component = Renderer.GetComponentNoAlloc<T>();
+            Component = Renderer.GetComponentNoAlloc<T>();
             return InitializedComponent;
         }
 

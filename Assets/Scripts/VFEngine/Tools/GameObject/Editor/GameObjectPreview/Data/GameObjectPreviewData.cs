@@ -17,22 +17,14 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview.Data
         internal BillboardRenderer BillboardRenderer { get; set; }
         internal PreviewRenderUtility RenderUtility { get; set; }
         internal Component Component { get; set; }
-        //internal Controller Controller { get; set; }
 
         internal GameObjectPreviewData()
         {
             Initialize();
         }
 
-        /*internal Data(Controller controller)
-        {
-            Initialize();
-            //Controller = controller;
-        }*/
-
         internal void Initialize()
         {
-            //Controller = null;
             CreatedCachedEditor = false;
             Renderer = null;
             MeshFilter = null;

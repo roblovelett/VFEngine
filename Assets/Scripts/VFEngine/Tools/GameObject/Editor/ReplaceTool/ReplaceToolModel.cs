@@ -7,12 +7,12 @@ using VFEngine.Tools.GameObject.Editor.ReplaceTool.Data;
 using VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects;
 using Object = UnityEngine.Object;
 using UnityGameObject = UnityEngine.GameObject;
+using SystemDebug = System.Diagnostics.Debug;
 
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable RedundantEmptyObjectCreationArgumentList
 namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 {
-    using static ScriptableObject;
     using static PrefabUtility;
     using static Selection;
     using static SelectionMode;
@@ -24,7 +24,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
     using static GUI;
     using static GUILayout;
     using static ReplaceToolText;
-
+    using static ScriptableObject;
     internal class ReplaceToolModel
     {
         private ReplaceToolData data;
@@ -201,8 +201,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private void InitializeSelectObjectScrollPosition()
         {
-            System.Diagnostics.Debug.Assert(SelectObjectScrollPosition != null,
-                nameof(SelectObjectScrollPosition) + NotNull);
+            SystemDebug.Assert(SelectObjectScrollPosition != null, nameof(SelectObjectScrollPosition) + NotNull);
             SelectObjectScrollPosition = EditorGUILayout.BeginScrollView((Vector2) SelectObjectScrollPosition);
         }
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using VFEngine.Tools;
+using VFEngine.Tools.LayerMask;
 
 // ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects

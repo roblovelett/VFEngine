@@ -5,16 +5,14 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
 using VFEngine.Tools.GameObject.Editor.ReplaceTool;
+using VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView;
 using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data;
 using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ScriptableObjects;
-using ReplacePrefabSearchPopUpData = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data.Data;
 using UnityGameObject = UnityEngine.GameObject;
-using PrefabSelectionTreeViewController = VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Controller;
-using Window = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Controller;
-using ReplacePrefabSearchPopUpController = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Controller;
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 {
+    using static ScriptableObject;
     using static File;
     using static String;
     using static AssetPreview;
@@ -24,11 +22,10 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
     using static GUILayoutUtility;
     using static KeyCode;
     using static Resources;
-    using static ScriptableObject;
-    using static Text;
+    using static ReplacePrefabSearchPopUpText;
     using static EditorJsonUtility;
 
-    public class Model
+    internal class Model
     {
         private ReplacePrefabSearchPopUpData data;
 
@@ -49,7 +46,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
         private string ErrorModel => $"{_}{ModelName}{InConstructor}";
         private string Error => $"{ErrorController}{ErrorModel}";
 
-        internal void Initialize(Controller controller, Model model)
+        internal void Initialize(ReplacePrefabSearchPopUpController controller, Model model)
         {
             if (!Initialized(controller, model)) throw new InvalidOperationException($"{Error}");
         }
@@ -63,22 +60,22 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
         private int SelectedID => data.Tree.state.selectedIDs[0];
         private bool HasSelection => data.Tree.state.selectedIDs.Count > 0;
 
-        private Window[] Windows
+        private ReplacePrefabSearchPopUpController[] Windows
         {
             get => data.Windows;
             set => data.Windows = value;
         }
 
-        private Window Window
+        private ReplacePrefabSearchPopUpController Window
         {
             get => data.Window;
             set => data.Window = value;
         }
 
         private UnityGameObject Instance => EditorUtility.InstanceIDToObject(SelectedID) as UnityGameObject;
-        private static string AssetPath => Text.AssetPath;
+        private static string AssetPath => ReplacePrefabSearchPopUpText.AssetPath;
 
-        private Controller Controller
+        private ReplacePrefabSearchPopUpController Controller
         {
             get => data.Controller;
             set => data.Controller = value;
@@ -87,7 +84,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
         private static Event Event => current;
         private static float PreviewHeight => 128;
 
-        private Styles Styles
+        private ReplacePrefabSearchPopUpStyles Styles
         {
             get => data.Styles;
             set => data.Styles = value;
@@ -95,13 +92,13 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 
         private SearchField SearchField => data.SearchField;
 
-        private TreeViewStateSO ViewState
+        private ReplacePrefabSearchPopUpSO ViewState
         {
             get => data.ViewState;
             set => data.ViewState = value;
         }
 
-        private bool Initialized(Controller controller, Model model)
+        private bool Initialized(ReplacePrefabSearchPopUpController controller, Model model)
         {
             data.Initialize(controller, model);
             return true;
@@ -109,9 +106,9 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 
         internal void Show(Rect rect, Rect windowPosition)
         {
-            Windows = FindObjectsOfTypeAll<Window>();
-            Window = Windows.Length != 0 ? Windows[0] : CreateInstance<Window>();
-            WindowProperties = new WindowProperties(rect.position, rect.size, windowPosition);
+            Windows = FindObjectsOfTypeAll<ReplacePrefabSearchPopUpController>();
+            Window = Windows.Length != 0 ? Windows[0] : CreateInstance<ReplacePrefabSearchPopUpController>();
+            WindowProperties = new ReplacePrefabSearchPopUpWindow(rect.position, rect.size, windowPosition);
             Window.Initialize();
         }
 
@@ -146,7 +143,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
         internal void Initialize(UnityGameObject[] gameObjects)
         {
             SelectedGameObjects = gameObjects;
-            ViewState = CreateInstance<TreeViewStateSO>();
+            ViewState = CreateInstance<ReplacePrefabSearchPopUpSO>();
             if (OverwriteAssetPathWithViewState) FromJsonOverwrite(ReadAllText(AssetPath), ViewState);
             Tree = new PrefabSelectionTreeViewController(TreeViewState);
             Tree.OnSelectEntry += OnSelectEntry;
@@ -213,7 +210,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
             FocusedWindow = focusedWindow;
             if (CanResetSearchField) ResetSearchField();
             if (WindowNotInFocus) CloseWindow = true;
-            if (CanInitializeStyles) Styles = new Styles();
+            if (CanInitializeStyles) Styles = new ReplacePrefabSearchPopUpStyles();
             Toolbar();
             TreeView();
             PreviewSelected();
@@ -281,7 +278,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 
         private bool CanPreviewSelection => HasSelection && Tree.CanRender(SelectedID);
         private Rect Preview => GetRect(Position.width, PreviewHeight);
-        private GameObject.Editor.GameObjectPreview.GameObjectPreviewController SelectionPreview => data.SelectionPreview;
+        private GameObjectPreviewController SelectionPreview => data.SelectionPreview;
 
         private void PreviewSelected()
         {
@@ -358,7 +355,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
             Position = position;
         }
 
-        private WindowProperties WindowProperties
+        private ReplacePrefabSearchPopUpWindow WindowProperties
         {
             set => data.WindowProperties = value;
         }

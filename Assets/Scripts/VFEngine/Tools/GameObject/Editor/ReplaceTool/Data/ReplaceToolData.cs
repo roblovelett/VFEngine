@@ -5,8 +5,8 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
 {
-    using static ScriptableObject;
     using static ReplaceToolText;
+    using static ScriptableObject;
 
     internal class ReplaceToolData
     {

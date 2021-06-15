@@ -3,27 +3,25 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using VContainer;
 using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
 {
-    using static Model;
+    using static PrefabSelectionTreeViewModel;
     using static ScaleMode;
     using static EditorUtility;
     using static Event;
 
-    internal class Controller : TreeView
+    internal class PrefabSelectionTreeViewController : TreeView
     {
-        private static Model _treeView;
+        private static PrefabSelectionTreeViewModel _treeView;
         private bool CanInitializePrefabSelectionTreeViewModel => _treeView == null;
         private bool CanReload => _treeView.CanReload;
 
-        [Inject]
-        internal Controller(TreeViewState state) : base(state)
+        internal PrefabSelectionTreeViewController(TreeViewState state) : base(state)
         {
-            if (CanInitializePrefabSelectionTreeViewModel) _treeView = new Model(this);
-            else _treeView.Initialize(this);
+            if (CanInitializePrefabSelectionTreeViewModel) _treeView = new PrefabSelectionTreeViewModel();
+            else _treeView.Initialize();
             foldoutOverride = FoldoutOverride();
             if (CanReload) Reload();
         }
@@ -33,7 +31,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             _treeView.Cleanup();
         }
 
-        public bool CanRender(int id)
+        internal bool CanRender(int id)
         {
             return _treeView.CanRender(id);
         }
@@ -55,12 +53,20 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
         protected override void DoubleClickedItem(int id)
         {
             _treeView.DoubleClickedItem(InstanceIDToObject(id));
-            if (Expanded) SetExpanded(id, !IsExpanded(id));
+            OnExpanded(id);
         }
+
+        private static int SelectedId => _treeView.SelectedId;
 
         protected override void KeyEvent()
         {
             _treeView.KeyEvent(current.keyCode);
+            OnExpanded(SelectedId);
+        }
+
+        private void OnExpanded(int id)
+        {
+            if (Expanded) SetExpanded(id, !IsExpanded(id));
         }
 
         protected override void SelectionChanged(IList<int> selectedIds)

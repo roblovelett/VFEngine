@@ -28,7 +28,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
     using static PrefabAssetType;
     using static PrefabUtility;
 
-    public class Model
+    internal class PrefabSelectionTreeViewModel
     {
         private static PrefabSelectionTreeViewData data;
         private static bool CanInitializeData => data == null;
@@ -40,15 +40,15 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
         private static Dictionary<int, RenderTexture> Cache => data.Cache;
         private static ValueCollection PreviewTextures => data.Cache.Values;
 
-        internal Model(Controller controller)
+        internal PrefabSelectionTreeViewModel()
         {
-            Initialize(controller);
+            Initialize();
         }
 
-        internal void Initialize(Controller controller)
+        internal void Initialize()
         {
-            if (CanInitializeData) data = new PrefabSelectionTreeViewData(controller);
-            else data.Initialize(controller);
+            if (CanInitializeData) data = new PrefabSelectionTreeViewData();
+            else data.Initialize();
         }
 
         private static DoFoldoutCallback ExpandedState
@@ -132,7 +132,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             set => data.Object = value;
         }
 
-        internal bool HasPrefab => Object is UnityGameObject @object && InitializedPrefab(@object);
+        private bool HasPrefab => Object is UnityGameObject @object && InitializedPrefab(@object);
 
         private bool InitializedPrefab(UnityGameObject gameObject)
         {
@@ -151,14 +151,6 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             get => data.OnSelectEntry;
             set => data.OnSelectEntry = value;
         }
-
-        private void OnDoubleClickedItem()
-        {
-            if (SelectedPrefab) return;
-            Expanded = true;
-        }
-
-        private bool SelectedPrefab => InitializedObjectToInstance() && HasPrefab && OnSelectedPrefab();
 
         private bool InitializedObjectToInstance()
         {
@@ -192,18 +184,25 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
 
         private static bool EnterKeyPressed => CurrentKeyPressed == KeypadEnter;
         private static bool ReturnKeyPressed => CurrentKeyPressed == Return;
-        private static bool HasDoubleClickedItem => EnterKeyPressed || ReturnKeyPressed;
+        private static bool KeysAreDoubleClickedItem => EnterKeyPressed || ReturnKeyPressed;
 
         internal void KeyEvent(KeyCode key)
         {
             CurrentKeyPressed = key;
-            if (HasDoubleClickedItem) OnDoubleClickedItem();
+            if (KeysAreDoubleClickedItem) OnDoubleClickedItem();
         }
 
-        private int SelectedId
+        private void OnDoubleClickedItem()
+        {
+            if (!SelectedPrefab) Expanded = true;
+        }
+
+        private bool SelectedPrefab => InitializedObjectToInstance() && HasPrefab && OnSelectedPrefab();
+
+        internal int SelectedId
         {
             get => data.SelectedId;
-            set => data.SelectedId = value;
+            private set => data.SelectedId = value;
         }
 
         internal void SelectionChanged(bool isChanged, int selectedId)
@@ -334,7 +333,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             WhiteLabel ??= new GUIStyle(label) {normal = {textColor = whiteLabel.normal.textColor}};
         }
 
-        internal static Rect RowRect
+        private static Rect RowRect
         {
             get => data.RowRect;
             set => data.RowRect = value;
@@ -368,22 +367,15 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             set => data.CurrentID = value;
         }
 
-        private static bool HasRowRect
-        {
-            get => data.HasRowRect;
-            set => data.HasRowRect = value;
-        }
-
         private static void Initialize(bool hasSearch, TreeViewItem item, Rect rowRect)
         {
             Object = InstanceIDToObject(item.id);
             CurrentID = item.id;
             HasSearch = hasSearch;
             RowRect = rowRect;
-            HasRowRect = true;
         }
 
-        internal List<int> InitializedSelection { get; } = new List<int>() {CurrentID};
+        internal List<int> InitializedSelection { get; } = new List<int> {CurrentID};
 
         private static bool HasFocus
         {
@@ -424,7 +416,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
         }
 
         private bool CanRenderCurrentID => CanRender(CurrentID);
-        private static GameObject.Editor.GameObjectPreview.GameObjectPreviewController ItemPreview { get; } = new GameObject.Editor.GameObjectPreview.GameObjectPreviewController();
+        private static GameObjectPreviewController ItemPreview { get; } = new GameObjectPreviewController();
         internal bool CanCreatePreviewForTarget => CreatingPreviewForTarget && CacheHasPreviewTexture;
         private bool CreatingPreviewForTarget => HasPrefab && CanRenderCurrentID;
 

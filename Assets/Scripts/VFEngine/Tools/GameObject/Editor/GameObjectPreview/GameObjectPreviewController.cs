@@ -5,11 +5,11 @@ using EditorUnity = UnityEditor.Editor;
 
 namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 {
-    public class GameObjectPreviewController
+    internal class GameObjectPreviewController
     {
         private static GameObjectPreviewModel _gameObjectPreview;
         private static bool CanInitializeGameObjectPreviewModel => _gameObjectPreview == null;
-        public RenderTexture OutputTexture => _gameObjectPreview.OutputTexture;
+        internal RenderTexture OutputTexture => _gameObjectPreview.OutputTexture;
 
         [InitializeOnLoadMethod]
         private static void Initialize()
@@ -22,27 +22,27 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
             if (CanInitializeGameObjectPreviewModel) _gameObjectPreview = new GameObjectPreviewModel();
         }
 
-        public void CreatePreviewForTarget(UnityGameObject target)
+        internal void CreatePreviewForTarget(UnityGameObject target)
         {
             _gameObjectPreview.CreatePreviewForTarget(target);
         }
 
-        public void RenderInteractivePreview(Rect rect)
+        internal void RenderInteractivePreview(Rect rect)
         {
             _gameObjectPreview.RenderInteractivePreview(rect);
         }
 
-        public void DrawPreviewTexture(Rect rect)
+        internal void DrawPreviewTexture(Rect rect)
         {
             _gameObjectPreview.DrawPreviewTexture(rect);
         }
 
-        public bool CanRenderAssets(UnityGameObject gameObject)
+        internal bool CanRenderAssets(UnityGameObject gameObject)
         {
             return _gameObjectPreview.CanRenderAssets(gameObject.GetComponentsInChildren<Renderer>());
         }
 
-        public GameObjectPreviewController()
+        internal GameObjectPreviewController()
         {
             InitializeDefault();
         }

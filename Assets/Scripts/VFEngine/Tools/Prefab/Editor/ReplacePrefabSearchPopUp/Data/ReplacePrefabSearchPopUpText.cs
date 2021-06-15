@@ -6,7 +6,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
     using static Path;
     using static Application;
 
-    internal static class Text
+    internal static class ReplacePrefabSearchPopUpText
     {
         internal static string AssetPath =>
             Combine(dataPath.Remove(dataPath.Length - 7, 7), $"{Library}", $"{TreeStateAsset}");

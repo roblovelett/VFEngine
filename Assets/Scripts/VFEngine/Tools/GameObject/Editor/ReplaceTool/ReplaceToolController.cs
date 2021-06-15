@@ -6,7 +6,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 {
     using static ReplaceToolText;
 
-    public class ReplaceToolController : EditorWindow
+    internal class ReplaceToolController : EditorWindow
     {
         private static ReplaceToolModel _replaceTool;
         private static bool CanInitializeReplaceToolModel => _replaceTool == null;
@@ -35,7 +35,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         }
 
         [MenuItem(ReplaceToolMenuItem)]
-        public static void ShowWindow()
+        internal static void ShowWindow()
         {
             _replaceTool.ShowWindow(GetWindow<ReplaceToolController>());
         }
@@ -45,7 +45,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             Initialize();
         }
 
-        public void ReplaceSelectedObjects(UnityGameObject[] objectToReplace, UnityGameObject replaceObject)
+        internal void ReplaceSelectedObjects(UnityGameObject[] objectToReplace, UnityGameObject replaceObject)
         {
             _replaceTool.ReplaceSelectedObjects(objectToReplace, replaceObject);
         }

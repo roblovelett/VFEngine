@@ -6,11 +6,11 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
     using static EditorStyles;
     using static FontStyle;
 
-    public class Styles
+    internal class ReplacePrefabSearchPopUpStyles
     {
         internal readonly GUIStyle HeaderLabel;
 
-        internal Styles()
+        internal ReplacePrefabSearchPopUpStyles()
         {
             HeaderLabel = new GUIStyle(centeredGreyMiniLabel) {fontSize = 11, fontStyle = Bold};
         }

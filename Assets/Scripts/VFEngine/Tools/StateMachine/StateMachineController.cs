@@ -9,9 +9,8 @@ using StateMachineDebugController = VFEngine.Tools.StateMachine.Debug.Controller
 
 namespace VFEngine.Tools.StateMachine
 {
-    using static ScriptableObject;
     using static AssemblyReloadEvents;
-
+    using static ScriptableObject;
     public class Controller : MonoBehaviour
     {
         private Model stateMachine;

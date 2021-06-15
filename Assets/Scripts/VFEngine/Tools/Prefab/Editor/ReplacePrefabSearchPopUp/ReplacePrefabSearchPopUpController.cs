@@ -1,22 +1,19 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-using VContainer;
 using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data;
-using PrefabSelectionTreeViewController = VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Controller;
 using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 {
     using static Selection;
-    using static Text;
+    using static ReplacePrefabSearchPopUpText;
 
-    internal class Controller : EditorWindow
+    internal class ReplacePrefabSearchPopUpController : EditorWindow
     {
         private static Model _replacePrefabSearchPopup;
 
-        [Inject]
-        internal Controller()
+        internal ReplacePrefabSearchPopUpController()
         {
             if (!Initialized(_replacePrefabSearchPopup))
                 throw new InvalidOperationException(CannotInitializeController);
@@ -54,7 +51,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
             _replacePrefabSearchPopup.InitializePosition(positionInternal);
         }
 
-        internal static void Show(Rect rect)
+        internal void Show(Rect rect)
         {
             _replacePrefabSearchPopup.Show(rect, new Rect(rect.position, rect.size));
         }

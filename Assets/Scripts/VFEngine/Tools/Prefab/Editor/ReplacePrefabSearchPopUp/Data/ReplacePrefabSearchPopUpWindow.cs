@@ -2,7 +2,7 @@
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
 {
-    internal struct WindowProperties
+    internal struct ReplacePrefabSearchPopUpWindow
     {
         internal Vector2 StartPosition { get; private set; }
         internal Vector2 StartSize { get; private set; }
@@ -10,7 +10,7 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
         internal Vector2 LastSize { get; private set; }
         internal Rect Position { get; private set; }
 
-        internal WindowProperties(Vector2 startPosition, Vector2 startSize, Rect position) : this()
+        internal ReplacePrefabSearchPopUpWindow(Vector2 startPosition, Vector2 startSize, Rect position) : this()
         {
             StartPosition = startPosition;
             StartSize = startSize;

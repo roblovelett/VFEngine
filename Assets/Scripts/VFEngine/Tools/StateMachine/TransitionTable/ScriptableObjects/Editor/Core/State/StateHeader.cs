@@ -10,7 +10,6 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
     using static EditorGUI;
     using static EditorGUILayout;
     using static ContentStyle;
-    using static ScriptableObject;
     using static StateHeaderData;
     using static GUI;
     using static GC;

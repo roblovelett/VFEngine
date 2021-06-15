@@ -4,7 +4,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 using UnityGameObject = UnityEngine.GameObject;
-using PrefabSelectionTreeViewController    = VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Controller;
+
 // ReSharper disable InconsistentNaming
 namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
 {
@@ -26,7 +26,6 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
         internal bool HasSearch { get; set; }
         internal bool Expanded { get; set; }
         internal bool HasFocus { get; set; }
-        internal bool HasSelectedPrefab { get; set; }
         internal bool CanInitializeSelectionAndFocus { get; set; }
         internal bool SetupParentsAndChildrenFromPathDepths { get; set; }
         internal float ContentIndent { get; set; }
@@ -38,15 +37,12 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
         internal UnityObject Object { get; set; }
         internal UnityObject ObjectInstance { get; set; }
         internal UnityGameObject Prefab { get; set; }
-        internal UnityGameObject SelectedPrefab { get; set; }
         internal TreeViewItem Root { get; set; }
         internal RenderTexture PreviousTexture { get; set; }
         internal RenderTexture PreviewTexture { get; set; }
         internal DoFoldoutCallback ExpandedState { get; set; }
-        internal int VisibleID { get; set; }
-        internal bool HasRowRect { get; set; }
-        private Controller Controller { get; set; }
         internal int SelectedId { get; set; }
+        internal int VisibleID { get; set; }
 
         internal float PositionWidth
         {
@@ -100,22 +96,15 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
             set => labelRect.width = value;
         }
 
-        internal PrefabSelectionTreeViewData(Controller controller)
+        internal PrefabSelectionTreeViewData()
         {
             Initialize();
-            Initialize(controller);
         }
 
-        internal void Initialize(Controller controller)
+        internal void Initialize()
         {
-            Controller = controller;
-        }
-
-        private void Initialize()
-        {
-            Controller = null;
-            CanReload = false;
-            Expanded = false;
+            CanReload = new bool();
+            Expanded = new bool();
             Position = new Rect();
             LabelRect = new Rect();
             position = Position;
@@ -128,7 +117,6 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
             Cache = null;
             VisibleItems = null;
             ItemContent = null;
-            HasRowRect = new bool();
             VisibleID = new int();
             SelectedId = new int();
         }
