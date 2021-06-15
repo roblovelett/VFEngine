@@ -3,10 +3,10 @@ using VFEngine.Tools;
 
 namespace VFEngine.Platformer.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
 
-    [CreateAssetMenu(fileName = "PlatformerData", menuName = PlatformerDataPath, order = 0)]
-    public class PlatformerData : ScriptableObject
+    [CreateAssetMenu(fileName = "PlatformerData", menuName = DataPath, order = 0)]
+    public class Data : ScriptableObject
     {
         #region events
 
@@ -20,7 +20,7 @@ namespace VFEngine.Platformer.ScriptableObjects
         public float SmallestDistance { get; private set; }
         public int SmallestDistanceIndex { get; private set; }
         public bool SmallestDistanceHitConnected { get; private set; }
-        
+
         #endregion
 
         #region fields
@@ -39,52 +39,52 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         private void Initialize()
         {
-            SetIndex(0);
+            IndexInternal(0);
             InitializeSmallestDistanceProperties();
         }
 
-        private void SetIndex(int index)
+        private void IndexInternal(int index)
         {
             Index = index;
         }
 
         private void InitializeSmallestDistanceProperties()
         {
-            SetSmallestDistance(float.MaxValue);
-            SetSmallestDistanceIndex(0);
-            SetSmallestDistanceHitConnected(false);
+            SmallestDistanceInternal(float.MaxValue);
+            SmallestDistanceIndexInternal(0);
+            SmallestDistanceHitConnectedInternal(false);
         }
 
-        private void SetSmallestDistance(float distance)
+        private void SmallestDistanceInternal(float distance)
         {
             SmallestDistance = distance;
         }
 
-        private void SetSmallestDistanceIndex(int index)
+        private void SmallestDistanceIndexInternal(int index)
         {
             SmallestDistanceIndex = index;
         }
 
-        private void SetSmallestDistanceHitConnected(bool connected)
+        private void SmallestDistanceHitConnectedInternal(bool connected)
         {
             SmallestDistanceHitConnected = connected;
         }
 
         private void SmallestHitConnected()
         {
-            SetSmallestDistanceHitConnected(true);
+            SmallestDistanceHitConnectedInternal(true);
         }
 
-        private void SetSmallestDistanceProperties(int index, float belowRaycastHitDistance)
+        private void SmallestDistanceProperties(int index, float belowRaycastHitDistance)
         {
-            SetSmallestDistanceIndex(index);
-            SetSmallestDistance(belowRaycastHitDistance);
+            SmallestDistanceIndexInternal(index);
+            SmallestDistanceInternal(belowRaycastHitDistance);
         }
 
-        private void SetSmallestDistanceProperties(int index)
+        private void SmallestDistanceProperties(int index)
         {
-            SetSmallestDistanceIndex(index);
-            SetSmallestDistanceHitConnected(true);
+            SmallestDistanceIndexInternal(index);
+            SmallestDistanceHitConnectedInternal(true);
         }
 
         #endregion
@@ -98,7 +98,7 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         public void OnSetIndex(int index)
         {
-            SetIndex(index);
+            IndexInternal(index);
         }
 
         public void OnInitializeSmallestDistanceProperties()
@@ -113,17 +113,17 @@ namespace VFEngine.Platformer.ScriptableObjects
 
         public void OnSetSmallestDistanceProperties(int index, float belowRaycastHitDistance)
         {
-            SetSmallestDistanceProperties(index, belowRaycastHitDistance);
+            SmallestDistanceProperties(index, belowRaycastHitDistance);
         }
 
         public void OnSetSmallestDistancePropertiesOnAboveRaycastHit(int index)
         {
-            SetSmallestDistanceProperties(index);
+            SmallestDistanceProperties(index);
         }
 
         public void OnSetSmallestDistance(float distance)
         {
-            SetSmallestDistance(distance);
+            SmallestDistanceInternal(distance);
         }
 
         #endregion

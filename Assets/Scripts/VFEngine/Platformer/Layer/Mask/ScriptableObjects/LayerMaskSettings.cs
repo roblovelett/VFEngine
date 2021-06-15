@@ -1,13 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
 
-    [CreateAssetMenu(fileName = "LayerMaskSettings", menuName = PlatformerLayerMaskSettingsPath, order = 0)]
-    [InlineEditor]
+    [CreateAssetMenu(fileName = "LayerMaskSettings", menuName = LayerMaskSettingsPath, order = 0)]
     public class LayerMaskSettings : ScriptableObject
     {
         #region properties

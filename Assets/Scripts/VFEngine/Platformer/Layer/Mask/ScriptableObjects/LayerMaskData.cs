@@ -4,9 +4,9 @@ using VFEngine.Tools;
 // ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
 
-    [CreateAssetMenu(fileName = "LayerMaskData", menuName = PlatformerLayerMaskDataPath, order = 0)]
+    [CreateAssetMenu(fileName = "LayerMaskData", menuName = LayerMaskDataPath, order = 0)]
     public class LayerMaskData : ScriptableObject
     {
         #region events
@@ -18,8 +18,8 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         public LayerMask Platform { get; private set; }
         public LayerMask BelowPlatforms { get; private set; }
         public LayerMask SavedBelow { get; private set; }
-        public LayerMask MidHeightOneWayPlatform { get; private set; }
-        public LayerMask Stairs { get; private set; }
+        private LayerMask MidHeightOneWayPlatform { get; set; }
+        private LayerMask Stairs { get; set; }
         public LayerMask OneWayPlatform { get; private set; }
         public LayerMask MovingOneWayPlatform { get; private set; }
         public LayerMask BelowPlatformsWithoutOneWay { get; private set; }
@@ -70,19 +70,20 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         #endregion
 
         #region public methods
-        
+
         #endregion
 
         #region private methods
 
-        private void SetRaysBelowPlatforms()
+        private void RaysBelowPlatforms()
         {
-            SetBelowPlatforms(Platform);
-            SetBelowPlatformsWithoutOneWay(Platform & ~MidHeightOneWayPlatform & ~OneWayPlatform & ~MovingOneWayPlatform);
-            SetBelowPlatformsWithoutMidHeight(BelowPlatforms & ~MidHeightOneWayPlatform);
+            BelowPlatformsInternal(Platform);
+            SetBelowPlatformsWithoutOneWay(
+                Platform & ~MidHeightOneWayPlatform & ~OneWayPlatform & ~MovingOneWayPlatform);
+            BelowPlatformsWithoutMidHeight(BelowPlatforms & ~MidHeightOneWayPlatform);
         }
 
-        private void SetBelowPlatforms(LayerMask layer)
+        private void BelowPlatformsInternal(LayerMask layer)
         {
             BelowPlatforms = layer;
         }
@@ -92,17 +93,17 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             BelowPlatformsWithoutOneWay = layer;
         }
 
-        private void SetBelowPlatformsWithoutMidHeight(LayerMask layer)
+        private void BelowPlatformsWithoutMidHeight(LayerMask layer)
         {
             belowPlatformsWithoutMidHeight = layer;
         }
 
         private void SetSavedBelowLayerToStandingOnLastFrame(LayerMask layer)
         {
-            SetSavedBelow(layer);
+            SavedBelowInternal(layer);
         }
 
-        private void SetSavedBelow(LayerMask layer)
+        private void SavedBelowInternal(LayerMask layer)
         {
             SavedBelow = layer;
         }
@@ -115,24 +116,24 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
             else MidHeightOneWayPlatformContainsStandingOnLastFrame = false;
         }
 
-        private void SetRaysBelowToPlatformsWithoutMidHeight()
+        private void RaysBelowToPlatformsWithoutMidHeight()
         {
-            SetRaysBelowPlatforms(belowPlatformsWithoutMidHeight);
+            RaysBelowPlatforms(belowPlatformsWithoutMidHeight);
         }
 
-        private void SetRaysBelowPlatforms(LayerMask layer)
+        private void RaysBelowPlatforms(LayerMask layer)
         {
-            SetBelowPlatforms(layer);
+            BelowPlatformsInternal(layer);
         }
 
         private void SetRaysBelowToPlatformsAndOneWayOrStairs()
         {
-            SetBelowPlatforms(BelowPlatforms & ~OneWayPlatform | Stairs);
+            BelowPlatformsInternal((BelowPlatforms & ~OneWayPlatform) | Stairs);
         }
 
         private void SetRaysBelowToOneWayPlatform()
         {
-            SetBelowPlatforms(BelowPlatforms & ~OneWayPlatform);
+            BelowPlatformsInternal(BelowPlatforms & ~OneWayPlatform);
         }
 
         private void SetStairsContainsStandingOnLastFrame(GameObject standingOnLastFrame)
@@ -159,7 +160,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         {
             SetOneWayPlatformsContainsStandingOn(OneWayPlatform.Contains(standingOn.layer));
         }
-        
+
         private void SetMovingOneWayPlatformContainsStandingOn(GameObject standingOn)
         {
             SetMovingOneWayPlatformContainsStandingOn(MovingOneWayPlatform.Contains(standingOn.layer));
@@ -180,7 +181,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         {
             MovingOneWayPlatformContainsStandingOn = contains;
         }
-        
+
         #endregion
 
         #region event handlers
@@ -192,7 +193,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         public void OnSetRaysBelowPlatforms()
         {
-            SetRaysBelowPlatforms();
+            RaysBelowPlatforms();
         }
 
         public void OnSetSavedBelowLayerToStandingOnLastFrame(LayerMask layer)
@@ -207,7 +208,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
 
         public void OnSetRaysBelowToPlatformsWithoutMidHeight()
         {
-            SetRaysBelowToPlatformsWithoutMidHeight();
+            RaysBelowToPlatformsWithoutMidHeight();
         }
 
         public void OnSetRaysBelowToPlatformsAndOneWayOrStairs()
@@ -219,7 +220,7 @@ namespace VFEngine.Platformer.Layer.Mask.ScriptableObjects
         {
             SetRaysBelowToOneWayPlatform();
         }
-        
+
         public void OnSetStairsContainsStandingOnLastFrame(GameObject standingOnLastFrame)
         {
             SetStairsContainsStandingOnLastFrame(standingOnLastFrame);

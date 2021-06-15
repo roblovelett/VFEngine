@@ -1,13 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Physics.MovingPlatform.ScriptableObjects;
 
 namespace VFEngine.Platformer.Physics.MovingPlatform
 {
     using static ScriptableObject;
 
-    public class MovingPlatformController : SerializedMonoBehaviour
+    public class MovingPlatformController : MonoBehaviour
     {
         #region events
 
@@ -15,7 +13,7 @@ namespace VFEngine.Platformer.Physics.MovingPlatform
 
         #region properties
 
-        [OdinSerialize] public MovingPlatformData Data { get; private set; }
+        private MovingPlatformData Data { get; set; }
 
         #endregion
 

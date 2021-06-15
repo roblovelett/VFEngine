@@ -1,13 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Platformer.Physics.Friction.ScriptableObjects;
 
 namespace VFEngine.Platformer.Physics.Friction
 {
     using static ScriptableObject;
 
-    public class FrictionController : SerializedMonoBehaviour
+    public class FrictionController : MonoBehaviour
     {
         #region events
 
@@ -15,7 +13,7 @@ namespace VFEngine.Platformer.Physics.Friction
 
         #region properties
 
-        [OdinSerialize] public FrictionData Data { get; private set; }
+        public FrictionData Data { get; private set; }
 
         #endregion
 

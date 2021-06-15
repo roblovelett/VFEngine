@@ -1,6 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
 using VFEngine.Platformer.Layer.Mask;
@@ -15,7 +13,7 @@ namespace VFEngine.Platformer.Event.Raycast
     using static UniTask;
 
     [RequireComponent(typeof(BoxCollider2D))]
-    public class RaycastController : SerializedMonoBehaviour
+    public class RaycastController : MonoBehaviour
     {
         #region events
 
@@ -23,39 +21,44 @@ namespace VFEngine.Platformer.Event.Raycast
 
         #region properties
 
-        [OdinSerialize] public RaycastData Data { get; private set; }
+        public RaycastData Data { get; private set; }
 
         #endregion
 
         #region fields
 
-        [OdinSerialize] private GameObject character;
-        [OdinSerialize] private BoxCollider2D boxCollider;
-        [OdinSerialize] private RaycastSettings settings;
-        [OdinSerialize] private PlatformerController platformerController;
-        [OdinSerialize] private LayerMaskController layerMaskController;
-        [OdinSerialize] private PhysicsController physicsController;
+        [SerializeField] private GameObject character;
+        [SerializeField] private BoxCollider2D boxCollider;
+        [SerializeField] private RaycastSettings settings;
+        private PlatformerController platformerController;
+        private LayerMaskController layerMaskController;
+        private PhysicsController physicsController;
         private LayerMaskData layerMaskData;
         private PhysicsData physicsData;
-        private PlatformerData platformerData;
+        private Data platformerData;
 
         #endregion
 
         #region initialization
 
+        private bool SettingsIsNull => settings == null;
+        private bool DataIsNull => Data == null;
+        private bool InitializePlatformerController => platformerController == null;
+        private bool InitializeLayerMaskController => layerMaskController == null;
+        private bool InitializePhysicsController => physicsController == null;
         private void Initialize()
         {
             if (!character) character = GameObject.Find("Character");
             if (!boxCollider) boxCollider = GetComponent<BoxCollider2D>();
-            if (!settings) settings = CreateInstance<RaycastSettings>();
-            if (!platformerController) platformerController = GetComponent<PlatformerController>();
-            if (!layerMaskController) layerMaskController = GetComponent<LayerMaskController>();
-            if (!physicsController) physicsController = GetComponent<PhysicsController>();
-            if (!Data) Data = CreateInstance<RaycastData>();
+            if (SettingsIsNull) settings = CreateInstance<RaycastSettings>();
+            if (InitializePlatformerController) platformerController = GetComponent<PlatformerController>();
+            if (InitializeLayerMaskController) layerMaskController = GetComponent<LayerMaskController>();
+            if (InitializePhysicsController) physicsController = GetComponent<PhysicsController>();
+            if (DataIsNull) Data = CreateInstance<RaycastData>();
             Data.OnInitialize(ref boxCollider, ref character, settings);
         }
 
-        private void SetDependencies()
+        private void Dependencies()
         {
             layerMaskData = layerMaskController.Data;
             physicsData = physicsController.Data;
@@ -73,7 +76,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private void Start()
         {
-            SetDependencies();
+            Dependencies();
         }
 
         #endregion
@@ -105,7 +108,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetGroundedEvent()
+        private async UniTask GroundedEvent()
         {
             Data.OnSetGroundedEvent();
             await Yield();
@@ -113,7 +116,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private LayerMask BelowPlatforms => layerMaskData.BelowPlatforms;
 
-        private async UniTask SetDistanceToGroundRaycast()
+        private async UniTask DistanceToGroundRaycast()
         {
             Data.OnSetDistanceToGroundRaycast(character, BelowPlatforms);
             await Yield();
@@ -125,7 +128,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetDistanceToGround()
+        private async UniTask DistanceToGround()
         {
             Data.OnSetDistanceToGround();
             await Yield();
@@ -145,13 +148,13 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetCurrentRaycastDirectionToLeft()
+        private async UniTask CurrentRaycastDirectionToLeft()
         {
             Data.OnSetCurrentRaycastDirectionToLeft();
             await Yield();
         }
 
-        private async UniTask SetCurrentRaycastDirectionToRight()
+        private async UniTask CurrentRaycastDirectionToRight()
         {
             Data.OnSetCurrentRaycastDirectionToRight();
             await Yield();
@@ -159,7 +162,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private Vector2 Speed => physicsData.Speed;
 
-        private async UniTask SetHorizontalRaycast()
+        private async UniTask HorizontalRaycast()
         {
             Data.OnSetHorizontalRaycast(character, Speed.x);
             await Yield();
@@ -173,13 +176,13 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private int Index => platformerData.Index;
 
-        private async UniTask SetHorizontalRaycastOrigin()
+        private async UniTask HorizontalRaycastOrigin()
         {
             Data.OnSetHorizontalRaycastOrigin(Index);
             await Yield();
         }
 
-        private async UniTask SetHorizontalRaycastForPlatform()
+        private async UniTask HorizontalRaycastForPlatform()
         {
             Data.OnSetHorizontalRaycastForPlatform(Index, character, Platform);
             await Yield();
@@ -188,20 +191,20 @@ namespace VFEngine.Platformer.Event.Raycast
         private LayerMask OneWayPlatform => layerMaskData.OneWayPlatform;
         private LayerMask MovingOneWayPlatform => layerMaskData.MovingOneWayPlatform;
 
-        private async UniTask SetHorizontalRaycastForSpecialPlatforms()
+        private async UniTask HorizontalRaycastForSpecialPlatforms()
         {
             Data.OnSetHorizontalRaycastForSpecialPlatforms(Index, character, Platform, OneWayPlatform,
                 MovingOneWayPlatform);
             await Yield();
         }
 
-        private async UniTask SetHorizontalHitAngle()
+        private async UniTask HorizontalHitAngle()
         {
             Data.OnSetHorizontalHitAngle(Index, character);
             await Yield();
         }
 
-        private async UniTask SetLateralSlopeAngle()
+        private async UniTask LateralSlopeAngle()
         {
             Data.OnSetLateralSlopeAngle();
             await Yield();
@@ -233,7 +236,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetFriction()
+        private async UniTask Friction()
         {
             Data.OnSetFriction();
             await Yield();
@@ -245,7 +248,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetCurrentRaycastDirectionToDown()
+        private async UniTask CurrentRaycastDirectionToDown()
         {
             Data.OnSetCurrentRaycastDirectionToDown();
             await Yield();
@@ -257,13 +260,13 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetNotCollidingBelow()
+        private async UniTask NotCollidingBelow()
         {
             Data.OnSetNotCollidingBelow();
             await Yield();
         }
 
-        private async UniTask SetVerticalRaycastLength()
+        private async UniTask VerticalRaycastLength()
         {
             Data.OnSetVerticalRaycastLength();
             await Yield();
@@ -281,7 +284,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetVerticalRaycast()
+        private async UniTask VerticalRaycast()
         {
             Data.OnSetVerticalRaycast(character, NewPosition.x);
             await Yield();
@@ -299,7 +302,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetBelowRaycastOrigin()
+        private async UniTask BelowRaycastOrigin()
         {
             Data.OnSetBelowRaycastOrigin(Index);
             await Yield();
@@ -313,13 +316,13 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetBelowRaycastToBelowPlatforms()
+        private async UniTask BelowRaycastToBelowPlatforms()
         {
             Data.OnSetBelowRaycastToBelowPlatforms(Index, character, BelowPlatforms);
             await Yield();
         }
 
-        private async UniTask SetBelowRaycastDistance()
+        private async UniTask BelowRaycastDistance()
         {
             Data.OnSetBelowRaycastDistance(SmallestDistanceIndex);
             await Yield();
@@ -331,7 +334,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetNegativeBelowSlopeAngle()
+        private async UniTask NegativeBelowSlopeAngle()
         {
             Data.OnSetNegativeBelowSlopeAngle();
             await Yield();
@@ -343,7 +346,7 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetCollidingBelow()
+        private async UniTask CollidingBelow()
         {
             Data.OnSetCollidingBelow();
             await Yield();
@@ -363,31 +366,31 @@ namespace VFEngine.Platformer.Event.Raycast
 
         private float MaximumSlopeAngle => physicsData.MaximumSlopeAngle;
 
-        private async UniTask SetStickToSlopeRayLength()
+        private async UniTask StickToSlopeRayLength()
         {
             Data.OnSetStickToSlopeRayLength(MaximumSlopeAngle);
             await Yield();
         }
 
-        private async UniTask SetStickToSlopesRaycast()
+        private async UniTask StickToSlopesRaycast()
         {
             Data.OnSetStickToSlopeRaycast(NewPosition.x, character, BelowPlatforms);
             await Yield();
         }
 
-        private async UniTask SetNegativeBelowSlopeAngleLeft()
+        private async UniTask NegativeBelowSlopeAngleLeft()
         {
             Data.OnSetNegativeBelowSlopeAngleLeft();
             await Yield();
         }
 
-        private async UniTask SetNegativeBelowSlopeAngleRight()
+        private async UniTask NegativeBelowSlopeAngleRight()
         {
             Data.OnSetNegativeBelowSlopeAngleRight();
             await Yield();
         }
 
-        private async UniTask SetCastStickToSlopeRaycastLeft()
+        private async UniTask CastStickToSlopeRaycastLeft()
         {
             Data.OnSetCastStickToSlopeRaycastLeft();
             await Yield();
@@ -435,13 +438,13 @@ namespace VFEngine.Platformer.Event.Raycast
             await Yield();
         }
 
-        private async UniTask SetCurrentRaycastDirectionToUp()
+        private async UniTask CurrentRaycastDirectionToUp()
         {
             Data.OnSetCurrentRaycastDirectionToUp();
             await Yield();
         }
 
-        private async UniTask SetAboveRaycast()
+        private async UniTask AboveRaycast()
         {
             Data.OnSetAboveRaycast(NewPosition, character);
             await Yield();
@@ -498,12 +501,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetGroundedEvent()
         {
-            await SetGroundedEvent();
+            await GroundedEvent();
         }
 
         public async UniTask OnPlatformerSetDistanceToGroundRaycast()
         {
-            await SetDistanceToGroundRaycast();
+            await DistanceToGroundRaycast();
         }
 
         public async UniTask OnPlatformerSetDistanceToGroundOnRaycastHit()
@@ -513,7 +516,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetDistanceToGround()
         {
-            await SetDistanceToGround();
+            await DistanceToGround();
         }
 
         public async UniTask OnPlatformerSetStandingOnLastFrameLayerToSavedBelow()
@@ -528,17 +531,17 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetCurrentRaycastDirectionToLeft()
         {
-            await SetCurrentRaycastDirectionToLeft();
+            await CurrentRaycastDirectionToLeft();
         }
 
         public async UniTask OnPlatformerSetCurrentRaycastDirectionToRight()
         {
-            await SetCurrentRaycastDirectionToRight();
+            await CurrentRaycastDirectionToRight();
         }
 
         public async UniTask OnPlatformerSetHorizontalRaycast()
         {
-            await SetHorizontalRaycast();
+            await HorizontalRaycast();
         }
 
         public async UniTask OnPlatformerResizeHorizontalHitStorage()
@@ -548,27 +551,27 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetHorizontalRaycastOrigin()
         {
-            await SetHorizontalRaycastOrigin();
+            await HorizontalRaycastOrigin();
         }
 
         public async UniTask OnPlatformerSetHorizontalRaycastForPlatform()
         {
-            await SetHorizontalRaycastForPlatform();
+            await HorizontalRaycastForPlatform();
         }
 
         public async UniTask OnPlatformerSetHorizontalRaycastForSpecialPlatforms()
         {
-            await SetHorizontalRaycastForSpecialPlatforms();
+            await HorizontalRaycastForSpecialPlatforms();
         }
 
         public async UniTask OnPlatformerSetHorizontalHitAngle()
         {
-            await SetHorizontalHitAngle();
+            await HorizontalHitAngle();
         }
 
         public async UniTask OnPlatformerSetLateralSlopeAngle()
         {
-            await SetLateralSlopeAngle();
+            await LateralSlopeAngle();
         }
 
         public async UniTask OnPlatformerSetCollisionOnHitWall()
@@ -588,7 +591,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetFriction()
         {
-            await SetFriction();
+            await Friction();
         }
 
         public async UniTask OnPlatformerMovingPlatformTest()
@@ -603,7 +606,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetCurrentRaycastDirectionToDown()
         {
-            await SetCurrentRaycastDirectionToDown();
+            await CurrentRaycastDirectionToDown();
         }
 
         public async UniTask OnPlatformerInitializeFriction()
@@ -613,12 +616,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetNotCollidingBelow()
         {
-            await SetNotCollidingBelow();
+            await NotCollidingBelow();
         }
 
         public async UniTask OnPlatformerSetVerticalRaycastLength()
         {
-            await SetVerticalRaycastLength();
+            await VerticalRaycastLength();
         }
 
         public async UniTask OnPlatformerSetVerticalRaycastLengthOnMovingPlatform()
@@ -633,7 +636,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetVerticalRaycast()
         {
-            await SetVerticalRaycast();
+            await VerticalRaycast();
         }
 
         public async UniTask OnPlatformerResizeBelowHitStorage()
@@ -648,7 +651,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetBelowRaycastOrigin()
         {
-            await SetBelowRaycastOrigin();
+            await BelowRaycastOrigin();
         }
 
         public async UniTask OnPlatformerSetBelowRaycastToBelowPlatformsWithoutOneWay()
@@ -658,12 +661,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetBelowRaycastToBelowPlatforms()
         {
-            await SetBelowRaycastToBelowPlatforms();
+            await BelowRaycastToBelowPlatforms();
         }
 
         public async UniTask OnPlatformerSetBelowRaycastDistance()
         {
-            await SetBelowRaycastDistance();
+            await BelowRaycastDistance();
         }
 
         public async UniTask OnPlatformerSetCollisionOnBelowRaycastHit()
@@ -673,7 +676,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetNegativeBelowSlopeAngle()
         {
-            await SetNegativeBelowSlopeAngle();
+            await NegativeBelowSlopeAngle();
         }
 
         public async UniTask OnPlatformerSetStandingOnOnSmallestHitConnected()
@@ -683,7 +686,7 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetCollidingBelow()
         {
-            await SetCollidingBelow();
+            await CollidingBelow();
         }
 
         public async UniTask OnPlatformerSetBelowRaycastDistanceOnSmallestDistanceHit()
@@ -698,27 +701,27 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetStickToSlopeRayLength()
         {
-            await SetStickToSlopeRayLength();
+            await StickToSlopeRayLength();
         }
 
         public async UniTask OnPlatformerSetStickToSlopesRaycast()
         {
-            await SetStickToSlopesRaycast();
+            await StickToSlopesRaycast();
         }
 
         public async UniTask OnPlatformerSetNegativeBelowSlopeAngleLeft()
         {
-            await SetNegativeBelowSlopeAngleLeft();
+            await NegativeBelowSlopeAngleLeft();
         }
 
         public async UniTask OnPlatformerSetNegativeBelowSlopeAngleRight()
         {
-            await SetNegativeBelowSlopeAngleRight();
+            await NegativeBelowSlopeAngleRight();
         }
 
         public async UniTask OnPlatformerSetCastStickToSlopeRaycastLeft()
         {
-            await SetCastStickToSlopeRaycastLeft();
+            await CastStickToSlopeRaycastLeft();
         }
 
         public async UniTask OnPlatformerSetStickToSlopeRaycastOnSlope()
@@ -758,12 +761,12 @@ namespace VFEngine.Platformer.Event.Raycast
 
         public async UniTask OnPlatformerSetCurrentRaycastDirectionToUp()
         {
-            await SetCurrentRaycastDirectionToUp();
+            await CurrentRaycastDirectionToUp();
         }
 
         public async UniTask OnPlatformerSetAboveRaycast()
         {
-            await SetAboveRaycast();
+            await AboveRaycast();
         }
 
         public async UniTask OnPlatformerResizeAboveHitStorage()

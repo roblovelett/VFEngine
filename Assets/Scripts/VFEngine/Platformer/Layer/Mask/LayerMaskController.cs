@@ -1,6 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
@@ -12,7 +10,7 @@ namespace VFEngine.Platformer.Layer.Mask
     using static ScriptableObject;
     using static UniTask;
 
-    public class LayerMaskController : SerializedMonoBehaviour
+    public class LayerMaskController : MonoBehaviour
     {
         #region events
 
@@ -20,14 +18,14 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region properties
 
-        [OdinSerialize] public LayerMaskData Data { get; private set; }
+        public LayerMaskData Data { get; private set; }
 
         #endregion
 
         #region fields
 
-        [OdinSerialize] private GameObject character;
-        [OdinSerialize] private LayerMaskSettings settings;
+        [SerializeField] private GameObject character;
+        [SerializeField] private LayerMaskSettings settings;
         private RaycastData raycastData;
 
         #endregion
@@ -42,7 +40,7 @@ namespace VFEngine.Platformer.Layer.Mask
             Data.OnInitialize(settings);
         }
 
-        private void SetDependencies()
+        private void Dependencies()
         {
             raycastData = GetComponent<RaycastController>().Data;
         }
@@ -58,7 +56,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         private void Start()
         {
-            SetDependencies();
+            Dependencies();
         }
 
         #endregion
@@ -69,20 +67,21 @@ namespace VFEngine.Platformer.Layer.Mask
 
         #region private methods
 
-        private async UniTask SetRaysBelowPlatforms()
+        private async UniTask RaysBelowPlatforms()
         {
             Data.OnSetRaysBelowPlatforms();
             await Yield();
         }
 
         private GameObject StandingOnLastFrame => raycastData.StandingOnLastFrame;
+
         private async UniTask SetSavedBelowLayerToStandingOnLastFrame()
         {
             Data.OnSetSavedBelowLayerToStandingOnLastFrame(StandingOnLastFrame.layer);
             await Yield();
         }
 
-        private async UniTask SetRaysBelowToPlatformsWithoutMidHeight()
+        private async UniTask RaysBelowToPlatformsWithoutMidHeight()
         {
             Data.OnSetRaysBelowToPlatformsWithoutMidHeight();
             await Yield();
@@ -113,19 +112,20 @@ namespace VFEngine.Platformer.Layer.Mask
         }
 
         private GameObject StandingOn => raycastData.StandingOn;
+
         private async UniTask SetPlatformsContainStandingOn()
         {
             Data.OnSetPlatformsContainStandingOn(StandingOn);
             await Yield();
         }
-        
+
         #endregion
 
         #region event handlers
 
         public async UniTask OnPlatformerSetRaysBelowPlatforms()
         {
-            await SetRaysBelowPlatforms();
+            await RaysBelowPlatforms();
         }
 
         public async UniTask OnPlatformerSetSavedBelowLayerToStandingOnLastFrame()
@@ -140,7 +140,7 @@ namespace VFEngine.Platformer.Layer.Mask
 
         public async UniTask OnPlatformerSetRaysBelowToPlatformsWithoutMidHeight()
         {
-            await SetRaysBelowToPlatformsWithoutMidHeight();
+            await RaysBelowToPlatformsWithoutMidHeight();
         }
 
         public async UniTask OnPlatformerSetRaysBelowToPlatformsAndOneWayOrStairs()
@@ -162,7 +162,7 @@ namespace VFEngine.Platformer.Layer.Mask
         {
             await SetPlatformsContainStandingOn();
         }
-        
+
         #endregion
     }
 }

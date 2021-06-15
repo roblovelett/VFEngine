@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
@@ -12,8 +10,10 @@ using VFEngine.Platformer.Physics;
 using VFEngine.Platformer.Physics.ScriptableObjects;
 using VFEngine.Platformer.ScriptableObjects;
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable ConvertIfStatementToSwitchExpression
 // ReSharper disable ConvertIfStatementToSwitchStatement
+// ReSharper disable MergeIntoLogicalPattern
 namespace VFEngine.Platformer
 {
     using static UniTask;
@@ -23,8 +23,9 @@ namespace VFEngine.Platformer
     using static Time;
     using static RaycastData;
     using static RaycastData.Direction;
+    using static Single;
 
-    public class PlatformerController : SerializedMonoBehaviour
+    public class PlatformerController : MonoBehaviour
     {
         #region events
 
@@ -32,15 +33,15 @@ namespace VFEngine.Platformer
 
         #region properties
 
-        [OdinSerialize] public PlatformerData Data { get; private set; }
+        public Data Data { get; private set; }
 
         #endregion
 
         #region fields
 
-        [OdinSerialize] private RaycastController raycastController;
-        [OdinSerialize] private LayerMaskController layerMaskController;
-        [OdinSerialize] private PhysicsController physicsController;
+        [SerializeField] private RaycastController raycastController;
+        [SerializeField] private LayerMaskController layerMaskController;
+        [SerializeField] private PhysicsController physicsController;
         private RaycastData raycastData;
         private LayerMaskData layerMaskData;
         private PhysicsData physicsData;
@@ -54,7 +55,7 @@ namespace VFEngine.Platformer
             if (!raycastController) raycastController = GetComponent<RaycastController>();
             if (!layerMaskController) layerMaskController = GetComponent<LayerMaskController>();
             if (!physicsController) physicsController = GetComponent<PhysicsController>();
-            if (!Data) Data = CreateInstance<PlatformerData>();
+            if (!Data) Data = CreateInstance<Data>();
             Data.OnInitialize();
         }
 
@@ -122,7 +123,6 @@ namespace VFEngine.Platformer
                 await StopExternalForce();
                 await OnExitFrame();
                 await UpdateWorldSpeed();
-                //Log($"Frame={frameCount} FixedTime={fixedTime}");
                 await WaitForFixedUpdate(ct);
             }
         }
@@ -194,13 +194,13 @@ namespace VFEngine.Platformer
         private bool HasMovingPlatform => raycastData.MovingPlatformNotNull;
         private Vector2 MovingPlatformCurrentSpeed => raycastData.MovingPlatformCurrentSpeed;
 
-        private bool TranslateMovingPlatformSpeedToTransform => !float.IsNaN(MovingPlatformCurrentSpeed.x) &&
-                                                                !float.IsNaN(MovingPlatformCurrentSpeed.y);
+        private bool TranslateMovingPlatformSpeedToTransform => !IsNaN(MovingPlatformCurrentSpeed.x) &&
+                                                                !IsNaN(MovingPlatformCurrentSpeed.y);
 
         private bool CollidedWithCeilingLastFrame => raycastData.CollidedWithCeilingLastFrame;
 
-        private bool ApplyMovingPlatformBehavior => !(timeScale == 0 || float.IsNaN(MovingPlatformCurrentSpeed.x) ||
-                                                      float.IsNaN(MovingPlatformCurrentSpeed.y) || deltaTime <= 0 ||
+        private bool ApplyMovingPlatformBehavior => !(timeScale == 0 || IsNaN(MovingPlatformCurrentSpeed.x) ||
+                                                      IsNaN(MovingPlatformCurrentSpeed.y) || deltaTime <= 0 ||
                                                       CollidedWithCeilingLastFrame);
 
         private async UniTask ApplyMovingPlatformBehaviorToPhysics()
@@ -477,9 +477,7 @@ namespace VFEngine.Platformer
         private bool SetRaysBelowToPlatformsWithoutMidHeight => !SetStandingOnLastFrameLayerToPlatforms &&
                                                                 StandingOnLastFrameNotNull && GroundedLastFrame;
 
-        private bool StandingOnColliderContainsBottomCenterPosition =>
-            raycastData.StandingOnContainsBottomCenter;
-
+        private bool StandingOnColliderContainsBottomCenterPosition => raycastData.StandingOnContainsBottomCenter;
         private bool StairsContainsStandingOnLastFrame => layerMaskData.StairsContainsStandingOnLastFrame;
 
         private bool SetRaysBelowToPlatformsAndOneWayOrStairs => StandingOnColliderContainsBottomCenterPosition &&

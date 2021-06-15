@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+
 using UnityEngine;
 using VFEngine.Platformer.Event.Raycast;
 using VFEngine.Platformer.Event.Raycast.ScriptableObjects;
@@ -17,7 +16,7 @@ namespace VFEngine.Platformer.Physics
     using static RaycastData;
     using static MathsExtensions;
 
-    public class PhysicsController : SerializedMonoBehaviour
+    public class PhysicsController : MonoBehaviour
     {
         #region events
 
@@ -25,16 +24,16 @@ namespace VFEngine.Platformer.Physics
 
         #region properties
 
-        [OdinSerialize] public PhysicsData Data { get; private set; }
+        public PhysicsData Data { get; private set; }
 
         #endregion
 
         #region fields
 
-        [OdinSerialize] private GameObject character;
-        [OdinSerialize] private PhysicsSettings settings;
+        [SerializeField] private GameObject character;
+        [SerializeField] private PhysicsSettings settings;
         private RaycastData raycastData;
-        private PlatformerData platformerData;
+        private Data platformerData;
 
         #endregion
 
@@ -48,7 +47,7 @@ namespace VFEngine.Platformer.Physics
             Data.OnInitialize(settings, ref character);
         }
 
-        private void SetDependencies()
+        private void Dependencies()
         {
             raycastData = GetComponent<RaycastController>().Data;
             platformerData = GetComponent<PlatformerController>().Data;
@@ -65,7 +64,7 @@ namespace VFEngine.Platformer.Physics
 
         private void Start()
         {
-            SetDependencies();
+            Dependencies();
         }
 
         #endregion
@@ -76,7 +75,7 @@ namespace VFEngine.Platformer.Physics
 
         #region private methods
 
-        private async UniTask SetCurrentGravity()
+        private async UniTask CurrentGravity()
         {
             Data.OnSetCurrentGravity();
             await Yield();
@@ -132,7 +131,7 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
-        private async UniTask SetNewSpeed()
+        private async UniTask NewSpeed()
         {
             Data.OnSetNewSpeed();
             await Yield();
@@ -186,19 +185,19 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
-        private async UniTask SetMovementDirectionToSaved()
+        private async UniTask MovementDirectionToSaved()
         {
             Data.OnSetMovementDirectionToSaved();
             await Yield();
         }
 
-        private async UniTask SetNegativeMovementDirection()
+        private async UniTask NegativeMovementDirection()
         {
             Data.OnSetNegativeMovementDirection();
             await Yield();
         }
 
-        private async UniTask SetPositiveMovementDirection()
+        private async UniTask PositiveMovementDirection()
         {
             Data.OnSetPositiveMovementDirection();
             await Yield();
@@ -210,7 +209,7 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
-        private async UniTask SetSavedMovementDirection()
+        private async UniTask SavedMovementDirection()
         {
             Data.OnSetSavedMovementDirection();
             await Yield();
@@ -247,13 +246,13 @@ namespace VFEngine.Platformer.Physics
             await Yield();
         }
 
-        private async UniTask SetIsFalling()
+        private async UniTask IsFalling()
         {
             Data.OnSetIsFalling();
             await Yield();
         }
 
-        private async UniTask SetIsNotFalling()
+        private async UniTask IsNotFalling()
         {
             Data.OnSetIsNotFalling();
             await Yield();
@@ -325,7 +324,7 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerSetCurrentGravity()
         {
-            await SetCurrentGravity();
+            await CurrentGravity();
         }
 
         public async UniTask OnPlatformerApplyAscentMultiplierToCurrentGravity()
@@ -370,7 +369,7 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerSetNewSpeed()
         {
-            await SetNewSpeed();
+            await NewSpeed();
         }
 
         public async UniTask OnPlatformerApplySlopeSpeedFactor()
@@ -410,17 +409,17 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerSetMovementDirectionToSaved()
         {
-            await SetMovementDirectionToSaved();
+            await MovementDirectionToSaved();
         }
 
         public async UniTask OnPlatformerSetNegativeMovementDirection()
         {
-            await SetNegativeMovementDirection();
+            await NegativeMovementDirection();
         }
 
         public async UniTask OnPlatformerSetPositiveMovementDirection()
         {
-            await SetPositiveMovementDirection();
+            await PositiveMovementDirection();
         }
 
         public async UniTask OnPlatformerApplyMovingPlatformCurrentSpeedToMovementDirection()
@@ -430,7 +429,7 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerSetSavedMovementDirection()
         {
-            await SetSavedMovementDirection();
+            await SavedMovementDirection();
         }
 
         public async UniTask OnPlatformerSetPhysicsOnHitWallInMovementDirection()
@@ -450,12 +449,12 @@ namespace VFEngine.Platformer.Physics
 
         public async UniTask OnPlatformerSetIsFalling()
         {
-            await SetIsFalling();
+            await IsFalling();
         }
 
         public async UniTask OnPlatformerSetNotFalling()
         {
-            await SetIsNotFalling();
+            await IsNotFalling();
         }
 
         public async UniTask OnPlatformerApplySpeedToNewPositionY()

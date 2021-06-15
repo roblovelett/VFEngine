@@ -7,7 +7,7 @@ using VFEngine.Tools;
 // ReSharper disable NotAccessedField.Local
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
     using static Quaternion;
     using static Time;
     using static Vector2;
@@ -17,7 +17,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
     using static RaycastData;
     using static RaycastData.Direction;
 
-    [CreateAssetMenu(fileName = "PhysicsData", menuName = PlatformerPhysicsDataPath, order = 0)]
+    [CreateAssetMenu(fileName = "PhysicsData", menuName = PhysicsDataPath, order = 0)]
     public class PhysicsData : ScriptableObject
     {
         #region events
@@ -65,6 +65,11 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         private Transform transform;
         private Vector2 speedInternal;
         private Vector2 externalForceInternal;
+
+        public PhysicsData(bool gravityActive)
+        {
+            this.gravityActive = gravityActive;
+        }
 
         private struct State
         {
@@ -128,26 +133,26 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private float CurrentGravityAscentMultiplierApplied => currentGravity / ascentMultiplier;
 
-        private void SetCurrentGravity()
+        private void CurrentGravityInternal()
         {
             ApplyAscentMultiplierToCurrentGravity();
         }
 
-        private void SetCurrentGravity(float force)
+        private void CurrentGravityInternal(float force)
         {
             currentGravity = force;
         }
 
         private void ApplyAscentMultiplierToCurrentGravity()
         {
-            SetCurrentGravity(CurrentGravityAscentMultiplierApplied);
+            CurrentGravityInternal(CurrentGravityAscentMultiplierApplied);
         }
 
         private float CurrentGravityFallMultiplierApplied => currentGravity * fallMultiplier;
 
         private void ApplyFallMultiplierToCurrentGravity()
         {
-            SetCurrentGravity(CurrentGravityFallMultiplierApplied);
+            CurrentGravityInternal(CurrentGravityFallMultiplierApplied);
         }
 
         private float SpeedYGravityApplied(float movingPlatformCurrentGravity)
@@ -164,10 +169,10 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             speedInternal = Speed;
             speedInternal.y += y;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
-        private void SetSpeed(Vector2 force)
+        private void SpeedInternal(Vector2 force)
         {
             Speed = force;
         }
@@ -181,35 +186,35 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             speedInternal = Speed;
             speedInternal.y *= y;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
         private Vector2 NewPositionInitialized => Speed * deltaTime;
 
         private void InitializeFrame()
         {
-            SetNewPosition(NewPositionInitialized);
+            NewPositionInternal(NewPositionInitialized);
             state.Reset();
         }
 
-        private void SetNewPosition(Vector2 position)
+        private void NewPositionInternal(Vector2 position)
         {
             NewPosition = position;
         }
 
         private void ApplyForces()
         {
-            SetForcesApplied(Speed);
+            ForcesApplied(Speed);
         }
 
-        private void SetForcesApplied(Vector2 forces)
+        private void ForcesApplied(Vector2 forces)
         {
             forcesApplied = forces;
         }
 
         private void StopNewPosition()
         {
-            SetNewPosition(zero);
+            NewPositionInternal(zero);
         }
 
         private void MoveCharacter(ref GameObject character)
@@ -219,9 +224,9 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private Vector2 NewSpeed => NewPosition / deltaTime;
 
-        private void SetNewSpeed()
+        private void NewSpeedInternal()
         {
-            SetSpeed(NewSpeed);
+            SpeedInternal(NewSpeed);
         }
 
         private void ApplySlopeSpeedFactor(float belowSlopeAngle)
@@ -238,7 +243,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             speedInternal = Speed;
             speedInternal.x *= x;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
         private Vector2 SpeedClampedToMaximumVelocity => new Vector2(SpeedAxisClamped(Speed.x, maximumVelocity.x),
@@ -246,7 +251,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void ClampSpeedToMaximumVelocity()
         {
-            SetSpeed(SpeedClampedToMaximumVelocity);
+            SpeedInternal(SpeedClampedToMaximumVelocity);
         }
 
         private static float SpeedAxisClamped(float speedAxis, float maximumVelocityAxis)
@@ -269,20 +274,20 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void StopExternalForce()
         {
-            SetExternalForce(zero);
+            ExternalForceInternal(zero);
         }
 
-        private void SetExternalForce(Vector2 force)
+        private void ExternalForceInternal(Vector2 force)
         {
             ExternalForce = force;
         }
 
         private void UpdateWorldSpeed()
         {
-            SetWorldSpeed(Speed);
+            WorldSpeed(Speed);
         }
 
-        private void SetWorldSpeed(Vector2 speed)
+        private void WorldSpeed(Vector2 speed)
         {
             worldSpeed = speed;
         }
@@ -298,18 +303,18 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void ApplyMovingPlatformBehavior(float movingPlatformCurrentSpeedY)
         {
-            SetGravityActive(true);
-            SetNewPositionY(NewPositionOnMovingPlatformY(movingPlatformCurrentSpeedY));
+            GravityActiveInternal(true);
+            NewPositionY(NewPositionOnMovingPlatformY(movingPlatformCurrentSpeedY));
             SetSpeedOnMovingPlatform();
         }
 
         private void SetSpeedOnMovingPlatform()
         {
-            SetSpeed(SpeedOnMovingPlatform);
-            SetSpeedX(SpeedOnMovingPlatformX);
+            SpeedInternal(SpeedOnMovingPlatform);
+            SpeedX(SpeedOnMovingPlatformX);
         }
 
-        private void SetGravityActive(bool active)
+        private void GravityActiveInternal(bool active)
         {
             state.GravityActive = active;
         }
@@ -319,43 +324,43 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             return movingPlatformCurrentSpeedY * deltaTime;
         }
 
-        private void SetSpeedX(float x)
+        private void SpeedX(float x)
         {
             speedInternal = Speed;
             speedInternal.x = x;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
-        private void SetNewPositionY(float y)
+        private void NewPositionY(float y)
         {
             newPositionInternal = NewPosition;
             newPositionInternal.y = y;
-            SetNewPosition(newPositionInternal);
+            NewPositionInternal(newPositionInternal);
         }
 
-        private void SetMovementDirectionToSaved()
+        private void MovementDirectionToSaved()
         {
-            SetMovementDirection(savedMovementDirection);
+            MovementDirectionInternal(savedMovementDirection);
         }
 
-        private void SetMovementDirection(int direction)
+        private void MovementDirectionInternal(int direction)
         {
             MovementDirection = direction;
         }
 
-        private void SetNegativeMovementDirection()
+        private void NegativeMovementDirection()
         {
-            SetMovementDirection(-1);
+            MovementDirectionInternal(-1);
         }
 
-        private void SetPositiveMovementDirection()
+        private void PositiveMovementDirection()
         {
-            SetMovementDirection(1);
+            MovementDirectionInternal(1);
         }
 
         private void ApplyMovingPlatformCurrentSpeedToMovementDirection(float movingPlatformCurrentSpeedX)
         {
-            SetMovementDirection(MovementDirectionOnMovingPlatform(movingPlatformCurrentSpeedX));
+            MovementDirectionInternal(MovementDirectionOnMovingPlatform(movingPlatformCurrentSpeedX));
         }
 
         private static int MovementDirectionOnMovingPlatform(float movingPlatformCurrentSpeedX)
@@ -363,12 +368,12 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             return (int) Sign(movingPlatformCurrentSpeedX);
         }
 
-        private void SetSavedMovementDirection()
+        private void SavedMovementDirection()
         {
-            SetSavedMovementDirection(MovementDirection);
+            SavedMovementDirection(MovementDirection);
         }
 
-        private void SetSavedMovementDirection(int direction)
+        private void SavedMovementDirection(int direction)
         {
             savedMovementDirection = direction;
         }
@@ -382,7 +387,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void SetPhysicsOnHitWallInMovementDirectionLeft(float distance, float boundsWidth, float rayOffset)
         {
-            SetNewPositionX(NewPositionXOnHitWallInMovementDirectionLeft(distance, boundsWidth, rayOffset));
+            NewPositionX(NewPositionXOnHitWallInMovementDirectionLeft(distance, boundsWidth, rayOffset));
         }
 
         private static float NewPositionXOnHitWallInMovementDirectionLeft(float distance, float boundsWidth,
@@ -393,7 +398,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void SetPhysicsOnHitWallInMovementDirectionRight(float distance, float boundsWidth, float rayOffset)
         {
-            SetNewPositionX(NewPositionXOnHitWallInMovementDirectionRight(distance, boundsWidth, rayOffset));
+            NewPositionX(NewPositionXOnHitWallInMovementDirectionRight(distance, boundsWidth, rayOffset));
         }
 
         private static float NewPositionXOnHitWallInMovementDirectionRight(float distance, float boundsWidth,
@@ -402,50 +407,50 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
             return distance - boundsWidth / 2 - rayOffset * 2;
         }
 
-        private void SetNewPositionX(float x)
+        private void NewPositionX(float x)
         {
             newPositionInternal = NewPosition;
             newPositionInternal.x = x;
-            SetNewPosition(newPositionInternal);
+            NewPositionInternal(newPositionInternal);
         }
 
         private void StopNewPositionX()
         {
-            SetNewPositionX(0);
+            NewPositionX(0);
         }
 
         private void StopSpeedX()
         {
-            SetNewSpeedX(0);
+            NewSpeedX(0);
         }
 
-        private void SetNewSpeedX(float x)
+        private void NewSpeedX(float x)
         {
             speedInternal = Speed;
             speedInternal.x = x;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
-        private void SetIsFalling(bool falling = true)
+        private void IsFallingInternal(bool falling = true)
         {
             state.IsFalling = falling;
         }
 
-        private void SetIsNotFalling()
+        private void IsNotFalling()
         {
-            SetIsFalling(false);
+            IsFallingInternal(false);
         }
 
         private float NewPositionYOnExternalForceApplied => Speed.y * deltaTime;
 
         private void ApplySpeedToNewPositionY()
         {
-            SetNewPositionY(NewPositionYOnExternalForceApplied);
+            NewPositionY(NewPositionYOnExternalForceApplied);
         }
 
         private void SetNewPositionYOnSmallestDistanceHit(float distance, float boundsHeight, float rayOffset)
         {
-            SetNewPositionY(NewPositionYOnSmallestDistanceHit(distance, boundsHeight, rayOffset));
+            NewPositionY(NewPositionYOnSmallestDistanceHit(distance, boundsHeight, rayOffset));
         }
 
         private static float NewPositionYOnSmallestDistanceHit(float distance, float boundsHeight, float rayOffset)
@@ -464,23 +469,23 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         {
             newPositionInternal = NewPosition;
             newPositionInternal.y += y;
-            SetNewPosition(newPositionInternal);
+            NewPositionInternal(newPositionInternal);
         }
 
         private void StopNewPositionY()
         {
-            SetNewPositionY(0);
+            NewPositionY(0);
         }
 
         private void SetPhysicsOnDetachFromMovingPlatform()
         {
-            SetGravityActive(true);
+            GravityActiveInternal(true);
         }
 
         private void SetNewPositionYOnStickToSlopeRaycastHit(float stickToSlopeRaycastPointY,
             float stickToSlopeRaycastOriginY, float boundsHeight)
         {
-            SetNewPositionY(NewPositionYOnStickToSlopeRaycastHit(stickToSlopeRaycastPointY, stickToSlopeRaycastOriginY,
+            NewPositionY(NewPositionYOnStickToSlopeRaycastHit(stickToSlopeRaycastPointY, stickToSlopeRaycastOriginY,
                 boundsHeight));
         }
 
@@ -492,7 +497,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void SetNewPositionYOnAboveRaycastSmallestDistanceHit(float smallestDistance, float boundsHeight)
         {
-            SetNewPositionY(NewPositionYOnAboveRaycastSmallestDistanceHit(smallestDistance, boundsHeight));
+            NewPositionY(NewPositionYOnAboveRaycastSmallestDistanceHit(smallestDistance, boundsHeight));
         }
 
         private static float NewPositionYOnAboveRaycastSmallestDistanceHit(float smallestDistance, float boundsHeight)
@@ -504,27 +509,27 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         private void SetSpeedOnAboveRaycastSmallestDistanceHit()
         {
-            SetSpeed(SpeedOnAboveRaycastSmallestDistanceHit);
+            SpeedInternal(SpeedOnAboveRaycastSmallestDistanceHit);
         }
 
         private void StopForcesY()
         {
-            SetSpeedY(0);
-            SetExternalForceY(0);
+            SpeedY(0);
+            ExternalForceY(0);
         }
 
-        private void SetSpeedY(float y)
+        private void SpeedY(float y)
         {
             speedInternal = Speed;
             speedInternal.y = y;
-            SetSpeed(speedInternal);
+            SpeedInternal(speedInternal);
         }
 
-        private void SetExternalForceY(float y)
+        private void ExternalForceY(float y)
         {
             externalForceInternal = ExternalForce;
             externalForceInternal.y = y;
-            SetExternalForce(externalForceInternal);
+            ExternalForceInternal(externalForceInternal);
         }
 
         #endregion
@@ -538,7 +543,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         public void OnSetCurrentGravity()
         {
-            SetCurrentGravity();
+            CurrentGravityInternal();
         }
 
         public void OnApplyAscentMultiplierToCurrentGravity()
@@ -583,7 +588,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         public void OnSetNewSpeed()
         {
-            SetNewSpeed();
+            NewSpeedInternal();
         }
 
         public void OnApplySlopeSpeedFactor(float belowSlopeAngle)
@@ -624,17 +629,17 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         public void OnSetMovementDirectionToSaved()
         {
-            SetMovementDirectionToSaved();
+            MovementDirectionToSaved();
         }
 
         public void OnSetNegativeMovementDirection()
         {
-            SetNegativeMovementDirection();
+            NegativeMovementDirection();
         }
 
         public void OnSetPositiveMovementDirection()
         {
-            SetPositiveMovementDirection();
+            PositiveMovementDirection();
         }
 
         public void OnApplyMovingPlatformCurrentSpeedToMovementDirection(float movingPlatformCurrentSpeedX)
@@ -644,7 +649,7 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         public void OnSetSavedMovementDirection()
         {
-            SetSavedMovementDirection();
+            SavedMovementDirection();
         }
 
         public void OnSetPhysicsOnHitWallInMovementDirection(Direction rayDirection, float distance, float boundsWidth,
@@ -665,12 +670,12 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
 
         public void OnSetIsFalling()
         {
-            SetIsFalling();
+            IsFallingInternal();
         }
 
         public void OnSetIsNotFalling()
         {
-            SetIsNotFalling();
+            IsNotFalling();
         }
 
         public void OnApplySpeedToNewPositionY()

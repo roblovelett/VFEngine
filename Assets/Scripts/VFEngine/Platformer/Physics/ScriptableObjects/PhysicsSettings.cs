@@ -1,13 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Physics.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
 
-    [CreateAssetMenu(fileName = "PhysicsSettings", menuName = PlatformerPhysicsSettingsPath, order = 0)]
-    [InlineEditor]
+    [CreateAssetMenu(fileName = "PhysicsSettings", menuName = PhysicsSettingsPath, order = 0)]
     public class PhysicsSettings : ScriptableObject
     {
         #region properties
@@ -21,12 +19,15 @@ namespace VFEngine.Platformer.Physics.ScriptableObjects
         [SerializeField] public float speedAccelerationInAir = 5f;
         [SerializeField] public float speedFactor = 1f;
         [SerializeField] [Range(0, 90)] public float maximumSlopeAngle = 30f;
-        [SerializeField] public AnimationCurve slopeAngleSpeedFactor = new AnimationCurve(new Keyframe(-90f, 1f), new Keyframe(0f, 1f), new Keyframe(90f, 1f));
+
+        [SerializeField] public AnimationCurve slopeAngleSpeedFactor =
+            new AnimationCurve(new Keyframe(-90f, 1f), new Keyframe(0f, 1f), new Keyframe(90f, 1f));
+
         [SerializeField] public bool physics2DInteraction = true;
         [SerializeField] public float physics2DPushForce = 2f;
-        [SerializeField] public bool safeSetTransform = false;
+        [SerializeField] public bool safeSetTransform;
         [SerializeField] public bool automaticGravityControl;
-        [SerializeField] public bool stickToSlopeBehavior = false;
+        [SerializeField] public bool stickToSlopeBehavior;
         [SerializeField] public float movementDirectionThreshold = 0.0001f;
 
         #endregion

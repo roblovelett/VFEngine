@@ -1,15 +1,13 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 using VFEngine.Tools;
 
 namespace VFEngine.Platformer.Event.Raycast.ScriptableObjects
 {
-    using static ScriptableObjectExtensions;
+    using static ScriptableObjectExtensions.Platformer;
     using static RaycastSettings.DetachmentMethods;
 
-    [CreateAssetMenu(fileName = "RaycastSettings", menuName = PlatformerRaycastSettingsPath, order = 0)]
-    [InlineEditor]
+    [CreateAssetMenu(fileName = "RaycastSettings", menuName = RaycastSettingsPath, order = 0)]
+    
     public class RaycastSettings : ScriptableObject
     {
         #region properties

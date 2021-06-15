@@ -9,7 +9,7 @@ namespace VFEngine.Tools
             return (mask.value & (1 << layer)) > 0;
         }
 
-        public static bool Contains(this LayerMask mask, GameObject gameObject)
+        public static bool Contains(this LayerMask mask, UnityEngine.GameObject gameObject)
         {
             return (mask.value & (1 << gameObject.layer)) > 0;
         }
