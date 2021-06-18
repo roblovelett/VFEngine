@@ -11,7 +11,7 @@ using UnityGameObject = UnityEngine.GameObject;
 // ReSharper disable InconsistentNaming
 namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
 {
-    using static PrefabSelectionTreeViewText;
+    //using static PrefabSelectionTreeViewText;
     using static Event;
     using static Graphics;
     using static GUI;
@@ -28,7 +28,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
     using static PrefabAssetType;
     using static PrefabUtility;
 
-    internal class PrefabSelectionTreeViewModel
+    /*internal class PrefabSelectionTreeViewModel
     {
         private static PrefabSelectionTreeViewData data;
         private static bool CanInitializeData => data == null;
@@ -548,5 +548,5 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             LabelRectWidth -= IconRect.width + 24;
             Label(LabelRect, label, LabelStyle);
         }
-    }
+    }*/
 }

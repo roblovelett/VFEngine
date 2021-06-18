@@ -1,93 +1,78 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data;
+using VFEngine.Tools.GameObject.Editor.ReplaceTool;
 using UnityGameObject = UnityEngine.GameObject;
+//using ModelView = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ReplacePrefabSearchPopUpModelView;
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp
 {
-    using static Selection;
-    using static ReplacePrefabSearchPopUpText;
-
-    internal class ReplacePrefabSearchPopUpController : EditorWindow
+    /*internal class ReplacePrefabSearchPopUpController : EditorWindow
     {
-        private static Model _replacePrefabSearchPopup;
+        private ModelView replacePrefabSearchPopUp;
+        private bool Initialized(ReplaceToolController replaceToolController)
+        {
+            return CreatedModelView(replaceToolController);
+        }
+
+        private bool CreatedModelView(ReplaceToolController replaceToolController)
+        {
+            Initialize(replaceToolController);
+            return true;
+        }
 
         internal ReplacePrefabSearchPopUpController()
-        {
-            if (!Initialized(_replacePrefabSearchPopup))
-                throw new InvalidOperationException(CannotInitializeController);
-        }
-
-        private bool Initialized(Model model)
-        {
-            return InitializedModel() && InitializedExistingModel(model);
-        }
-
-        private bool InitializedModel()
-        {
-            _replacePrefabSearchPopup ??= new Model();
-            return true;
-        }
-
-        private bool InitializedExistingModel(Model model)
-        {
-            _replacePrefabSearchPopup.Initialize(this, model);
-            return true;
-        }
-
-        internal void StartPosition(Vector2 startPosition)
-        {
-            _replacePrefabSearchPopup.InitializeStartPosition(startPosition);
-        }
-
-        internal void StartSize(Vector2 startSize)
-        {
-            _replacePrefabSearchPopup.InitializeStartSize(startSize);
-        }
-
-        internal void Position(Rect positionInternal)
-        {
-            _replacePrefabSearchPopup.InitializePosition(positionInternal);
-        }
-
-        internal void Show(Rect rect)
-        {
-            _replacePrefabSearchPopup.Show(rect, new Rect(rect.position, rect.size));
-        }
-
-        internal void Initialize()
-        {
-            _replacePrefabSearchPopup.Initialize(gameObjects);
-        }
-
-        internal void InitialSize()
-        {
-            _replacePrefabSearchPopup.InitialSize();
-        }
-
-        private void OnEnable()
         {
             Initialize();
         }
 
+        private void Initialize()
+        {
+            replacePrefabSearchPopUp = new ModelView();
+        }
+
+        private void Initialize(ReplaceToolController replaceToolController)
+        {
+            replacePrefabSearchPopUp = new ModelView(this, replaceToolController);
+        }
+
+        private InvalidOperationException ControllerError { get; } =
+            new InvalidOperationException("Cannot initialize Replace Prefab Search Pop Up's Controller.");
+
+        private void OnEnable()
+        {
+            var replaceToolController = CreateInstance<ReplaceToolController>();
+            if (!Initialized(replaceToolController)) throw ControllerError;
+            replacePrefabSearchPopUp.Initialize();
+        }
+
+        internal void Show(Rect rect)
+        {
+            replacePrefabSearchPopUp.Show(rect);
+        }
+
         private void OnDisable()
         {
-            _replacePrefabSearchPopup.OnDisable();
+            Close();
         }
 
-        internal new void Close()
+        private void OnDestroy()
         {
-            _replacePrefabSearchPopup.Close();
-            base.Close();
+            Close();
         }
 
-        private bool CloseWindow => _replacePrefabSearchPopup.CloseWindow;
+        private bool CanCloseWindow => replacePrefabSearchPopUp.CloseWindow(focusedWindow != this);
 
         private void OnGUI()
         {
-            _replacePrefabSearchPopup.OnGUI(focusedWindow, this);
-            if (CloseWindow) Close();
+            if (CanCloseWindow) Close();
+            replacePrefabSearchPopUp.OnGUI();
         }
-    }
+        private new void Close()
+        {
+            replacePrefabSearchPopUp.SaveState();
+            base.Close();
+            replacePrefabSearchPopUp.Dispose();
+        }
+    }*/
 }

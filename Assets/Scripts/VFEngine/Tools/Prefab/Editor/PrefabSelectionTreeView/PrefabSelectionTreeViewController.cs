@@ -7,12 +7,12 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
 {
-    using static PrefabSelectionTreeViewModel;
+    //using static PrefabSelectionTreeViewModel;
     using static ScaleMode;
     using static EditorUtility;
     using static Event;
 
-    internal class PrefabSelectionTreeViewController : TreeView
+    /*internal class PrefabSelectionTreeViewController : TreeView
     {
         private static PrefabSelectionTreeViewModel _treeView;
         private bool CanInitializePrefabSelectionTreeViewModel => _treeView == null;
@@ -128,5 +128,5 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView
             if (CanRepaint) Repaint();
             else _treeView.InitializeRowGUI(ScaleAndCrop);
         }
-    }
+    }*/
 }

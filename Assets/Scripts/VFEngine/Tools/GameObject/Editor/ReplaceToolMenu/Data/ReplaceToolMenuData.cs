@@ -8,7 +8,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu.Data
 {
     using static ScriptableObject;
 
-    internal class ReplaceToolMenuData
+    /*internal class ReplaceToolMenuData
     {
         internal Type HierarchyType { get; set; }
         internal EditorWindow FocusedWindow { get; set; }
@@ -31,5 +31,5 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu.Data
             HasExecuted = new bool();
             ReplacePrefabSearchPopUpController = CreateInstance<ReplacePrefabSearchPopUpController>();
         }
-    }
+    }*/
 }

@@ -1,43 +1,80 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
-using VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects;
+using static VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolState;
 using UnityGameObject = UnityEngine.GameObject;
+using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
+using Text = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolText;
+using Controller = VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController;
+using ModelView = VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolModelView;
+using Object = UnityEngine.Object;
 
 namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
 {
-    using static ReplaceToolText;
-    using static ScriptableObject;
+    using static GC;
+    using static Object;
 
-    internal class ReplaceToolData
+    internal class ReplaceToolData : IDisposable
     {
-        internal int NewGameObjectsIndex { get; set; }
-        internal int[] NewGameObjectInstances { get; set; }
-        internal Vector2? SelectObjectScrollPosition { get; set; }
-        internal Transform[] Selected { get; set; }
-        internal EditorWindow Window { get; set; }
-        internal UnityGameObject NewGameObject { get; set; }
-        internal UnityGameObject NewGameObjectInstance { get; set; }
-        internal ReplaceToolDataSO DataSO { get; set; }
-        internal SerializedObject SerializedData { get; set; }
-        internal SerializedProperty ReplaceObjectField { get; set; }
+        internal UnityGameObject ReplacementPrefab => DataSO.ReplacementPrefab;
 
-        internal ReplaceToolData()
+        internal UnityGameObject[] ObjectsToReplace
         {
-            Initialize();
+            get => DataSO.ObjectsToReplace;
+            set => DataSO.ObjectsToReplace = value;
         }
 
-        private void Initialize()
+        internal SerializedObject SerializedData { get; set; }
+        internal SerializedProperty ReplaceObjectField { get; set; }
+        internal SerializedProperty ReplaceObjectFieldInstance { get; set; }
+        internal DataSO DataSO { get; private set; }
+        internal int[] GameObjectsInstances { get; set; }
+        internal int ObjectsToReplaceIndex { get; set; }
+        internal UnityGameObject GameObjectInstance { get; set; }
+        internal UnityGameObject ReplacementPrefabInstance { get; set; }
+        internal bool ReplacementPrefabInstanceNotNull { get; private set; }
+        internal Controller Window { get; set; }
+        internal Vector2? SelectObjectScrollPosition { get; set; }
+        internal ReplaceToolState State { get; set; }
+
+        internal ReplaceToolData(DataSO dataSO)
         {
-            NewGameObjectsIndex = 0;
-            NewGameObjectInstances = null;
-            SelectObjectScrollPosition = new Vector2();
-            Selected = null;
-            Window = null;
-            NewGameObject = null;
-            NewGameObjectInstance = null;
-            DataSO = CreateInstance<ReplaceToolDataSO>();
+            Initialize(dataSO);
+        }
+
+        private void Initialize(DataSO dataSO)
+        {
+            DataSO = dataSO;
             SerializedData = new SerializedObject(DataSO);
-            ReplaceObjectField = SerializedData.FindProperty(Prefab);
+            ReplaceObjectFieldInstance = SerializedData.FindProperty(Text.ReplacementPrefab);
+            ReplaceObjectField = ReplaceObjectFieldInstance;
+            SelectObjectScrollPosition = null;
+            GameObjectsInstances = null;
+            ObjectsToReplaceIndex = 0;
+            GameObjectInstance = null;
+            ReplacementPrefabInstance = null;
+            ReplacementPrefabInstanceNotNull = ReplacementPrefabInstance != null;
+            Window = null;
+            State = None;
+            ObjectsToReplace = new UnityGameObject[0];
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            SuppressFinalize(this);
+        }
+
+        private void Dispose(bool dispose)
+        {
+            if (!dispose) return;
+            DestroyImmediate(DataSO);
+            DestroyImmediate(Window);
+        }
+
+        ~ReplaceToolData()
+        {
+            Dispose(false);
         }
     }
 }

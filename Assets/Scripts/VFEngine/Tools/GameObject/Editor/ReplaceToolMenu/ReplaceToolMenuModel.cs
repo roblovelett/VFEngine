@@ -13,7 +13,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu
     using static Event;
     using static GUIUtility;
 
-    internal class ReplaceToolMenuModel
+    /*internal class ReplaceToolMenuModel
     {
         private ReplaceToolMenuData data;
         private bool CanInitializeData => data == null;
@@ -121,5 +121,5 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu
             ReplacePrefabSearchPopUpController.Show(SearchPopup);
             delayCall += () => HasExecuted = false;
         }
-    }
+    }*/
 }

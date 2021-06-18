@@ -15,11 +15,11 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
     using static BindingFlags;
     using static CameraClearFlags;
     using static GUI;
-    using static GameObjectPreviewText;
+    //using static GameObjectPreviewText;
     using static EditorUnity;
     using static ScriptableObject;
 
-    internal class GameObjectPreviewModel
+    /*internal class GameObjectPreviewModel
     {
         private static GameObjectPreviewData _data;
 
@@ -271,5 +271,5 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
         {
             InitializeData();
         }
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
 ﻿namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
 {
-    internal static class PrefabSelectionTreeViewText
+    /*internal static class PrefabSelectionTreeViewText
     {
         internal const string PrefabOnIcon = "Prefab On Icon";
         internal const string PrefabVariantOnIcon = "PrefabVariant On Icon";
@@ -12,5 +12,5 @@
         internal const string FilterByPrefab = "t:Prefab";
         internal const string _ = " ";
         internal const string CreatePreviewTextureError = "Cannot create preview texture.";
-    }
+    }*/
 }

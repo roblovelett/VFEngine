@@ -5,7 +5,7 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview.Data
 {
-    internal class GameObjectPreviewData
+    /*internal class GameObjectPreviewData
     {
         internal bool CreatedCachedEditor { get; set; }
         internal UnityGameObject Renderer { get; set; }
@@ -34,5 +34,5 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview.Data
             BillboardRenderer = null;
             RenderUtility = null;
         }
-    }
+    }*/
 }

@@ -1,34 +1,54 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
 using VFEngine.Tools.GameObject.Editor.ReplaceTool;
-using VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView;
-using VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ScriptableObjects;
 using UnityGameObject = UnityEngine.GameObject;
-using ReplacePrefabSearchPopUpModel = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Model;
+//using Controller = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ReplacePrefabSearchPopUpController;
+//using ModelView = VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.ReplacePrefabSearchPopUpModelView;
+//using TreeViewController = VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.PrefabSelectionTreeViewController;
+//using SelectionPreviewController = VFEngine.Tools.GameObject.Editor.GameObjectPreview.GameObjectPreviewController;
 
 namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
 {
-    using static ScriptableObject;
+    using static EditorStyles;
+    using static FontStyle;
+    using static GC;
 
-    internal class ReplacePrefabSearchPopUpData
+    /*internal sealed class ReplacePrefabSearchPopUpData : IDisposable
     {
+        public void Dispose()
+        {
+            Dispose(true);
+            SuppressFinalize(this);
+        }
+
+        private void Dispose(bool dispose)
+        {
+            if (!dispose) return;
+            ModelView.Dispose();
+            ReplaceToolController.Close();
+        }
+
+        ~ReplacePrefabSearchPopUpData()
+        {
+            Dispose(false);
+        }
+
         private Rect layout;
+        internal Controller Controller { get; private set; }
+        internal ModelView ModelView { get; private set; }
         internal SearchField SearchField { get; private set; }
-        internal ReplacePrefabSearchPopUpModel Model { get; private set; }
+        internal SelectionPreviewController SelectionPreview { get; private set; }
         internal ReplaceToolController ReplaceToolController { get; private set; }
-        internal GameObjectPreviewController SelectionPreview { get; private set; }
-        internal bool CloseWindow { get; set; }
-        internal ReplacePrefabSearchPopUpStyles Styles { get; set; }
-        internal EditorWindow FocusedWindow { get; set; }
-        internal ReplacePrefabSearchPopUpSO ViewState { get; set; }
-        internal UnityGameObject[] SelectedGameObjects { get; set; }
-        internal ReplacePrefabSearchPopUpWindow WindowProperties { get; set; }
-        internal PrefabSelectionTreeViewController Tree { get; set; }
-        internal ReplacePrefabSearchPopUpController Window { get; set; }
-        internal ReplacePrefabSearchPopUpController[] Windows { get; set; }
-        internal ReplacePrefabSearchPopUpController Controller { get; set; }
+        internal TreeViewState TreeViewState { get; private set; }
+        internal TreeViewController TreeViewController { get; private set; }
+        internal bool CanInitializeWindow { get; set; }
+        internal Rect Position { get; set; }
+        internal Vector2 StartPosition { get; set; }
+        internal Vector2 StartSize { get; set; }
+        internal Vector2 NewSize { get; set; }
+        internal Vector2 LastSize { get; set; }
 
         internal float LayoutX
         {
@@ -54,77 +74,61 @@ namespace VFEngine.Tools.Prefab.Editor.ReplacePrefabSearchPopUp.Data
             set => layout.height = value;
         }
 
-        internal string SearchString
-        {
-            get => Tree.searchString;
-            set => Tree.searchString = value;
-        }
-
-        internal Vector2 StartPosition
-        {
-            get => WindowProperties.StartPosition;
-            set => WindowProperties.InitializeStartPosition(value);
-        }
-
-        internal Vector2 StartSize
-        {
-            get => WindowProperties.StartSize;
-            set => WindowProperties.InitializeStartSize(value);
-        }
-
-        internal Vector2 NewSize
-        {
-            get => WindowProperties.NewSize;
-            set => WindowProperties.InitializeNewSize(value);
-        }
-
-        internal Vector2 LastSize
-        {
-            get => WindowProperties.LastSize;
-            set => WindowProperties.InitializeLastSize(value);
-        }
-
         internal Rect Layout
         {
             get => layout;
             set => layout = value;
         }
 
-        internal Rect Position
+        internal GUIStyle HeaderLabel { get; private set; }
+
+        internal ReplacePrefabSearchPopUpData(Controller controller, ModelView modelView,
+            ReplaceToolController replaceToolController)
         {
-            get => WindowProperties.Position;
-            set => WindowProperties.InitializePosition(value);
+            Initialize(controller, modelView, replaceToolController);
+        }
+
+        internal ReplacePrefabSearchPopUpData(ModelView modelView)
+        {
+            Initialize(modelView);
+        }
+
+        private void Initialize(Controller controller, ModelView modelView, ReplaceToolController replaceToolController)
+        {
+            Initialize(controller);
+            Initialize(modelView);
+            Initialize(replaceToolController);
+            Initialize();
         }
 
         private void Initialize()
         {
-            Controller = null;
-            Model = null;
-            Styles = new ReplacePrefabSearchPopUpStyles();
-            SearchField = new SearchField();
-            ViewState = CreateInstance<ReplacePrefabSearchPopUpSO>();
-            SelectionPreview = new GameObjectPreviewController();
-            Tree = null;
-            Windows = null;
-            Window = null;
-            WindowProperties = new ReplacePrefabSearchPopUpWindow();
-            FocusedWindow = null;
-            CloseWindow = new bool();
             layout = new Rect();
-            ReplaceToolController = CreateInstance<ReplaceToolController>();
-            SelectedGameObjects = null;
+            StartPosition = new Vector2();
+            StartSize = new Vector2();
+            NewSize = new Vector2();
+            LastSize = new Vector2();
+            Position = new Rect();
+            SearchField = new SearchField();
+            TreeViewState = new TreeViewState();
+            TreeViewController = new TreeViewController(TreeViewState);
+            HeaderLabel = new GUIStyle(centeredGreyMiniLabel) {fontSize = 11, fontStyle = Bold};
+            SelectionPreview = new SelectionPreviewController();
         }
 
-        internal ReplacePrefabSearchPopUpData()
+        private void Initialize(Controller controller)
         {
-            Initialize();
-        }
-
-        internal void Initialize(ReplacePrefabSearchPopUpController controller, ReplacePrefabSearchPopUpModel model)
-        {
-            Initialize();
             Controller = controller;
-            Model = model;
         }
-    }
+
+        private void Initialize(ModelView modelView)
+        {
+            ModelView = modelView;
+        }
+
+        private void Initialize(ReplaceToolController replaceToolController)
+        {
+            ReplaceToolController = replaceToolController;
+        }
+    }*/
 }

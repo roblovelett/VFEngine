@@ -5,7 +5,7 @@ using EditorUnity = UnityEditor.Editor;
 
 namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 {
-    internal class GameObjectPreviewController
+    /*internal class GameObjectPreviewController
     {
         private static GameObjectPreviewModel _gameObjectPreview;
         private static bool CanInitializeGameObjectPreviewModel => _gameObjectPreview == null;
@@ -46,5 +46,5 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
         {
             InitializeDefault();
         }
-    }
+    }*/
 }

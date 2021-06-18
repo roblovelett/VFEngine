@@ -10,7 +10,7 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
 {
     using static TreeView;
 
-    internal class PrefabSelectionTreeViewData
+    /*internal class PrefabSelectionTreeViewData
     {
         private Rect labelRect;
         private Rect rowRect;
@@ -120,5 +120,5 @@ namespace VFEngine.Tools.Prefab.Editor.PrefabSelectionTreeView.Data
             VisibleID = new int();
             SelectedId = new int();
         }
-    }
+    }*/
 }

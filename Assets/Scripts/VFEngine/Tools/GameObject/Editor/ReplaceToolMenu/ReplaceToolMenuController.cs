@@ -7,9 +7,9 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu
 {
     using static EditorWindow;
     using static Selection;
-    using static ReplaceToolMenuText;
+    //using static ReplaceToolMenuText;
 
-    internal class ReplaceToolMenuController
+    /*internal class ReplaceToolMenuController
     {
         private static ReplaceToolMenuModel _replaceToolMenu;
         private static bool CanInitializeReplaceToolMenu => _replaceToolMenu == null;
@@ -42,5 +42,5 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceToolMenu
             if (HasExecuted) return;
             _replaceToolMenu.ReplaceSelection();
         }
-    }
+    }*/
 }
