@@ -15,23 +15,13 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
     [Serializable]
     internal class ReplaceToolSerializedData : IDisposable
     {
-        internal Vector2 SelectObjectScrollPosition { get; set; }
-        internal ReplaceToolDataSO DataSO { get; set; }
-        internal SerializedProperty ReplaceObjectField { get; set; }
-        internal SerializedObject SerializedData { get; set; }
-        internal ReplaceToolController Window { get; set; }
-
-        internal UnityGameObject ReplacementPrefab
-        {
-            get => DataSO.ReplacementPrefab;
-            set => DataSO.ReplacementPrefab = value;
-        }
-
-        internal UnityGameObject[] ObjectsToReplace
-        {
-            get => DataSO.ObjectsToReplace;
-            set => DataSO.ObjectsToReplace = value;
-        }
+        [SerializeField] private ReplaceToolDataSO dataSO;
+        [SerializeField] internal Vector2 selectObjectScrollPosition;
+        [SerializeField] internal ReplaceToolController window;
+        [SerializeField] internal SerializedProperty ReplaceObjectField;
+        [SerializeField] internal SerializedObject SerializedData;
+        [SerializeField] internal UnityGameObject replacementPrefab;
+        [SerializeField] internal UnityGameObject[] objectsToReplace;
 
         //
         internal int ObjectInstancesIndex { get; set; }
@@ -58,10 +48,12 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
 
         private void Initialize()
         {
-            DataSO = CreateInstance<ReplaceToolDataSO>();
-            SerializedData = new SerializedObject(DataSO);
+            dataSO = CreateInstance<ReplaceToolDataSO>();
+            replacementPrefab = new UnityGameObject();
+            objectsToReplace = new UnityGameObject[0];
+            SerializedData = new SerializedObject(dataSO);
             ReplaceObjectField = SerializedData.FindProperty(Text.ReplacementPrefab);
-            SelectObjectScrollPosition = new Vector2();
+            selectObjectScrollPosition = new Vector2();
             //
             ObjectToReplaceTransformSiblingIndex = new int();
             ObjectInstancesIndex = 0;
@@ -91,7 +83,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
         private void Dispose(bool dispose)
         {
             if (!dispose) return;
-            DestroyImmediate(DataSO);
+            DestroyImmediate(dataSO);
         }
 
         ~ReplaceToolSerializedData()

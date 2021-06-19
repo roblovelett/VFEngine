@@ -94,14 +94,14 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private static Vector2 SelectObjectScrollPosition
         {
-            get => _data.SelectObjectScrollPosition;
-            set => _data.SelectObjectScrollPosition = value;
+            get => _data.selectObjectScrollPosition;
+            set => _data.selectObjectScrollPosition = value;
         }
 
         private static UnityGameObject ReplacementPrefab
         {
-            get => _data.ReplacementPrefab;
-            set => _data.ReplacementPrefab = value;
+            get => _data.replacementPrefab;
+            set => _data.replacementPrefab = value;
         }
 
         private static UnityGameObject ReplacementPrefabInstance
@@ -118,8 +118,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private static UnityGameObject[] ObjectsToReplace
         {
-            get => _data.ObjectsToReplace;
-            set => _data.ObjectsToReplace = value;
+            get => _data.objectsToReplace;
+            set => _data.objectsToReplace = value;
         }
 
         private static Transform[] Selection
@@ -136,8 +136,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private static ReplaceToolController Window
         {
-            get => _data.Window;
-            set => _data.Window = value;
+            get => _data.window;
+            set => _data.window = value;
         }
 
         private static int ObjectsToReplaceAmount => HasObjectsToReplace ? ObjectsToReplace.Length : 0;
