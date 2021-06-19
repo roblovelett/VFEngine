@@ -15,11 +15,13 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
     [Serializable]
     internal class ReplaceToolSerializedData : IDisposable
     {
-        [SerializeField] private ReplaceToolDataSO dataSO;
-        [SerializeField] internal Vector2 selectObjectScrollPosition;
+        [SerializeField] internal ReplaceToolDataSO dataSO;
+
+        //[SerializeField] internal Vector2 selectObjectScrollPosition;
         [SerializeField] internal ReplaceToolController window;
-        [SerializeField] internal SerializedProperty ReplaceObjectField;
-        [SerializeField] internal SerializedObject SerializedData;
+
+        //[SerializeField] internal SerializedProperty ReplaceObjectField;
+        //[SerializeField] internal SerializedObject SerializedData;
         [SerializeField] internal UnityGameObject replacementPrefab;
         [SerializeField] internal UnityGameObject[] objectsToReplace;
 
@@ -27,6 +29,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
         internal int ObjectInstancesIndex { get; set; }
         internal int ObjectToReplaceTransformSiblingIndex { get; set; }
         internal int[] ObjectInstances { get; set; }
+        internal bool InitializedData { get; set; }
+        internal bool CanInitializeSerializedData { get; set; }
         internal bool CanInitializeReplaceObjectField { get; set; }
         internal bool CanInitializeSelectObjectScrollPosition { get; set; }
         internal bool CanAssignReplacementObject { get; set; }
@@ -51,9 +55,9 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
             dataSO = CreateInstance<ReplaceToolDataSO>();
             replacementPrefab = new UnityGameObject();
             objectsToReplace = new UnityGameObject[0];
-            SerializedData = new SerializedObject(dataSO);
-            ReplaceObjectField = SerializedData.FindProperty("ReplacementPrefab"/*Text.ReplacementPrefab*/);
-            selectObjectScrollPosition = new Vector2();
+            //SerializedData = new SerializedObject(dataSO);
+            //ReplaceObjectField = SerializedData.FindProperty("ReplacementPrefab"/*Text.ReplacementPrefab*/);
+            //selectObjectScrollPosition = new Vector2();
             //
             ObjectToReplaceTransformSiblingIndex = new int();
             ObjectInstancesIndex = 0;
@@ -62,7 +66,9 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
             ReplacementPrefabInstance = null;
             ObjectFilter = null;
             Selection = null;
-            CanInitializeReplaceObjectField = false;
+            InitializedData = false;
+            CanInitializeSerializedData = true;
+            CanInitializeReplaceObjectField = true;
             CanInitializeSelectObjectScrollPosition = true;
             CanInitializeObjectInstances = true;
             CanInitializeObjectFilter = true;
