@@ -277,7 +277,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
             if (CanInitializeReplaceObjectField)
             {
-                _replaceObjectField = _serializedData.FindProperty(Text.ReplacementPrefab);
+                _replaceObjectField = _serializedData.FindProperty("_replacementPrefab");//Text.ReplacementPrefab);
                 CanInitializeReplaceObjectField = !CanInitializeReplaceObjectField;
             }
 
