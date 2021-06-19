@@ -52,7 +52,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
             replacementPrefab = new UnityGameObject();
             objectsToReplace = new UnityGameObject[0];
             SerializedData = new SerializedObject(dataSO);
-            ReplaceObjectField = SerializedData.FindProperty(Text.ReplacementPrefab);
+            ReplaceObjectField = SerializedData.FindProperty("ReplacementPrefab"/*Text.ReplacementPrefab*/);
             selectObjectScrollPosition = new Vector2();
             //
             ObjectToReplaceTransformSiblingIndex = new int();

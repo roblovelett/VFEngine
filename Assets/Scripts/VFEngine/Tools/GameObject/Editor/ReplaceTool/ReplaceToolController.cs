@@ -281,34 +281,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             PropertyField(ReplaceObjectField);
         }
 
-        /*
-        NullReferenceException: Object reference not set to an instance of an object
-        UnityEditor.EditorGUILayout.IsChildrenIncluded (UnityEditor.SerializedProperty prop) (at <9540aba417024bb296674f70fa788b73>:0)
-        UnityEditor.EditorGUILayout.PropertyField (UnityEditor.SerializedProperty property, UnityEngine.GUILayoutOption[] options) (at <9540aba417024bb296674f70fa788b73>:0)
-        VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController.OnSetPropertyField () (at Assets/Scripts/VFEngine/Tools/GameObject/Editor/ReplaceTool/ReplaceToolController.cs:281)
-        VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController.Header () (at Assets/Scripts/VFEngine/Tools/GameObject/Editor/ReplaceTool/ReplaceToolController.cs:267)
-        VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController.GUI () (at Assets/Scripts/VFEngine/Tools/GameObject/Editor/ReplaceTool/ReplaceToolController.cs:250)
-        VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController.OnGUI () (at Assets/Scripts/VFEngine/Tools/GameObject/Editor/ReplaceTool/ReplaceToolController.cs:183)
-        UnityEditor.HostView.InvokeOnGUI (UnityEngine.Rect onGUIPosition, UnityEngine.Rect viewRect) (at <9540aba417024bb296674f70fa788b73>:0)
-        UnityEditor.DockArea.DrawView (UnityEngine.Rect viewRect, UnityEngine.Rect dockAreaRect) (at <9540aba417024bb296674f70fa788b73>:0)
-        UnityEditor.DockArea.OldOnGUI () (at <9540aba417024bb296674f70fa788b73>:0)
-        UnityEngine.UIElements.IMGUIContainer.DoOnGUI (UnityEngine.Event evt, UnityEngine.Matrix4x4 parentTransform, UnityEngine.Rect clippingRect, System.Boolean isComputingLayout, UnityEngine.Rect layoutSize, System.Action onGUIHandler, System.Boolean canAffectFocus) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.IMGUIContainer.HandleIMGUIEvent (UnityEngine.Event e, UnityEngine.Matrix4x4 worldTransform, UnityEngine.Rect clippingRect, System.Action onGUIHandler, System.Boolean canAffectFocus) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.IMGUIContainer.DoIMGUIRepaint () (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIR.RenderChainCommand.ExecuteNonDrawMesh (UnityEngine.UIElements.UIR.DrawParams drawParams, System.Single pixelsPerPoint, System.Exception& immediateException) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        Rethrow as ImmediateModeException
-        UnityEngine.UIElements.UIR.RenderChain.Render () (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIRRepaintUpdater.Update () (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.VisualTreeUpdater.UpdateVisualTreePhase (UnityEngine.UIElements.VisualTreeUpdatePhase phase) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.Panel.UpdateForRepaint () (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.Panel.Repaint (UnityEngine.Event e) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIElementsUtility.DoDispatch (UnityEngine.UIElements.BaseVisualElementPanel panel) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIElementsUtility.UnityEngine.UIElements.IUIElementsUtility.ProcessEvent (System.Int32 instanceID, System.IntPtr nativeEventPtr, System.Boolean& eventHandled) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIEventRegistration.ProcessEvent (System.Int32 instanceID, System.IntPtr nativeEventPtr) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.UIElements.UIEventRegistration+<>c.<.cctor>b__1_2 (System.Int32 i, System.IntPtr ptr) (at <1fd6bc3af931450b977286a218b046fb>:0)
-        UnityEngine.GUIUtility.ProcessEvent (System.Int32 instanceID, System.IntPtr nativeEventPtr, System.Boolean& result) (at <6ddf8eac3856492ab1b8cf42618915cc>:0)
-         */
-
         private static void SaveObjectsToReplace()
         {
             IntField(ObjectCount, ObjectsToReplaceAmount);
