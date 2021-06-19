@@ -224,7 +224,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         {
             if (!CanInitializeSelection || !HasObjectFilter) return;
             // ReSharper disable once PossibleInvalidOperationException
-            Selection = GetTransforms((SelectionMode) ObjectFilter);
+            Selection = GetTransforms((SelectionMode)ObjectFilter);
             CanInitializeSelection = !CanInitializeSelection;
         }
 
@@ -277,7 +277,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
             if (CanInitializeReplaceObjectField)
             {
-                _replaceObjectField = _serializedData.FindProperty("_replacementPrefab");//Text.ReplacementPrefab);
+                _replaceObjectField = _serializedData.FindProperty(Text.ReplacementPrefab);
                 CanInitializeReplaceObjectField = !CanInitializeReplaceObjectField;
             }
 
