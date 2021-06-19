@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: bc0989fc585bcd04d92d8ecc15426c79,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +119,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -264,6 +267,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -288,6 +292,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1684942862
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -346,31 +351,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2796da4260a4a04a91089e6707d8ac9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 886d42794c492f8429a301709578932f, type: 2}
-    - {fileID: 1152504023102057812}
-    - {fileID: 1152504023102057811}
-    - {fileID: 1152504023102057810}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Data
-      Entry: 10
-      Data: 0
-    - Name: raycastController
-      Entry: 10
-      Data: 1
-    - Name: layerMaskController
-      Entry: 10
-      Data: 2
-    - Name: physicsController
-      Entry: 10
-      Data: 3
+  raycastController: {fileID: 0}
+  layerMaskController: {fileID: 0}
+  physicsController: {fileID: 0}
 --- !u!114 &1152504023102057810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,27 +366,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d306d3d0ff4b0ba2bdd70c4c776855, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: a04a071a2e769d740a5db8dad6d79213, type: 2}
-    - {fileID: 1152504023102057808}
-    - {fileID: 11400000, guid: 142b7e39a0b3c1f4cbd72b02451f4dd6, type: 2}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Data
-      Entry: 10
-      Data: 0
-    - Name: character
-      Entry: 10
-      Data: 1
-    - Name: settings
-      Entry: 10
-      Data: 2
+  character: {fileID: 0}
+  settings: {fileID: 0}
 --- !u!114 &1152504023102057811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,27 +380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56fc5478bbec420e9e83f1a223a59888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 61ef306647976f649bad6558e7e7ca3f, type: 2}
-    - {fileID: 1152504023102057808}
-    - {fileID: 11400000, guid: 012bf68be1351dd46b66f88369350612, type: 2}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Data
-      Entry: 10
-      Data: 0
-    - Name: character
-      Entry: 10
-      Data: 1
-    - Name: settings
-      Entry: 10
-      Data: 2
+  character: {fileID: 0}
+  settings: {fileID: 0}
 --- !u!114 &1152504023102057812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,43 +394,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0d7d3a50194a95a1dd5ce35c95010c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 59f326ce9ba892748ad47cf13875da8f, type: 2}
-    - {fileID: 1152504023102057808}
-    - {fileID: 1152504023102057814}
-    - {fileID: 11400000, guid: 224820b0b8824e547a21346f5330960f, type: 2}
-    - {fileID: 1152504023102057809}
-    - {fileID: 1152504023102057811}
-    - {fileID: 1152504023102057810}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Data
-      Entry: 10
-      Data: 0
-    - Name: character
-      Entry: 10
-      Data: 1
-    - Name: boxCollider
-      Entry: 10
-      Data: 2
-    - Name: settings
-      Entry: 10
-      Data: 3
-    - Name: platformerController
-      Entry: 10
-      Data: 4
-    - Name: layerMaskController
-      Entry: 10
-      Data: 5
-    - Name: physicsController
-      Entry: 10
-      Data: 6
+  character: {fileID: 0}
+  boxCollider: {fileID: 0}
+  settings: {fileID: 0}
 --- !u!50 &1152504023102057813
 Rigidbody2D:
   serializedVersion: 4
@@ -570,6 +481,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -594,3 +506,4 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
