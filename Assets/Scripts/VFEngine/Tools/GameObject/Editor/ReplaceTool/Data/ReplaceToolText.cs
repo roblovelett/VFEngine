@@ -10,11 +10,9 @@
         internal const string ErrorFormat = "{0}";
         internal const string NoPrefab = "No prefab to replace.";
         internal const string NoGameObject = "No objects to replace.";
-        internal const string SavingGameObjectState = "Saving game object state.";
-        internal const string CreatedObjectsToReplace = "Created objects to replace.";
+        internal const string SavingObjectState = "Saving game object state.";
+        internal const string CreatedReplacementObject = "Created replacement object.";
         internal const string ParentChange = "Parent change.";
         internal const string ReplacementPrefab = "ReplacementPrefab";
-        internal const string CannotSetScrollPosition = "Cannot set object scroll position.";
-        internal const string CannotViewSelectedObjects = "Cannot view selected game objects.";
     }
 }
