@@ -13,7 +13,6 @@
         internal const string SavingObjectState = "Saving game object state.";
         internal const string CreatedReplacementObject = "Created replacement object.";
         internal const string ParentChange = "Parent change.";
-        internal const string ReplacementPrefab = "ReplacementPrefab";
-        internal const string ObjectsToReplace = "ObjectsToReplace";
+        internal const string ReplacementPrefab = "replacementPrefab";
     }
 }

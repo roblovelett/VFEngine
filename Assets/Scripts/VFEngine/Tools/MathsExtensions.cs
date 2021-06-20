@@ -4,7 +4,7 @@ namespace VFEngine.Tools
 {
     public static class MathsExtensions
     {
-        public static float DistanceBetweenPointAndLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+        public static float DistanceBetweenPointAndLine(UnityEngine.Vector3 point, Vector3 lineStart, Vector3 lineEnd)
         {
             return Vector3.Magnitude(ProjectPointOnLine(point, lineStart, lineEnd) - point);
         }

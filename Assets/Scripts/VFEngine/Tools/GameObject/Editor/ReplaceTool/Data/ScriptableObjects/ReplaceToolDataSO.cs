@@ -5,7 +5,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects
 {
     public class ReplaceToolDataSO : ScriptableObject
     {
-        public UnityGameObject ReplacementPrefab;
-        public UnityGameObject[] ObjectsToReplace;
+        /*public UnityGameObject ReplacementPrefab;
+        public UnityGameObject[] ObjectsToReplace;*/
     }
 }
