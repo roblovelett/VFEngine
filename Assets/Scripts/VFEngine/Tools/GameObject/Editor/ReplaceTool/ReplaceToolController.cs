@@ -65,28 +65,9 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         #region unity events
 
-        private void Awake()
-        {
-            InitializeData();
-        }
-
-        private void OnEnable()
-        {
-            InitializeData();
-        }
-
-        private void OnDisable()
-        {
-            Close();
-        }
-
-        private void OnDestroy()
-        {
-            Close();
-        }
-
         private void OnGUI()
         {
+            InitializeData();
             GUI();
         }
 
