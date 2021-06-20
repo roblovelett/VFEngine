@@ -388,7 +388,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private static Vector2? BeginScrollView(Vector2? scrollPosition)
         {
-            if (scrollPosition == null || IsScrollView) return null;
+            if (IsScrollView) return ScrollPosition;
+            if (scrollPosition == null) return null;
             IsScrollView = !IsScrollView;
             return EditorGUILayout.BeginScrollView((Vector2) scrollPosition);
         }
