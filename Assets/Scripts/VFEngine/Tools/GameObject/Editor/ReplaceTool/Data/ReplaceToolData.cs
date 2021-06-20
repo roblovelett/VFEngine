@@ -34,7 +34,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
         internal bool CanInitializeObjectInstances { get; set; }
         internal bool CanInitializeObjectFilter { get; set; }
         internal bool CanInitializeSelection { get; set; }
-        internal bool IsScrollView { get; set; }
         internal SelectionMode? ObjectFilter { get; set; }
         internal Transform[] Selection { get; set; }
         internal UnityGameObject ObjectToReplace { get; set; }
@@ -70,7 +69,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
             InitializedSerializedData = true;
             InitializedObjectField = true;
             InitializedScrollPosition = true;
-            IsScrollView = false;
         }
 
         public void Dispose()

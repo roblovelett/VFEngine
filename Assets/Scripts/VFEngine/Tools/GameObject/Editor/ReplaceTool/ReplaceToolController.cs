@@ -105,12 +105,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             set => _data.InitializedScrollPosition = value;
         }
 
-        private static bool IsScrollView
-        {
-            get => _data.IsScrollView;
-            set => _data.IsScrollView = value;
-        }
-
         private static SelectionMode? ObjectFilter
         {
             get => _data.ObjectFilter;
@@ -323,11 +317,12 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             SaveObjectsToReplace();
             IndentLevel(true);
             PrintSelectObjectsInformation();
-            ScrollView(true);
+            ScrollView(); //true);
             EnableGUI(false);
             CreateObjectFields();
             EnableGUI(true);
-            ScrollView(false);
+            EndScrollView();
+            //ScrollView(false);
             IndentLevel(false);
             Separator();
             ReplaceObjectButton();
@@ -373,25 +368,27 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             LabelField(SelectGameObjectsLabel, wordWrappedLabel);
         }
 
-        private static void ScrollView(bool beginScrollView)
+        private static void ScrollView()
         {
-            if (beginScrollView)
-            {
-                InitializeScrollPosition();
-                ScrollPosition = BeginScrollView(ScrollPosition);
-            }
-            else
-            {
-                EndScrollView();
-            }
+            InitializeScrollPosition();
+            ScrollPosition = BeginScrollView(ScrollPosition);
         }
+
+        private static bool HasScrollPosition => ScrollPosition != null;
+        private static bool CanBeginScrollView => InitializedScrollPosition && HasScrollPosition;
 
         private static Vector2? BeginScrollView(Vector2? scrollPosition)
         {
+<<<<<<< Updated upstream
             if (IsScrollView) return ScrollPosition;
             if (scrollPosition == null) return null;
             IsScrollView = true;
             return EditorGUILayout.BeginScrollView((Vector2)scrollPosition);
+=======
+            if (CanBeginScrollView && scrollPosition != null)
+                return EditorGUILayout.BeginScrollView((Vector2) scrollPosition);
+            return null;
+>>>>>>> Stashed changes
         }
 
         private static void EndScrollView()
