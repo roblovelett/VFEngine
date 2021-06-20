@@ -45,66 +45,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             set => _data.ObjectInstances = value;
         }
 
-        private static bool InitializedData
-        {
-            get => _data.InitializedData;
-            set => _data.InitializedData = value;
-        }
-
-        private static bool InitializedDataSO
-        {
-            get => _data.InitializedDataSO;
-            set => _data.InitializedDataSO = value;
-        }
-
-        private static bool InitializedSerializedData
-        {
-            get => _data.InitializedSerializedData;
-            set => _data.InitializedSerializedData = value;
-        }
-
-        private static bool InitializedObjectField
-        {
-            get => _data.InitializedObjectField;
-            set => _data.InitializedObjectField = value;
-        }
-
-        private static bool CanAssignReplacementObject
-        {
-            get => _data.CanAssignReplacementObject;
-            set => _data.CanAssignReplacementObject = value;
-        }
-
-        private static bool CanGetObjectsToReplace
-        {
-            get => _data.CanGetObjectsToReplace;
-            set => _data.CanGetObjectsToReplace = value;
-        }
-
-        private static bool CanInitializeObjectInstances
-        {
-            get => _data.CanInitializeObjectInstances;
-            set => _data.CanInitializeObjectInstances = value;
-        }
-
-        private static bool CanInitializeSelection
-        {
-            get => _data.CanInitializeSelection;
-            set => _data.CanInitializeSelection = value;
-        }
-
-        private static bool CanInitializeObjectFilter
-        {
-            get => _data.CanInitializeObjectFilter;
-            set => _data.CanInitializeObjectFilter = value;
-        }
-
-        private static bool InitializedScrollPosition
-        {
-            get => _data.InitializedScrollPosition;
-            set => _data.InitializedScrollPosition = value;
-        }
-
         private static SelectionMode? ObjectFilter
         {
             get => _data.ObjectFilter;
@@ -147,23 +87,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             set => _data.Selection = value;
         }
 
-        private static SerializedProperty ReplaceObjectField
-        {
-            get => _data.ReplaceObjectField;
-            set => _data.ReplaceObjectField = value;
-        }
-
-        private static SerializedObject SerializedData
-        {
-            get => _data.SerializedData;
-            set => _data.SerializedData = value;
-        }
-
-        private static DataSO DataSO
-        {
-            get => _data.DataSO;
-            set => _data.DataSO = value;
-        }
+        private static SerializedProperty ReplaceObjectField => _data.ReplaceObjectField;
+        private static SerializedObject SerializedData => _data.SerializedData;
 
         private static ReplaceToolController Window
         {
@@ -172,10 +97,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         }
 
         private static int ObjectsToReplaceAmount => HasObjectsToReplace ? ObjectsToReplace.Length : 0;
-        private static bool CanInitializeData => _data == null || !InitializedData;
-        private static bool CanInitializeDataSO => DataSO == null || !InitializedDataSO;
-        private static bool CanInitializeSerializedData => SerializedData == null || !InitializedSerializedData;
-        private static bool CanInitializeReplaceObjectField => ReplaceObjectField == null || !InitializedObjectField;
         private static bool HasData => _data != null;
         private static bool ReplaceObjectButtonPressed => Button(ReplaceButton);
         private static bool HasSerializedData => SerializedData != null;
@@ -184,8 +105,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         private static bool ProcessingObjectInstances => ObjectInstancesIndex < ObjectsToReplaceAmount;
         private static bool CanCreateObjectFields => HasData && HasObjectsToReplace;
         private static bool HasObjectsToReplace => ObjectsToReplace != null;
-        private static bool CanPrintInformation => ObjectsToReplaceAmount == 0;
-        private static bool CanInitializeScrollPosition => ScrollPosition == null || !InitializedScrollPosition;
 
         #endregion
 
@@ -220,9 +139,9 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         private void OnSelectionChange()
         {
             Initialize();
-            InitializeObjectFilter();
-            InitializeSelection();
-            ApplySelectionToObjectsToReplace();
+            ObjectFilter = Unfiltered ^ ~(Assets | DeepAssets | Deep);
+            if (HasObjectFilter && ObjectFilter != null) Selection = GetTransforms((SelectionMode) ObjectFilter);
+            ObjectsToReplace = Selection.Select(selected => selected.gameObject).ToArray();
             RepaintController();
         }
 
@@ -234,26 +153,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         #endregion
 
         #region private methods
-
-        private static void InitializeObjectFilter()
-        {
-            if (!CanInitializeObjectFilter) return;
-            ObjectFilter = Unfiltered ^ ~(Assets | DeepAssets | Deep);
-            CanInitializeObjectFilter = !CanInitializeObjectFilter;
-        }
-
-        private static void InitializeSelection()
-        {
-            if (!CanInitializeSelection || !HasObjectFilter) return;
-            // ReSharper disable once PossibleInvalidOperationException
-            Selection = GetTransforms((SelectionMode) ObjectFilter);
-            CanInitializeSelection = !CanInitializeSelection;
-        }
-
-        private static void ApplySelectionToObjectsToReplace()
-        {
-            ObjectsToReplace = Selection.Select(selected => selected.gameObject).ToArray();
-        }
 
         private void RepaintController()
         {
@@ -267,41 +166,11 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         #region static private methods
 
+        private static bool CanInitializeData => _data == null;
+
         private static void Initialize()
         {
-            InitializeData();
-            InitializeDataSO();
-            InitializeSerializedData();
-            InitializeReplaceObjectField();
-            InitializeScrollPosition();
-        }
-
-        private static void InitializeScrollPosition()
-        {
-            if (!CanInitializeScrollPosition) return;
-            ScrollPosition = new Vector2();
-            InitializedScrollPosition = !InitializedScrollPosition;
-        }
-
-        private static void InitializeData()
-        {
-            if (!CanInitializeData) return;
-            _data = new ControllerData();
-            InitializedData = true;
-        }
-
-        private static void InitializeDataSO()
-        {
-            if (!CanInitializeDataSO) return;
-            DataSO = CreateInstance<DataSO>();
-            InitializedDataSO = !InitializedDataSO;
-        }
-
-        private static void InitializeSerializedData()
-        {
-            if (!CanInitializeSerializedData) return;
-            SerializedData = new SerializedObject(DataSO);
-            InitializedSerializedData = !InitializedSerializedData;
+            if (CanInitializeData) _data = new ControllerData();
         }
 
         [MenuItem(ReplaceToolMenuItem)]
@@ -311,223 +180,39 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             Window.Show();
         }
 
+        private static bool Error1;
+        private static bool Error2;
+
+        // ReSharper disable Unity.PerformanceAnalysis
         private static void GUI()
         {
-            Header();
-            SaveObjectsToReplace();
-            IndentLevel(true);
-            PrintSelectObjectsInformation();
-            BeginScrollView();
-            EnableGUI(false);
-            CreateObjectFields();
-            EnableGUI(true);
-            EndScrollView();
-            IndentLevel(false);
             Separator();
-            ReplaceObjectButton();
-        }
-
-        private static void Header()
-        {
-            Separator();
-            OnSetPropertyField();
+            PropertyField(ReplaceObjectField);
             Separator();
             LabelField(HeaderText, boldLabel);
             Separator();
-        }
-
-        private static void InitializeReplaceObjectField()
-        {
-            if (!CanInitializeReplaceObjectField) return;
-            ReplaceObjectField = SerializedData.FindProperty(Text.ReplacementPrefab);
-            InitializedObjectField = !InitializedObjectField;
-        }
-
-        private static void OnSetPropertyField()
-        {
-            InitializeReplaceObjectField();
-            PropertyField(ReplaceObjectField);
-        }
-
-        private static void SaveObjectsToReplace()
-        {
             IntField(ObjectCount, ObjectsToReplaceAmount);
-        }
-
-        private static void IndentLevel(bool hasIndent)
-        {
-            if (hasIndent) indentLevel++;
-            else indentLevel--;
-        }
-
-        private static void PrintSelectObjectsInformation()
-        {
-            if (!CanPrintInformation) return;
+            indentLevel++;
             Separator();
             LabelField(SelectGameObjectsLabel, wordWrappedLabel);
-        }
-
-        private static void BeginScrollView()
-        {
-            InitializeScrollPosition();
-            ScrollPosition = BeginScrollView(ScrollPosition);
-        }
-
-        private static bool HasScrollPosition => ScrollPosition != null;
-        private static bool CanBeginScrollView => InitializedScrollPosition && HasScrollPosition;
-
-        private static Vector2? BeginScrollView(Vector2? scrollPosition)
-        {
-            if (CanBeginScrollView && scrollPosition != null)
-                return EditorGUILayout.BeginScrollView((Vector2) scrollPosition);
-            return null;
-        }
-
-        private static void EndScrollView()
-        {
+            if (ScrollPosition != null) ScrollPosition = EditorGUILayout.BeginScrollView((Vector2) ScrollPosition);
+            EnableGUI(false);
+            if (CanCreateObjectFields)
+                foreach (var @object in ObjectsToReplace)
+                    ObjectField(@object, typeof(UnityGameObject), true);
+            EnableGUI(true);
             EditorGUILayout.EndScrollView();
+            indentLevel--;
+            Separator();
+            if (!ReplaceObjectButtonPressed) return;
+            if (!Error1) LogErrorFormat(ErrorFormat, NoPrefab);
+            if (!Error2) LogErrorFormat(ErrorFormat, NoGameObject);
+            ReplaceSelectedObjects(ObjectsToReplace, ReplacementPrefab);
         }
 
         private static void EnableGUI(bool enable)
         {
             enabled = enable;
-        }
-
-        private static void CreateObjectFields()
-        {
-            if (CanCreateObjectFields) ProcessObjectsToReplace();
-        }
-
-        private static void ProcessObjectsToReplace()
-        {
-            foreach (var @object in ObjectsToReplace) ObjectField(@object, typeof(UnityGameObject), true);
-        }
-
-        private static void ReplaceObjectButton()
-        {
-            if (!ReplaceObjectButtonPressed) return;
-            IsReplaceObjectAssigned();
-            CanReplaceObjects();
-            ReplaceSelectedObjects(ObjectsToReplace, ReplacementPrefab);
-        }
-
-        // ReSharper disable Unity.PerformanceAnalysis
-        private static void IsReplaceObjectAssigned()
-        {
-            if (CanAssignReplacementObject) return;
-            CannotAssignReplacementObjectError();
-            CanAssignReplacementObject = !CanAssignReplacementObject;
-        }
-
-        private static void CannotAssignReplacementObjectError()
-        {
-            LogErrorFormat(ErrorFormat, NoPrefab);
-        }
-
-        // ReSharper disable Unity.PerformanceAnalysis
-        private static void CanReplaceObjects()
-        {
-            if (CanGetObjectsToReplace) return;
-            CannotGetObjectsToReplaceError();
-            CanGetObjectsToReplace = !CanGetObjectsToReplace;
-        }
-
-        private static void CannotGetObjectsToReplaceError()
-        {
-            LogErrorFormat(ErrorFormat, NoGameObject);
-        }
-
-        private static void InitializeObjectsToReplace(UnityGameObject[] objectsToReplace)
-        {
-            ObjectsToReplace = objectsToReplace;
-        }
-
-        private static void InitializeReplacementPrefab(UnityGameObject replacementPrefab)
-        {
-            ReplacementPrefab = replacementPrefab;
-        }
-
-        private static void InitializeObjectInstances()
-        {
-            if (!CanInitializeObjectInstances) return;
-            ObjectInstances = new int[ObjectsToReplaceAmount];
-            CanInitializeObjectInstances = !CanInitializeObjectInstances;
-        }
-
-        private static void ProcessObjectInstances()
-        {
-            for (ObjectInstancesIndex = 0; ProcessingObjectInstances; ObjectInstancesIndex++)
-            {
-                InitializeObjectToReplace();
-                SaveObjectState();
-                InitializeObjectToReplaceTransformSiblingIndex();
-                InitializeReplacementPrefabInstance();
-                InitializeObjectInstance();
-                InitializeReplacementPrefabInstanceTransform();
-                DeleteObjectState();
-                ProcessObjectToReplace();
-                DeleteObjectToReplaceToReplaceState();
-            }
-        }
-
-        private static void InitializeObjectToReplace()
-        {
-            ObjectToReplace = ObjectsToReplace[ObjectInstancesIndex];
-        }
-
-        private static void SaveObjectState()
-        {
-            RegisterCompleteObjectUndo(ObjectToReplace, SavingObjectState);
-        }
-
-        private static void InitializeObjectToReplaceTransformSiblingIndex()
-        {
-            ObjectToReplaceTransformSiblingIndex = ObjectToReplace.transform.GetSiblingIndex();
-        }
-
-        private static void InitializeReplacementPrefabInstance()
-        {
-            ReplacementPrefabInstance = InstantiatePrefab(ReplacementPrefab) as UnityGameObject;
-        }
-
-        private static void InitializeObjectInstance()
-        {
-            ObjectInstances[ObjectInstancesIndex] = ReplacementPrefabInstance.GetInstanceID();
-        }
-
-        private static void InitializeReplacementPrefabInstanceTransform()
-        {
-            ReplacementPrefabInstance.transform.position = ObjectToReplace.transform.position;
-            ReplacementPrefabInstance.transform.rotation = ObjectToReplace.transform.rotation;
-            ReplacementPrefabInstance.transform.parent = ObjectToReplace.transform.parent;
-            ReplacementPrefabInstance.transform.localScale = ObjectToReplace.transform.localScale;
-            ReplacementPrefabInstance.transform.SetSiblingIndex(ObjectToReplaceTransformSiblingIndex);
-        }
-
-        private static void DeleteObjectState()
-        {
-            RegisterCreatedObjectUndo(ReplacementPrefabInstance, CreatedReplacementObject);
-        }
-
-        private static void ProcessObjectToReplace()
-        {
-            foreach (Transform transform in ObjectToReplace.transform)
-                SaveObjectToReplaceState(transform, ReplacementPrefabInstance.transform);
-        }
-
-        private static void SaveObjectToReplaceState(Transform transform, Transform instanceTransform)
-        {
-            SetTransformParent(transform, instanceTransform, ParentChange);
-        }
-
-        private static void DeleteObjectToReplaceToReplaceState()
-        {
-            DestroyObjectImmediate(ReplacementPrefabInstance);
-        }
-
-        private static void SelectionInstanceIds()
-        {
-            instanceIDs = ObjectInstances;
         }
 
         #endregion
@@ -538,11 +223,29 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         internal static void ReplaceSelectedObjects(UnityGameObject[] objects, UnityGameObject @object)
         {
-            InitializeObjectsToReplace(objects);
-            InitializeReplacementPrefab(@object);
-            InitializeObjectInstances();
-            ProcessObjectInstances();
-            SelectionInstanceIds();
+            ObjectsToReplace = objects;
+            ReplacementPrefab = @object;
+            ObjectInstances = new int[ObjectsToReplaceAmount];
+            for (ObjectInstancesIndex = 0; ProcessingObjectInstances; ObjectInstancesIndex++)
+            {
+                ObjectToReplace = ObjectsToReplace[ObjectInstancesIndex];
+                RegisterCompleteObjectUndo(ObjectToReplace, SavingObjectState);
+                ObjectToReplaceTransformSiblingIndex = ObjectToReplace.transform.GetSiblingIndex();
+                ReplacementPrefabInstance = InstantiatePrefab(ReplacementPrefab) as UnityGameObject;
+                if (ReplacementPrefabInstance is null) continue;
+                ObjectInstances[ObjectInstancesIndex] = ReplacementPrefabInstance.GetInstanceID();
+                ReplacementPrefabInstance.transform.position = ObjectToReplace.transform.position;
+                ReplacementPrefabInstance.transform.rotation = ObjectToReplace.transform.rotation;
+                ReplacementPrefabInstance.transform.parent = ObjectToReplace.transform.parent;
+                ReplacementPrefabInstance.transform.localScale = ObjectToReplace.transform.localScale;
+                ReplacementPrefabInstance.transform.SetSiblingIndex(ObjectToReplaceTransformSiblingIndex);
+                RegisterCreatedObjectUndo(ReplacementPrefabInstance, CreatedReplacementObject);
+                foreach (Transform transform in ObjectToReplace.transform)
+                    SetTransformParent(transform, ReplacementPrefabInstance.transform, ParentChange);
+                DestroyObjectImmediate(ReplacementPrefabInstance);
+            }
+
+            instanceIDs = ObjectInstances;
         }
 
         #endregion

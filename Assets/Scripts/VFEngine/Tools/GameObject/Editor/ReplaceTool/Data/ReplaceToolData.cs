@@ -14,26 +14,16 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
 
     internal class ReplaceToolData : IDisposable
     {
+        private DataSO dataSO;
         internal Vector2? ScrollPosition;
         internal UnityGameObject ReplacementPrefab;
         internal UnityGameObject[] ObjectsToReplace;
         internal SerializedProperty ReplaceObjectField;
         internal SerializedObject SerializedData;
-        internal DataSO DataSO;
         internal ReplaceToolController Window;
         internal int ObjectInstancesIndex { get; set; }
         internal int ObjectToReplaceTransformSiblingIndex { get; set; }
         internal int[] ObjectInstances { get; set; }
-        internal bool InitializedData { get; set; }
-        internal bool InitializedDataSO { get; set; }
-        internal bool InitializedSerializedData { get; set; }
-        internal bool InitializedObjectField { get; set; }
-        internal bool InitializedScrollPosition { get; set; }
-        internal bool CanAssignReplacementObject { get; set; }
-        internal bool CanGetObjectsToReplace { get; set; }
-        internal bool CanInitializeObjectInstances { get; set; }
-        internal bool CanInitializeObjectFilter { get; set; }
-        internal bool CanInitializeSelection { get; set; }
         internal SelectionMode? ObjectFilter { get; set; }
         internal Transform[] Selection { get; set; }
         internal UnityGameObject ObjectToReplace { get; set; }
@@ -55,20 +45,10 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
             ReplacementPrefabInstance = null;
             ObjectFilter = null;
             Selection = null;
-            CanInitializeObjectInstances = true;
-            CanInitializeObjectFilter = true;
-            CanInitializeSelection = true;
-            CanAssignReplacementObject = true;
-            CanGetObjectsToReplace = true;
-            DataSO = CreateInstance<DataSO>();
-            SerializedData = new SerializedObject(DataSO);
+            dataSO = CreateInstance<DataSO>();
+            SerializedData = new SerializedObject(dataSO);
             ReplaceObjectField = SerializedData.FindProperty(Text.ReplacementPrefab);
             ScrollPosition = new Vector2();
-            InitializedData = false;
-            InitializedDataSO = true;
-            InitializedSerializedData = true;
-            InitializedObjectField = true;
-            InitializedScrollPosition = true;
         }
 
         public void Dispose()
@@ -80,7 +60,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
         private void Dispose(bool dispose)
         {
             if (!dispose) return;
-            DestroyImmediate(DataSO);
+            DestroyImmediate(dataSO);
         }
 
         ~ReplaceToolData()
