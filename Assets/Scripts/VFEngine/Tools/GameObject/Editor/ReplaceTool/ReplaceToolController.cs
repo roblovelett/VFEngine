@@ -246,7 +246,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         {
             if (!CanInitializeSelection || !HasObjectFilter) return;
             // ReSharper disable once PossibleInvalidOperationException
-            Selection = GetTransforms((SelectionMode)ObjectFilter);
+            Selection = GetTransforms((SelectionMode) ObjectFilter);
             CanInitializeSelection = !CanInitializeSelection;
         }
 
@@ -317,12 +317,11 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             SaveObjectsToReplace();
             IndentLevel(true);
             PrintSelectObjectsInformation();
-            ScrollView(); //true);
+            BeginScrollView();
             EnableGUI(false);
             CreateObjectFields();
             EnableGUI(true);
             EndScrollView();
-            //ScrollView(false);
             IndentLevel(false);
             Separator();
             ReplaceObjectButton();
@@ -368,7 +367,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             LabelField(SelectGameObjectsLabel, wordWrappedLabel);
         }
 
-        private static void ScrollView()
+        private static void BeginScrollView()
         {
             InitializeScrollPosition();
             ScrollPosition = BeginScrollView(ScrollPosition);
@@ -379,21 +378,13 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private static Vector2? BeginScrollView(Vector2? scrollPosition)
         {
-<<<<<<< Updated upstream
-            if (IsScrollView) return ScrollPosition;
-            if (scrollPosition == null) return null;
-            IsScrollView = true;
-            return EditorGUILayout.BeginScrollView((Vector2)scrollPosition);
-=======
             if (CanBeginScrollView && scrollPosition != null)
                 return EditorGUILayout.BeginScrollView((Vector2) scrollPosition);
             return null;
->>>>>>> Stashed changes
         }
 
         private static void EndScrollView()
         {
-            IsScrollView = false;
             EditorGUILayout.EndScrollView();
         }
 
