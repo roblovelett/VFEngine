@@ -1,83 +1,93 @@
-﻿namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data { }
-/*
-using System;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
-using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
 using Text = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolText;
-using Controller = VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolController;
-using ModelView = VFEngine.Tools.GameObject.Editor.ReplaceTool.ReplaceToolModelView;
-*/
-/*
-//using static ReplaceToolState;
-using static GC;
+using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
+using Object = UnityEngine.Object;
 
-internal class ReplaceToolData : IDisposable
+namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
 {
-    /*internal UnityGameObject ReplacementPrefab => DataSO.ReplacementPrefab;
+    using static GC;
+    using static ScriptableObject;
+    using static Object;
 
-    internal UnityGameObject[] ObjectsToReplace
+    internal class ReplaceToolData : IDisposable
     {
-        get => DataSO.ObjectsToReplace;
-        set => DataSO.ObjectsToReplace = value;
-    }*/
+        internal Vector2? ScrollPosition;
+        internal UnityGameObject ReplacementPrefab;
+        internal UnityGameObject[] ObjectsToReplace;
+        internal SerializedProperty ReplaceObjectField;
+        internal SerializedObject SerializedData;
+        internal DataSO DataSO;
+        internal ReplaceToolController Window;
+        internal int ObjectInstancesIndex { get; set; }
+        internal int ObjectToReplaceTransformSiblingIndex { get; set; }
+        internal int[] ObjectInstances { get; set; }
+        internal bool InitializedData { get; set; }
+        internal bool InitializedDataSO { get; set; }
+        internal bool InitializedSerializedData { get; set; }
+        internal bool InitializedObjectField { get; set; }
+        internal bool InitializedScrollPosition { get; set; }
+        internal bool CanAssignReplacementObject { get; set; }
+        internal bool CanGetObjectsToReplace { get; set; }
+        internal bool CanInitializeObjectInstances { get; set; }
+        internal bool CanInitializeObjectFilter { get; set; }
+        internal bool CanInitializeSelection { get; set; }
+        internal bool IsScrollView { get; set; }
+        internal SelectionMode? ObjectFilter { get; set; }
+        internal Transform[] Selection { get; set; }
+        internal UnityGameObject ObjectToReplace { get; set; }
+        internal UnityGameObject ReplacementPrefabInstance { get; set; }
 
-//internal SerializedObject SerializedData { get; set; }
-//internal SerializedProperty ReplaceObjectField { get; set; }
+        internal ReplaceToolData()
+        {
+            Initialize();
+        }
 
-// {
-/*get => replaceObjectField;
-set => replaceObjectField = value;*/
-//}//=> replaceObjectField.Copy();
-//private SerializedProperty replaceObjectField;// { get; set; }
-//internal SerializedProperty ReplaceObjectFieldInstance { get; set; }
-//internal DataSO DataSO { get; private set; }
-/*
-internal int[] GameObjectsInstances { get; set; }
+        private void Initialize()
+        {
+            ReplacementPrefab = new UnityGameObject();
+            ObjectsToReplace = new UnityGameObject[0];
+            ObjectToReplaceTransformSiblingIndex = new int();
+            ObjectInstancesIndex = 0;
+            ObjectInstances = null;
+            ObjectToReplace = null;
+            ReplacementPrefabInstance = null;
+            ObjectFilter = null;
+            Selection = null;
+            CanInitializeObjectInstances = true;
+            CanInitializeObjectFilter = true;
+            CanInitializeSelection = true;
+            CanAssignReplacementObject = true;
+            CanGetObjectsToReplace = true;
+            DataSO = CreateInstance<DataSO>();
+            SerializedData = new SerializedObject(DataSO);
+            ReplaceObjectField = SerializedData.FindProperty(Text.ReplacementPrefab);
+            ScrollPosition = new Vector2();
+            InitializedData = false;
+            InitializedDataSO = true;
+            InitializedSerializedData = true;
+            InitializedObjectField = true;
+            InitializedScrollPosition = true;
+            IsScrollView = false;
+        }
 
-//internal int ObjectsToReplaceIndex { get; set; }
-//internal UnityGameObject GameObjectInstance { get; set; }
-//internal UnityGameObject ReplacementPrefabInstance { get; set; }
-//internal bool ReplacementPrefabInstanceNotNull { get; private set; }
-internal Controller Window { get; set; }
-internal Vector2? SelectObjectScrollPosition { get; set; }
+        public void Dispose()
+        {
+            Dispose(true);
+            SuppressFinalize(this);
+        }
 
-//internal ReplaceToolState State { get; set; }
-internal string SelectGameObjectsLabel { get; private set; }
-internal bool HasReplaceObjectField { get; set; }
+        private void Dispose(bool dispose)
+        {
+            if (!dispose) return;
+            DestroyImmediate(DataSO);
+        }
 
-internal ReplaceToolData()
-{
-    Initialize();
+        ~ReplaceToolData()
+        {
+            Dispose(false);
+        }
+    }
 }
-
-private void Initialize()
-{
-    //DataSO = dataSO;
-    //SerializedData = new SerializedObject(DataSO);
-    //ReplaceObjectField = null; //SerializedData.FindProperty(Text.ReplacementPrefab);
-    HasReplaceObjectField = false;
-    SelectObjectScrollPosition = null;
-    GameObjectsInstances = null;
-    //ObjectsToReplaceIndex = 0;
-    //GameObjectInstance = null;
-    //ReplacementPrefabInstance = null;
-    //ReplacementPrefabInstanceNotNull = ReplacementPrefabInstance != null;
-    Window = null;
-    //State = None;
-    //ObjectsToReplace = new UnityGameObject[0];
-    SelectGameObjectsLabel = Text.SelectGameObjectsLabel;
-}
-
-public void Dispose()
-{
-    SuppressFinalize(this);
-}
-
-~ReplaceToolData()
-{
-    Dispose();
-}
-}
-}
-*/

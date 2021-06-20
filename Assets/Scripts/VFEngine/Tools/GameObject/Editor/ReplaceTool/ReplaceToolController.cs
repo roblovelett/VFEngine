@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
 using Text = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolText;
-using ControllerData = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolSerializedData;
+using ControllerData = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolData;
 using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
 
 // ReSharper disable MemberCanBePrivate.Global
