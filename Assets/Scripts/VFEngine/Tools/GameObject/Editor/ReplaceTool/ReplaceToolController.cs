@@ -252,7 +252,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         {
             if (!CanInitializeSelection || !HasObjectFilter) return;
             // ReSharper disable once PossibleInvalidOperationException
-            Selection = GetTransforms((SelectionMode) ObjectFilter);
+            Selection = GetTransforms((SelectionMode)ObjectFilter);
             CanInitializeSelection = !CanInitializeSelection;
         }
 
@@ -390,12 +390,13 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
         {
             if (IsScrollView) return ScrollPosition;
             if (scrollPosition == null) return null;
-            IsScrollView = !IsScrollView;
-            return EditorGUILayout.BeginScrollView((Vector2) scrollPosition);
+            IsScrollView = true;
+            return EditorGUILayout.BeginScrollView((Vector2)scrollPosition);
         }
 
         private static void EndScrollView()
         {
+            IsScrollView = false;
             EditorGUILayout.EndScrollView();
         }
 
