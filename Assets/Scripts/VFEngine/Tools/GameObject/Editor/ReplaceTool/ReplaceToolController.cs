@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
 using Text = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolText;
-using ControllerData = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolData;
 using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -25,86 +24,42 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
     {
         #region fields
 
-        private static ControllerData _data;
+        private DataSO dataSO;
+        private Transform[] selection;
+        private SelectionMode? objectFilter;
+        private static int _objectInstancesIndex;
+        private static int _objectToReplaceTransformSiblingIndex;
+        private static int[] _objectInstances;
+        private static Vector2? _scrollPosition;
+        private static UnityGameObject _replacementPrefab;
+        private static UnityGameObject _objectToReplace;
+        private static UnityGameObject _replacementPrefabInstance;
+        private static UnityGameObject[] _objectsToReplace;
+        private static SerializedProperty _replaceObjectField;
+        private static SerializedObject _serializedData;
+        private static ReplaceToolController _window;
+        private static int ObjectsToReplaceAmount => _objectsToReplace?.Length ?? 0;
+        private static bool CanRepaintController => _serializedData.UpdateIfRequiredOrScript();
+        private static bool ProcessingObjectInstances => _objectInstancesIndex < ObjectsToReplaceAmount;
+        private static bool Error1 => Error2;
+        private static bool Error2 => Error1;
 
-        private static int ObjectInstancesIndex
+        private void InitializeData()
         {
-            get => _data.ObjectInstancesIndex;
-            set => _data.ObjectInstancesIndex = value;
+            _replacementPrefab = new UnityGameObject();
+            _objectsToReplace = new UnityGameObject[0];
+            _objectToReplaceTransformSiblingIndex = new int();
+            _objectInstancesIndex = 0;
+            _objectInstances = null;
+            _objectToReplace = null;
+            _replacementPrefabInstance = null;
+            objectFilter = null;
+            selection = null;
+            dataSO = CreateInstance<DataSO>();
+            _serializedData = new SerializedObject(dataSO);
+            _replaceObjectField = _serializedData.FindProperty(ReplacementPrefab);
+            _scrollPosition = new Vector2();
         }
-
-        private static int ObjectToReplaceTransformSiblingIndex
-        {
-            get => _data.ObjectToReplaceTransformSiblingIndex;
-            set => _data.ObjectToReplaceTransformSiblingIndex = value;
-        }
-
-        private static int[] ObjectInstances
-        {
-            get => _data.ObjectInstances;
-            set => _data.ObjectInstances = value;
-        }
-
-        private static SelectionMode? ObjectFilter
-        {
-            get => _data.ObjectFilter;
-            set => _data.ObjectFilter = value;
-        }
-
-        private static Vector2? ScrollPosition
-        {
-            get => _data.ScrollPosition;
-            set => _data.ScrollPosition = value;
-        }
-
-        private static UnityGameObject ReplacementPrefab
-        {
-            get => _data.ReplacementPrefab;
-            set => _data.ReplacementPrefab = value;
-        }
-
-        private static UnityGameObject ReplacementPrefabInstance
-        {
-            get => _data.ReplacementPrefabInstance;
-            set => _data.ReplacementPrefabInstance = value;
-        }
-
-        private static UnityGameObject ObjectToReplace
-        {
-            get => _data.ObjectToReplace;
-            set => _data.ObjectToReplace = value;
-        }
-
-        private static UnityGameObject[] ObjectsToReplace
-        {
-            get => _data.ObjectsToReplace;
-            set => _data.ObjectsToReplace = value;
-        }
-
-        private static Transform[] Selection
-        {
-            get => _data.Selection;
-            set => _data.Selection = value;
-        }
-
-        private static SerializedProperty ReplaceObjectField => _data.ReplaceObjectField;
-        private static SerializedObject SerializedData => _data.SerializedData;
-
-        private static ReplaceToolController Window
-        {
-            get => _data.Window;
-            set => _data.Window = value;
-        }
-
-        private static int ObjectsToReplaceAmount => HasObjectsToReplace ? ObjectsToReplace.Length : 0;
-        private static bool HasData => _data != null;
-        private static bool ReplaceObjectButtonPressed => Button(ReplaceButton);
-        private static bool HasSerializedData => SerializedData != null;
-        private static bool CanRepaintController => HasSerializedData && SerializedData.UpdateIfRequiredOrScript();
-        private static bool HasObjectFilter => ObjectFilter != null;
-        private static bool ProcessingObjectInstances => ObjectInstancesIndex < ObjectsToReplaceAmount;
-        private static bool CanCreateObjectFields => HasData && HasObjectsToReplace;
-        private static bool HasObjectsToReplace => ObjectsToReplace != null;
 
         #endregion
 
@@ -112,12 +67,12 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private void Awake()
         {
-            Initialize();
+            InitializeData();
         }
 
         private void OnEnable()
         {
-            Initialize();
+            InitializeData();
         }
 
         private void OnDisable()
@@ -132,16 +87,14 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private void OnGUI()
         {
-            Initialize();
             GUI();
         }
 
         private void OnSelectionChange()
         {
-            Initialize();
-            ObjectFilter = Unfiltered ^ ~(Assets | DeepAssets | Deep);
-            if (HasObjectFilter && ObjectFilter != null) Selection = GetTransforms((SelectionMode) ObjectFilter);
-            ObjectsToReplace = Selection.Select(selected => selected.gameObject).ToArray();
+            objectFilter = Unfiltered ^ ~(Assets | DeepAssets | Deep);
+            if (objectFilter != null) selection = GetTransforms((SelectionMode) objectFilter);
+            _objectsToReplace = selection.Select(selected => selected.gameObject).ToArray();
             RepaintController();
         }
 
@@ -159,35 +112,20 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             if (CanRepaintController) Repaint();
         }
 
-        private new void Close()
-        {
-            _data.Dispose();
-        }
-
         #region static private methods
-
-        private static bool CanInitializeData => _data == null;
-
-        private static void Initialize()
-        {
-            if (CanInitializeData) _data = new ControllerData();
-        }
 
         [MenuItem(ReplaceToolMenuItem)]
         internal static void ShowWindow()
         {
-            Window = GetWindow<ReplaceToolController>();
-            Window.Show();
+            _window = GetWindow<ReplaceToolController>();
+            _window.Show();
         }
-
-        private static bool Error1;
-        private static bool Error2;
 
         // ReSharper disable Unity.PerformanceAnalysis
         private static void GUI()
         {
             Separator();
-            PropertyField(ReplaceObjectField);
+            PropertyField(_replaceObjectField);
             Separator();
             LabelField(HeaderText, boldLabel);
             Separator();
@@ -195,24 +133,17 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             indentLevel++;
             Separator();
             LabelField(SelectGameObjectsLabel, wordWrappedLabel);
-            if (ScrollPosition != null) ScrollPosition = EditorGUILayout.BeginScrollView((Vector2) ScrollPosition);
-            EnableGUI(false);
-            if (CanCreateObjectFields)
-                foreach (var @object in ObjectsToReplace)
-                    ObjectField(@object, typeof(UnityGameObject), true);
-            EnableGUI(true);
+            if (_scrollPosition != null) _scrollPosition = EditorGUILayout.BeginScrollView((Vector2) _scrollPosition);
+            enabled = false;
+            foreach (var @object in _objectsToReplace) ObjectField(@object, typeof(UnityGameObject), true);
+            enabled = !enabled;
             EditorGUILayout.EndScrollView();
             indentLevel--;
             Separator();
-            if (!ReplaceObjectButtonPressed) return;
+            if (!Button(ReplaceButton)) return;
             if (!Error1) LogErrorFormat(ErrorFormat, NoPrefab);
             if (!Error2) LogErrorFormat(ErrorFormat, NoGameObject);
-            ReplaceSelectedObjects(ObjectsToReplace, ReplacementPrefab);
-        }
-
-        private static void EnableGUI(bool enable)
-        {
-            enabled = enable;
+            ReplaceSelectedObjects(_objectsToReplace, _replacementPrefab);
         }
 
         #endregion
@@ -223,29 +154,29 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         internal static void ReplaceSelectedObjects(UnityGameObject[] objects, UnityGameObject @object)
         {
-            ObjectsToReplace = objects;
-            ReplacementPrefab = @object;
-            ObjectInstances = new int[ObjectsToReplaceAmount];
-            for (ObjectInstancesIndex = 0; ProcessingObjectInstances; ObjectInstancesIndex++)
+            _objectsToReplace = objects;
+            _replacementPrefab = @object;
+            _objectInstances = new int[ObjectsToReplaceAmount];
+            for (_objectInstancesIndex = 0; ProcessingObjectInstances; _objectInstancesIndex++)
             {
-                ObjectToReplace = ObjectsToReplace[ObjectInstancesIndex];
-                RegisterCompleteObjectUndo(ObjectToReplace, SavingObjectState);
-                ObjectToReplaceTransformSiblingIndex = ObjectToReplace.transform.GetSiblingIndex();
-                ReplacementPrefabInstance = InstantiatePrefab(ReplacementPrefab) as UnityGameObject;
-                if (ReplacementPrefabInstance is null) continue;
-                ObjectInstances[ObjectInstancesIndex] = ReplacementPrefabInstance.GetInstanceID();
-                ReplacementPrefabInstance.transform.position = ObjectToReplace.transform.position;
-                ReplacementPrefabInstance.transform.rotation = ObjectToReplace.transform.rotation;
-                ReplacementPrefabInstance.transform.parent = ObjectToReplace.transform.parent;
-                ReplacementPrefabInstance.transform.localScale = ObjectToReplace.transform.localScale;
-                ReplacementPrefabInstance.transform.SetSiblingIndex(ObjectToReplaceTransformSiblingIndex);
-                RegisterCreatedObjectUndo(ReplacementPrefabInstance, CreatedReplacementObject);
-                foreach (Transform transform in ObjectToReplace.transform)
-                    SetTransformParent(transform, ReplacementPrefabInstance.transform, ParentChange);
-                DestroyObjectImmediate(ReplacementPrefabInstance);
+                _objectToReplace = _objectsToReplace[_objectInstancesIndex];
+                RegisterCompleteObjectUndo(_objectToReplace, SavingObjectState);
+                _objectToReplaceTransformSiblingIndex = _objectToReplace.transform.GetSiblingIndex();
+                _replacementPrefabInstance = InstantiatePrefab(_replacementPrefab) as UnityGameObject;
+                if (_replacementPrefabInstance is null) continue;
+                _objectInstances[_objectInstancesIndex] = _replacementPrefabInstance.GetInstanceID();
+                _replacementPrefabInstance.transform.position = _objectToReplace.transform.position;
+                _replacementPrefabInstance.transform.rotation = _objectToReplace.transform.rotation;
+                _replacementPrefabInstance.transform.parent = _objectToReplace.transform.parent;
+                _replacementPrefabInstance.transform.localScale = _objectToReplace.transform.localScale;
+                _replacementPrefabInstance.transform.SetSiblingIndex(_objectToReplaceTransformSiblingIndex);
+                RegisterCreatedObjectUndo(_replacementPrefabInstance, CreatedReplacementObject);
+                foreach (Transform transform in _objectToReplace.transform)
+                    SetTransformParent(transform, _replacementPrefabInstance.transform, ParentChange);
+                DestroyObjectImmediate(_replacementPrefabInstance);
             }
 
-            instanceIDs = ObjectInstances;
+            instanceIDs = _objectInstances;
         }
 
         #endregion
