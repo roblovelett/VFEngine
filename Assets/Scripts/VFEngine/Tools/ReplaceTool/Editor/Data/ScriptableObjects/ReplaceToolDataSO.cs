@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
 
-namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects
+namespace VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects
 {
     public class ReplaceToolDataSO : ScriptableObject
     {

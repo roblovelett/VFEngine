@@ -1,4 +1,4 @@
-﻿namespace VFEngine.Tools.GameObject.Editor.ReplaceTool.Data
+﻿namespace VFEngine.Tools.ReplaceTool.Editor.Data
 {
     internal static class ReplaceToolText
     {
@@ -14,5 +14,15 @@
         internal const string CreatedReplacementObject = "Created replacement object.";
         internal const string ParentChange = "Parent change.";
         internal const string ReplacementPrefab = "replacementPrefab";
+        internal const string SceneHierarchyWindow = "UnityEditor.SceneHierarchyWindow";
+        internal const string GameObjectReplace = "GameObject/Replace";
+        internal const string OnIcon = "Prefab On Icon";
+        internal const string VariantOnIcon = "PrefabVariant On Icon";
+        internal const string FolderIcon = "Folder Icon";
+        internal const string FolderOnIcon = "Folder On Icon";
+        internal const string PrefabAssets = "Assets";
+        internal const char PathSeparator = '/';
+        internal const string FilterByPrefab = "t:Prefab";
+        internal const string _ = " ";
     }
 }

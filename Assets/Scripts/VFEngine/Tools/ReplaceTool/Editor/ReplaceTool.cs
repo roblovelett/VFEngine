@@ -2,11 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
-using Text = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ReplaceToolText;
-using DataSO = VFEngine.Tools.GameObject.Editor.ReplaceTool.Data.ScriptableObjects.ReplaceToolDataSO;
+using Text = VFEngine.Tools.ReplaceTool.Editor.Data.ReplaceToolText;
+using DataSO = VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects.ReplaceToolDataSO;
 
-// ReSharper disable MemberCanBePrivate.Global
-namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
+namespace VFEngine.Tools.ReplaceTool.Editor
 {
     using static EditorGUI;
     using static EditorGUILayout;
@@ -20,34 +20,60 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
     using static Undo;
     using static GUI;
 
-    internal class ReplaceToolController : EditorWindow
+    internal class ReplaceTool : EditorWindow
     {
         #region fields
 
-        private DataSO dataSO;
         private Transform[] selection;
         private SelectionMode? objectFilter;
+
+        #region static fields
+
+        #region static fields
+
         private static int _objectInstancesIndex;
         private static int _objectToReplaceTransformSiblingIndex;
         private static int[] _objectInstances;
-        private static Vector2? _scrollPosition;
+        private static Vector2 _scrollPosition;
         private static UnityGameObject _replacementPrefab;
         private static UnityGameObject _objectToReplace;
         private static UnityGameObject _replacementPrefabInstance;
         private static UnityGameObject[] _objectsToReplace;
         private static SerializedProperty _replaceObjectField;
         private static SerializedObject _serializedData;
-        private static ReplaceToolController _window;
+        private static ReplaceTool _window;
+        private static DataSO _dataSO;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region private static properties
+
         private static int ObjectsToReplaceAmount => _objectsToReplace?.Length ?? 0;
         private static bool CanRepaintController => _serializedData.UpdateIfRequiredOrScript();
         private static bool ProcessingObjectInstances => _objectInstancesIndex < ObjectsToReplaceAmount;
-        private static bool Error1 => Error2;
-        private static bool Error2 => Error1;
+        private static bool DisplaySelectObjectsLabel => ObjectsToReplaceAmount == 0;
+        private static bool HasObjectsToReplace => _dataSO && _objectsToReplace != null;
+        private static bool NoPrefabToReplace => !_replaceObjectField.objectReferenceValue;
+        private static bool NoObjectsToReplace => DisplaySelectObjectsLabel;
 
-        private void InitializeData()
+        #endregion
+
+        #endregion
+
+        #region private methods
+
+        #region initialization
+
+        private void Initialize()
         {
-            _replacementPrefab = new UnityGameObject();
-            _objectsToReplace = new UnityGameObject[0];
+            _replacementPrefab = null;
+            _objectsToReplace = null;
             _objectToReplaceTransformSiblingIndex = new int();
             _objectInstancesIndex = 0;
             _objectInstances = null;
@@ -55,8 +81,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             _replacementPrefabInstance = null;
             objectFilter = null;
             selection = null;
-            dataSO = CreateInstance<DataSO>();
-            _serializedData = new SerializedObject(dataSO);
+            _dataSO = CreateInstance<DataSO>();
+            _serializedData = new SerializedObject(_dataSO);
             _replaceObjectField = _serializedData.FindProperty(ReplacementPrefab);
             _scrollPosition = new Vector2();
         }
@@ -67,7 +93,7 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         private void OnGUI()
         {
-            InitializeData();
+            Initialize();
             GUI();
         }
 
@@ -86,8 +112,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         #endregion
 
-        #region private methods
-
         private void RepaintController()
         {
             if (CanRepaintController) Repaint();
@@ -95,14 +119,6 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
         #region static private methods
 
-        [MenuItem(ReplaceToolMenuItem)]
-        internal static void ShowWindow()
-        {
-            _window = GetWindow<ReplaceToolController>();
-            _window.Show();
-        }
-
-        // ReSharper disable Unity.PerformanceAnalysis
         private static void GUI()
         {
             Separator();
@@ -112,26 +128,46 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
             Separator();
             IntField(ObjectCount, ObjectsToReplaceAmount);
             indentLevel++;
-            Separator();
-            LabelField(SelectGameObjectsLabel, wordWrappedLabel);
-            if (_scrollPosition != null) _scrollPosition = EditorGUILayout.BeginScrollView((Vector2) _scrollPosition);
+            if (DisplaySelectObjectsLabel)
+            {
+                Separator();
+                LabelField(SelectGameObjectsLabel, wordWrappedLabel);
+            }
+
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             enabled = false;
-            foreach (var @object in _objectsToReplace) ObjectField(@object, typeof(UnityGameObject), true);
+            if (HasObjectsToReplace)
+                foreach (var @object in _objectsToReplace)
+                    ObjectField(@object, typeof(UnityGameObject), true);
             enabled = !enabled;
             EditorGUILayout.EndScrollView();
             indentLevel--;
             Separator();
-            if (!Button(ReplaceButton)) return;
-            if (!Error1) LogErrorFormat(ErrorFormat, NoPrefab);
-            if (!Error2) LogErrorFormat(ErrorFormat, NoGameObject);
-            ReplaceSelectedObjects(_objectsToReplace, _replacementPrefab);
+            if (Button(ReplaceButton))
+            {
+                if (NoPrefabToReplace) LogErrorFormat(ErrorFormat, NoPrefab);
+                if (NoObjectsToReplace) LogErrorFormat(ErrorFormat, NoGameObject);
+                ReplaceSelectedObjects(_objectsToReplace, _replacementPrefab);
+            }
+
+            Separator();
+            _serializedData.ApplyModifiedProperties();
         }
 
         #endregion
 
         #endregion
 
-        #region public methods
+        #region internal methods
+
+        #region static internal methods
+
+        [MenuItem(ReplaceToolMenuItem)]
+        internal static void ShowWindow()
+        {
+            _window = GetWindow<ReplaceTool>();
+            _window.Show();
+        }
 
         internal static void ReplaceSelectedObjects(UnityGameObject[] objects, UnityGameObject @object)
         {
@@ -159,6 +195,8 @@ namespace VFEngine.Tools.GameObject.Editor.ReplaceTool
 
             instanceIDs = _objectInstances;
         }
+
+        #endregion
 
         #endregion
     }
