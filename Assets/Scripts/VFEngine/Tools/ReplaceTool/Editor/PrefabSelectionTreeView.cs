@@ -7,7 +7,7 @@ using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
 using UnityGameObject = UnityEngine.GameObject;
 using Text = VFEngine.Tools.ReplaceTool.Editor.Data.ReplaceToolText;
 
-namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
+namespace VFEngine.Tools.ReplaceTool.Editor
 {
     using static KeyCode;
     using static EventType;

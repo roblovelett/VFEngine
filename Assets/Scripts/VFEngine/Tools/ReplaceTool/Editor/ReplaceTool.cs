@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityGameObject = UnityEngine.GameObject;
 using Text = VFEngine.Tools.ReplaceTool.Editor.Data.ReplaceToolText;
-using DataSO = VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects.ReplaceToolDataSO;
+using DataSO = VFEngine.Tools.ReplaceTool.Editor.ScriptableObjects.ReplaceToolDataSO;
 
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 namespace VFEngine.Tools.ReplaceTool.Editor

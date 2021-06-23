@@ -5,8 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Data;
-using VFEngine.Tools.StateMachine.Data.ScriptableObjects;
-using VFEngine.Tools.StateMachine.Debug;
+using VFEngine.Tools.StateMachine.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachine
 {

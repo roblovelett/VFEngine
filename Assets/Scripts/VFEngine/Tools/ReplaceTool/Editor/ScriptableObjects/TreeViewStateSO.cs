@@ -1,7 +1,7 @@
 ﻿using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects
+namespace VFEngine.Tools.ReplaceTool.Editor.ScriptableObjects
 {
     internal class TreeViewStateSO : ScriptableObject
     {

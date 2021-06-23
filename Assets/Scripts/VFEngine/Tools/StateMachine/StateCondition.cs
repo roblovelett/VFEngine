@@ -1,4 +1,4 @@
-﻿using VFEngine.Tools.StateMachine.Data.ScriptableObjects;
+﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
 using static UnityEngine.ScriptableObject;
 
 

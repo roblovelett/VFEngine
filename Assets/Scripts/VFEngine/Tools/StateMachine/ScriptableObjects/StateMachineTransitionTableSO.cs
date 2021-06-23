@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace VFEngine.Tools.StateMachine.Data.ScriptableObjects
+namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "New State Machine Transition Table", menuName = "State Machine/Transition Table")]
     internal class StateMachineTransitionTableSO : ScriptableObject

@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VFEngine.Tools.ReplaceTool.Editor.Data;
-using VFEngine.Tools.ReplaceTool.Editor.Prefab;
 using EditorUnity = UnityEditor.Editor;
 
 namespace VFEngine.Tools.ReplaceTool.Editor

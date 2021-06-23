@@ -5,10 +5,10 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
 using VFEngine.Tools.ReplaceTool.Editor.Data;
-using VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects;
+using VFEngine.Tools.ReplaceTool.Editor.ScriptableObjects;
 using UnityGameObject = UnityEngine.GameObject;
 
-namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
+namespace VFEngine.Tools.ReplaceTool.Editor
 {
     using static EditorJsonUtility;
     using static Application;

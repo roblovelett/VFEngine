@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace VFEngine.Tools.StateMachine.Data.ScriptableObjects
+namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "New State", menuName = "State Machines/State")]
     public class StateSO : ScriptableObject
