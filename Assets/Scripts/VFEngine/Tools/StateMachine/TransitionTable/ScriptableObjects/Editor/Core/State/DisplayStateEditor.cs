@@ -1,4 +1,4 @@
-﻿
+﻿/*
 
 // ReSharper disable RedundantAssignment
 namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.State
@@ -84,5 +84,5 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
         }
 
         #endregion*/
-    }
-}
+  /*  }
+}*/

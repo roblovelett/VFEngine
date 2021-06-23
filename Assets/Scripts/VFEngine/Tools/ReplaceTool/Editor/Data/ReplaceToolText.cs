@@ -24,5 +24,8 @@
         internal const char PathSeparator = '/';
         internal const string FilterByPrefab = "t:Prefab";
         internal const string _ = " ";
+        internal const string Library = "Library";
+        internal const string ReplacePrefabTreeState = "ReplacePrefabTreeState.asset";
+        internal const string ReplaceWith = "Replace With...";
     }
 }

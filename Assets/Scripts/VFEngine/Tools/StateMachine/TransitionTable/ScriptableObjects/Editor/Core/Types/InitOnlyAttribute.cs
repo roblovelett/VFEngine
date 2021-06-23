@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
@@ -9,4 +9,4 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
     public class InitOnlyAttribute : PropertyAttribute
     {
     }
-}
+}*/

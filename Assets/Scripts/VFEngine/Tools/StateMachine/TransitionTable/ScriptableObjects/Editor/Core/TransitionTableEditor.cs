@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+﻿/*using UnityEditor;
 using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
 using EditorUnity = UnityEditor.Editor;
 
@@ -64,7 +64,7 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
     }
 }
 
-//data.OnResetStart(/*data for reset*/);
+//data.OnResetStart(/*data for reset*///);
 //transitionTable.Reset(ResetDataIn, out var resetDataOut);
 //data.OnResetEnd(resetDataOut);
 /*private void OnResetToggledIndex()

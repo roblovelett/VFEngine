@@ -1,4 +1,4 @@
-﻿namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.Text
+﻿/*namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.Text
 {
     public static class Text
     {
@@ -31,4 +31,4 @@
         
         
     }
-}
+}*/

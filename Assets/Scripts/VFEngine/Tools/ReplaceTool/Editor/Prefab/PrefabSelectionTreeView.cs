@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using VFEngine.Tools.GameObject.Editor.GameObjectPreview;
-using Object = UnityEngine.Object;
 using UnityGameObject = UnityEngine.GameObject;
 using Text = VFEngine.Tools.ReplaceTool.Editor.Data.ReplaceToolText;
 
@@ -24,7 +23,6 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
     using static Graphics;
     using static GUI;
     using static GUIContent;
-    using static Object;
     using static RenderTexture;
     using static Screen;
 
@@ -41,7 +39,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
         private readonly HashSet<int> visibleItems = new HashSet<int>();
         private readonly HashSet<string> paths = new HashSet<string>();
         private readonly List<TreeViewItem> rows = new List<TreeViewItem>();
-        private readonly Dictionary<int, RenderTexture> previewCache = new Dictionary<int, RenderTexture>();
+        internal readonly Dictionary<int, RenderTexture> PreviewCache = new Dictionary<int, RenderTexture>();
         private int pathSplitItem;
         private string prefabGuid;
         private IReadOnlyList<string> pathSplits;
@@ -50,47 +48,39 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
         private Rect labelRect;
         private RowGUIArgs args;
         private RenderTexture previewTexture;
+        private RenderTexture previousTexture;
         private UnityGameObject prefab;
         private UnityGameObject addedPrefab;
         private UnityGameObject clickedPrefab;
-        private static bool NotSelectItemKey => Key != KeypadEnter && Key != Return;
+        private int selectedId;
+        private PrefabAssetType type;
+        private Rect previewRect;
+        private Rect prefabIconRect;
         private static KeyCode Key => Event.keyCode;
         private static Event Event => current;
-        private static Object Object => InstanceIDToObject(_prefabId);
         private static TreeViewItem Root => new TreeViewItem(0, -1);
-        private static RenderTexture PreviousTexture => active;
         private int PrefabId => addedPrefab.GetInstanceID();
-        private int Depth => RootPathSplits.Length - 2;
-        private int SelectedId => HasSelectedIds ? selectedIds[0] : new int();
-        private bool HasSelectedIds => selectedIds.Count > 0;
-        private bool ItemIsVisible => IsVisible(Item.id);
+        private Texture2D PrefabOnIcon => type == Regular ? OnIcon : VariantOnIcon;
         private bool ItemSelected => IsSelected(Item.id);
         private bool IsFocused => HasFocus() && ItemSelected;
         private bool IsPrefab => IsPrefabAsset(Item.id, out prefab);
-        private bool IsFolder => !IsPrefab;
-        private bool ProcessingPathSplits => pathSplitItem < pathSplits.Count - 1;
         private float ContentIndent => GetContentIndent(Item);
         private string Path => GUIDToAssetPath(prefabGuid);
         private string PathSplit => pathSplits[pathSplitItem];
         private string[] RootPathSplits => Path.Split(Text.PathSeparator);
-        private PrefabAssetType Type => GetPrefabAssetType(prefab);
         private Rect IconRect => new Rect(rowRect) {width = 20};
-        private Rect PreviewRect => new Rect(rowRect) {width = 32, height = 32};
-        private Rect PrefabIconRect => new Rect(IconRect) {x = rowRect.xMax - 24};
         private UnityGameObject Asset => LoadAssetAtPath<UnityGameObject>(Path);
-        private Texture2D PrefabOnIcon => Type == Regular ? OnIcon : VariantOnIcon;
         private RenderTexture CopiedTexture => new RenderTexture(itemPreview.OutputTexture);
         private GUIStyle LabelStyle => IsFocused ? _whiteLabel : label;
         private GUIContent PrefabContent => new GUIContent(ObjectContent(addedPrefab, addedPrefab.GetType()));
         private TreeViewItem Item => args.item;
-        internal readonly Action<UnityGameObject> SelectEntry;
+        internal Action<UnityGameObject> SelectEntry;
         internal int RowsCount => rows.Count;
 
         #region constructor method
 
-        internal PrefabSelectionTreeView(TreeViewState state, Action<UnityGameObject> selectEntry) : base(state)
+        internal PrefabSelectionTreeView(TreeViewState state) : base(state)
         {
-            SelectEntry = selectEntry;
             foldoutOverride = (position, expandedState, style) =>
             {
                 position.width = width;
@@ -103,11 +93,6 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
         }
 
         #endregion
-
-        internal void Destroy()
-        {
-            foreach (var texture in previewCache.Values) DestroyImmediate(texture);
-        }
 
         internal bool IsVisible(int visibleId)
         {
@@ -122,7 +107,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
         private static bool IsPrefabAsset(int id, out UnityGameObject prefab)
         {
             _prefabId = id;
-            if (Object is UnityGameObject gameObject)
+            if (InstanceIDToObject(_prefabId) is UnityGameObject gameObject)
             {
                 prefab = gameObject;
                 return true;
@@ -140,8 +125,9 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
 
         protected override void KeyEvent()
         {
-            if (NotSelectItemKey) return;
-            DoubleClickedItem(SelectedId);
+            if (Key != KeypadEnter && Key != Return) return;
+            selectedId = selectedIds.Count > 0 ? selectedIds[0] : new int();
+            DoubleClickedItem(selectedId);
         }
 
         protected override void SelectionChanged(IList<int> changedSelectedIds)
@@ -158,7 +144,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
                 prefabGuid = guid;
                 if (RootPathSplits[0] != Text.PrefabAssets) break;
                 pathSplits = RootPathSplits;
-                for (pathSplitItem = 1; ProcessingPathSplits; pathSplitItem++)
+                for (pathSplitItem = 1; pathSplitItem < pathSplits.Count - 1; pathSplitItem++)
                 {
                     if (paths.Contains(PathSplit)) continue;
                     rows.Add(new TreeViewItem(PathSplit.GetHashCode(), pathSplitItem - 1, Text._ + PathSplit)
@@ -170,7 +156,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
 
                 addedPrefab = Asset;
                 if (CanRender(Asset)) visibleItems.Add(PrefabId);
-                rows.Add(new TreeViewItem(PrefabId, Depth, PrefabContent.text)
+                rows.Add(new TreeViewItem(PrefabId, RootPathSplits.Length - 2, PrefabContent.text)
                 {
                     icon = PrefabContent.image as Texture2D
                 });
@@ -196,7 +182,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
         {
             args = rowGUIArgs;
             rowRect = args.rowRect;
-            if (IsFolder)
+            if (!IsPrefab)
             {
                 if (hasSearch) return;
                 if (rowRect.Contains(Event.mousePosition) && Event.type == MouseUp)
@@ -213,17 +199,19 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
             if (IsPrefab)
             {
                 labelRect = new Rect(rowRect);
-                if (ItemIsVisible)
+                if (IsVisible(Item.id))
                 {
-                    if (!previewCache.TryGetValue(Item.id, out previewTexture))
+                    if (!PreviewCache.TryGetValue(Item.id, out previewTexture))
                     {
-                        itemPreview.CreatePreview(prefab);
-                        itemPreview.RenderInteractivePreview(PreviewRect);
+                        CreatePreview(prefab);
+                        previewRect = new Rect(rowRect) {width = 32, height = 32};
+                        itemPreview.RenderInteractivePreview(previewRect);
                         if (itemPreview.OutputTexture)
                         {
+                            previousTexture = active;
                             Blit(itemPreview.OutputTexture, CopiedTexture);
-                            active = PreviousTexture;
-                            previewCache.Add(Item.id, CopiedTexture);
+                            active = previousTexture;
+                            PreviewCache.Add(Item.id, CopiedTexture);
                         }
                     }
 
@@ -233,7 +221,9 @@ namespace VFEngine.Tools.ReplaceTool.Editor.Prefab
                     labelRect.width -= IconRect.width + 24;
                     Label(labelRect, args.label, LabelStyle);
                     if (!ItemSelected) return;
-                    Label(PrefabIconRect, IsFocused ? PrefabOnIcon : Item.icon);
+                    type = GetPrefabAssetType(prefab);
+                    prefabIconRect = new Rect(IconRect) {x = rowRect.xMax - 24};
+                    Label(prefabIconRect, IsFocused ? PrefabOnIcon : Item.icon);
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿/*using JetBrains.Annotations;
 using UnityEditor;
 
 //using UnityEditor.Graphs;
@@ -56,4 +56,4 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
             Conditions.ClearArray();
         }
     }
-}
+}*/

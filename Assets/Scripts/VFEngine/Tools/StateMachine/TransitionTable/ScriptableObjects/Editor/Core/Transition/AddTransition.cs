@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -298,4 +298,4 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
             }
         }
     }
-}
+}*/

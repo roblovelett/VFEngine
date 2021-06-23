@@ -1,4 +1,4 @@
-﻿using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
+﻿/*using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
 using static UnityEngine.ScriptableObject;
 //using static VFEngine.Tools.StateMachine.Editor.TransitionTableEditor.Text;
 // ReSharper disable RedundantAssignment
@@ -44,43 +44,43 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
         private SerializedTransition ReorderedSerializedTransition => ReorderedTransition.SerializedTransition;
         private int ReorderedTransitionsIndex => ReorderedSerializedTransition.Index;
         private string MovedState => MovedStateMessage(CurrentFromStateName, MoveTransitionUp);*/
-        
-        internal void Reorder(ref TransitionTableEditorDataSO data)
-        {
-            SetReorderData(data);
-            OnReorderStateStart();
-            SetInitialReorderedTransitionsIndex();
-            OnReorderStateEnd(ref data);
+/* 
+ internal void Reorder(ref TransitionTableEditorDataSO data)
+ {
+     SetReorderData(data);
+     OnReorderStateStart();
+     SetInitialReorderedTransitionsIndex();
+     OnReorderStateEnd(ref data);
 
-            void OnReorderStateStart()
-            {
-                //initialTransitionsIndex = CurrentFromState;
-            }
+     void OnReorderStateStart()
+     {
+         //initialTransitionsIndex = CurrentFromState;
+     }
 
-            void SetInitialReorderedTransitionsIndex()
-            {
-                //if (AddToInitialTransitionsIndex) initialTransitionsIndex++;
-            }
+     void SetInitialReorderedTransitionsIndex()
+     {
+         //if (AddToInitialTransitionsIndex) initialTransitionsIndex++;
+     }
 
-            void OnReorderStateEnd(ref TransitionTableEditorDataSO dataInternal)
-            {
-                //Transitions.MoveArrayElement(TransitionsSourceIndex, ReorderedTransitionsIndex);
-                SetData(ref dataInternal);
-                //ApplyModifications(MovedState);
-                //OnResetToggledIndex();
-            }
-        }
+     void OnReorderStateEnd(ref TransitionTableEditorDataSO dataInternal)
+     {
+         //Transitions.MoveArrayElement(TransitionsSourceIndex, ReorderedTransitionsIndex);
+         SetData(ref dataInternal);
+         //ApplyModifications(MovedState);
+         //OnResetToggledIndex();
+     }
+ }
 
-        private static void SetReorderData(TransitionTableEditorDataSO data)
-        {
-            _reorderData = data;
-        }
+ private static void SetReorderData(TransitionTableEditorDataSO data)
+ {
+     _reorderData = data;
+ }
 
-        private static void SetData(ref TransitionTableEditorDataSO data)
-        {
-            data = _reorderData;
-        }
-        
-        #endregion
-    }
+ private static void SetData(ref TransitionTableEditorDataSO data)
+ {
+     data = _reorderData;
+ }
+ 
+ #endregion
 }
+}*/

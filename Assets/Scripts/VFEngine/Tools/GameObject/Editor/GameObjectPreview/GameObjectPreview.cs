@@ -13,6 +13,7 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
     using static CameraClearFlags;
     using static GUI;
     using static ScaleMode;
+    using static EditorUnity;
 
     internal class GameObjectPreview
     {
@@ -20,23 +21,22 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 
         #region static fields
 
+        private static object _previewData;
         private static Type _gameObjectInspectorType;
         private static Type _previewDataType;
-        private static MethodInfo _previewDataMethod;
+        private static Color _light00;
+        private static Color _light01;
+        private static Color _guiColor;
+        private static Color _backgroundColor;
         private static FieldInfo _renderUtilityField;
-        private static PreviewRenderUtility _renderUtility;
         private static MeshFilter _filter;
+        private static MethodInfo _previewDataMethod;
+        private static EditorUnity _cachedEditor;
+        internal static PreviewRenderUtility RenderUtility;
         private static Renderer[] _renderers;
 
         #endregion
 
-        private object previewData;
-        private Color light00;
-        private Color light01;
-        private Color guiColor;
-        private Color backgroundColor;
-        private EditorUnity cachedEditor;
-        
         #endregion
 
         #region properties
@@ -44,8 +44,6 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
         internal RenderTexture OutputTexture { get; private set; }
 
         #region private static properties
-
-        private static bool HasRenderUtility => _renderUtility != null;
 
         #endregion
 
@@ -56,7 +54,6 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
         #region static private methods
 
         #region initialization
-
         [InitializeOnLoadMethod]
         private static void Initialize()
         {
@@ -64,6 +61,7 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
             _previewDataType = _gameObjectInspectorType.GetNestedType(Text.PreviewData, NonPublic);
             _previewDataMethod = _previewDataType.GetMethod(Text.GetPreviewData, NonPublic | Instance);
             _renderUtilityField = _previewDataType.GetField(Text.RenderUtility, Public | Instance);
+            RenderUtility = null;
         }
 
         #endregion
@@ -76,30 +74,25 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 
         internal void RenderInteractivePreview(Rect rect)
         {
-            if (!cachedEditor) return;
-            if (HasRenderUtility || _renderUtility.lights[0] == null)
+            if (!_cachedEditor) return;
+            if (RenderUtility == null)
             {
-                previewData = _previewDataMethod.Invoke(cachedEditor, null);
-                _renderUtility = _renderUtilityField.GetValue(previewData) as PreviewRenderUtility;
-                if (HasRenderUtility)
-                {
-                    light00 = _renderUtility.lights[0].color;
-                    light01 = _renderUtility.lights[1].color;
-                }
+                _previewData = _previewDataMethod.Invoke(_cachedEditor, null);
+                RenderUtility = _renderUtilityField.GetValue(_previewData) as PreviewRenderUtility;
+                _light00 = RenderUtility.lights[0].color;
+                _light01 = RenderUtility.lights[1].color;
             }
-
-            if (!HasRenderUtility) return;
-            _renderUtility.lights[0].color = light00 * 1.6f;
-            _renderUtility.lights[1].color = light01 * 6f;
-            backgroundColor = _renderUtility.camera.backgroundColor;
-            _renderUtility.camera.backgroundColor =
-                new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0);
-            _renderUtility.camera.clearFlags = Depth;
-            guiColor = color;
+            RenderUtility.lights[0].color = _light00 * 1.6f;
+            RenderUtility.lights[1].color = _light01 * 6f;
+            _backgroundColor = RenderUtility.camera.backgroundColor;
+            RenderUtility.camera.backgroundColor =
+                new Color(_backgroundColor.r, _backgroundColor.g, _backgroundColor.b, 0);
+            RenderUtility.camera.clearFlags = Depth;
+            _guiColor = color;
             color = new Color(1, 1, 1, 0);
-            cachedEditor.OnPreviewGUI(rect, null);
-            color = guiColor;
-            OutputTexture = _renderUtility.camera.targetTexture;
+            _cachedEditor.OnPreviewGUI(rect, null);
+            color = _guiColor;
+            OutputTexture = RenderUtility.camera.targetTexture;
         }
 
         internal void DrawPreviewTexture(Rect rect)
@@ -124,11 +117,11 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
             return false;
         }
 
-        internal void CreatePreview(UnityGameObject target)
+        internal static void CreatePreview(UnityGameObject target)
         {
-            if (cachedEditor && cachedEditor.target == target) return;
-            _renderUtility = null;
-            EditorUnity.CreateCachedEditor(target, _gameObjectInspectorType, ref cachedEditor);
+            if (_cachedEditor && _cachedEditor.target == target) return;
+            RenderUtility = null;
+            CreateCachedEditor(target, _gameObjectInspectorType, ref _cachedEditor);
         }
 
         #endregion

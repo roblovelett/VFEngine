@@ -34,15 +34,15 @@ namespace VFEngine.Tools.ReplaceTool.Editor
         private static int _objectInstancesIndex;
         private static int _objectToReplaceTransformSiblingIndex;
         private static int[] _objectInstances;
+        private static DataSO _dataSO;
         private static Vector2 _scrollPosition;
         private static UnityGameObject _replacementPrefab;
         private static UnityGameObject _objectToReplace;
         private static UnityGameObject _replacementPrefabInstance;
         private static UnityGameObject[] _objectsToReplace;
-        private static SerializedProperty _replaceObjectField;
         private static SerializedObject _serializedData;
+        private static SerializedProperty _replaceObjectField;
         private static ReplaceTool _window;
-        private static DataSO _dataSO;
 
         #endregion
 
@@ -55,12 +55,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
         #region private static properties
 
         private static int ObjectsToReplaceAmount => _objectsToReplace?.Length ?? 0;
-        private static bool CanRepaintController => _serializedData.UpdateIfRequiredOrScript();
-        private static bool ProcessingObjectInstances => _objectInstancesIndex < ObjectsToReplaceAmount;
         private static bool DisplaySelectObjectsLabel => ObjectsToReplaceAmount == 0;
-        private static bool HasObjectsToReplace => _dataSO && _objectsToReplace != null;
-        private static bool NoPrefabToReplace => !_replaceObjectField.objectReferenceValue;
-        private static bool NoObjectsToReplace => DisplaySelectObjectsLabel;
 
         #endregion
 
@@ -70,21 +65,13 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
         #region initialization
 
-        private void Initialize()
+        private static void Initialize()
         {
-            _replacementPrefab = null;
-            _objectsToReplace = null;
-            _objectToReplaceTransformSiblingIndex = new int();
             _objectInstancesIndex = 0;
-            _objectInstances = null;
-            _objectToReplace = null;
-            _replacementPrefabInstance = null;
-            objectFilter = null;
-            selection = null;
             _dataSO = CreateInstance<DataSO>();
+            _scrollPosition = new Vector2();
             _serializedData = new SerializedObject(_dataSO);
             _replaceObjectField = _serializedData.FindProperty(ReplacementPrefab);
-            _scrollPosition = new Vector2();
         }
 
         #endregion
@@ -114,10 +101,12 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
         private void RepaintController()
         {
-            if (CanRepaintController) Repaint();
+            if (_serializedData.UpdateIfRequiredOrScript()) Repaint();
         }
 
         #region static private methods
+
+        private static bool NoObjectsToReplace => DisplaySelectObjectsLabel;
 
         private static void GUI()
         {
@@ -136,7 +125,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             enabled = false;
-            if (HasObjectsToReplace)
+            if (_dataSO && _objectsToReplace != null)
                 foreach (var @object in _objectsToReplace)
                     ObjectField(@object, typeof(UnityGameObject), true);
             enabled = !enabled;
@@ -145,7 +134,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
             Separator();
             if (Button(ReplaceButton))
             {
-                if (NoPrefabToReplace) LogErrorFormat(ErrorFormat, NoPrefab);
+                if (!_replaceObjectField.objectReferenceValue) LogErrorFormat(ErrorFormat, NoPrefab);
                 if (NoObjectsToReplace) LogErrorFormat(ErrorFormat, NoGameObject);
                 ReplaceSelectedObjects(_objectsToReplace, _replacementPrefab);
             }
@@ -174,7 +163,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
             _objectsToReplace = objects;
             _replacementPrefab = @object;
             _objectInstances = new int[ObjectsToReplaceAmount];
-            for (_objectInstancesIndex = 0; ProcessingObjectInstances; _objectInstancesIndex++)
+            for (_objectInstancesIndex = 0; _objectInstancesIndex < ObjectsToReplaceAmount; _objectInstancesIndex++)
             {
                 _objectToReplace = _objectsToReplace[_objectInstancesIndex];
                 RegisterCompleteObjectUndo(_objectToReplace, SavingObjectState);

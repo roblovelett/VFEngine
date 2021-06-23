@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+﻿/*using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
 
@@ -43,4 +43,4 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
             return height;
         }
     }
-}
+}*/

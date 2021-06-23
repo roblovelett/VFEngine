@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+﻿/*using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core;
@@ -73,7 +73,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
                     /*var transitions = editor.GetTransitions(SerializedTransition.FromState.objectReferenceValue);
                     l = transitions.Count - 1;
                     i = transitions.FindIndex(t => t.Index == SerializedTransition.Index);*/
-                }
+                /*}
 
                 // Remove transition
                 if (Button(buttonRect, "Toolbar Minus"))
@@ -114,7 +114,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
                     editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
                     return true;
                 }*/
-            }
+            /*}
             rect.x = position.x + 5;
             rect.y += rect.height;
             rect.width = position.width - 10;
@@ -181,4 +181,4 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor
             };
         }
     }
-}
+}*/

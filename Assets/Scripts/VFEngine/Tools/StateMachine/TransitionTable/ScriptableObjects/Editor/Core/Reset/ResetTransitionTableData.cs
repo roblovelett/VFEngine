@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -321,4 +321,4 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
         public TransitionEditor TransitionTableEditor { get; set; }
         public List<List<DisplayTransition>> TransitionsByFromStates { get; set; }
     }
-}
+}*/

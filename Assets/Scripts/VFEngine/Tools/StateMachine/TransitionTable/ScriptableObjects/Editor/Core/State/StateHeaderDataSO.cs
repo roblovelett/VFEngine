@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+﻿/*using UnityEditor;
 using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.State

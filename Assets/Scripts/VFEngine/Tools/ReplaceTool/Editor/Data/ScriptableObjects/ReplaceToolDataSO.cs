@@ -3,9 +3,9 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace VFEngine.Tools.ReplaceTool.Editor.Data.ScriptableObjects
 {
-    public class ReplaceToolDataSO : ScriptableObject
+    internal class ReplaceToolDataSO : ScriptableObject
     {
-        [SerializeField] public UnityGameObject replacementPrefab;
-        [SerializeField] public UnityGameObject[] objectsToReplace;
+        [SerializeField] internal UnityGameObject replacementPrefab;
+        [SerializeField] private UnityGameObject[] objectsToReplace;
     }
 }

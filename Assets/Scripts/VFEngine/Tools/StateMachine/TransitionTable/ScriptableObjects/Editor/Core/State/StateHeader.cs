@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
@@ -61,7 +61,8 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
                 Layout.EndFoldoutHeaderGroup();
                 Layout.EndVertical();
                 Layout.EndHorizontal();
-            */}
+            */
+/*}
         }
 
         internal void OnDisplayEnd()
@@ -90,7 +91,7 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
         }*/
 
         //private Rect Header => data.Header;
-
+/*
         private void SetHeader()
         {
             BeginVertical();

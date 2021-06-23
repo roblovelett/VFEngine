@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using VFEngine.Tools.StateMachine.ScriptableObjects.TransitionTable.Editor;
 
 namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.Core.Reset
@@ -23,4 +23,4 @@ namespace VFEngine.Tools.StateMachine.TransitionTable.ScriptableObjects.Editor.C
             data.OnReset(ref @in);
         }
     }
-}
+}*/
