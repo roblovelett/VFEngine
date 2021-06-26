@@ -2,8 +2,11 @@
 
 namespace VFEngine.Tools.StateMachine.Editor.Data
 {
+    using static EditorText;
+
     internal readonly struct SerializedTransition
     {
+        internal readonly SerializedProperty Transition;
         internal readonly SerializedProperty FromState;
         internal readonly SerializedProperty ToState;
         internal readonly SerializedProperty Conditions;
@@ -11,27 +14,28 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
 
         internal SerializedTransition(SerializedProperty transition)
         {
-            FromState = transition.FindPropertyRelative("FromState");
-            ToState = transition.FindPropertyRelative("ToState");
-            Conditions = transition.FindPropertyRelative("Conditions");
+            Transition = transition;
+            FromState = Transition.FindPropertyRelative(FromStateProperty);
+            ToState = Transition.FindPropertyRelative(ToStateProperty);
+            Conditions = Transition.FindPropertyRelative(ConditionsProperty);
             Index = -1;
         }
 
         internal SerializedTransition(SerializedObject transitionTable, int index)
         {
-            var transition = transitionTable.FindProperty("transitions").GetArrayElementAtIndex(index);
-            FromState = transition.FindPropertyRelative("FromState");
-            ToState = transition.FindPropertyRelative("ToState");
-            Conditions = transition.FindPropertyRelative("Conditions");
+            Transition = transitionTable.FindProperty(TransitionsProperty).GetArrayElementAtIndex(index);
+            FromState = Transition.FindPropertyRelative(FromStateProperty);
+            ToState = Transition.FindPropertyRelative(ToStateProperty);
+            Conditions = Transition.FindPropertyRelative(ConditionsProperty);
             Index = index;
         }
 
         internal SerializedTransition(SerializedProperty transitionInternal, int index)
         {
-            var transition = transitionInternal.GetArrayElementAtIndex(index);
-            FromState = transition.FindPropertyRelative("FromState");
-            ToState = transition.FindPropertyRelative("ToState");
-            Conditions = transition.FindPropertyRelative("Conditions");
+            Transition = transitionInternal.GetArrayElementAtIndex(index);
+            FromState = Transition.FindPropertyRelative(FromStateProperty);
+            ToState = Transition.FindPropertyRelative(ToStateProperty);
+            Conditions = Transition.FindPropertyRelative(ConditionsProperty);
             Index = index;
         }
 
