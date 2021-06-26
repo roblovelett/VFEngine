@@ -1,21 +1,25 @@
-﻿namespace VFEngine.Tools.StateMachine.Editor.Data
+﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
+
+namespace VFEngine.Tools.StateMachine.Editor.Data
 {
     internal static class EditorText
     {
         internal const string TransitionsProperty = "transitions";
         private const string Transition = "Transition";
         private static readonly string TransitionWithInvalid = $"{Transition} with invalid ";
-        private const string From = "\"From ";
+        internal const string From = "From";
+        private static readonly string FromLabel = $"\"{From} ";
         private const string Target = "\"Target ";
         private const string StateFoundInTable = "State\" found in table ";
         private const string Deleting = ", deleting...";
-
-        internal const string StateHelpMessage =
-            "Click on any State's name to see the Transitions it contains, or click the Pencil/Wrench icon to see its Actions.";
-
-        internal const string ActionsHelpMessage =
-            "Edit the Actions that a State performs per frame. The order represent the order of execution.";
-
+        internal const string Item = "Item";
+        internal static readonly string AddTransitionButton = $"Add {Transition}";
+        internal const string UxmlPath = "Assets/Scripts/VFEngine/Tools/StateMachine/Editor/Data/TransitionTableWindow.uxml";
+        internal const string USSPath = "Assets/Scripts/VFEngine/Tools/StateMachine/Editor/Data/TransitionTableWindow.uss";
+        internal const string StateHelpMessage = "Click on any State's name to see the Transitions it contains, or click the Pencil/Wrench icon to see its Actions.";
+        internal const string ActionsHelpMessage = "Edit the Actions that a State performs per frame. The order represent the order of execution.";
+        internal const string Actions = "Actions";
+        internal const string ActionsProperty = "actions";
         internal const string InitialState = " (Initial State)";
         internal const string ScrollDown = "scrolldown";
         internal const string ScrollUp = "scrollup";
@@ -31,10 +35,17 @@
         internal const string To = "To";
         internal const string ToolbarMinus = "Toolbar Minus";
         internal static readonly string ConditionsProperty = $"{Condition}s";
+        internal static readonly string SameStateError = $"{FromStateProperty} and {ToStateProperty} are the same.";
+        internal const string Cancel = "Cancel";
+        internal static readonly string TransitionTableWindowLabel = $"{Transition} Table Editor";
+        private const string TableField = "table-";
+        internal static readonly string TableList = $"{TableField}list";
+        internal static readonly string TableEditor = $"{TableField}-editor";
+        internal static readonly string GuidFilter = $"t:{nameof(TransitionTableSO)}";
 
         internal static string FromStateError(string name)
         {
-            return $"{TransitionWithInvalid}{From}{StateFoundInTable}{name}{Deleting}";
+            return $"{TransitionWithInvalid}{FromLabel}{StateFoundInTable}{name}{Deleting}";
         }
 
         internal static string TargetStateError(string name)
@@ -62,6 +73,11 @@
         internal static string DeletedTransition(string fromStateName, string toStateName)
         {
             return $"Deleted transition from {fromStateName} to {toStateName}";
+        }
+
+        internal static string LabelClass(bool isProSkin)
+        {
+            return $"label-{(isProSkin ? "pro" : "personal")}";
         }
 
         internal const string InvalidTransitionDeleted = "Invalid transition deleted";

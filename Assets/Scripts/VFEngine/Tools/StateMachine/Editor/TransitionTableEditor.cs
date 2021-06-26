@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Editor.Data;
+using VFEngine.Tools.StateMachine.ScriptableObjects;
 using EditorUnity = UnityEditor.Editor;
-using TransitionTableSO = VFEngine.Tools.StateMachine.ScriptableObjects.StateMachineTransitionTableSO;
+using Object = UnityEngine.Object;
 
 namespace VFEngine.Tools.StateMachine.Editor
 {
@@ -54,68 +57,52 @@ namespace VFEngine.Tools.StateMachine.Editor
         private SerializedProperty transitions;
         private SerializedTransition serializedTransition;
         private SerializedTransition addedTransition;
-        private List<Object> fromStates;
+        private AddTransition addTransition;
+        private EditorUnity cachedStateEditor;
         private List<TransitionDisplay> groupedProperties;
         private List<TransitionDisplay> stateTransitions;
-        private List<List<TransitionDisplay>> transitionsByFromStates;
         private List<TransitionDisplay> fromStatesTransitions;
         private List<TransitionDisplay> reorderedTransitions;
         private List<TransitionDisplay> transitionByFromState;
         private Dictionary<Object, List<TransitionDisplay>> groupedTransitions;
         private readonly Object state;
-        private readonly EditorUnity cachedStateEditor;
+        internal List<List<TransitionDisplay>> TransitionsByFromStates { get; private set; }
+        internal List<Object> FromStates { get; private set; }
 
-        //private AddTransitionHelper addTransitionHelper;
         internal TransitionTableEditor(object stateInternal, EditorUnity cachedStateEditorInternal)
         {
             state = stateInternal as Object;
             cachedStateEditor = cachedStateEditorInternal;
         }
 
+        [SuppressMessage("ReSharper", "RCS1213")]
         private void OnEnable()
         {
             hasCachedStateEditor = false;
-            //addTransitionHelper = new AddTransitionHelper(this);
+            addTransition = new AddTransition(this);
             toggledIndex = -1;
             undoRedoPerformed += Reset;
             Reset();
         }
 
+        [SuppressMessage("ReSharper", "RCS1213")]
         private void OnDisable()
         {
             undoRedoPerformed -= Reset;
-            //addTransitionHelper?.Dispose();
-        }
-
-        private void Error(bool isFromStateError, bool isTargetStateError)
-        {
-            if (isFromStateError) LogError(FromStateError(serializedObject.targetObject.name));
-            if (isTargetStateError) LogError(TargetStateError(serializedObject.targetObject.name));
-            transitions.DeleteArrayElementAtIndex(transitionsIndex);
-            ApplyModifications(InvalidTransitionDeleted);
+            (addTransition as IDisposable)?.Dispose();
         }
 
         internal void Reset()
         {
             serializedObject.Update();
-            toggledState = toggledIndex > -1 ? fromStates[toggledIndex] : null;
+            toggledState = toggledIndex > -1 ? FromStates[toggledIndex] : null;
             transitions = serializedObject.FindProperty(TransitionsProperty);
             groupedTransitions = new Dictionary<Object, List<TransitionDisplay>>();
             for (transitionsIndex = 0; transitionsIndex < transitions.arraySize; transitionsIndex++)
             {
                 serializedTransition = new SerializedTransition(transitions, transitionsIndex);
-                if (serializedTransition.FromState.objectReferenceValue == null)
-                {
-                    Error(true, false);
-                    return;
-                }
-
-                if (serializedTransition.ToState.objectReferenceValue == null)
-                {
-                    Error(false, true);
-                    return;
-                }
-
+                if (TransitionError(serializedTransition.FromState.objectReferenceValue == null, true, false)) return;
+                if (TransitionError(serializedTransition.ToState.objectReferenceValue == null, false, true)) return;
                 if (!groupedTransitions.TryGetValue(serializedTransition.FromState.objectReferenceValue,
                     out groupedProperties))
                 {
@@ -126,24 +113,33 @@ namespace VFEngine.Tools.StateMachine.Editor
                 groupedProperties.Add(new TransitionDisplay(serializedTransition, this));
             }
 
-            fromStates = groupedTransitions.Keys.ToList();
-            transitionsByFromStates = new List<List<TransitionDisplay>>();
-            foreach (var fromState in fromStates) transitionsByFromStates.Add(groupedTransitions[fromState]);
-            toggledIndex = toggledState ? fromStates.IndexOf(toggledState) : -1;
+            FromStates = groupedTransitions.Keys.ToList();
+            TransitionsByFromStates = new List<List<TransitionDisplay>>();
+            foreach (var fromState in FromStates) TransitionsByFromStates.Add(groupedTransitions[fromState]);
+            toggledIndex = toggledState ? FromStates.IndexOf(toggledState) : -1;
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        private bool TransitionError(bool transitionIsNull, bool isFromStateError, bool isTargetStateError)
+        {
+            if (!transitionIsNull) return false;
+            if (isFromStateError) LogError(FromStateError(serializedObject.targetObject.name));
+            if (isTargetStateError) LogError(TargetStateError(serializedObject.targetObject.name));
+            transitions.DeleteArrayElementAtIndex(transitionsIndex);
+            ApplyModifications(InvalidTransitionDeleted);
+            return true;
         }
 
         public override void OnInspectorGUI()
         {
             if (!displayStateEditor)
             {
-                Separator();
-                HelpBox(StateHelpMessage, Info);
-                Separator();
-                for (fromStatesIndex = 0; fromStatesIndex < fromStates.Count; fromStatesIndex++)
+                OnHelpBox(StateHelpMessage);
+                for (fromStatesIndex = 0; fromStatesIndex < FromStates.Count; fromStatesIndex++)
                 {
                     stateRect = EditorGUILayout.BeginVertical(WithPaddingAndMargins);
                     DrawRect(stateRect, LightGray);
-                    fromStatesTransitions = transitionsByFromStates[fromStatesIndex];
+                    fromStatesTransitions = TransitionsByFromStates[fromStatesIndex];
                     headerRect = EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.BeginVertical();
                     fromStateLabel = fromStatesTransitions[0].SerializedTransition.FromState.objectReferenceValue.name;
@@ -160,37 +156,9 @@ namespace VFEngine.Tools.StateMachine.Editor
                     Separator();
                     EditorGUILayout.EndVertical();
                     buttonRect = new Rect(headerRect.width - 25, headerRect.y, 35, 20);
-                    if (fromStatesIndex < fromStates.Count - 1)
-                    {
-                        if (GUI.Button(buttonRect, IconContent(ScrollDown)))
-                        {
-                            ReorderState(false);
-                            EarlyOut();
-                            return;
-                        }
-
-                        buttonRect.x -= 40;
-                    }
-
-                    if (fromStatesIndex > 0)
-                    {
-                        if (GUI.Button(buttonRect, IconContent(ScrollUp)))
-                        {
-                            ReorderState(true);
-                            EarlyOut();
-                            return;
-                        }
-
-                        buttonRect.x -= 40;
-                    }
-
-                    if (GUI.Button(buttonRect, IconContent(SceneViewTools)))
-                    {
-                        DisplayStateEditor(state);
-                        EarlyOut();
-                        return;
-                    }
-
+                    if (fromStatesIndex < FromStates.Count - 1 && ButtonPressed(ScrollDown, false, false)) return;
+                    if (fromStatesIndex > 0 && ButtonPressed(ScrollUp, true, false)) return;
+                    if (ButtonPressed(SceneViewTools, false, true)) return;
                     EditorGUILayout.EndHorizontal();
                     if (toggledIndex == fromStatesIndex)
                     {
@@ -220,7 +188,7 @@ namespace VFEngine.Tools.StateMachine.Editor
 
                 addTransitionRect = EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.Space(addTransitionRect.width - 55);
-                //addTransitionHelper.Display(addTransitionRect);
+                addTransition.Display(addTransitionRect);
                 EditorGUILayout.EndHorizontal();
             }
             else
@@ -228,47 +196,63 @@ namespace VFEngine.Tools.StateMachine.Editor
                 Separator();
                 if (Button(IconContent(ScrollLeft), Width(35), Height(20))) displayStateEditor = false;
                 if (displayStateEditor) return;
-                Separator();
-                HelpBox(ActionsHelpMessage, Info);
-                Separator();
+                OnHelpBox(ActionsHelpMessage);
                 LabelField(cachedStateEditor.target.name, boldLabel);
                 Separator();
                 cachedStateEditor.OnInspectorGUI();
             }
         }
 
-        private static void EarlyOut()
+        private static void OnHelpBox(string helpBoxMessage)
         {
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
+            Separator();
+            HelpBox(helpBoxMessage, Info);
+            Separator();
         }
 
-        private void ReorderState(bool up)
+        private bool ButtonPressed(string iconContent, bool reorderState, bool isSceneViewTools)
         {
-            toggledState = toggledIndex > -1 ? fromStates[toggledIndex] : null;
-            if (!up) fromStatesIndex++;
-            reorderedTransitions = transitionsByFromStates[fromStatesIndex];
-            transitionIndex = reorderedTransitions[0].SerializedTransition.Index;
-            targetIndex = transitionsByFromStates[fromStatesIndex - 1][0].SerializedTransition.Index;
-            transitions.MoveArrayElement(transitionIndex, targetIndex);
-            ApplyModifications(MovedFromState(fromStates[fromStatesIndex].name, up));
-            if (toggledState) toggledIndex = fromStates.IndexOf(toggledState);
+            if (GUI.Button(buttonRect, IconContent(iconContent)))
+            {
+                if (isSceneViewTools)
+                {
+                    DisplayStateEditor(state);
+                }
+                else
+                {
+                    toggledState = toggledIndex > -1 ? FromStates[toggledIndex] : null;
+                    if (!reorderState) fromStatesIndex++;
+                    reorderedTransitions = TransitionsByFromStates[fromStatesIndex];
+                    transitionIndex = reorderedTransitions[0].SerializedTransition.Index;
+                    targetIndex = TransitionsByFromStates[fromStatesIndex - 1][0].SerializedTransition.Index;
+                    transitions.MoveArrayElement(transitionIndex, targetIndex);
+                    ApplyModifications(MovedFromState(FromStates[fromStatesIndex].name, reorderState));
+                    if (toggledState) toggledIndex = FromStates.IndexOf(toggledState);
+                }
+
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.EndFoldoutHeaderGroup();
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.EndHorizontal();
+                return true;
+            }
+
+            if (!isSceneViewTools) buttonRect.x -= 40;
+            return false;
         }
 
         internal void AddTransition(SerializedTransition source)
         {
-            fromIndex = fromStates.IndexOf(source.FromState.objectReferenceValue);
+            fromIndex = FromStates.IndexOf(source.FromState.objectReferenceValue);
             toIndex = -1;
             if (fromIndex < 0) hasToIndex = false;
-            toIndex = transitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
+            toIndex = TransitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
                 transitionHelper.SerializedTransition.ToState.objectReferenceValue ==
                 source.ToState.objectReferenceValue);
             hasToIndex = toIndex >= 0;
             if (hasToIndex)
             {
-                addedTransition = transitionsByFromStates[fromIndex][toIndex].SerializedTransition;
+                addedTransition = TransitionsByFromStates[fromIndex][toIndex].SerializedTransition;
             }
             else
             {
@@ -294,13 +278,13 @@ namespace VFEngine.Tools.StateMachine.Editor
             }
 
             ApplyModifications(AddedTransition(addedTransition.FromState.name, addedTransition.ToState.name));
-            toggledIndex = fromIndex >= 0 ? fromIndex : fromStates.Count - 1;
+            toggledIndex = fromIndex >= 0 ? fromIndex : FromStates.Count - 1;
         }
 
         internal void ReorderTransition(SerializedTransition transitionInternal, bool up)
         {
-            stateIndex = fromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
-            transitionByFromState = transitionsByFromStates[stateIndex];
+            stateIndex = FromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
+            transitionByFromState = TransitionsByFromStates[stateIndex];
             index = transitionByFromState.FindIndex(t => t.SerializedTransition.Index == transitionInternal.Index);
             if (up)
             {
@@ -320,8 +304,8 @@ namespace VFEngine.Tools.StateMachine.Editor
 
         internal void RemoveTransition(SerializedTransition transitionInternal)
         {
-            fromStatesTransitionIndex = fromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
-            stateTransitions = transitionsByFromStates[fromStatesTransitionIndex];
+            fromStatesTransitionIndex = FromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
+            stateTransitions = TransitionsByFromStates[fromStatesTransitionIndex];
             stateTransitionsAmount = stateTransitions.Count;
             stateTransitionsIndex =
                 stateTransitions.FindIndex(t => t.SerializedTransition.Index == transitionInternal.Index);
@@ -334,12 +318,6 @@ namespace VFEngine.Tools.StateMachine.Editor
             if (stateTransitionsAmount > 1) toggledIndex = fromStatesTransitionIndex;
         }
 
-        internal List<SerializedTransition> GetStateTransitions(Object @object)
-        {
-            return transitionsByFromStates[fromStates.IndexOf(@object)]
-                .Select(transitionDisplay => transitionDisplay.SerializedTransition).ToList();
-        }
-
         private void ApplyModifications(string msg)
         {
             RecordObject(serializedObject.targetObject, msg);
@@ -350,11 +328,16 @@ namespace VFEngine.Tools.StateMachine.Editor
         internal void DisplayStateEditor(Object stateInternal)
         {
             if (!hasCachedStateEditor)
-                //cachedStateEditor = CreateEditor(stateInternal, typeof(StateEditor));
+            {
+                cachedStateEditor = CreateEditor(stateInternal, typeof(StateEditor));
                 hasCachedStateEditor = !hasCachedStateEditor;
+            }
             else
-                //CreateCachedEditor(stateInternal, typeof(StateEditor), ref cachedStateEditor);
+            {
+                CreateCachedEditor(stateInternal, typeof(StateEditor), ref cachedStateEditor);
                 hasCachedStateEditor = !hasCachedStateEditor;
+            }
+
             displayStateEditor = true;
         }
     }

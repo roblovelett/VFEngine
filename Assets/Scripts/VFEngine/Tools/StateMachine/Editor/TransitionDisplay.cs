@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -103,7 +104,9 @@ namespace VFEngine.Tools.StateMachine.Editor
             displayRect.x += 20;
             LabelField(displayRect, SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
             buttonRect = new Rect(displayRect.width - 25, displayRect.y + 5, 30, 18);
-            transitions = editor.GetStateTransitions(SerializedTransition.FromState.objectReferenceValue);
+            transitions = editor
+                .TransitionsByFromStates[editor.FromStates.IndexOf(SerializedTransition.FromState.objectReferenceValue)]
+                .Select(transitionDisplay => transitionDisplay.SerializedTransition).ToList();
             transitionsLength = transitions.Count - 1;
             transitionsIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
             if (Button(buttonRect, IconContent(ToolbarMinus)))

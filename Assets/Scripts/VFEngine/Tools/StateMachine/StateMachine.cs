@@ -17,7 +17,7 @@ namespace VFEngine.Tools.StateMachine
     public class StateMachine : MonoBehaviour
     {
         [Tooltip(InitialState)] [SerializeField]
-        private StateMachineTransitionTableSO transitionTableSO;
+        private TransitionTableSO transitionTableSO;
 
         [SerializeField] private bool enableDebug;
         private Dictionary<Type, Component> cachedComponents;
@@ -33,7 +33,7 @@ namespace VFEngine.Tools.StateMachine
 
         private void Awake()
         {
-            if (transitionTableSO == null) transitionTableSO = CreateInstance<StateMachineTransitionTableSO>();
+            if (transitionTableSO == null) transitionTableSO = CreateInstance<TransitionTableSO>();
             CurrentState = transitionTableSO.GetInitialState(this);
             cachedComponents = new Dictionary<Type, Component>();
             ct = this.GetCancellationTokenOnDestroy();

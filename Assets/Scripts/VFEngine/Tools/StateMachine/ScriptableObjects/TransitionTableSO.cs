@@ -10,7 +10,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
     using static StateConditionOperator;
 
     [CreateAssetMenu(fileName = "New State Machine Transition Table", menuName = "State Machine/Transition Table")]
-    public class StateMachineTransitionTableSO : ScriptableObject
+    public class TransitionTableSO : ScriptableObject
     {
         [SerializeField] private StateTransitionData[] transitions;
         private int transitionConditionsAmount;
