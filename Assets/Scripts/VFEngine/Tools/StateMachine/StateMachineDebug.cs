@@ -2,12 +2,12 @@
 using System.Text;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Data;
-using static System.String;
 
 namespace VFEngine.Tools.StateMachine
 {
     using static Debug;
     using static StateMachineText;
+    using static String;
 
     [Serializable]
     internal class StateMachineDebug
@@ -38,18 +38,17 @@ namespace VFEngine.Tools.StateMachine
             targetState = targetStateInternal;
             if (!debugTransitions) return;
             logBuilder.Clear();
-            logBuilder.AppendLine($"{stateMachine.name}{StateChanged}");
-            logBuilder.AppendLine($"{currentState}{SharpArrow}{targetState}");
+            logBuilder.AppendLine(StateMachineChanged(stateMachine.name));
+            logBuilder.AppendLine(CurrentToTargetState(currentState, targetState));
             if (!appendConditionsInfo) return;
-            logBuilder.AppendLine();
-            logBuilder.AppendLine($"{TransitionConditions}");
+            logBuilder.AppendLine(Conditions());
         }
 
         internal void TransitionConditionResult(string conditionName, bool result, bool isMet)
         {
             if (!debugTransitions || logBuilder.Length == 0 || !appendConditionsInfo) return;
-            logBuilder.Append($"{ThickArrow}{conditionName}{Is}{result}");
-            logBuilder.AppendLine(isMet ? $"{CheckMark}" : $"{UncheckMark}");
+            logBuilder.Append(ConditionIs(conditionName, result));
+            logBuilder.AppendLine(IsMetCheckMark(isMet));
         }
 
         internal void TransitionEvaluationEnd(bool passed)

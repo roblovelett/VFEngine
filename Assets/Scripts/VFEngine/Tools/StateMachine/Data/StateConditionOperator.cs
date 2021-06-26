@@ -2,6 +2,7 @@
 {
     internal enum StateConditionOperator
     {
+        None,
         And,
         Or
     }

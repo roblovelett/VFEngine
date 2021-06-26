@@ -68,6 +68,19 @@ namespace VFEngine.Tools.StateMachine
             debug?.Awake(this);
         }
 
+        private new bool TryGetComponent<T>(out T component) where T : Component
+        {
+            type = typeof(T);
+            if (!cachedComponents.TryGetValue(type, out cachedComponent))
+            {
+                if (base.TryGetComponent(out component)) cachedComponents.Add(type, component);
+                return component != null;
+            }
+
+            component = (T) cachedComponent;
+            return true;
+        }
+
         private async void Start()
         {
             ((IState) CurrentState).Enter();
@@ -95,19 +108,6 @@ namespace VFEngine.Tools.StateMachine
             {
                 throw new InvalidOperationException(TransitionStateError + $" {error.Message}");
             }
-        }
-
-        internal new bool TryGetComponent<T>(out T component) where T : Component
-        {
-            type = typeof(T);
-            if (!cachedComponents.TryGetValue(type, out cachedComponent))
-            {
-                if (base.TryGetComponent(out component)) cachedComponents.Add(type, component);
-                return component != null;
-            }
-
-            component = (T) cachedComponent;
-            return true;
         }
 
         internal T GetOrAddComponent<T>() where T : Component

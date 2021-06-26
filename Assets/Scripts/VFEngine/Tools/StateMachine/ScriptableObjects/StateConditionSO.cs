@@ -1,46 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using VFEngine.Tools.StateMachine.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    internal class StateConditionSO : ScriptableObject
+    public abstract class StateConditionSO : ScriptableObject
     {
-        internal readonly StateMachine StateMachine;
-        internal readonly StateCondition Condition;
-        internal readonly bool ExpectedResult;
-        private bool statement;
-        private bool isMet;
+        private StateCondition condition;
+        private object @object;
 
-        internal StateConditionSO(StateMachine stateMachine, StateCondition condition, bool expectedResult)
+        internal StateConditionData GetCondition(StateMachine stateMachine, bool expectedResult,
+            Dictionary<ScriptableObject, object> createdInstances)
         {
-            StateMachine = stateMachine;
-            Condition = condition;
-            ExpectedResult = expectedResult;
+            if (createdInstances.TryGetValue(this, out @object)) return StateCondition(stateMachine, expectedResult);
+            condition = CreateCondition();
+            condition.OriginSO = this;
+            createdInstances.Add(this, condition);
+            condition.Awake(stateMachine);
+            @object = condition;
+            return StateCondition(stateMachine, expectedResult);
         }
 
-        internal void Enter()
+        private StateConditionData StateCondition(StateMachine stateMachine, bool expectedResult)
         {
-            ((IState) Condition).Enter();
+            return new StateConditionData(stateMachine, @object as StateCondition, expectedResult);
         }
 
-        internal void Exit()
-        {
-            ((IState) Condition).Exit();
-        }
+        private protected abstract StateCondition CreateCondition();
+    }
 
-        internal void ClearCache()
+    public abstract class StateConditionSO<T> : StateConditionSO where T : StateCondition, new()
+    {
+        private protected override StateCondition CreateCondition()
         {
-            Condition.ClearCache();
-        }
-
-        internal bool IsMet()
-        {
-            statement = Condition.GetStatement();
-            isMet = statement == ExpectedResult;
-
-#if UNITY_EDITOR
-            StateMachine.debug.TransitionConditionResult(Condition.OriginSO.name, statement, isMet);
-#endif
-            return isMet;
+            return new T();
         }
     }
 }

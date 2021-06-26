@@ -1,20 +1,19 @@
-﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
+﻿using VFEngine.Tools.StateMachine.Data;
 
 namespace VFEngine.Tools.StateMachine
 {
     internal class StateTransition : IState
     {
+        private int resultGroupsIndex;
+        private int resultGroupIndex;
+        private int conditionsIndex;
+        private bool hasTargetState;
         private readonly State targetState;
-        private readonly StateConditionSO[] conditions;
+        private readonly StateConditionData[] conditions;
         private readonly int[] resultGroups;
         private readonly bool[] results;
-        private int resultGroupsAmount;
-        private int result;
-        private int resultIndex;
-        private int resultGroup;
-        private bool hasTargetState;
 
-        internal StateTransition(State targetStateInternal, StateConditionSO[] conditionsInternal,
+        internal StateTransition(State targetStateInternal, StateConditionData[] conditionsInternal,
             int[] resultGroupsInternal = null)
         {
             targetState = targetStateInternal;
@@ -24,40 +23,43 @@ namespace VFEngine.Tools.StateMachine
             results = new bool[resultGroups.Length];
         }
 
-        public bool TryGetTransition(out State state)
+        internal bool TryGetTransition(out State state)
         {
 #if UNITY_EDITOR
             targetState.StateMachine.debug.TransitionEvaluationBegin(targetState.OriginSO.name);
 #endif
-            resultGroupsAmount = resultGroups.Length;
-            for (result = 0, resultIndex = 0; result < resultGroupsAmount && resultIndex < conditions.Length; result++)
-            for (resultGroup = 0; resultGroup < resultGroups[result]; resultGroup++, resultIndex++)
-                results[result] = resultGroup == 0
-                    ? conditions[resultIndex].IsMet()
-                    : results[result] && conditions[resultIndex].IsMet();
+            for (resultGroupsIndex = 0, conditionsIndex = 0;
+                resultGroupsIndex < resultGroups.Length && conditionsIndex < conditions.Length;
+                conditionsIndex++)
+            for (resultGroupIndex = 0;
+                resultGroupIndex < resultGroups[resultGroupsIndex];
+                resultGroupIndex++, conditionsIndex++)
+                results[resultGroupsIndex] = resultGroupIndex == 0
+                    ? conditions[conditionsIndex].IsMet()
+                    : results[resultGroupsIndex] && conditions[conditionsIndex].IsMet();
             hasTargetState = false;
-            for (resultGroup = 0; resultGroup < resultGroupsAmount && !hasTargetState; resultGroup++)
-                hasTargetState = results[resultGroup];
-            state = hasTargetState ? targetState : null;
+            for (resultGroupsIndex = 0; resultGroupsIndex < resultGroups.Length && !hasTargetState; resultGroupsIndex++)
+                hasTargetState = hasTargetState || results[resultGroupsIndex];
 #if UNITY_EDITOR
             targetState.StateMachine.debug.TransitionEvaluationEnd(hasTargetState);
 #endif
+            state = hasTargetState ? targetState : null;
             return state != null;
+        }
+
+        internal void ClearCache()
+        {
+            foreach (var condition in conditions) condition.Condition.ClearCache();
         }
 
         void IState.Enter()
         {
-            foreach (var condition in conditions) condition.Enter();
+            foreach (var condition in conditions) (condition.Condition as IState).Enter();
         }
 
         void IState.Exit()
         {
-            foreach (var condition in conditions) condition.Exit();
-        }
-
-        internal void ClearConditionsCache()
-        {
-            foreach (var condition in conditions) condition.ClearCache();
+            foreach (var condition in conditions) (condition.Condition as IState).Exit();
         }
     }
 }

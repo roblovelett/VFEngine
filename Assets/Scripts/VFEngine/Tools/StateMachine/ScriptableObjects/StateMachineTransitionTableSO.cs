@@ -1,75 +1,84 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using VFEngine.Tools.StateMachine.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
+    using static StateMachineText;
+    using static StateConditionOperator;
+
     [CreateAssetMenu(fileName = "New State Machine Transition Table", menuName = "State Machine/Transition Table")]
     internal class StateMachineTransitionTableSO : ScriptableObject
     {
-        /*
-        [SerializeField] private TransitionItem[] _transitions = default(TransitionItem[]);
+        [SerializeField] private StateTransitionData[] transitions;
+        private int transitionConditionsAmount;
+        private int resultGroupsIndex;
+        private int conditionsIndex;
+        private int[] resultGroups;
+        private State state;
+        private State toState;
+        private StateMachine stateMachine;
+        private List<int> resultGroupsList;
+        private List<State> states;
+        private List<StateTransition> stateTransitions;
+        private Dictionary<ScriptableObject, object> createdInstances;
+        private StateConditionData[] conditions;
+        private IEnumerable<IGrouping<StateSO, StateTransitionData>> fromStates;
 
-        /// <summary>
-        ///     Will get the initial state and instantiate all subsequent states, transitions, actions and conditions.
-        /// </summary>
-        */
-        internal State GetInitialState(StateMachine stateMachine)
+        internal void OnEnable()
         {
-            /*
-            var states = new List<State>();
-            var transitions = new List<StateTransition>();
-            var createdInstances = new Dictionary<ScriptableObject, object>();
-            var fromStates = _transitions.GroupBy(transition => transition.FromState);
+            transitions = default(StateTransitionData[]);
+            states = new List<State>();
+            stateTransitions = new List<StateTransition>();
+            createdInstances = new Dictionary<ScriptableObject, object>();
+            fromStates = transitions!.GroupBy(transition => transition.FromState);
+            resultGroupsList = new List<int>();
+        }
+
+        internal State GetInitialState(StateMachine stateMachineInternal)
+        {
+            stateMachine = stateMachineInternal;
             foreach (var fromState in fromStates)
             {
                 if (fromState.Key == null)
-                    throw new ArgumentNullException(nameof(fromState.Key), $"TransitionTable: {name}");
-                var state = fromState.Key.GetState(stateMachine, createdInstances);
+                    throw new ArgumentNullException(nameof(fromState.Key), TransitionTableName(name));
+                state = fromState.Key.Get(stateMachine, createdInstances);
                 states.Add(state);
-                transitions.Clear();
-                foreach (var transitionItem in fromState)
+                stateTransitions.Clear();
+                foreach (var transition in fromState)
                 {
-                    if (transitionItem.ToState == null)
-                        throw new ArgumentNullException(nameof(transitionItem.ToState),
-                            $"TransitionTable: {name}, From State: {fromState.Key.name}");
-                    var toState = transitionItem.ToState.GetState(stateMachine, createdInstances);
-                    ProcessConditionUsages(stateMachine, transitionItem.Conditions, createdInstances,
-                        out var conditions, out var resultGroups);
-                    transitions.Add(new StateTransition(toState, conditions, resultGroups));
+                    if (transition.ToState == null)
+                        throw new ArgumentNullException(nameof(transition.ToState),
+                            TransitionError(name, fromState.Key.name));
+                    toState = transition.ToState.Get(stateMachine, createdInstances);
+                    transitionConditionsAmount = transition.Conditions.Length;
+                    conditions = new StateConditionData[transitionConditionsAmount];
+                    for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
+                        conditions[conditionsIndex] = transition.Conditions[conditionsIndex].Condition
+                            .GetCondition(stateMachine, transition.Conditions[conditionsIndex].ExpectedResult,
+                                createdInstances);
+                    for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
+                    {
+                        resultGroupsIndex = resultGroupsList.Count;
+                        resultGroupsList.Add(1);
+                        while (conditionsIndex < transitionConditionsAmount - 1 &&
+                               transition.Conditions[conditionsIndex].Operator == And)
+                        {
+                            conditionsIndex++;
+                            resultGroupsList[resultGroupsIndex]++;
+                        }
+                    }
+
+                    resultGroups = resultGroupsList.ToArray();
+                    stateTransitions.Add(new StateTransition(toState, conditions, resultGroups));
                 }
 
-                state._transitions = transitions.ToArray();
+                state.Transitions = stateTransitions.ToArray();
             }
 
-            return states.Count > 0
-                ? states[0]
-                : throw new InvalidOperationException($"TransitionTable {name} is empty.");
-            */
-            return null;
+            return states.Count > 0 ? states[0] : throw new InvalidOperationException(StateError(name));
         }
-
-        /*
-        private static void ProcessConditionUsages(StateMachine stateMachine, ConditionUsage[] conditionUsages,
-            Dictionary<ScriptableObject, object> createdInstances, out StateCondition[] conditions,
-            out int[] resultGroups)
-        {
-            var count = conditionUsages.Length;
-            conditions = new StateCondition[count];
-            for (var i = 0; i < count; i++)
-                conditions[i] = conditionUsages[i].Condition.GetCondition(stateMachine,
-                    conditionUsages[i].ExpectedResult == Result.True, createdInstances);
-            var resultGroupsList = new List<int>();
-            for (var i = 0; i < count; i++)
-            {
-                var idx = resultGroupsList.Count;
-                resultGroupsList.Add(1);
-                while (i < count - 1 && conditionUsages[i].Operator == Operator.And)
-                {
-                    i++;
-                    resultGroupsList[idx]++;
-                }
-            }
-
-            resultGroups = resultGroupsList.ToArray();
-        }*/
     }
 }

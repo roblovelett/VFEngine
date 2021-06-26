@@ -1,16 +1,12 @@
 ﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
-using static UnityEngine.ScriptableObject;
-
 
 namespace VFEngine.Tools.StateMachine
 {
-    internal abstract class StateCondition : IState
+    public abstract class StateCondition : IState
     {
         private bool isCached;
         private bool cachedStatement = default(bool);
-
-        protected internal StateConditionSO OriginSO { get; private set; }
-
+        protected internal StateConditionSO OriginSO { get; internal set; }
         protected abstract bool Statement();
 
         internal bool GetStatement()
@@ -26,14 +22,16 @@ namespace VFEngine.Tools.StateMachine
             isCached = false;
         }
 
-        internal virtual void Awake(StateMachine stateMachine)
+        protected internal virtual void Awake(StateMachine stateMachine)
         {
-            isCached = false;
-            cachedStatement = default(bool);
-            OriginSO = CreateInstance<StateConditionSO>();
         }
 
-        void IState.Enter() { }
-        void IState.Exit(){}
+        void IState.Enter()
+        {
+        }
+
+        void IState.Exit()
+        {
+        }
     }
 }
