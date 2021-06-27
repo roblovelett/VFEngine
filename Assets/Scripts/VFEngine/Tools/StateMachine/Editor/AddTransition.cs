@@ -28,11 +28,11 @@ namespace VFEngine.Tools.StateMachine.Editor
         private bool toggle;
         private float reorderableListHeight;
         private Rect transitionRect;
-        private static float _singleLineHeight;
         private readonly SerializedObject transition;
         private readonly ReorderableList reorderableList;
         private readonly SerializedTransition serializedTransition;
         private readonly TransitionTableEditor editor;
+        private static float _singleLineHeight;
 
         internal AddTransition(TransitionTableEditor editorInternal)
         {
