@@ -10,7 +10,8 @@ namespace VFEngine.Tools.StateMachine.Data
         internal StateConditionSO Condition;
         internal StateConditionOperator Operator;
 
-        internal StateTransitionConditionData(bool expectedResult, StateConditionSO condition, StateConditionOperator @operator)
+        internal StateTransitionConditionData(bool expectedResult, StateConditionSO condition,
+            StateConditionOperator @operator)
         {
             ExpectedResult = expectedResult;
             Condition = condition;

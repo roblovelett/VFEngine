@@ -39,7 +39,7 @@ namespace VFEngine.Tools.StateMachine.Editor
         private TransitionTableSO[] assets;
         private static TransitionTableWindow _window;
 
-        [MenuItem("Transition Table Editor", menuItem = "Tools/StateMachine/Transition Table Editor")]
+        [MenuItem("Transition Table Editor", menuItem = "Tools/State Machine/Transition Table Editor")]
         internal static void Display()
         {
             if (_window == null) _window = GetWindow<TransitionTableWindow>(TransitionTableWindowLabel);

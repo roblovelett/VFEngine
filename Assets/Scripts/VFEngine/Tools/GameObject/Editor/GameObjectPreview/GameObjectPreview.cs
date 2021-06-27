@@ -32,7 +32,6 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
         private static MeshFilter _filter;
         private static MethodInfo _previewDataMethod;
         private static EditorUnity _cachedEditor;
-        internal static PreviewRenderUtility RenderUtility;
         private static Renderer[] _renderers;
 
         #endregion
@@ -43,8 +42,10 @@ namespace VFEngine.Tools.GameObject.Editor.GameObjectPreview
 
         internal RenderTexture OutputTexture { get; private set; }
 
-        #region private static properties
+        #region static properties
 
+        internal static PreviewRenderUtility RenderUtility;
+        
         #endregion
 
         #endregion

@@ -10,20 +10,18 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
 
     internal static class ContentStyle
     {
+        private static bool _initialised;
+        private static RectOffset _padding;
+        private static RectOffset _leftPadding;
+        private static RectOffset _margin;
+        private static GUIStyleState _guiStyleStateNormal;
         internal static Color DarkGray { get; private set; }
         internal static Color LightGray { get; private set; }
         internal static Color Focused { get; private set; }
         internal static Color ZebraDark { get; private set; }
         internal static Color ZebraLight { get; private set; }
-        internal static RectOffset Padding { get; private set; }
-        internal static RectOffset LeftPadding { get; private set; }
-        internal static RectOffset Margin { get; private set; }
-        internal static GUIStyle BoldCentered { get; private set; }
         internal static GUIStyle StateListStyle { get; private set; }
-        internal static GUIStyle WithPadding { get; private set; }
         internal static GUIStyle WithPaddingAndMargins { get; private set; }
-        private static bool _initialised;
-        private static GUIStyleState _guiStyleStateNormal;
 
         [InitializeOnLoadMethod]
         internal static void Initialize()
@@ -35,22 +33,20 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
             ZebraDark = new Color(0.4f, 0.4f, 0.4f, 0.1f);
             ZebraLight = new Color(0.8f, 0.8f, 0.8f, 0.1f);
             Focused = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-            Padding = new RectOffset(5, 5, 5, 5);
-            LeftPadding = new RectOffset(10, 0, 0, 0);
-            Margin = new RectOffset(8, 8, 8, 8);
-            WithPadding = new GUIStyle {padding = Padding};
-            WithPaddingAndMargins = new GUIStyle {padding = Padding, margin = Margin};
+            _padding = new RectOffset(5, 5, 5, 5);
+            _leftPadding = new RectOffset(10, 0, 0, 0);
+            _margin = new RectOffset(8, 8, 8, 8);
+            WithPaddingAndMargins = new GUIStyle {padding = _padding, margin = _margin};
             _guiStyleStateNormal = GetBuiltinSkin(Inspector).label.normal;
             _guiStyleStateNormal.textColor =
                 isProSkin ? new Color(.85f, .85f, .85f) : new Color(0.337f, 0.337f, 0.337f);
-            BoldCentered = new GUIStyle {fontStyle = Bold, alignment = MiddleCenter};
             StateListStyle = new GUIStyle
             {
                 alignment = MiddleLeft,
-                padding = LeftPadding,
+                padding = _leftPadding,
                 fontStyle = Bold,
                 fontSize = 12,
-                margin = Margin,
+                margin = _margin,
                 normal = _guiStyleStateNormal
             };
         }

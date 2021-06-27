@@ -5,7 +5,6 @@ using VFEngine.Tools.StateMachine.Editor.Data;
 using VFEngine.Tools.StateMachine.ScriptableObjects;
 using EditorUnity = UnityEditor.Editor;
 
-// ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.Editor
 {
     using static EditorGUI;
@@ -27,6 +26,7 @@ namespace VFEngine.Tools.StateMachine.Editor
         private SerializedProperty actions;
         private SerializedProperty reorderableListSerializedProperty;
 
+        // ReSharper disable UnusedParameter.Local
         private void OnEnable()
         {
             undoRedoPerformed += DoUndo;

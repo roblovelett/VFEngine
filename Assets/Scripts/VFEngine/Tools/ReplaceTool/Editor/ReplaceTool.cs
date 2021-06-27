@@ -55,7 +55,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
         #region private static properties
 
         private static int ObjectsToReplaceAmount => _objectsToReplace?.Length ?? 0;
-        private static bool DisplaySelectObjectsLabel => ObjectsToReplaceAmount == 0;
+        private static bool NoObjectsToReplace => ObjectsToReplaceAmount == 0;
 
         #endregion
 
@@ -106,8 +106,6 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
         #region static private methods
 
-        private static bool NoObjectsToReplace => DisplaySelectObjectsLabel;
-
         private static void GUI()
         {
             Separator();
@@ -117,7 +115,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
             Separator();
             IntField(ObjectCount, ObjectsToReplaceAmount);
             indentLevel++;
-            if (DisplaySelectObjectsLabel)
+            if (NoObjectsToReplace)
             {
                 Separator();
                 LabelField(SelectGameObjectsLabel, wordWrappedLabel);

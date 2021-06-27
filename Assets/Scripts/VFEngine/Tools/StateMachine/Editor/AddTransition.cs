@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Editor.Data;
 using VFEngine.Tools.StateMachine.Editor.ScriptableObjects;
-using Object = UnityEngine.Object;
+using UnityObject = UnityEngine.Object;
 
-// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 // ReSharper disable RedundantLambdaParameterType
 // ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.Editor
@@ -19,7 +19,7 @@ namespace VFEngine.Tools.StateMachine.Editor
     using static GUI;
     using static GUIContent;
     using static GUILayoutUtility;
-    using static Object;
+    using static UnityObject;
     using static ContentStyle;
     using static EditorText;
 
@@ -31,16 +31,16 @@ namespace VFEngine.Tools.StateMachine.Editor
         private static float _singleLineHeight;
         private readonly SerializedObject transition;
         private readonly ReorderableList reorderableList;
+        private readonly SerializedTransition serializedTransition;
         private readonly TransitionTableEditor editor;
-        private SerializedTransition SerializedTransition { get; }
 
         internal AddTransition(TransitionTableEditor editorInternal)
         {
             var serializedProperty = default(SerializedProperty);
             editor = editorInternal;
             transition = new SerializedObject(ScriptableObject.CreateInstance<TransitionTableItemSO>());
-            SerializedTransition = new SerializedTransition(transition.FindProperty(Item));
-            reorderableList = new ReorderableList(transition, SerializedTransition.Conditions);
+            serializedTransition = new SerializedTransition(transition.FindProperty(Item));
+            reorderableList = new ReorderableList(transition, serializedTransition.Conditions);
             reorderableList.elementHeight *= 2.3f;
             reorderableList.drawHeaderCallback += rect => Label(rect, ConditionsProperty);
             reorderableList.onAddCallback += list =>
@@ -85,6 +85,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             };
         }
 
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
         internal void Display(Rect position)
         {
             position.x += 8;
@@ -98,7 +99,7 @@ namespace VFEngine.Tools.StateMachine.Editor
                 GetRect(position.width, position.height);
                 if (!Button(position, AddTransitionButton)) return;
                 toggle = true;
-                SerializedTransition.ClearProperties();
+                serializedTransition.ClearProperties();
                 return;
             }
 
@@ -107,9 +108,9 @@ namespace VFEngine.Tools.StateMachine.Editor
             GetRect(position.width, position.height);
             position.y += 10;
             position.x += 20;
-            StatePropField(position, From, SerializedTransition.FromState);
+            StatePropField(position, From, serializedTransition.FromState);
             position.x = transitionRect.width / 2 + 20;
-            StatePropField(position, To, SerializedTransition.ToState);
+            StatePropField(position, To, serializedTransition.ToState);
             position.y += 30;
             position.x = transitionRect.x + 5;
             position.height = reorderableListHeight;
@@ -120,22 +121,22 @@ namespace VFEngine.Tools.StateMachine.Editor
             position.width = transitionRect.width / 2 - 20;
             if (Button(position, AddTransitionButton))
             {
-                if (SerializedTransition.FromState.objectReferenceValue == null)
+                if (serializedTransition.FromState.objectReferenceValue == null)
                 {
                     LogException(new ArgumentNullException(FromStateProperty));
                 }
-                else if (SerializedTransition.ToState.objectReferenceValue == null)
+                else if (serializedTransition.ToState.objectReferenceValue == null)
                 {
                     LogException(new ArgumentNullException(ToStateProperty));
                 }
-                else if (SerializedTransition.FromState.objectReferenceValue ==
-                         SerializedTransition.ToState.objectReferenceValue)
+                else if (serializedTransition.FromState.objectReferenceValue ==
+                         serializedTransition.ToState.objectReferenceValue)
                 {
                     LogException(new InvalidOperationException(SameStateError));
                 }
                 else
                 {
-                    editor.AddTransition(SerializedTransition);
+                    editor.AddTransition(serializedTransition);
                     toggle = false;
                 }
             }

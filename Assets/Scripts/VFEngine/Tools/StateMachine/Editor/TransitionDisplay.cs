@@ -109,46 +109,45 @@ namespace VFEngine.Tools.StateMachine.Editor
                 .Select(transitionDisplay => transitionDisplay.SerializedTransition).ToList();
             transitionsLength = transitions.Count - 1;
             transitionsIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
-            if (Button(buttonRect, IconContent(ToolbarMinus)))
+            if (ButtonPressed(ToolbarMinus, false, false, false, true)) return true;
+            if (transitionsIndex < transitionsLength)
+                if (ButtonPressed(ScrollDown, true, false, false, false))
+                    return true;
+            if (transitionsIndex > 0)
+                if (ButtonPressed(ScrollUp, true, true, false, false))
+                    return true;
+            if (ButtonPressed(SceneViewTools, false, false, true, false)) return true;
+            displayRect.x = position.x + 5;
+            displayRect.y += displayRect.height;
+            displayRect.width = position.width - 10;
+            displayRect.height = listHeight;
+            reorderableList.DoList(displayRect);
+            return false;
+        }
+
+        private bool ButtonPressed(string icon, bool reorderTransition, bool up, bool displayStateEditor,
+            bool removeTransition)
+        {
+            if (!Button(buttonRect, IconContent(icon))) return false;
+            if (displayStateEditor)
+            {
+                editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
+                return true;
+            }
+
+            if (reorderTransition)
+            {
+                editor.ReorderTransition(SerializedTransition, up);
+                return true;
+            }
+
+            if (removeTransition)
             {
                 editor.RemoveTransition(SerializedTransition);
                 return true;
             }
 
             buttonRect.x -= 35;
-            if (transitionsIndex < transitionsLength)
-            {
-                if (Button(buttonRect, IconContent(ScrollDown)))
-                {
-                    editor.ReorderTransition(SerializedTransition, false);
-                    return true;
-                }
-
-                buttonRect.x -= 35;
-            }
-
-            if (transitionsIndex > 0)
-            {
-                if (Button(buttonRect, IconContent(ScrollUp)))
-                {
-                    editor.ReorderTransition(SerializedTransition, true);
-                    return true;
-                }
-
-                buttonRect.x -= 35;
-            }
-
-            if (Button(buttonRect, IconContent(SceneViewTools)))
-            {
-                editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
-                return true;
-            }
-
-            displayRect.x = position.x + 5;
-            displayRect.y += displayRect.height;
-            displayRect.width = position.width - 10;
-            displayRect.height = listHeight;
-            reorderableList.DoList(displayRect);
             return false;
         }
     }

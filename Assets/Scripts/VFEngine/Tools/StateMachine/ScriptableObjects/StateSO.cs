@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "New State", menuName = "State Machines/State")]
+    [CreateAssetMenu(fileName = "New State", menuName = "Tools/State Machine/State")]
     public class StateSO : ScriptableObject
     {
         private State state;

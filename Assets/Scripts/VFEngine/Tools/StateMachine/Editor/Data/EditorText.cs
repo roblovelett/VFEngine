@@ -4,20 +4,17 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
 {
     internal static class EditorText
     {
-        internal const string TransitionsProperty = "transitions";
         private const string Transition = "Transition";
-        private static readonly string TransitionWithInvalid = $"{Transition} with invalid ";
-        internal const string From = "From";
-        private static readonly string FromLabel = $"\"{From} ";
         private const string Target = "\"Target ";
         private const string StateFoundInTable = "State\" found in table ";
         private const string Deleting = ", deleting...";
+        private const string TableField = "table-";
+        private const string DefaultPath = "Assets/Scripts/VFEngine/Tools/StateMachine/Editor/Data/";
+        private static readonly string TransitionWithInvalid = $"{Transition} with invalid ";
+        private static readonly string FromLabel = $"\"{From} ";
+        internal const string From = "From";
+        internal const string TransitionsProperty = "transitions";
         internal const string Item = "Item";
-        internal static readonly string AddTransitionButton = $"Add {Transition}";
-        internal const string UxmlPath = "Assets/Scripts/VFEngine/Tools/StateMachine/Editor/Data/TransitionTableWindow.uxml";
-        internal const string USSPath = "Assets/Scripts/VFEngine/Tools/StateMachine/Editor/Data/TransitionTableWindow.uss";
-        internal const string StateHelpMessage = "Click on any State's name to see the Transitions it contains, or click the Pencil/Wrench icon to see its Actions.";
-        internal const string ActionsHelpMessage = "Edit the Actions that a State performs per frame. The order represent the order of execution.";
         internal const string Actions = "Actions";
         internal const string ActionsProperty = "actions";
         internal const string InitialState = " (Initial State)";
@@ -34,11 +31,15 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal const string Is = "Is";
         internal const string To = "To";
         internal const string ToolbarMinus = "Toolbar Minus";
+        internal const string Cancel = "Cancel";
+        internal const string InvalidTransitionDeleted = "Invalid transition deleted";
+        internal const string StateHelpMessage = "Click on any State's name to see the Transitions it contains.";
+        internal static readonly string UxmlPath = $"{DefaultPath}TransitionTableWindow.uxml";
+        internal static readonly string USSPath = $"{DefaultPath}TransitionTableWindow.uss";
+        internal static readonly string AddTransitionButton = $"Add {Transition}";
         internal static readonly string ConditionsProperty = $"{Condition}s";
         internal static readonly string SameStateError = $"{FromStateProperty} and {ToStateProperty} are the same.";
-        internal const string Cancel = "Cancel";
         internal static readonly string TransitionTableWindowLabel = $"{Transition} Table Editor";
-        private const string TableField = "table-";
         internal static readonly string TableList = $"{TableField}list";
         internal static readonly string TableEditor = $"{TableField}-editor";
         internal static readonly string GuidFilter = $"t:{nameof(TransitionTableSO)}";
@@ -80,7 +81,6 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
             return $"label-{(isProSkin ? "pro" : "personal")}";
         }
 
-        internal const string InvalidTransitionDeleted = "Invalid transition deleted";
         /*"Click on any State's name to see the Transitions it contains, or click the Pencil/Wrench icon to see its Actions."
         " (Initial State)"
         "scrolldown"

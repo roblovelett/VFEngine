@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Editor.Data;
 using VFEngine.Tools.StateMachine.ScriptableObjects;
 using EditorUnity = UnityEditor.Editor;
-using Object = UnityEngine.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace VFEngine.Tools.StateMachine.Editor
 {
@@ -51,7 +50,7 @@ namespace VFEngine.Tools.StateMachine.Editor
         private Rect toggleRect;
         private Rect buttonRect;
         private Rect addTransitionRect;
-        private Object toggledState;
+        private UnityObject toggledState;
         private SerializedProperty condition;
         private SerializedProperty sourceCondition;
         private SerializedProperty transitions;
@@ -64,18 +63,17 @@ namespace VFEngine.Tools.StateMachine.Editor
         private List<TransitionDisplay> fromStatesTransitions;
         private List<TransitionDisplay> reorderedTransitions;
         private List<TransitionDisplay> transitionByFromState;
-        private Dictionary<Object, List<TransitionDisplay>> groupedTransitions;
-        private readonly Object state;
+        private Dictionary<UnityObject, List<TransitionDisplay>> groupedTransitions;
+        private readonly UnityObject state;
         internal List<List<TransitionDisplay>> TransitionsByFromStates { get; private set; }
-        internal List<Object> FromStates { get; private set; }
+        internal List<UnityObject> FromStates { get; private set; }
 
         internal TransitionTableEditor(object stateInternal, EditorUnity cachedStateEditorInternal)
         {
-            state = stateInternal as Object;
+            state = stateInternal as UnityObject;
             cachedStateEditor = cachedStateEditorInternal;
         }
 
-        [SuppressMessage("ReSharper", "RCS1213")]
         private void OnEnable()
         {
             hasCachedStateEditor = false;
@@ -85,19 +83,20 @@ namespace VFEngine.Tools.StateMachine.Editor
             Reset();
         }
 
-        [SuppressMessage("ReSharper", "RCS1213")]
         private void OnDisable()
         {
             undoRedoPerformed -= Reset;
             (addTransition as IDisposable)?.Dispose();
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         internal void Reset()
         {
             serializedObject.Update();
             toggledState = toggledIndex > -1 ? FromStates[toggledIndex] : null;
             transitions = serializedObject.FindProperty(TransitionsProperty);
-            groupedTransitions = new Dictionary<Object, List<TransitionDisplay>>();
+            transitionsAmount = transitions.arraySize;
+            groupedTransitions = new Dictionary<UnityObject, List<TransitionDisplay>>();
             for (transitionsIndex = 0; transitionsIndex < transitions.arraySize; transitionsIndex++)
             {
                 serializedTransition = new SerializedTransition(transitions, transitionsIndex);
@@ -130,11 +129,14 @@ namespace VFEngine.Tools.StateMachine.Editor
             return true;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public override void OnInspectorGUI()
         {
             if (!displayStateEditor)
             {
-                OnHelpBox(StateHelpMessage);
+                Separator();
+                HelpBox(StateHelpMessage, Info);
+                Separator();
                 for (fromStatesIndex = 0; fromStatesIndex < FromStates.Count; fromStatesIndex++)
                 {
                     stateRect = EditorGUILayout.BeginVertical(WithPaddingAndMargins);
@@ -196,20 +198,13 @@ namespace VFEngine.Tools.StateMachine.Editor
                 Separator();
                 if (Button(IconContent(ScrollLeft), Width(35), Height(20))) displayStateEditor = false;
                 if (displayStateEditor) return;
-                OnHelpBox(ActionsHelpMessage);
                 LabelField(cachedStateEditor.target.name, boldLabel);
                 Separator();
                 cachedStateEditor.OnInspectorGUI();
             }
         }
 
-        private static void OnHelpBox(string helpBoxMessage)
-        {
-            Separator();
-            HelpBox(helpBoxMessage, Info);
-            Separator();
-        }
-
+        // ReSharper disable Unity.PerformanceAnalysis
         private bool ButtonPressed(string iconContent, bool reorderState, bool isSceneViewTools)
         {
             if (GUI.Button(buttonRect, IconContent(iconContent)))
@@ -241,6 +236,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             return false;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         internal void AddTransition(SerializedTransition source)
         {
             fromIndex = FromStates.IndexOf(source.FromState.objectReferenceValue);
@@ -281,6 +277,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             toggledIndex = fromIndex >= 0 ? fromIndex : FromStates.Count - 1;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         internal void ReorderTransition(SerializedTransition transitionInternal, bool up)
         {
             stateIndex = FromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
@@ -302,6 +299,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             toggledIndex = stateIndex;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         internal void RemoveTransition(SerializedTransition transitionInternal)
         {
             fromStatesTransitionIndex = FromStates.IndexOf(transitionInternal.FromState.objectReferenceValue);
@@ -325,7 +323,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             Reset();
         }
 
-        internal void DisplayStateEditor(Object stateInternal)
+        internal void DisplayStateEditor(UnityObject stateInternal)
         {
             if (!hasCachedStateEditor)
             {
