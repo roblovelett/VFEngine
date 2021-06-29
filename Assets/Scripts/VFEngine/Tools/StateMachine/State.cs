@@ -8,12 +8,14 @@ namespace VFEngine.Tools.StateMachine
         internal StateSO OriginSO;
         internal StateMachine StateMachine;
         internal StateTransition[] Transitions;
+        private readonly StateAction[] actions;
 
-        internal State(StateSO originSO, StateMachine stateMachine, StateTransition[] transitions)
+        internal State(StateSO originSO, StateMachine stateMachine, StateTransition[] transitions, StateAction[] actionsInternal)
         {
             OriginSO = originSO;
             StateMachine = stateMachine;
             Transitions = transitions;
+            actions = actionsInternal;
         }
 
         internal State()
@@ -23,6 +25,14 @@ namespace VFEngine.Tools.StateMachine
         void IState.Enter()
         {
             foreach (var transition in Transitions as IEnumerable<IState>) transition.Enter();
+        }
+
+        internal void Update()
+        {
+            foreach (var action in actions)
+            {
+                action.Update();
+            }
         }
 
         void IState.Exit()

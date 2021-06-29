@@ -6,8 +6,8 @@ using VFEngine.Tools.StateMachine.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    using static StateMachineText;
     using static StateConditionOperator;
+    using static StateMachineText;
 
     [CreateAssetMenu(fileName = "New State Machine Transition Table", menuName = "Tools/State Machine/Transition Table")]
     public class TransitionTableSO : ScriptableObject
@@ -57,7 +57,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
                     conditions = new StateConditionData[transitionConditionsAmount];
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
                         conditions[conditionsIndex] = transition.Conditions[conditionsIndex].Condition
-                            .GetCondition(stateMachine, transition.Conditions[conditionsIndex].ExpectedResult,
+                            .Get(stateMachine, transition.Conditions[conditionsIndex].ExpectedResult,
                                 createdInstances);
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
                     {

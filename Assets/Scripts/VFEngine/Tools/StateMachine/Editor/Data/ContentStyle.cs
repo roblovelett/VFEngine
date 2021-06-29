@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.Editor.Data
 {
-    using static EditorGUIUtility;
     using static EditorSkin;
     using static FontStyle;
     using static TextAnchor;
+    using static EditorGUIUtility;
 
     internal static class ContentStyle
     {

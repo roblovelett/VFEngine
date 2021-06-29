@@ -1,4 +1,5 @@
 ﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
+using static System.Convert;
 
 namespace VFEngine.Tools.StateMachine.Editor.Data
 {
@@ -18,12 +19,12 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         private const string Table = "Table";
         private const string New = "New";
         private const string Cs = "cs";
-        private const string Name = "NAME";
         private const string Txt = ".txt";
         private const string Moved = "Moved ";
         private const string FromLc = " from ";
         private const string ToLc = " to ";
         private const string TheLc = " the ";
+        private const string OnLc = " on ";
         private static readonly string SOScript = $"{SOProperty}.{Cs}";
         private static readonly string Transitions = $"{Transition}s";
         private static readonly string StateFoundInTable = $"{State}\" found in table ";
@@ -47,6 +48,16 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal const string Cancel = "Cancel";
         internal const string SOProperty = "SO";
         internal const string Nbsp = " ";
+        internal const string HelpBoxField = "helpbox";
+        internal const string ScriptName = "#SCRIPTNAME#";
+        internal const string RuntimeName = "#RUNTIMENAME#";
+        internal const string RuntimeNameWithSpaces = "#RUNTIMENAME_WITH_SPACES#";
+        internal const string Namespace = "#NAMESPACE#";
+        internal const string InitialPath = "Assets/Scripts/";
+        internal const string NamespacePattern = @"^([\w+.]+)\.\w+\.cs$";
+        internal const string NamespaceReplacement = "$1";
+        internal static readonly char PathSeparator = ToChar("/");
+        internal static readonly char NamespaceSeparator = ToChar(".");
         internal static readonly string TransitionsProperty = $"{TransitionLc}s";
         internal static readonly string InitialState = $" (Initial {State})";
         internal static readonly string ScrollDown = $"{Scroll}down";
@@ -68,15 +79,18 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static readonly string GuidFilter = $"t:{nameof(TransitionTableSO)}";
         internal static readonly string ActionPath = $"{New}{Action}{SOScript}";
         internal static readonly string ConditionPath = $"{New}{Condition}{SOScript}";
-        internal static readonly string ScriptName = $"#SCRIPT{Name}#";
-        internal static readonly string RuntimeName = $"#RUNTIME{Name}#";
-        internal static readonly string RuntimeNameWithSpaces = $"#{RuntimeName}_WITH_SPACES#";
         internal static readonly string ScriptIconContent = $"{Cs} Script Icon";
         internal static readonly string ActionTemplatePath = $"{ScriptTemplatesPath}{StatePath}{Action}{Txt}";
         internal static readonly string ConditionTemplatePath = $"{ScriptTemplatesPath}{StatePath}{Condition}{Txt}";
 
+        internal static readonly string InitOnlyAttributeMessage =
+            $"Changes{ToLc}this parameter during Play mode won't be reflected{OnLc}existing {StateMachine}s";
+
         internal static readonly string StateHelpMessage =
-            $"Click on any {State}'s name{ToLc}see{TheLc}{Transitions} it contains.";
+            $"Click{OnLc}any {State}'s name{ToLc}see{TheLc}{Transitions} it contains, or click{TheLc}Pencil/Wrench icon{ToLc}see its {Actions}";
+
+        internal static readonly string ActionsHelpMessage =
+            $"Edit{TheLc}{Actions} that a {State} performs per frame. The order represent{TheLc}order of execution.";
 
         internal static string FromStateError(string name)
         {

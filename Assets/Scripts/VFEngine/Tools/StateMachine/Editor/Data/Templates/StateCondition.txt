@@ -1,0 +1,34 @@
+﻿using UnityEngine;
+using VFEngine.Tools.StateMachine;
+using VFEngine.Tools.StateMachine.ScriptableObjects;
+
+namespace #NAMESPACE#
+{
+    [CreateAssetMenu(fileName = "#RUNTIMENAME#", menuName = "Tools/State Machine/Conditions/#RUNTIMENAME_WITH_SPACES#")]
+    public class #SCRIPTNAME# : StateConditionSO
+    {
+        protected override StateCondition Condition() => new #RUNTIMENAME#();
+    }
+    
+    public class #RUNTIMENAME# : StateCondition, IState
+    {
+        protected new #SCRIPTNAME# OriginSO => base.OriginSO as #SCRIPTNAME#;
+    
+        public override void Awake(StateMachine stateMachine)
+        {
+        }
+        
+        protected override bool Statement()
+        {
+            return true;
+        }
+        
+        void IState.Enter()
+        {
+        }
+    
+        void IState.Exit()
+        {
+        }
+    }
+}

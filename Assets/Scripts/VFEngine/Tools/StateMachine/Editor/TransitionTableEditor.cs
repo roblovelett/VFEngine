@@ -135,7 +135,7 @@ namespace VFEngine.Tools.StateMachine.Editor
             if (!displayStateEditor)
             {
                 Separator();
-                HelpBox(StateHelpMessage, Info);
+                HelpBox(StateHelpMessage);
                 Separator();
                 for (fromStatesIndex = 0; fromStatesIndex < FromStates.Count; fromStatesIndex++)
                 {
@@ -198,10 +198,18 @@ namespace VFEngine.Tools.StateMachine.Editor
                 Separator();
                 if (Button(IconContent(ScrollLeft), Width(35), Height(20))) displayStateEditor = false;
                 if (displayStateEditor) return;
+                HelpBox(ActionsHelpMessage);
                 LabelField(cachedStateEditor.target.name, boldLabel);
                 Separator();
                 cachedStateEditor.OnInspectorGUI();
             }
+        }
+
+        private static void HelpBox(string helpMessage)
+        {
+            Separator();
+            EditorGUILayout.HelpBox(helpMessage, Info);
+            Separator();
         }
 
         // ReSharper disable Unity.PerformanceAnalysis

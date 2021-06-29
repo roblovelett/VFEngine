@@ -7,10 +7,11 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
     public class StateSO : ScriptableObject
     {
         private State state;
-        
+        private object @object;
+
         internal State Get(StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
         {
-            if (createdInstances.TryGetValue(this, out var obj)) return (State) obj;
+            if (createdInstances.TryGetValue(this, out @object)) return @object as State;
             state = new State();
             createdInstances.Add(this, state);
             state.OriginSO = this;

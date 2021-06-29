@@ -83,7 +83,7 @@ namespace VFEngine.Tools.StateMachine
 
         private async void Start()
         {
-            ((IState) CurrentState).Enter();
+            (CurrentState as IState).Enter();
             await RunStateMachine();
         }
 
@@ -95,10 +95,10 @@ namespace VFEngine.Tools.StateMachine
                 {
                     if (CurrentState.TryGetTransition(out transitionState))
                     {
-                        ((IState) CurrentState).Exit();
+                        (CurrentState as IState).Exit();
                         CurrentState = transitionState;
                         if (transitionState == null) cts.Cancel();
-                        ((IState) CurrentState).Enter();
+                        (CurrentState as IState).Enter();
                     }
 
                     await WaitForEndOfFrame();

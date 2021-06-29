@@ -9,29 +9,29 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
         private StateCondition condition;
         private object @object;
 
-        internal StateConditionData GetCondition(StateMachine stateMachine, bool expectedResult,
+        internal StateConditionData Get(StateMachine stateMachine, bool expectedResult,
             Dictionary<ScriptableObject, object> createdInstances)
         {
-            if (createdInstances.TryGetValue(this, out @object)) return StateCondition(stateMachine, expectedResult);
-            condition = CreateCondition();
+            if (createdInstances.TryGetValue(this, out @object)) return Condition(stateMachine, expectedResult);
+            condition = Condition();
             condition.OriginSO = this;
             createdInstances.Add(this, condition);
             condition.Awake(stateMachine);
             @object = condition;
-            return StateCondition(stateMachine, expectedResult);
+            return Condition(stateMachine, expectedResult);
         }
 
-        private StateConditionData StateCondition(StateMachine stateMachine, bool expectedResult)
+        private StateConditionData Condition(StateMachine stateMachine, bool expectedResult)
         {
             return new StateConditionData(stateMachine, @object as StateCondition, expectedResult);
         }
 
-        private protected abstract StateCondition CreateCondition();
+        protected abstract StateCondition Condition();
     }
 
     public abstract class StateConditionSO<T> : StateConditionSO where T : StateCondition, new()
     {
-        private protected override StateCondition CreateCondition()
+        protected override StateCondition Condition()
         {
             return new T();
         }

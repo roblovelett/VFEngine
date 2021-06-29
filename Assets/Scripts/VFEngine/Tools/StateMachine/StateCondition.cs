@@ -5,7 +5,7 @@ namespace VFEngine.Tools.StateMachine
     public abstract class StateCondition : IState
     {
         private bool isCached;
-        private bool cachedStatement = default(bool);
+        private bool cachedStatement;
         protected internal StateConditionSO OriginSO { get; internal set; }
         protected abstract bool Statement();
 
@@ -22,7 +22,7 @@ namespace VFEngine.Tools.StateMachine
             isCached = false;
         }
 
-        protected internal virtual void Awake(StateMachine stateMachine)
+        public virtual void Awake(StateMachine stateMachine)
         {
         }
 
