@@ -21,18 +21,18 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
             Index = -1;
         }
 
-        internal SerializedTransition(SerializedObject transitionTable, int index)
+        /*internal SerializedTransition(SerializedObject transitionTable, int index)
         {
             Transition = transitionTable.FindProperty(TransitionsProperty).GetArrayElementAtIndex(index);
             FromState = Transition.FindPropertyRelative(FromStateProperty);
             ToState = Transition.FindPropertyRelative(ToStateProperty);
             Conditions = Transition.FindPropertyRelative(ConditionsProperty);
             Index = index;
-        }
+        }*/
 
-        internal SerializedTransition(SerializedProperty transitionInternal, int index)
+        internal SerializedTransition(SerializedProperty transition, int index)
         {
-            Transition = transitionInternal.GetArrayElementAtIndex(index);
+            Transition = transition.GetArrayElementAtIndex(index);
             FromState = Transition.FindPropertyRelative(FromStateProperty);
             ToState = Transition.FindPropertyRelative(ToStateProperty);
             Conditions = Transition.FindPropertyRelative(ConditionsProperty);

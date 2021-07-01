@@ -1,4 +1,6 @@
-﻿namespace VFEngine.Tools.StateMachine.Data
+﻿using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
+
+namespace VFEngine.Tools.StateMachine.Data
 {
     internal struct StateConditionData
     {
@@ -8,8 +10,7 @@
         private readonly bool expectedResult;
         internal readonly StateCondition Condition;
 
-        internal StateConditionData(StateMachine stateMachineInternal, StateCondition condition,
-            bool expectedResultInternal)
+        internal StateConditionData(StateMachine stateMachineInternal, StateCondition condition, bool expectedResultInternal)
         {
             stateMachine = stateMachineInternal;
             Condition = condition;

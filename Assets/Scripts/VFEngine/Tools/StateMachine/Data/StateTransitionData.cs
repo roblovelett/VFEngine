@@ -1,10 +1,10 @@
-﻿using System;
+﻿/*using System;
 using VFEngine.Tools.StateMachine.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachine.Data
 {
     [Serializable]
-    internal struct StateTransitionData
+    public struct StateTransitionData
     {
         internal StateSO FromState;
         internal StateSO ToState;
@@ -17,4 +17,4 @@ namespace VFEngine.Tools.StateMachine.Data
             Conditions = conditions;
         }
     }
-}
+}*/

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Editor.Data;
+using UnityObject = UnityEngine.Object;
 
 // ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.Editor
@@ -19,16 +18,9 @@ namespace VFEngine.Tools.StateMachine.Editor
 
     internal class TransitionDisplay
     {
-        private int transitionsLength;
-        private int transitionsIndex;
-        private float listHeight;
-        private float singleLineHeight;
-        private Rect displayRect;
-        private Rect buttonRect;
-        private List<SerializedTransition> transitions;
+        internal SerializedTransition SerializedTransition { get; }
         private readonly ReorderableList reorderableList;
         private readonly TransitionTableEditor editor;
-        internal SerializedTransition SerializedTransition { get; }
 
         internal TransitionDisplay(SerializedTransition serializedTransition, TransitionTableEditor editorInternal)
         {
@@ -39,30 +31,29 @@ namespace VFEngine.Tools.StateMachine.Editor
             reorderableList.headerHeight = 1f;
             reorderableList.onAddCallback += list =>
             {
-                var reorderableListItemsAmount = list.count;
-                list.serializedProperty.InsertArrayElementAtIndex(reorderableListItemsAmount);
-                var reorderableListProperty =
-                    list.serializedProperty.GetArrayElementAtIndex(reorderableListItemsAmount);
-                reorderableListProperty.FindPropertyRelative(Condition).objectReferenceValue = null;
-                reorderableListProperty.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
-                reorderableListProperty.FindPropertyRelative(Operator).enumValueIndex = 0;
+                var count = list.count;
+                list.serializedProperty.InsertArrayElementAtIndex(count);
+                var prop = list.serializedProperty.GetArrayElementAtIndex(count);
+                prop.FindPropertyRelative(Condition).objectReferenceValue = null;
+                prop.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
+                prop.FindPropertyRelative(Operator).enumValueIndex = 0;
             };
             reorderableList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                var serializedProperty = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
-                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, EditorGUIUtility.singleLineHeight);
-                var condition = serializedProperty.FindPropertyRelative(Condition);
+                var prop = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, singleLineHeight);
+                var condition = prop.FindPropertyRelative(Condition);
                 if (condition.objectReferenceValue != null)
                 {
-                    var conditionLabel = condition.objectReferenceValue.name;
+                    var label = condition.objectReferenceValue.name;
                     Label(rect, If);
-                    var conditionRect = rect;
-                    conditionRect.x += 20;
-                    conditionRect.width = 35;
-                    PropertyField(conditionRect, condition, none);
-                    conditionRect.x += 40;
-                    conditionRect.width = rect.width - 120;
-                    Label(conditionRect, conditionLabel, boldLabel);
+                    var r = rect;
+                    r.x += 20;
+                    r.width = 35;
+                    PropertyField(r, condition, none);
+                    r.x += 40;
+                    r.width = rect.width - 120;
+                    Label(r, label, boldLabel);
                 }
                 else
                 {
@@ -71,11 +62,10 @@ namespace VFEngine.Tools.StateMachine.Editor
 
                 LabelField(new Rect(rect.x + rect.width - 80, rect.y, 20, rect.height), Is);
                 PropertyField(new Rect(rect.x + rect.width - 60, rect.y, 60, rect.height),
-                    serializedProperty.FindPropertyRelative(ExpectedResult), none);
+                    prop.FindPropertyRelative(ExpectedResult), none);
                 if (index < reorderableList.count - 1)
-                    PropertyField(
-                        new Rect(rect.x + 20, rect.y + EditorGUIUtility.singleLineHeight + 5, 60, rect.height),
-                        serializedProperty.FindPropertyRelative(Operator), none);
+                    PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
+                        prop.FindPropertyRelative(Operator), none);
             };
             reorderableList.onChangedCallback +=
                 list => list.serializedProperty.serializedObject.ApplyModifiedProperties();
@@ -89,66 +79,70 @@ namespace VFEngine.Tools.StateMachine.Editor
 
         internal bool Display(ref Rect position)
         {
-            displayRect = position;
-            listHeight = reorderableList.GetHeight();
-            singleLineHeight = EditorGUIUtility.singleLineHeight;
-            displayRect.height = singleLineHeight + 10 + listHeight;
-            GetRect(displayRect.width, displayRect.height);
-            position.y += displayRect.height + 5;
-            displayRect.x += 5;
-            displayRect.width -= 10;
-            displayRect.height -= listHeight;
-            DrawRect(displayRect, DarkGray);
-            displayRect.x += 3;
-            LabelField(displayRect, To);
-            displayRect.x += 20;
-            LabelField(displayRect, SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
-            buttonRect = new Rect(displayRect.width - 25, displayRect.y + 5, 30, 18);
-            transitions = editor
-                .TransitionsByFromStates[editor.FromStates.IndexOf(SerializedTransition.FromState.objectReferenceValue)]
-                .Select(transitionDisplay => transitionDisplay.SerializedTransition).ToList();
-            transitionsLength = transitions.Count - 1;
-            transitionsIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
-            if (ButtonPressed(ToolbarMinus, false, false, false, true)) return true;
-            if (transitionsIndex < transitionsLength)
-                if (ButtonPressed(ScrollDown, true, false, false, false))
-                    return true;
-            if (transitionsIndex > 0)
-                if (ButtonPressed(ScrollUp, true, true, false, false))
-                    return true;
-            if (ButtonPressed(SceneViewTools, false, false, true, false)) return true;
-            displayRect.x = position.x + 5;
-            displayRect.y += displayRect.height;
-            displayRect.width = position.width - 10;
-            displayRect.height = listHeight;
-            reorderableList.DoList(displayRect);
-            return false;
-        }
-
-        private bool ButtonPressed(string icon, bool reorderTransition, bool up, bool displayStateEditor,
-            bool removeTransition)
-        {
-            if (!Button(buttonRect, IconContent(icon))) return false;
-            if (displayStateEditor)
-            {
-                editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
-                return true;
-            }
-
-            if (reorderTransition)
-            {
-                editor.ReorderTransition(SerializedTransition, up);
-                return true;
-            }
-
-            if (removeTransition)
+            var rect = position;
+            var listHeight = reorderableList.GetHeight();
+            var singleLineHeight = EditorGUIUtility.singleLineHeight;
+            rect.height = singleLineHeight + 10 + listHeight;
+            GetRect(rect.width, rect.height);
+            position.y += rect.height + 5;
+            rect.x += 5;
+            rect.width -= 10;
+            rect.height -= listHeight;
+            DrawRect(rect, DarkGray);
+            rect.x += 3;
+            LabelField(rect, To);
+            rect.x += 20;
+            LabelField(rect, SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
+            var buttonRect = new Rect(rect.width - 25, rect.y + 5, 30, 18);
+            var transitions = editor.GetStateTransitions(SerializedTransition.FromState.objectReferenceValue);
+            var transitionsIndex = transitions.Count - 1;
+            var serializedTransitionIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
+            if (GUIButton(buttonRect, ToolbarMinus))
             {
                 editor.RemoveTransition(SerializedTransition);
                 return true;
             }
 
             buttonRect.x -= 35;
+            if (serializedTransitionIndex < transitionsIndex)
+            {
+                if (GUIButton(buttonRect, ScrollDown))
+                {
+                    editor.ReorderTransition(SerializedTransition, false);
+                    return true;
+                }
+
+                buttonRect.x -= 35;
+            }
+
+            if (serializedTransitionIndex > 0)
+            {
+                if (GUIButton(buttonRect, ScrollUp))
+                {
+                    editor.ReorderTransition(SerializedTransition, true);
+                    return true;
+                }
+
+                buttonRect.x -= 35;
+            }
+
+            if (GUIButton(buttonRect, SceneViewTools))
+            {
+                editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
+                return true;
+            }
+
+            rect.x = position.x + 5;
+            rect.y += rect.height;
+            rect.width = position.width - 10;
+            rect.height = listHeight;
+            reorderableList.DoList(rect);
             return false;
+        }
+
+        private static bool GUIButton(Rect pos, string icon)
+        {
+            return Button(pos, IconContent(icon));
         }
     }
 }

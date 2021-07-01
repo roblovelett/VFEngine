@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Editor.Data;
-using VFEngine.Tools.StateMachine.Editor.ScriptableObjects;
+using VFEngine.Tools.StateMachine.Editor.Data.ScriptableObjects;
 using UnityObject = UnityEngine.Object;
 
-// ReSharper disable RedundantLambdaParameterType
 // ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.Editor
 {
@@ -25,136 +23,130 @@ namespace VFEngine.Tools.StateMachine.Editor
 
     internal class AddTransition : IDisposable
     {
-        private bool toggle;
-        private float reorderableListHeight;
-        private Rect transitionRect;
+        private SerializedTransition SerializedTransition { get; }
         private readonly SerializedObject transition;
-        private readonly ReorderableList reorderableList;
-        private readonly SerializedTransition serializedTransition;
+        private readonly ReorderableList list;
         private readonly TransitionTableEditor editor;
-        private static float _singleLineHeight;
+        private bool toggle;
 
         internal AddTransition(TransitionTableEditor editorInternal)
         {
-            var serializedProperty = default(SerializedProperty);
             editor = editorInternal;
-            transition = new SerializedObject(ScriptableObject.CreateInstance<TransitionTableItemSO>());
-            serializedTransition = new SerializedTransition(transition.FindProperty(Item));
-            reorderableList = new ReorderableList(transition, serializedTransition.Conditions);
-            reorderableList.elementHeight *= 2.3f;
-            reorderableList.drawHeaderCallback += rect => Label(rect, ConditionsProperty);
-            reorderableList.onAddCallback += list =>
+            transition = new SerializedObject(ScriptableObject.CreateInstance<TransitionItemSO>());
+            SerializedTransition = new SerializedTransition(transition.FindProperty(Item));
+            list = new ReorderableList(transition, SerializedTransition.Conditions);
+            list.elementHeight *= 2.3f;
+            list.drawHeaderCallback += rect => Label(rect, ConditionsProperty);
+            list.onAddCallback += l =>
             {
-                var reorderableListItemsAmount = list.count;
-                list.serializedProperty.InsertArrayElementAtIndex(reorderableListItemsAmount);
-                serializedProperty = list.serializedProperty.GetArrayElementAtIndex(reorderableListItemsAmount);
-                serializedProperty.FindPropertyRelative(Condition).objectReferenceValue = null;
-                serializedProperty.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
-                serializedProperty.FindPropertyRelative(Operator).enumValueIndex = 0;
+                var count = l.count;
+                l.serializedProperty.InsertArrayElementAtIndex(count);
+                var prop = l.serializedProperty.GetArrayElementAtIndex(count);
+                prop.FindPropertyRelative(Condition).objectReferenceValue = null;
+                prop.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
+                prop.FindPropertyRelative(Operator).enumValueIndex = 0;
             };
-            reorderableList.drawElementCallback += (Rect rect, int index, bool isActive, bool isFocused) =>
+            list.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                serializedProperty = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
-                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, _singleLineHeight);
-                var transitionCondition = serializedProperty.FindPropertyRelative(Condition);
-                if (transitionCondition.objectReferenceValue != null)
+                var prop = list.serializedProperty.GetArrayElementAtIndex(index);
+                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, singleLineHeight);
+                var condition = prop.FindPropertyRelative(Condition);
+                if (condition.objectReferenceValue != null)
                 {
-                    var transitionConditionLabel = transitionCondition.objectReferenceValue.name;
+                    var label = condition.objectReferenceValue.name;
                     Label(rect, If);
-                    Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), transitionConditionLabel, boldLabel);
-                    PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), transitionCondition,
-                        none);
+                    Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), label, boldLabel);
+                    PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), condition, none);
                 }
                 else
                 {
-                    PropertyField(new Rect(rect.x, rect.y, 150, rect.height), transitionCondition, none);
+                    PropertyField(new Rect(rect.x, rect.y, 150, rect.height), condition, none);
                 }
 
                 LabelField(new Rect(rect.x + rect.width - 120, rect.y, 20, rect.height), Is);
                 PropertyField(new Rect(rect.x + rect.width - 60, rect.y, 60, rect.height),
-                    serializedProperty.FindPropertyRelative(ExpectedResult), none);
-                PropertyField(new Rect(rect.x + 20, rect.y + _singleLineHeight + 5, 60, rect.height),
-                    serializedProperty.FindPropertyRelative(Operator), none);
+                    prop.FindPropertyRelative(ExpectedResult), none);
+                PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
+                    prop.FindPropertyRelative(Operator), none);
             };
-            reorderableList.onChangedCallback += list =>
-                reorderableList.serializedProperty.serializedObject.ApplyModifiedProperties();
-            reorderableList.drawElementBackgroundCallback += (Rect rect, int index, bool isActive, bool isFocused) =>
+            list.onChangedCallback += _ => list.serializedProperty.serializedObject.ApplyModifiedProperties();
+            list.drawElementBackgroundCallback += (rect, index, isActive, isFocused) =>
             {
                 if (isFocused) DrawRect(rect, Focused);
                 DrawRect(rect, index % 2 != 0 ? ZebraDark : ZebraLight);
             };
         }
 
-        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
+        // ReSharper disable Unity.PerformanceAnalysis
         internal void Display(Rect position)
         {
             position.x += 8;
             position.width -= 16;
-            transitionRect = position;
-            reorderableListHeight = reorderableList.GetHeight();
-            _singleLineHeight = singleLineHeight;
+            var rect = position;
+            var listHeight = list.GetHeight();
+            var singleLineHeight = EditorGUIUtility.singleLineHeight;
             if (!toggle)
             {
-                position.height = _singleLineHeight;
+                position.height = singleLineHeight;
                 GetRect(position.width, position.height);
                 if (!Button(position, AddTransitionButton)) return;
                 toggle = true;
-                serializedTransition.ClearProperties();
+                SerializedTransition.ClearProperties();
                 return;
             }
 
-            position.height = reorderableListHeight + _singleLineHeight * 4;
+            position.height = listHeight + singleLineHeight * 4;
             DrawRect(position, LightGray);
             GetRect(position.width, position.height);
             position.y += 10;
             position.x += 20;
-            StatePropField(position, From, serializedTransition.FromState);
-            position.x = transitionRect.width / 2 + 20;
-            StatePropField(position, To, serializedTransition.ToState);
+            StatePropField(position, From, SerializedTransition.FromState);
+            position.x = rect.width / 2 + 20;
+            StatePropField(position, To, SerializedTransition.ToState);
             position.y += 30;
-            position.x = transitionRect.x + 5;
-            position.height = reorderableListHeight;
+            position.x = rect.x + 5;
+            position.height = listHeight;
             position.width -= 10;
-            reorderableList.DoList(position);
+            list.DoList(position);
             position.y += position.height + 5;
-            position.height = _singleLineHeight;
-            position.width = transitionRect.width / 2 - 20;
+            position.height = singleLineHeight;
+            position.width = rect.width / 2 - 20;
             if (Button(position, AddTransitionButton))
             {
-                if (serializedTransition.FromState.objectReferenceValue == null)
+                if (SerializedTransition.FromState.objectReferenceValue == null)
                 {
                     LogException(new ArgumentNullException(FromStateProperty));
                 }
-                else if (serializedTransition.ToState.objectReferenceValue == null)
+                else if (SerializedTransition.ToState.objectReferenceValue == null)
                 {
                     LogException(new ArgumentNullException(ToStateProperty));
                 }
-                else if (serializedTransition.FromState.objectReferenceValue ==
-                         serializedTransition.ToState.objectReferenceValue)
+                else if (SerializedTransition.FromState.objectReferenceValue ==
+                         SerializedTransition.ToState.objectReferenceValue)
                 {
                     LogException(new InvalidOperationException(SameStateError));
                 }
                 else
                 {
-                    editor.AddTransition(serializedTransition);
+                    editor.AddTransition(SerializedTransition);
                     toggle = false;
                 }
             }
 
-            position.x += transitionRect.width / 2;
+            position.x += rect.width / 2;
             if (Button(position, Cancel)) toggle = false;
         }
 
         private static void StatePropField(Rect pos, string label, SerializedProperty prop)
         {
-            pos.height = _singleLineHeight;
+            pos.height = singleLineHeight;
             LabelField(pos, label);
             pos.x += 40;
             pos.width /= 4;
             PropertyField(pos, prop, none);
         }
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             DestroyImmediate(transition.targetObject);
             transition.Dispose();

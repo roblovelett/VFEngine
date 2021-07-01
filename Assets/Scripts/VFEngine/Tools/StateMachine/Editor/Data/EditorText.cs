@@ -1,8 +1,10 @@
-﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
-using static System.Convert;
+﻿using System;
+using VFEngine.Tools.StateMachine.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachine.Editor.Data
 {
+    using static Convert;
+
     internal static class EditorText
     {
         // ReSharper disable once InconsistentNaming
@@ -36,7 +38,7 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         private static readonly string TransitionTableWindow = $"{Transition}{Table}Window";
         private static readonly string StatePath = $"/{State}";
         internal const string From = "From";
-        internal const string Item = "Item";
+        internal const string Item = "item";
         internal const string ActionsProperty = "actions";
         internal const string ExpectedResult = "ExpectedResult";
         internal const string Operator = "Operator";
@@ -56,6 +58,8 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal const string InitialPath = "Assets/Scripts/";
         internal const string NamespacePattern = @"^([\w+.]+)\.\w+\.cs$";
         internal const string NamespaceReplacement = "$1";
+        internal const string TransitionTableEditorItem = "Transition Table Editor";
+        internal const string TransitionTableEditorMenu = "Tools/State Machine/Transition Table Editor";
         internal static readonly char PathSeparator = ToChar("/");
         internal static readonly char NamespaceSeparator = ToChar(".");
         internal static readonly string TransitionsProperty = $"{TransitionLc}s";
@@ -69,7 +73,7 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static readonly string InvalidTransitionDeleted = $"Invalid {TransitionLc} deleted";
         internal static readonly string Actions = $"{Action}s";
         internal static readonly string UxmlPath = $"{DefaultPath}{TransitionTableWindow}.uxml";
-        internal static readonly string USSPath = $"{DefaultPath}{TransitionTableWindow}.uss";
+        internal static readonly string UssPath = $"{DefaultPath}{TransitionTableWindow}.uss";
         internal static readonly string AddTransitionButton = $"Add {Transition}";
         internal static readonly string ConditionsProperty = $"{Condition}s";
         internal static readonly string SameStateError = $"{FromStateProperty} and {ToStateProperty} are{TheLc}same.";

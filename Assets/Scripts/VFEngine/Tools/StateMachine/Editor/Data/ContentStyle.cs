@@ -21,7 +21,7 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static Color ZebraDark { get; private set; }
         internal static Color ZebraLight { get; private set; }
         internal static GUIStyle StateListStyle { get; private set; }
-        internal static GUIStyle WithPaddingAndMargins { get; private set; }
+        internal static GUIStyle WithPaddingAndMarginsStyle { get; private set; }
 
         [InitializeOnLoadMethod]
         internal static void Initialize()
@@ -36,7 +36,7 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
             _padding = new RectOffset(5, 5, 5, 5);
             _leftPadding = new RectOffset(10, 0, 0, 0);
             _margin = new RectOffset(8, 8, 8, 8);
-            WithPaddingAndMargins = new GUIStyle {padding = _padding, margin = _margin};
+            WithPaddingAndMarginsStyle = new GUIStyle {padding = _padding, margin = _margin};
             _guiStyleStateNormal = GetBuiltinSkin(Inspector).label.normal;
             _guiStyleStateNormal.textColor =
                 isProSkin ? new Color(.85f, .85f, .85f) : new Color(0.337f, 0.337f, 0.337f);

@@ -6,6 +6,8 @@ namespace VFEngine.Tools.StateMachine.Data
 
     internal static class StateMachineText
     {
+        internal const string TransitionTableMenuName = "Tools/State Machine/Transition Table";
+        internal const string NewTransitionTable = "New State Machine Transition Table";
         private const string StateChanged = " state changed";
         private const string TransitionTable = "TransitionTable";
         private const string NotFoundIn = " not found in ";

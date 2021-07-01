@@ -3,48 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Data;
+using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    using static StateConditionOperator;
+    using static Operator;
+    using static Result;
     using static StateMachineText;
 
-    [CreateAssetMenu(fileName = "New State Machine Transition Table", menuName = "Tools/State Machine/Transition Table")]
+    [CreateAssetMenu(fileName = NewTransitionTable, menuName = TransitionTableMenuName)]
     public class TransitionTableSO : ScriptableObject
     {
-        [SerializeField] private StateTransitionData[] transitions;
-        private int transitionConditionsAmount;
-        private int resultGroupsIndex;
-        private int conditionsIndex;
-        private int[] resultGroups;
-        private State state;
-        private State toState;
-        private StateMachine stateMachine;
-        private List<int> resultGroupsList;
-        private List<State> states;
-        private List<StateTransition> stateTransitions;
-        private Dictionary<ScriptableObject, object> createdInstances;
-        private StateConditionData[] conditions;
-        private IEnumerable<IGrouping<StateSO, StateTransitionData>> fromStates;
+        [SerializeField] private TransitionItem[] transitions;
 
-        internal void OnEnable()
+        internal State GetInitialState(StateMachine stateMachine)
         {
-            transitions = default(StateTransitionData[]);
-            states = new List<State>();
-            stateTransitions = new List<StateTransition>();
-            createdInstances = new Dictionary<ScriptableObject, object>();
-            fromStates = transitions!.GroupBy(transition => transition.FromState);
-            resultGroupsList = new List<int>();
-        }
-
-        internal State GetInitialState(StateMachine stateMachineInternal)
-        {
-            stateMachine = stateMachineInternal;
+            var resultGroupsList = new List<int>();
+            var states = new List<State>();
+            var stateTransitions = new List<StateTransition>();
+            var createdInstances = new Dictionary<ScriptableObject, object>();
+            var fromStates = transitions.GroupBy(t => t.FromState);
             foreach (var fromState in fromStates)
             {
                 if (fromState.Key == null)
                     throw new ArgumentNullException(nameof(fromState.Key), TransitionTableName(name));
-                state = fromState.Key.Get(stateMachine, createdInstances);
+                var state = fromState.Key.Get(stateMachine, createdInstances);
                 states.Add(state);
                 stateTransitions.Clear();
                 foreach (var transition in fromState)
@@ -52,16 +35,16 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
                     if (transition.ToState == null)
                         throw new ArgumentNullException(nameof(transition.ToState),
                             TransitionError(name, fromState.Key.name));
-                    toState = transition.ToState.Get(stateMachine, createdInstances);
-                    transitionConditionsAmount = transition.Conditions.Length;
-                    conditions = new StateConditionData[transitionConditionsAmount];
+                    var toState = transition.ToState.Get(stateMachine, createdInstances);
+                    var transitionConditionsAmount = transition.Conditions.Length;
+                    var conditions = new StateConditionData[transitionConditionsAmount];
+                    int conditionsIndex;
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
-                        conditions[conditionsIndex] = transition.Conditions[conditionsIndex].Condition
-                            .Get(stateMachine, transition.Conditions[conditionsIndex].ExpectedResult,
-                                createdInstances);
+                        conditions[conditionsIndex] = transition.Conditions[conditionsIndex].Condition.Get(stateMachine,
+                            transition.Conditions[conditionsIndex].ExpectedResult == True, createdInstances);
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
                     {
-                        resultGroupsIndex = resultGroupsList.Count;
+                        var resultGroupsIndex = resultGroupsList.Count;
                         resultGroupsList.Add(1);
                         while (conditionsIndex < transitionConditionsAmount - 1 &&
                                transition.Conditions[conditionsIndex].Operator == And)
@@ -71,7 +54,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
                         }
                     }
 
-                    resultGroups = resultGroupsList.ToArray();
+                    var resultGroups = resultGroupsList.ToArray();
                     stateTransitions.Add(new StateTransition(toState, conditions, resultGroups));
                 }
 

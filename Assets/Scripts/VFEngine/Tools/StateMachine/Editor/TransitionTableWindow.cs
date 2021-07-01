@@ -12,46 +12,33 @@ using UnityObject = UnityEngine.Object;
 namespace VFEngine.Tools.StateMachine.Editor
 {
     using static PlayModeStateChange;
-    using static SelectionType;
-    using static EditorText;
     using static Array;
     using static AssetDatabase;
     using static EditorUnity;
     using static EditorApplication;
     using static EditorGUIUtility;
+    using static EditorText;
 
     internal class TransitionTableWindow : EditorWindow
     {
-        private int assetIndex;
-        private int targetIndex;
         private bool doRefresh;
         private string labelClass;
-        private string[] guids;
-        private object[] enumerable;
-        private Label addedLabel;
-        private ListView listView;
-        private StyleSheet styleSheet;
         private EditorUnity transitionTableEditor;
-        private VisualTreeAsset visualTree;
-        private IMGUIContainer editor;
-        private TransitionTableSO table;
-        private UnityObject[] objectAssets;
-        private TransitionTableSO[] assets;
         private static TransitionTableWindow _window;
 
-        [MenuItem("Transition Table Editor", menuItem = "Tools/State Machine/Transition Table Editor")]
+        [MenuItem(TransitionTableEditorItem, menuItem = TransitionTableEditorMenu)]
         internal static void Display()
         {
-            if (_window == null) _window = GetWindow<TransitionTableWindow>(TransitionTableWindowLabel);
+            if (_window == null) _window = GetWindow<TransitionTableWindow>(TransitionTableEditorItem);
             _window.Show();
         }
 
         private void OnEnable()
         {
-            visualTree = LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
-            styleSheet = LoadAssetAtPath<StyleSheet>(USSPath);
-            rootVisualElement.Add(visualTree.CloneTree());
+            var visualTree = LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
+            var styleSheet = LoadAssetAtPath<StyleSheet>(UssPath);
             labelClass = LabelClass(isProSkin);
+            rootVisualElement.Add(visualTree.CloneTree());
             rootVisualElement.Query<Label>().Build().ForEach(label => label.AddToClassList(labelClass));
             rootVisualElement.styleSheets.Add(styleSheet);
             minSize = new Vector2(480, 360);
@@ -75,47 +62,50 @@ namespace VFEngine.Tools.StateMachine.Editor
 
         private void OnLostFocus()
         {
-            listView = rootVisualElement.Q<ListView>(className: TableList);
+            var listView = TableListView();
             listView.onSelectionChange -= OnListSelectionChange;
+        }
+
+        private ListView TableListView()
+        {
+            return rootVisualElement.Q<ListView>(className: TableList);
         }
 
         private void Update()
         {
             if (!doRefresh) return;
-            guids = FindAssets(GuidFilter);
-            assets = new TransitionTableSO[guids.Length];
-            for (assetIndex = 0; assetIndex < guids.Length; assetIndex++)
-                assets[assetIndex] = LoadAssetAtPath<TransitionTableSO>(GUIDToAssetPath(guids[assetIndex]));
-            listView = rootVisualElement.Q<ListView>(className: TableList);
+            var guids = FindAssets(GuidFilter);
+            var transitionTables = new TransitionTableSO[guids.Length];
+            for (var index = 0; index < guids.Length; index++)
+                transitionTables[index] = LoadAssetAtPath<TransitionTableSO>(GUIDToAssetPath(guids[index]));
+            var assets = transitionTables.ToArray<UnityObject>();
+            var listView = TableListView();
             listView.makeItem = null;
             listView.bindItem = null;
             listView.itemsSource = assets;
             listView.itemHeight = 16;
-            labelClass = LabelClass(isProSkin);
             listView.makeItem = () =>
             {
-                addedLabel = new Label();
-                addedLabel.AddToClassList(labelClass);
-                return addedLabel;
+                var label = new Label();
+                label.AddToClassList(labelClass);
+                return label;
             };
-            listView.bindItem = (element, i) => ((Label) element).text = assets[i].name;
-            listView.selectionType = Single;
+            listView.bindItem = (element, assetsIndex) => ((Label) element).text = assets[assetsIndex].name;
+            listView.selectionType = SelectionType.Single;
             listView.onSelectionChange -= OnListSelectionChange;
             listView.onSelectionChange += OnListSelectionChange;
             if (!transitionTableEditor || !transitionTableEditor.target) return;
-            objectAssets = assets.ToArray<UnityObject>();
-            listView.selectedIndex = IndexOf(objectAssets, transitionTableEditor.target);
+            listView.selectedIndex = IndexOf(assets, transitionTableEditor.target);
             doRefresh = false;
         }
 
         private void OnListSelectionChange(IEnumerable<object> list)
         {
-            editor = rootVisualElement.Q<IMGUIContainer>(className: TableEditor);
+            var enumeratedList = list.ToList();
+            var table = enumeratedList[0] as TransitionTableSO;
+            var editor = rootVisualElement.Q<IMGUIContainer>(className: TableEditor);
             editor.onGUIHandler = null;
-            enumerable = list as object[] ?? list.ToArray();
-            if (!enumerable.Any()) return;
-            table = enumerable[0] as TransitionTableSO;
-            if (table == null) return;
+            if (enumeratedList.Count == 0 || table == null) return;
             if (transitionTableEditor == null)
                 transitionTableEditor = CreateEditor(table, typeof(TransitionTableEditor));
             else if (transitionTableEditor.target != table)
@@ -128,12 +118,12 @@ namespace VFEngine.Tools.StateMachine.Editor
                     return;
                 }
 
-                listView = rootVisualElement.Q<ListView>(className: TableList);
+                var listView = TableListView();
                 if (listView.selectedItem as UnityObject != transitionTableEditor.target)
                 {
-                    targetIndex = listView.itemsSource.IndexOf(transitionTableEditor.target);
-                    listView.selectedIndex = targetIndex;
-                    if (targetIndex < 0)
+                    var itemIndex = listView.itemsSource.IndexOf(transitionTableEditor.target);
+                    listView.selectedIndex = itemIndex;
+                    if (itemIndex < 0)
                     {
                         editor.onGUIHandler = null;
                         return;
