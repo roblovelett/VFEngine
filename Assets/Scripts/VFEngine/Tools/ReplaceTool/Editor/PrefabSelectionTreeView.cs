@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -28,54 +29,17 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
     internal class PrefabSelectionTreeView : TreeView
     {
-        private static readonly Texture2D OnIcon = IconContent(Text.OnIcon).image as Texture2D;
-        private static readonly Texture2D VariantOnIcon = IconContent(Text.VariantOnIcon).image as Texture2D;
-        private static readonly Texture2D FolderIcon = IconContent(Text.FolderIcon).image as Texture2D;
-        private static readonly Texture2D FolderOnIcon = IconContent(Text.FolderOnIcon).image as Texture2D;
-        private static int _prefabId;
+        private int selectedId;
         private static GUIStyle _whiteLabel;
         private readonly GUIContent itemContent = new GUIContent();
         private readonly GameObjectPreview itemPreview = new GameObjectPreview();
         private readonly HashSet<int> visibleItems = new HashSet<int>();
         private readonly HashSet<string> paths = new HashSet<string>();
         private readonly List<TreeViewItem> rows = new List<TreeViewItem>();
-        internal readonly Dictionary<int, RenderTexture> PreviewCache = new Dictionary<int, RenderTexture>();
-        private int pathSplitItem;
-        private string prefabGuid;
-        private IReadOnlyList<string> pathSplits;
-        private IList<int> selectedIds;
-        private Rect rowRect;
-        private Rect labelRect;
-        private RowGUIArgs args;
-        private RenderTexture previewTexture;
-        private RenderTexture previousTexture;
-        private UnityGameObject prefab;
-        private UnityGameObject addedPrefab;
-        private UnityGameObject clickedPrefab;
-        private int selectedId;
-        private PrefabAssetType type;
-        private Rect previewRect;
-        private Rect prefabIconRect;
-        private static KeyCode Key => Event.keyCode;
-        private static Event Event => current;
-        private static TreeViewItem Root => new TreeViewItem(0, -1);
-        private int PrefabId => addedPrefab.GetInstanceID();
-        private Texture2D PrefabOnIcon => type == Regular ? OnIcon : VariantOnIcon;
-        private bool ItemSelected => IsSelected(Item.id);
-        private bool IsFocused => HasFocus() && ItemSelected;
-        private bool IsPrefab => IsPrefabAsset(Item.id, out prefab);
-        private float ContentIndent => GetContentIndent(Item);
-        private string Path => GUIDToAssetPath(prefabGuid);
-        private string PathSplit => pathSplits[pathSplitItem];
-        private string[] RootPathSplits => Path.Split(Text.PathSeparator);
-        private Rect IconRect => new Rect(rowRect) {width = 20};
-        private UnityGameObject Asset => LoadAssetAtPath<UnityGameObject>(Path);
-        private RenderTexture CopiedTexture => new RenderTexture(itemPreview.OutputTexture);
-        private GUIStyle LabelStyle => IsFocused ? _whiteLabel : label;
-        private GUIContent PrefabContent => new GUIContent(ObjectContent(addedPrefab, addedPrefab.GetType()));
-        private TreeViewItem Item => args.item;
-        internal Action<UnityGameObject> SelectEntry;
+        private static readonly Texture2D FolderIcon = IconContent(Text.FolderIcon).image as Texture2D;
         internal int RowsCount => rows.Count;
+        internal Action<UnityGameObject> SelectEntry;
+        internal readonly Dictionary<int, RenderTexture> PreviewCache = new Dictionary<int, RenderTexture>();
 
         #region constructor method
 
@@ -106,8 +70,7 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
         private static bool IsPrefabAsset(int id, out UnityGameObject prefab)
         {
-            _prefabId = id;
-            if (InstanceIDToObject(_prefabId) is UnityGameObject gameObject)
+            if (InstanceIDToObject(id) is UnityGameObject gameObject)
             {
                 prefab = gameObject;
                 return true;
@@ -117,22 +80,22 @@ namespace VFEngine.Tools.ReplaceTool.Editor
             return false;
         }
 
-        protected override void DoubleClickedItem(int itemId)
+        protected override void DoubleClickedItem(int id)
         {
-            if (IsPrefabAsset(itemId, out clickedPrefab)) SelectEntry(clickedPrefab);
-            else SetExpanded(itemId, !IsExpanded(itemId));
+            if (IsPrefabAsset(id, out var clickedPrefab)) SelectEntry(clickedPrefab);
+            else SetExpanded(id, !IsExpanded(id));
         }
 
         protected override void KeyEvent()
         {
-            if (Key != KeypadEnter && Key != Return) return;
-            selectedId = selectedIds.Count > 0 ? selectedIds[0] : new int();
+            var key = current.keyCode;
+            if (key != KeypadEnter && key != Return) return;
             DoubleClickedItem(selectedId);
         }
 
         protected override void SelectionChanged(IList<int> changedSelectedIds)
         {
-            selectedIds = changedSelectedIds;
+            if (changedSelectedIds.Count > 0) selectedId = changedSelectedIds[0];
         }
 
         protected override TreeViewItem BuildRoot()
@@ -141,29 +104,33 @@ namespace VFEngine.Tools.ReplaceTool.Editor
             paths.Clear();
             foreach (var guid in FindAssets(Text.FilterByPrefab))
             {
-                prefabGuid = guid;
-                if (RootPathSplits[0] != Text.PrefabAssets) break;
-                pathSplits = RootPathSplits;
-                for (pathSplitItem = 1; pathSplitItem < pathSplits.Count - 1; pathSplitItem++)
+                var path = GUIDToAssetPath(guid);
+                var rootPathSplits = path.Split(Text.PathSeparator);
+                if (rootPathSplits[0] != Text.PrefabAssets) break;
+                for (var pathSplitItem = 1; pathSplitItem < ((ICollection) rootPathSplits).Count - 1; pathSplitItem++)
                 {
-                    if (paths.Contains(PathSplit)) continue;
-                    rows.Add(new TreeViewItem(PathSplit.GetHashCode(), pathSplitItem - 1, Text._ + PathSplit)
+                    var pathSplit = rootPathSplits[pathSplitItem];
+                    if (paths.Contains(pathSplit)) continue;
+                    rows.Add(new TreeViewItem(pathSplit.GetHashCode(), pathSplitItem - 1, Text._ + pathSplit)
                     {
                         icon = FolderIcon
                     });
-                    paths.Add(PathSplit);
+                    paths.Add(pathSplit);
                 }
 
-                addedPrefab = Asset;
-                if (CanRender(Asset)) visibleItems.Add(PrefabId);
-                rows.Add(new TreeViewItem(PrefabId, RootPathSplits.Length - 2, PrefabContent.text)
+                var asset = LoadAssetAtPath<UnityGameObject>(path);
+                var prefabId = asset.GetInstanceID();
+                if (CanRender(asset)) visibleItems.Add(prefabId);
+                var prefabContent = new GUIContent(ObjectContent(asset, asset.GetType()));
+                rows.Add(new TreeViewItem(prefabId, rootPathSplits.Length - 2, prefabContent.text)
                 {
-                    icon = PrefabContent.image as Texture2D
+                    icon = prefabContent.image as Texture2D
                 });
             }
 
-            SetupParentsAndChildrenFromDepths(Root, rows);
-            return Root;
+            var root = new TreeViewItem(0, -1);
+            SetupParentsAndChildrenFromDepths(root, rows);
+            return root;
         }
 
         protected override float GetCustomRowHeight(int row, TreeViewItem viewItem)
@@ -180,61 +147,73 @@ namespace VFEngine.Tools.ReplaceTool.Editor
 
         protected override void RowGUI(RowGUIArgs rowGUIArgs)
         {
-            args = rowGUIArgs;
-            rowRect = args.rowRect;
-            if (!IsPrefab)
+            var item = rowGUIArgs.item;
+            var rowRect = rowGUIArgs.rowRect;
+            var isPrefab = IsPrefabAsset(item.id, out var prefab);
+            if (!isPrefab)
             {
                 if (hasSearch) return;
-                if (rowRect.Contains(Event.mousePosition) && Event.type == MouseUp)
+                var @event = current;
+                if (rowRect.Contains(@event.mousePosition) && @event.type == MouseUp)
                 {
-                    SetSelection(new List<int> {Item.id});
+                    SetSelection(new List<int> {item.id});
                     SetFocus();
                 }
             }
 
+            var itemSelected = IsSelected(item.id);
+            var isFocused = HasFocus() && itemSelected;
+            var labelStyle = isFocused ? _whiteLabel : label;
+            var contentIndent = GetContentIndent(item);
             customFoldoutYOffset = 2;
-            itemContent.text = Item.displayName;
-            rowRect.x += ContentIndent;
-            rowRect.width -= ContentIndent;
-            if (IsPrefab)
+            itemContent.text = item.displayName;
+            rowRect.x += contentIndent;
+            rowRect.width -= contentIndent;
+            if (isPrefab)
             {
-                labelRect = new Rect(rowRect);
-                if (IsVisible(Item.id))
+                var labelRect = new Rect(rowRect);
+                var variantOnIcon = IconContent(Text.VariantOnIcon).image as Texture2D;
+                var onIcon = IconContent(Text.OnIcon).image as Texture2D;
+                var type = GetPrefabAssetType(prefab);
+                var prefabOnIcon = type == Regular ? onIcon : variantOnIcon;
+                if (IsVisible(item.id))
                 {
-                    if (!PreviewCache.TryGetValue(Item.id, out previewTexture))
+                    if (!PreviewCache.TryGetValue(item.id, out var previewTexture))
                     {
                         CreatePreview(prefab);
-                        previewRect = new Rect(rowRect) {width = 32, height = 32};
+                        var previewRect = new Rect(rowRect) {width = 32, height = 32};
                         itemPreview.RenderInteractivePreview(previewRect);
                         if (itemPreview.OutputTexture)
                         {
-                            previousTexture = active;
-                            Blit(itemPreview.OutputTexture, CopiedTexture);
+                            var previousTexture = active;
+                            var copiedTexture = new RenderTexture(itemPreview.OutputTexture);
+                            Blit(itemPreview.OutputTexture, copiedTexture);
                             active = previousTexture;
-                            PreviewCache.Add(Item.id, CopiedTexture);
+                            PreviewCache.Add(item.id, copiedTexture);
                         }
                     }
 
+                    var iconRect = new Rect(rowRect) {width = 20};
                     if (!previewTexture) Repaint();
-                    else DrawTexture(IconRect, previewTexture, ScaleAndCrop);
-                    labelRect.x += IconRect.width;
-                    labelRect.width -= IconRect.width + 24;
-                    Label(labelRect, args.label, LabelStyle);
-                    if (!ItemSelected) return;
-                    type = GetPrefabAssetType(prefab);
-                    prefabIconRect = new Rect(IconRect) {x = rowRect.xMax - 24};
-                    Label(prefabIconRect, IsFocused ? PrefabOnIcon : Item.icon);
+                    else DrawTexture(iconRect, previewTexture, ScaleAndCrop);
+                    labelRect.x += iconRect.width;
+                    labelRect.width -= iconRect.width + 24;
+                    Label(labelRect, rowGUIArgs.label, labelStyle);
+                    if (!itemSelected) return;
+                    var prefabIconRect = new Rect(iconRect) {x = rowRect.xMax - 24};
+                    Label(prefabIconRect, isFocused ? prefabOnIcon : item.icon);
                 }
                 else
                 {
-                    itemContent.image = ItemSelected ? PrefabOnIcon : Item.icon;
-                    Label(rowRect, itemContent, LabelStyle);
+                    itemContent.image = itemSelected ? prefabOnIcon : item.icon;
+                    Label(rowRect, itemContent, labelStyle);
                 }
             }
             else
             {
-                itemContent.image = IsFocused ? FolderOnIcon : FolderIcon;
-                Label(rowRect, itemContent, LabelStyle);
+                var folderOnIcon = IconContent(Text.FolderOnIcon).image as Texture2D;
+                itemContent.image = isFocused ? folderOnIcon : FolderIcon;
+                Label(rowRect, itemContent, labelStyle);
             }
         }
     }
