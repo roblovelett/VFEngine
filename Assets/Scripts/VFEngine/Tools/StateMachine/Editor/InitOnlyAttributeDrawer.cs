@@ -19,8 +19,6 @@ namespace VFEngine.Tools.StateMachine.Editor
             padding = new RectOffset(5, 5, 5, 5)
         };
 
-        private float height;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (isPlaying)
@@ -36,7 +34,7 @@ namespace VFEngine.Tools.StateMachine.Editor
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            height = EditorGUI.GetPropertyHeight(property, label);
+            var height = EditorGUI.GetPropertyHeight(property, label);
             if (isPlaying)
                 height += Style.CalcHeight(new GUIContent(InitOnlyAttributeMessage), currentViewWidth) +
                           standardVerticalSpacing * 4;

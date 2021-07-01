@@ -22,14 +22,14 @@ namespace VFEngine.Tools.StateMachine.Editor.Data.Templates
 
     internal class ScriptTemplates
     {
-        [MenuItem("Tools/State Machine/Action Script", false, 0)]
+        [MenuItem(ActionScript, false, 0)]
         private static void Action()
         {
             StartNameEditingIfProjectWindowExists(0, CreateInstance<StateMachineScript>(), ActionPath,
                 IconContent(ScriptIconContent).image as Texture2D, ActionTemplatePath);
         }
 
-        [MenuItem("Tools/State Machine/Condition Script", false, 0)]
+        [MenuItem(ConditionScript, false, 0)]
         private static void Condition()
         {
             StartNameEditingIfProjectWindowExists(0, CreateInstance<StateMachineScript>(), ConditionPath,
@@ -38,39 +38,28 @@ namespace VFEngine.Tools.StateMachine.Editor.Data.Templates
 
         private class StateMachineScript : EndNameEditAction
         {
-            private string text;
-            private string fileName;
-            private string newName;
-            private string fileNameWithoutExtension;
-            private string runtimeName;
-            private int index;
-            private string fullPath;
-            private string namespacePath;
-            private string @namespace;
-            private UTF8Encoding encoding;
-
             public override void Action(int instanceId, string pathName, string resourceFile)
             {
-                text = ReadAllText(resourceFile);
-                fileName = GetFileName(pathName);
-                newName = fileName.Replace(Nbsp, Empty);
+                var text = ReadAllText(resourceFile);
+                var fileName = GetFileName(pathName);
+                var newName = fileName.Replace(Nbsp, Empty);
                 if (!newName.Contains(SOProperty)) newName = newName.Insert(fileName.Length - 3, SOProperty);
                 pathName = pathName.Replace(fileName, newName);
                 fileName = newName;
-                fileNameWithoutExtension = fileName.Substring(0, fileName.Length - 3);
+                var fileNameWithoutExtension = fileName.Substring(0, fileName.Length - 3);
                 text = text.Replace(ScriptName, fileNameWithoutExtension);
-                runtimeName = fileNameWithoutExtension.Replace(SOProperty, Empty);
+                var runtimeName = fileNameWithoutExtension.Replace(SOProperty, Empty);
                 text = text.Replace(RuntimeName, runtimeName);
-                for (index = runtimeName.Length - 1; index > 0; index--)
+                for (var index = runtimeName.Length - 1; index > 0; index--)
                     if (IsUpper(runtimeName[index]) && IsLower(runtimeName[index - 1]))
                         runtimeName = runtimeName.Insert(index, Nbsp);
                 text = text.Replace(RuntimeNameWithSpaces, runtimeName);
-                fullPath = GetFullPath(pathName);
-                namespacePath = pathName.Replace(InitialPath, Empty);
-                @namespace = Regex.Replace(namespacePath.Replace(EditorText.PathSeparator, NamespaceSeparator),
+                var fullPath = GetFullPath(pathName);
+                var namespacePath = pathName.Replace(InitialPath, Empty);
+                var @namespace = Regex.Replace(namespacePath.Replace(EditorText.PathSeparator, NamespaceSeparator),
                     NamespacePattern, NamespaceReplacement);
                 text = text.Replace(Namespace, @namespace);
-                encoding = new UTF8Encoding(true);
+                var encoding = new UTF8Encoding(true);
                 WriteAllText(fullPath, text, encoding);
                 ImportAsset(pathName);
                 ShowCreatedAsset(LoadAssetAtPath(pathName, typeof(UnityObject)));

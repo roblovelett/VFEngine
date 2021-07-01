@@ -19,24 +19,20 @@ namespace VFEngine.Tools.StateMachine.Editor
     [CustomEditor(typeof(StateSO))]
     internal class StateEditor : EditorUnity
     {
-        private int reorderableListItemsAmount;
-        private string reorderableListLabel;
-        private Rect reorderableListRect;
         private ReorderableList reorderableList;
-        private SerializedProperty actions;
-        private SerializedProperty reorderableListSerializedProperty;
 
         // ReSharper disable UnusedParameter.Local
         private void OnEnable()
         {
             undoRedoPerformed += DoUndo;
-            actions = serializedObject.FindProperty(ActionsProperty);
+            SerializedProperty reorderableListSerializedProperty;
+            var actions = serializedObject.FindProperty(ActionsProperty);
             reorderableList = new ReorderableList(serializedObject, actions, true, true, true, true);
             reorderableList.elementHeight *= 1.5f;
             reorderableList.drawHeaderCallback += rect => Label(rect, Actions);
             reorderableList.onAddCallback += list =>
             {
-                reorderableListItemsAmount = list.count;
+                var reorderableListItemsAmount = list.count;
                 list.serializedProperty.InsertArrayElementAtIndex(reorderableListItemsAmount);
                 reorderableListSerializedProperty =
                     list.serializedProperty.GetArrayElementAtIndex(reorderableListItemsAmount);
@@ -44,14 +40,14 @@ namespace VFEngine.Tools.StateMachine.Editor
             };
             reorderableList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                reorderableListRect = rect;
+                var reorderableListRect = rect;
                 reorderableListRect.height = singleLineHeight;
                 reorderableListRect.y += 5;
                 reorderableListRect.x += 5;
                 reorderableListSerializedProperty = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
                 if (reorderableListSerializedProperty.objectReferenceValue != null)
                 {
-                    reorderableListLabel = reorderableListSerializedProperty.objectReferenceValue.name;
+                    var reorderableListLabel = reorderableListSerializedProperty.objectReferenceValue.name;
                     reorderableListRect.width = 35;
                     PropertyField(reorderableListRect, reorderableListSerializedProperty, none);
                     reorderableListRect.width = rect.width - 50;

@@ -23,9 +23,6 @@ namespace VFEngine.Tools.StateMachine
         private Dictionary<Type, Component> cachedComponents;
         private CancellationToken ct;
         private CancellationTokenSource cts;
-        private Component cachedComponent;
-        private State transitionState;
-        private Type type;
 #if UNITY_EDITOR
         [Space] [SerializeField] internal StateMachineDebug debug;
 #endif
@@ -70,8 +67,8 @@ namespace VFEngine.Tools.StateMachine
 
         private new bool TryGetComponent<T>(out T component) where T : Component
         {
-            type = typeof(T);
-            if (!cachedComponents.TryGetValue(type, out cachedComponent))
+            var type = typeof(T);
+            if (!cachedComponents.TryGetValue(type, out var cachedComponent))
             {
                 if (base.TryGetComponent(out component)) cachedComponents.Add(type, component);
                 return component != null;
@@ -93,7 +90,7 @@ namespace VFEngine.Tools.StateMachine
             {
                 while (!cts.IsCancellationRequested || !ct.IsCancellationRequested)
                 {
-                    if (CurrentState.TryGetTransition(out transitionState))
+                    if (CurrentState.TryGetTransition(out var transitionState))
                     {
                         (CurrentState as IState).Exit();
                         CurrentState = transitionState;

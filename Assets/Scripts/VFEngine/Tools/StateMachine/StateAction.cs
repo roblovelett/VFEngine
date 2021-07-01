@@ -1,5 +1,6 @@
 ﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
 
+// ReSharper disable UnusedParameter.Global
 // ReSharper disable EmptyConstructor
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace VFEngine.Tools.StateMachine
@@ -8,7 +9,9 @@ namespace VFEngine.Tools.StateMachine
     {
         protected internal StateActionSO OriginSO { get; internal set; }
 
-        protected StateAction(){}
+        protected StateAction()
+        {
+        }
 
         public virtual void Awake(StateMachine stateMachine)
         {

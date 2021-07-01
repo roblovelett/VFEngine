@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Data;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {

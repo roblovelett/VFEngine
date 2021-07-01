@@ -22,7 +22,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
             var states = new List<State>();
             var stateTransitions = new List<StateTransition>();
             var createdInstances = new Dictionary<ScriptableObject, object>();
-            var fromStates = transitions.GroupBy(t => t.FromState);
+            var fromStates = transitions.GroupBy(t => t.fromState);
             foreach (var fromState in fromStates)
             {
                 if (fromState.Key == null)
@@ -32,22 +32,22 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
                 stateTransitions.Clear();
                 foreach (var transition in fromState)
                 {
-                    if (transition.ToState == null)
-                        throw new ArgumentNullException(nameof(transition.ToState),
+                    if (transition.toState == null)
+                        throw new ArgumentNullException(nameof(transition.toState),
                             TransitionError(name, fromState.Key.name));
-                    var toState = transition.ToState.Get(stateMachine, createdInstances);
-                    var transitionConditionsAmount = transition.Conditions.Length;
+                    var toState = transition.toState.Get(stateMachine, createdInstances);
+                    var transitionConditionsAmount = transition.conditions.Length;
                     var conditions = new StateConditionData[transitionConditionsAmount];
                     int conditionsIndex;
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
-                        conditions[conditionsIndex] = transition.Conditions[conditionsIndex].Condition.Get(stateMachine,
-                            transition.Conditions[conditionsIndex].ExpectedResult == True, createdInstances);
+                        conditions[conditionsIndex] = transition.conditions[conditionsIndex].condition.Get(stateMachine,
+                            transition.conditions[conditionsIndex].expectedResult == True, createdInstances);
                     for (conditionsIndex = 0; conditionsIndex < transitionConditionsAmount; conditionsIndex++)
                     {
                         var resultGroupsIndex = resultGroupsList.Count;
                         resultGroupsList.Add(1);
                         while (conditionsIndex < transitionConditionsAmount - 1 &&
-                               transition.Conditions[conditionsIndex].Operator == And)
+                               transition.conditions[conditionsIndex].@operator == And)
                         {
                             conditionsIndex++;
                             resultGroupsList[resultGroupsIndex]++;

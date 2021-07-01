@@ -4,10 +4,6 @@ namespace VFEngine.Tools.StateMachine
 {
     internal class StateTransition : IState
     {
-        private int resultGroupsIndex;
-        private int resultGroupIndex;
-        private int conditionsIndex;
-        private bool hasTargetState;
         private readonly State targetState;
         private readonly StateConditionData[] conditions;
         private readonly int[] resultGroups;
@@ -28,18 +24,16 @@ namespace VFEngine.Tools.StateMachine
 #if UNITY_EDITOR
             targetState.StateMachine.debug.TransitionEvaluationBegin(targetState.OriginSO.name);
 #endif
-            for (resultGroupsIndex = 0, conditionsIndex = 0;
-                resultGroupsIndex < resultGroups.Length && conditionsIndex < conditions.Length;
+            for (int resultIndex = 0, conditionsIndex = 0;
+                resultIndex < resultGroups.Length && conditionsIndex < conditions.Length;
                 conditionsIndex++)
-            for (resultGroupIndex = 0;
-                resultGroupIndex < resultGroups[resultGroupsIndex];
-                resultGroupIndex++, conditionsIndex++)
-                results[resultGroupsIndex] = resultGroupIndex == 0
+            for (var resultsIndex = 0; resultsIndex < resultGroups[resultIndex]; resultsIndex++, conditionsIndex++)
+                results[resultIndex] = resultsIndex == 0
                     ? conditions[conditionsIndex].IsMet()
-                    : results[resultGroupsIndex] && conditions[conditionsIndex].IsMet();
-            hasTargetState = false;
-            for (resultGroupsIndex = 0; resultGroupsIndex < resultGroups.Length && !hasTargetState; resultGroupsIndex++)
-                hasTargetState = hasTargetState || results[resultGroupsIndex];
+                    : results[resultIndex] && conditions[conditionsIndex].IsMet();
+            var hasTargetState = false;
+            for (var resultsIndex = 0; resultsIndex < resultGroups.Length && !hasTargetState; resultsIndex++)
+                hasTargetState = results[resultsIndex];
 #if UNITY_EDITOR
             targetState.StateMachine.debug.TransitionEvaluationEnd(hasTargetState);
 #endif

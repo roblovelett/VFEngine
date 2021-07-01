@@ -1,6 +1,6 @@
 ﻿namespace VFEngine.Tools.StateMachine.ScriptableObjects.Data
 {
-    public enum Result
+    internal enum Result
     {
         True,
         False

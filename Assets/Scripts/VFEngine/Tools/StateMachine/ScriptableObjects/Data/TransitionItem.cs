@@ -1,12 +1,13 @@
 ﻿using System;
+using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects.Data
 {
     [Serializable]
     public class TransitionItem
     {
-        public StateSO FromState;
-        public StateSO ToState;
-        public ConditionUsage[] Conditions;
+        [SerializeField] internal StateSO fromState;
+        [SerializeField] internal StateSO toState;
+        [SerializeField] internal ConditionUsage[] conditions;
     }
 }

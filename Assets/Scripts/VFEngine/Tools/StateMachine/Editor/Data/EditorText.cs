@@ -77,7 +77,6 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static readonly string AddTransitionButton = $"Add {Transition}";
         internal static readonly string ConditionsProperty = $"{Condition}s";
         internal static readonly string SameStateError = $"{FromStateProperty} and {ToStateProperty} are{TheLc}same.";
-        internal static readonly string TransitionTableWindowLabel = $"{Transition} Table Editor";
         internal static readonly string TableList = $"{TableField}list";
         internal static readonly string TableEditor = $"{TableField}editor";
         internal static readonly string GuidFilter = $"t:{nameof(TransitionTableSO)}";
@@ -86,6 +85,8 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static readonly string ScriptIconContent = $"{Cs} Script Icon";
         internal static readonly string ActionTemplatePath = $"{ScriptTemplatesPath}{StatePath}{Action}{Txt}";
         internal static readonly string ConditionTemplatePath = $"{ScriptTemplatesPath}{StatePath}{Condition}{Txt}";
+        internal const string ActionScript = "Tools/State Machine/Action Script";
+        internal const string ConditionScript = "Tools/State Machine/Condition Script";
 
         internal static readonly string InitOnlyAttributeMessage =
             $"Changes{ToLc}this parameter during Play mode won't be reflected{OnLc}existing {StateMachine}s";

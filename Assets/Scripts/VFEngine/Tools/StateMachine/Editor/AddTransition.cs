@@ -20,6 +20,7 @@ namespace VFEngine.Tools.StateMachine.Editor
     using static UnityObject;
     using static ContentStyle;
     using static EditorText;
+    using static ScriptableObject;
 
     internal class AddTransition : IDisposable
     {
@@ -32,7 +33,7 @@ namespace VFEngine.Tools.StateMachine.Editor
         internal AddTransition(TransitionTableEditor editorInternal)
         {
             editor = editorInternal;
-            transition = new SerializedObject(ScriptableObject.CreateInstance<TransitionItemSO>());
+            transition = new SerializedObject(CreateInstance<TransitionItemSO>());
             SerializedTransition = new SerializedTransition(transition.FindProperty(Item));
             list = new ReorderableList(transition, SerializedTransition.Conditions);
             list.elementHeight *= 2.3f;

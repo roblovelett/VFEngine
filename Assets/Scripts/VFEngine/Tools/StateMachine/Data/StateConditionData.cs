@@ -1,6 +1,4 @@
-﻿using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
-
-namespace VFEngine.Tools.StateMachine.Data
+﻿namespace VFEngine.Tools.StateMachine.Data
 {
     internal struct StateConditionData
     {

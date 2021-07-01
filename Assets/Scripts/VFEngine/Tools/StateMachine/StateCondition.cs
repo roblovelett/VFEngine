@@ -1,19 +1,19 @@
 ﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
 
+// ReSharper disable UnusedParameter.Global
 namespace VFEngine.Tools.StateMachine
 {
     public abstract class StateCondition : IState
     {
         private bool isCached;
-        private bool cachedStatement;
         protected internal StateConditionSO OriginSO { get; internal set; }
         protected abstract bool Statement();
 
         internal bool GetStatement()
         {
+            var cachedStatement = Statement();
             if (isCached) return cachedStatement;
             isCached = true;
-            cachedStatement = Statement();
             return cachedStatement;
         }
 

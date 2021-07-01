@@ -6,8 +6,6 @@ namespace VFEngine.Tools.StateMachine.Data
 
     internal static class StateMachineText
     {
-        internal const string TransitionTableMenuName = "Tools/State Machine/Transition Table";
-        internal const string NewTransitionTable = "New State Machine Transition Table";
         private const string StateChanged = " state changed";
         private const string TransitionTable = "TransitionTable";
         private const string NotFoundIn = " not found in ";
@@ -21,15 +19,18 @@ namespace VFEngine.Tools.StateMachine.Data
         private const string TransitionConditions = "Transition Conditions:";
         private const string Is = " == ";
         private static readonly string TransitionTableProperty = $"{TransitionTable}: ";
+        internal const string TransitionTableMenuName = "Tools/State Machine/Transition Table";
         internal const string InitialState = "Set the initial state of this StateMachine";
         internal const string TransitionStateError = "Transition state is null.";
         internal const string DebugTransitions = "Issues a debug log when a state transition is triggered";
+        internal const string NewState = "New State";
+        internal const string StateMenu = "Tools/State Machine/State";
+        internal const string NewTransitionTable = "New Transition Table";
+        internal const string CurrentState = "The current State name [Readonly]";
+        internal const string Divider = "--------------------------------";
 
         internal const string AppendConditionsInfo =
             "List all conditions evaluated, the result is read: ConditionName == BooleanResult [PassedTest]";
-
-        internal const string CurrentState = "The current State name [Readonly]";
-        internal const string Divider = "--------------------------------";
 
         internal static string GetComponentError(string typeName, string name)
         {
