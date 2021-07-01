@@ -79,7 +79,7 @@ namespace VFEngine.Tools.StateMachine.Editor.Data
         internal static readonly string SameStateError = $"{FromStateProperty} and {ToStateProperty} are{TheLc}same.";
         internal static readonly string TransitionTableWindowLabel = $"{Transition} Table Editor";
         internal static readonly string TableList = $"{TableField}list";
-        internal static readonly string TableEditor = $"{TableField}-editor";
+        internal static readonly string TableEditor = $"{TableField}editor";
         internal static readonly string GuidFilter = $"t:{nameof(TransitionTableSO)}";
         internal static readonly string ActionPath = $"{New}{Action}{SOScript}";
         internal static readonly string ConditionPath = $"{New}{Condition}{SOScript}";
