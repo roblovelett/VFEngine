@@ -1,6 +1,6 @@
 ﻿namespace VFEngine.Tools.StateMachineSO
 {
-    public interface IState
+    internal interface IState
     {
         void Enter();
         void Exit();
