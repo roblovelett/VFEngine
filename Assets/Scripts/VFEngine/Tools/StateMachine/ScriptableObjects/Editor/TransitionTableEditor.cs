@@ -6,15 +6,12 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.Editor.Data;
-using VFEngine.Tools.StateMachine.ScriptableObjects;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Editor;
+using VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data;
 using EditorUnity = UnityEditor.Editor;
 using UnityObject = UnityEngine.Object;
 
 // ReSharper disable UnusedParameter.Local
-namespace VFEngine.Tools.StateMachine.Editor
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor
 {
     using static MessageType;
     using static EditorGUI;

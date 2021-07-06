@@ -1,8 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.Editor;
-using VFEngine.Tools.StateMachine.Editor.Data;
+using VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data;
 using EditorUnity = UnityEditor.Editor;
 using UnityObject = UnityEngine.Object;
 

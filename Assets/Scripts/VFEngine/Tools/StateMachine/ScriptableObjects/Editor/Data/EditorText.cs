@@ -1,7 +1,6 @@
 ﻿using System;
-using VFEngine.Tools.StateMachine.ScriptableObjects;
 
-namespace VFEngine.Tools.StateMachine.Editor.Data
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
 {
     using static Convert;
 

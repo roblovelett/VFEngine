@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 // ReSharper disable ClassNeverInstantiated.Global
-namespace VFEngine.Tools.StateMachine.Editor.Data.Templates
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data.Templates
 {
     using static String;
     using static EditorText;

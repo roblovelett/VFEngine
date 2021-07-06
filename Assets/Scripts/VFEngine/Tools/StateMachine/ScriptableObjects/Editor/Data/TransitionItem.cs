@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VFEngine.Tools.StateMachine.ScriptableObjects.Data
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
 {
     [Serializable]
     public class TransitionItem
@@ -11,20 +11,20 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Data
         [SerializeField] internal ConditionUsage[] conditions;
 
         [Serializable]
-        internal struct ConditionUsage
+        public struct ConditionUsage
         {
             [SerializeField] internal Result expectedResult;
             [SerializeField] internal StateConditionSO condition;
             [SerializeField] internal Operator @operator;
         }
 
-        internal enum Result
+        public enum Result
         {
             True,
             False
         }
 
-        internal enum Operator
+        public enum Operator
         {
             And,
             Or

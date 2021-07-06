@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace VFEngine.Tools.StateMachine.Editor.Data
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
 {
     using static EditorText;
 

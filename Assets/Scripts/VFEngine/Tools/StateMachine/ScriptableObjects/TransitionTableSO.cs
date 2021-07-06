@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.Data;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Data;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    using static TransitionItem.Operator;
-    using static TransitionItem.Result;
+    using static VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data.TransitionItem.Operator;
+    using static VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data.TransitionItem.Result;
     using static StateMachineText;
 
     [CreateAssetMenu(fileName = NewTransitionTable, menuName = TransitionTableMenuName)]
