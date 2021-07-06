@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VFEngine.Tools.StateMachine
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static AttributeTargets;
     

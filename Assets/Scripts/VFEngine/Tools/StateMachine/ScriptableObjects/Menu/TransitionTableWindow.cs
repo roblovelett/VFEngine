@@ -4,11 +4,10 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data;
 using EditorUnity = UnityEditor.Editor;
 using UnityObject = UnityEngine.Object;
 
-namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static PlayModeStateChange;
     using static Array;

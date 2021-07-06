@@ -1,8 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data;
 
-namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static MessageType;
     using static EditorGUI;

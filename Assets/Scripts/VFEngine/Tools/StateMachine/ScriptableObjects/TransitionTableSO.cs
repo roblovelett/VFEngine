@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.Data;
+using VFEngine.Tools.StateMachine.Menu;
+using static VFEngine.Tools.StateMachine.ScriptableObjects.Menu.EditorText;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
-    using static VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data.TransitionItem.Operator;
-    using static VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data.TransitionItem.Result;
-    using static StateMachineText;
+    using static TransitionTableSO.TransitionItem.Operator;
+    using static TransitionTableSO.TransitionItem.Result;
+    //using static StateMachineText;
 
     [CreateAssetMenu(fileName = NewTransitionTable, menuName = TransitionTableMenuName)]
     public class TransitionTableSO : ScriptableObject
@@ -61,6 +62,34 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects
             }
 
             return states.Count > 0 ? states[0] : throw new InvalidOperationException(StateError(name));
+        }
+
+        [Serializable]
+        public class TransitionItem
+        {
+            [SerializeField] internal StateSO fromState;
+            [SerializeField] internal StateSO toState;
+            [SerializeField] internal ConditionUsage[] conditions;
+
+            [Serializable]
+            public struct ConditionUsage
+            {
+                [SerializeField] internal Result expectedResult;
+                [SerializeField] internal StateConditionSO condition;
+                [SerializeField] internal Operator @operator;
+            }
+
+            public enum Result
+            {
+                True,
+                False
+            }
+
+            public enum Operator
+            {
+                And,
+                Or
+            }
         }
     }
 }

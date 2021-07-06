@@ -1,11 +1,9 @@
 ﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data;
 using EditorUnity = UnityEditor.Editor;
-using UnityObject = UnityEngine.Object;
 
-namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static EditorGUI;
     using static EditorStyles;

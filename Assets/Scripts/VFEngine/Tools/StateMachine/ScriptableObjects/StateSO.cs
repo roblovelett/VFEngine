@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using VFEngine.Tools.StateMachine;
-using static VFEngine.Tools.StateMachine.Data.StateMachineText;
+using VFEngine.Tools.StateMachine.ScriptableObjects.Menu;
+
+//using static VFEngine.Tools.StateMachine.Menu.StateMachineText;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
+    using static EditorText;
+
     [CreateAssetMenu(fileName = NewState, menuName = StateMenu)]
     public class StateSO : ScriptableObject
     {

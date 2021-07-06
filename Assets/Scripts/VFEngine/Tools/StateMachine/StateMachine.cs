@@ -4,7 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.Data;
+using VFEngine.Tools.StateMachine.Menu;
 using VFEngine.Tools.StateMachine.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachine

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
+namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static Convert;
 
@@ -26,6 +26,10 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
         private const string ToLc = " to ";
         private const string TheLc = " the ";
         private const string OnLc = " on ";
+        private const string TransitionTable = "TransitionTable";
+        private const string FromState = ", From State: ";
+        private const string IsEmpty = " is empty.";
+        private static readonly string TransitionTableProperty = $"{TransitionTable}: ";
         private static readonly string SOScript = $"{SOProperty}.{Cs}";
         private static readonly string Transitions = $"{Transition}s";
         private static readonly string StateFoundInTable = $"{State}\" found in table ";
@@ -59,6 +63,12 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
         internal const string NamespaceReplacement = "$1";
         internal const string TransitionTableEditorItem = "Transition Table Editor";
         internal const string TransitionTableEditorMenu = "Tools/State Machine/Transition Table Editor";
+        internal const string NewTransitionTable = "New Transition Table";
+        internal const string TransitionTableMenuName = "Tools/State Machine/Transition Table";
+        internal const string ActionScript = "Tools/State Machine/Action Script";
+        internal const string ConditionScript = "Tools/State Machine/Condition Script";
+        internal const string NewState = "New State";
+        internal const string StateMenu = "Tools/State Machine/State";
         internal static readonly char PathSeparator = ToChar("/");
         internal static readonly char NamespaceSeparator = ToChar(".");
         internal static readonly string TransitionsProperty = $"{TransitionLc}s";
@@ -84,9 +94,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
         internal static readonly string ScriptIconContent = $"{Cs} Script Icon";
         internal static readonly string ActionTemplatePath = $"{TemplatesPath}{StatePath}{Action}{Txt}";
         internal static readonly string ConditionTemplatePath = $"{TemplatesPath}{StatePath}{Condition}{Txt}";
-        internal const string ActionScript = "Tools/State Machine/Action Script";
-        internal const string ConditionScript = "Tools/State Machine/Condition Script";
-
+        
         internal static readonly string InitOnlyAttributeMessage =
             $"Changes{ToLc}this parameter during Play mode won't be reflected{OnLc}existing {StateMachine}s";
 
@@ -131,6 +139,21 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Editor.Data
         internal static string LabelClass(bool isProSkin)
         {
             return $"label-{(isProSkin ? "pro" : "personal")}";
+        }
+        
+        internal static string TransitionTableName(string name)
+        {
+            return $"{TransitionTableProperty}{name}";
+        }
+        
+        internal static string TransitionError(string name, string fromStateName)
+        {
+            return $"{TransitionTableProperty}{name}{FromState}{fromStateName}";
+        }
+        
+        internal static string StateError(string name)
+        {
+            return $"{TransitionTable}{Nbsp}{name}{IsEmpty}";
         }
     }
 }

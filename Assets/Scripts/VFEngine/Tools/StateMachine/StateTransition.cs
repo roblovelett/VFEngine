@@ -1,4 +1,4 @@
-﻿using VFEngine.Tools.StateMachine.Data;
+﻿using VFEngine.Tools.StateMachine.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachine
 {
