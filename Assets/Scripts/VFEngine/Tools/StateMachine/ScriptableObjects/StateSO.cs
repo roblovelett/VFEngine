@@ -1,51 +1,24 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityGameObject = UnityEngine.GameObject;
+using VFEngine.Tools.StateMachine;
+using static VFEngine.Tools.StateMachine.Data.StateMachineText;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
+    [CreateAssetMenu(fileName = NewState, menuName = StateMenu)]
     public class StateSO : ScriptableObject
     {
+        private State state;
 
+        internal State Get(StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
+        {
+            if (createdInstances.TryGetValue(this, out var @object)) return @object as State;
+            state = new State();
+            createdInstances.Add(this, state);
+            state.OriginSO = this;
+            state.StateMachine = stateMachine;
+            state.Transitions = new StateTransition[0];
+            return state;
+        }
     }
 }
-
-/*public class StateSO : BaseState
-{
-    public StateSO(IEnumerable<string> toStates, IEnumerable<string> transitions, bool canExit, string name, Hash128 hash, UnityGameObject gameObject, StateMachine stateMachine) : base(toStates, transitions, canExit, name, hash, gameObject, stateMachine)
-    {
-        
-    }
-    
-    
-
-    public override void Input()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Update()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void PhysicsUpdate()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Render()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Pause()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Exit()
-    {
-        throw new System.NotImplementedException();
-    }
-}*/

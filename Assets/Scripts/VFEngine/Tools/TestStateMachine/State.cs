@@ -1,11 +1,37 @@
 ﻿using System.Collections.Generic;
-using VFEngine.Tools.StateMachine.ScriptableObjects;
+using UnityEngine;
+using UnityGameObject = UnityEngine.GameObject;
 
-namespace VFEngine.Tools.StateMachine
+namespace VFEngine.Tools.TestStateMachine
 {
-    internal class State : IState
+    public abstract class State : IState
     {
-        internal StateSO OriginSO;
+        //private StateSO currentState;
+        private bool CanExit;
+        private string Name;
+        //private Hash128 Hash;
+        private UnityGameObject gameObject;
+        private StateMachine stateMachine;
+        private Component[] cachedComponents;
+        private IEnumerable<ToState> ToStates;
+        private IEnumerable<Input> Inputs;
+        private enum Input { }
+        private enum ToState { }
+
+        private State()
+        {
+            
+        }
+        void IState.Enter() { }
+        void IState.Exit() { }
+        private void Update(){}
+        private void PhysicsUpdate(){}
+        private void Render(){}
+        private void Pause(){}
+        private void Exit(){}
+        
+        
+        /*internal StateSO OriginSO;
         internal StateMachine StateMachine;
         internal StateTransition[] Transitions;
         private readonly StateAction[] actions;
@@ -48,6 +74,7 @@ namespace VFEngine.Tools.StateMachine
                     break;
             foreach (var transition in Transitions) transition.ClearCache();
             return state != null;
-        }
+        }*/
+        
     }
 }
