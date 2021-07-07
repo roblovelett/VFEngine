@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using EditorUnity = UnityEditor.Editor;
 using UnityObject = UnityEngine.Object;
 
+// ReSharper disable NotAccessedField.Local
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 // ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
     using static EditorSkin;
     using static FontStyle;
     using static TextAnchor;
-    using static EditorGUIUtility;
     using static MessageType;
+    using static EditorGUIUtility;
     using static EditorGUI;
     using static EditorStyles;
     using static Undo;
@@ -24,7 +25,6 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
     using static GUILayout;
     using static EditorGUILayout;
     using static GUILayoutUtility;
-    using static TransitionTableEditor.ContentStyle;
     using static EditorText;
     using static GC;
     using static GUI;
@@ -39,12 +39,12 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
         private bool hasCachedStateEditor;
         private bool hasFromStates;
         private bool hasToggledState;
-        private SerializedProperty transitions;
-        private List<UnityObject> fromStates;
-        private List<List<TransitionDisplay>> transitionsByFromStates;
-        private AddTransitionHelper addTransition;
-        private EditorUnity cachedStateEditor;
         private UnityObject toggledState;
+        private EditorUnity cachedStateEditor;
+        private SerializedProperty transitions;
+        private AddTransitionHelper addTransition;
+        private static List<UnityObject> _fromStates;
+        private static List<List<TransitionDisplay>> _transitionsByFromStates;
 
         private void Awake()
         {
@@ -67,8 +67,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             addTransition?.Dispose();
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
-        internal void Reset()
+        private void Reset()
         {
             serializedObject.Update();
             ToggledState();
@@ -102,13 +101,179 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 groupedProps.Add(new TransitionDisplay(serializedTransition, this));
             }
 
-            fromStates = groupedTransitions.Keys.ToList();
+            _fromStates = groupedTransitions.Keys.ToList();
             hasFromStates = true;
-            transitionsByFromStates = new List<List<TransitionDisplay>>();
-            foreach (var fromState in fromStates) transitionsByFromStates.Add(groupedTransitions[fromState]);
+            _transitionsByFromStates = new List<List<TransitionDisplay>>();
+            foreach (var fromState in _fromStates) _transitionsByFromStates.Add(groupedTransitions[fromState]);
             ToggledIndex();
         }
 
+        private void ToggledState()
+        {
+            hasToggledState = toggledIndex > -1 && hasFromStates;
+            if (hasToggledState) toggledState = _fromStates[toggledIndex];
+        }
+
+        private void ToggledIndex()
+        {
+            toggledIndex = hasToggledState ? _fromStates.IndexOf(toggledState) : -1;
+        }
+
+        private void DisplayStateEditor(UnityObject state)
+        {
+            if (!hasCachedStateEditor)
+            {
+                cachedStateEditor = CreateEditor(state, typeof(StateEditor));
+                hasCachedStateEditor = !hasCachedStateEditor;
+            }
+            else
+            {
+                CreateCachedEditor(state, typeof(StateEditor), ref cachedStateEditor);
+            }
+
+            displayStateEditor = true;
+        }
+
+        private void ReorderState(int index, bool up)
+        {
+            ToggledState();
+            if (!up) index++;
+            var fromStateTransitions = _transitionsByFromStates[index];
+            var transitionIndex = fromStateTransitions[0].SerializedTransition.Index;
+            var targetIndex = _transitionsByFromStates[index - 1][0].SerializedTransition.Index;
+            transitions.MoveArrayElement(transitionIndex, targetIndex);
+            ApplyModifications(MovedFromState(_fromStates[index].name, up));
+            ToggledIndex();
+        }
+
+        private void ReorderTransition(SerializedTransition serializedTransition, bool up)
+        {
+            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
+            int currentIndex;
+            int targetIndex;
+            if (up)
+            {
+                currentIndex = serializedTransition.Index;
+                targetIndex = stateTransitions[index - 1].SerializedTransition.Index;
+            }
+            else
+            {
+                currentIndex = stateTransitions[index + 1].SerializedTransition.Index;
+                targetIndex = serializedTransition.Index;
+            }
+
+            transitions.MoveArrayElement(currentIndex, targetIndex);
+            ApplyModifications(MovedTransition(serializedTransition.ToState.objectReferenceValue.name, up));
+            toggledIndex = stateIndex;
+        }
+
+        private void ApplyModifications(string msg)
+        {
+            RecordObject(serializedObject.targetObject, msg);
+            serializedObject.ApplyModifiedProperties();
+            Reset();
+        }
+
+        private static void OnEarlyOut()
+        {
+            EditorGUILayout.EndHorizontal();
+            EarlyOut();
+        }
+
+        private static void EarlyOut()
+        {
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static void OnHelperInitialize(ref ReorderableList list, bool addTransitionHelper,
+            bool transitionDisplay)
+        {
+            list.elementHeight *= 2.3f;
+            list.headerHeight = 1f;
+            list.onAddCallback += l =>
+            {
+                var count = l.count;
+                l.serializedProperty.InsertArrayElementAtIndex(count);
+                var prop = l.serializedProperty.GetArrayElementAtIndex(count);
+                prop.FindPropertyRelative(Condition).objectReferenceValue = null;
+                prop.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
+                prop.FindPropertyRelative(Operator).enumValueIndex = 0;
+            };
+            var helperList = list;
+            list.drawElementCallback += (rect, index, isActive, isFocused) =>
+            {
+                var prop = helperList.serializedProperty.GetArrayElementAtIndex(index);
+                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, singleLineHeight);
+                var condition = prop.FindPropertyRelative(Condition);
+                if (condition.objectReferenceValue != null)
+                {
+                    var label = condition.objectReferenceValue.name;
+                    Label(rect, If);
+                    if (addTransitionHelper)
+                    {
+                        Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), label, boldLabel);
+                        PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), condition, none);
+                    }
+
+                    if (transitionDisplay)
+                    {
+                        var r = rect;
+                        r.x += 20;
+                        r.width = 35;
+                        PropertyField(r, condition, none);
+                        r.x += 40;
+                        r.width = rect.width - 120;
+                        Label(r, label, boldLabel);
+                    }
+                }
+                else
+                {
+                    PropertyField(new Rect(rect.x, rect.y, 150, rect.height), condition, none);
+                }
+
+                LabelField(new Rect(rect.x + rect.width - 80, rect.y, 20, rect.height), Is);
+                PropertyField(new Rect(rect.x + rect.width - 60, rect.y, 60, rect.height),
+                    prop.FindPropertyRelative(ExpectedResult), none);
+                if (addTransitionHelper) OnPropertyField(rect, prop);
+                if (transitionDisplay && index < helperList.count - 1) OnPropertyField(rect, prop);
+            };
+            OnChangedCallback(ref list);
+        }
+
+        private static void OnPropertyField(Rect rect, SerializedProperty prop)
+        {
+            PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
+                prop.FindPropertyRelative(Operator), none);
+        }
+
+        private static int StateIndex(SerializedTransition serializedTransition,
+            out List<TransitionDisplay> stateTransitions, out int index)
+        {
+            var stateIndex = _fromStates.IndexOf(serializedTransition.FromState.objectReferenceValue);
+            stateTransitions = _transitionsByFromStates[stateIndex];
+            index = stateTransitions.FindIndex(t => t.SerializedTransition.Index == serializedTransition.Index);
+            return stateIndex;
+        }
+
+        private static bool GUIButton(Rect position, string icon)
+        {
+            return Button(position, IconContent(icon));
+        }
+
+//=============================================================================================================================
+        internal static void OnChangedCallback(ref ReorderableList list)
+        {
+            list.onChangedCallback += l => l.serializedProperty.serializedObject.ApplyModifiedProperties();
+            list.drawElementBackgroundCallback += (rect, index, isActive, isFocused) =>
+            {
+                if (isFocused) DrawRect(rect, ContentStyle.Focused);
+                DrawRect(rect, index % 2 != 0 ? ContentStyle.ZebraDark : ContentStyle.ZebraLight);
+            };
+        }
+
+//=============================================================================================================================
         public override void OnInspectorGUI()
         {
             if (!displayStateEditor)
@@ -116,11 +281,11 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 Separator();
                 HelpBox(StateHelpMessage, Info);
                 Separator();
-                for (var i = 0; i < fromStates.Count; i++)
+                for (var i = 0; i < _fromStates.Count; i++)
                 {
-                    var stateRect = EditorGUILayout.BeginVertical(WithPaddingAndMarginsStyle);
-                    DrawRect(stateRect, LightGray);
-                    var fromStateTransitions = transitionsByFromStates[i];
+                    var stateRect = EditorGUILayout.BeginVertical(ContentStyle.WithPaddingAndMarginsStyle);
+                    DrawRect(stateRect, ContentStyle.LightGray);
+                    var fromStateTransitions = _transitionsByFromStates[i];
                     var headerRect = EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.BeginVertical();
@@ -131,13 +296,13 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                         headerRect.x += 5;
                         var toggleRect = headerRect;
                         toggleRect.width -= 140;
-                        toggledIndex = BeginFoldoutHeaderGroup(toggleRect, toggledIndex == i, label, StateListStyle) ?
-                            i :
+                        toggledIndex = BeginFoldoutHeaderGroup(toggleRect, toggledIndex == i, label,
+                                ContentStyle.StateListStyle) ? i :
                             toggledIndex == i ? -1 : toggledIndex;
                         Separator();
                         EditorGUILayout.EndVertical();
                         var buttonRect = new Rect(headerRect.width - 25, headerRect.y, 35, 20);
-                        if (i < fromStates.Count - 1)
+                        if (i < _fromStates.Count - 1)
                         {
                             if (GUIButton(buttonRect, ScrollDown))
                             {
@@ -217,34 +382,64 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             }
         }
 
-        internal class AddTransitionHelper : IDisposable
+        private struct SerializedTransition
+        {
+            internal SerializedProperty Transition { get; }
+            internal SerializedProperty FromState { get; private set; }
+            internal SerializedProperty ToState { get; private set; }
+            internal SerializedProperty Conditions { get; private set; }
+            internal int Index { get; }
+
+            internal SerializedTransition(SerializedProperty transition) : this()
+            {
+                Transition = transition;
+                Initialize();
+                Index = -1;
+            }
+
+            internal SerializedTransition(SerializedProperty transition, int index) : this()
+            {
+                Transition = transition.GetArrayElementAtIndex(index);
+                Initialize();
+                Index = index;
+            }
+
+            private void Initialize()
+            {
+                FromState = Transition.FindPropertyRelative(FromStateProperty);
+                ToState = Transition.FindPropertyRelative(ToStateProperty);
+                Conditions = Transition.FindPropertyRelative(ConditionsLabel);
+            }
+
+            internal void ClearProperties()
+            {
+                FromState.objectReferenceValue = null;
+                ToState.objectReferenceValue = null;
+                Conditions.ClearArray();
+            }
+        }
+
+        private class AddTransitionHelper : IDisposable
         {
             private SerializedTransition SerializedTransition { get; }
             private readonly SerializedObject transition;
             private readonly ReorderableList list;
-            private readonly TransitionTableEditor editor;
             private bool toggle;
 
-            [SuppressMessage("ReSharper", "UnusedParameter.Local")]
             internal AddTransitionHelper(TransitionTableEditor editorInternal)
             {
-                editor = editorInternal;
-                transition = new SerializedObject(CreateInstance<TransitionItemSO>());
                 SerializedTransition = new SerializedTransition(transition.FindProperty(Item));
+                transition = new SerializedObject(CreateInstance<TransitionItemSO>());
                 list = new ReorderableList(transition, SerializedTransition.Conditions);
-                list.elementHeight *= 2.3f;
-                list.drawHeaderCallback += rect => Label(rect, ConditionsProperty);
-                list.onAddCallback += OnAddCallBack;
-                list.drawElementCallback += ListDrawElementCallback(true, false, list);
-                OnListChanged(ref list);
+                OnHelperInitialize(ref list, true, false);
             }
 
-            // ReSharper disable Unity.PerformanceAnalysis
             internal void Display(Rect position)
             {
+                var rect = position;
+                var listHeight = list.GetHeight();
                 position.x += 8;
                 position.width -= 16;
-                var rect = Rect(position, list, out var listHeight, out var singleLineHeight);
                 if (!toggle)
                 {
                     position.height = singleLineHeight;
@@ -256,7 +451,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 }
 
                 position.height = listHeight + singleLineHeight * 4;
-                DrawRect(position, LightGray);
+                DrawRect(position, ContentStyle.LightGray);
                 GetRect(position.width, position.height);
                 position.y += 10;
                 position.x += 20;
@@ -274,23 +469,56 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 if (Button(position, AddTransitionButton))
                 {
                     if (SerializedTransition.FromState.objectReferenceValue == null)
-                    {
                         LogException(new ArgumentNullException(FromStateProperty));
-                    }
                     else if (SerializedTransition.ToState.objectReferenceValue == null)
-                    {
                         LogException(new ArgumentNullException(ToStateProperty));
-                    }
                     else if (SerializedTransition.FromState.objectReferenceValue ==
                              SerializedTransition.ToState.objectReferenceValue)
-                    {
                         LogException(new InvalidOperationException(SameStateError));
-                    }
                     else
-                    {
-                        editor.AddTransition(SerializedTransition);
-                        toggle = false;
-                    }
+                        //editor.AddTransition(SerializedTransition);
+                        /*
+                            private void AddTransition(SerializedTransition source)
+                            {
+                                bool hasExistingTransition;
+                                SerializedTransition transition;
+                                var fromIndex = _fromStates.IndexOf(source.FromState.objectReferenceValue);
+                                var toIndex = _transitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
+                                    transitionHelper.SerializedTransition.ToState.objectReferenceValue ==
+                                    source.ToState.objectReferenceValue);
+                                if (fromIndex < 0) hasExistingTransition = false;
+                                else hasExistingTransition = toIndex >= 0;
+                                if (hasExistingTransition)
+                                {
+                                    transition = _transitionsByFromStates[fromIndex][toIndex].SerializedTransition;
+                                }
+                                else
+                                {
+                                    var count = transitions.arraySize;
+                                    transitions.InsertArrayElementAtIndex(count);
+                                    transition = new SerializedTransition(transitions.GetArrayElementAtIndex(count));
+                                    transition.ClearProperties();
+                                    transition.FromState.objectReferenceValue = source.FromState.objectReferenceValue;
+                                    transition.ToState.objectReferenceValue = source.ToState.objectReferenceValue;
+                                }
+    
+                                for (int i = 0, j = transition.Conditions.arraySize; i < source.Conditions.arraySize; i++, j++)
+                                {
+                                    transition.Conditions.InsertArrayElementAtIndex(j);
+                                    var cond = transition.Conditions.GetArrayElementAtIndex(j);
+                                    var srcCond = source.Conditions.GetArrayElementAtIndex(i);
+                                    cond.FindPropertyRelative(ExpectedResult).enumValueIndex =
+                                        srcCond.FindPropertyRelative(ExpectedResult).enumValueIndex;
+                                    cond.FindPropertyRelative(Operator).enumValueIndex =
+                                        srcCond.FindPropertyRelative(Operator).enumValueIndex;
+                                    cond.FindPropertyRelative(Condition).objectReferenceValue =
+                                        srcCond.FindPropertyRelative(Condition).objectReferenceValue;
+                                }
+    
+                                ApplyModifications(AddedTransition(transition.FromState.name, transition.ToState.name));
+                                toggledIndex = fromIndex >= 0 ? fromIndex : _fromStates.Count - 1;
+                            }
+                            */ toggle = false;
                 }
 
                 position.x += rect.width / 2;
@@ -313,9 +541,9 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 SuppressFinalize(this);
             }
 
-            internal class TransitionItemSO : ScriptableObject
+            private class TransitionItemSO : ScriptableObject
             {
-                [SerializeField] [UsedImplicitly] internal TransitionItem item = default(TransitionItem);
+                [SerializeField] internal TransitionItem item = default(TransitionItem);
             }
         }
 
@@ -328,41 +556,50 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             [SuppressMessage("ReSharper", "UnusedParameter.Local")]
             internal TransitionDisplay(SerializedTransition serializedTransition, TransitionTableEditor editorInternal)
             {
+                editor = editorInternal;
                 SerializedTransition = serializedTransition;
                 list = new ReorderableList(SerializedTransition.Transition.serializedObject,
                     SerializedTransition.Conditions, true, false, true, true);
-                list.elementHeight *= 2.3f;
-                list.headerHeight = 1f;
-                list.onAddCallback += OnAddCallBack;
-                list.drawElementCallback += ListDrawElementCallback(false, true, list);
-                OnListChanged(ref list);
-                editor = editorInternal;
+                OnHelperInitialize(ref list, false, true);
             }
 
             internal bool Display(ref Rect position)
             {
-                var rect = Rect(position, list, out var listHeight, out var singleLineHeight);
+                var rect = position;
+                var listHeight = list.GetHeight();
                 rect.height = singleLineHeight + 10 + listHeight;
                 GetRect(rect.width, rect.height);
                 position.y += rect.height + 5;
                 rect.x += 5;
                 rect.width -= 10;
                 rect.height -= listHeight;
-                DrawRect(rect, DarkGray);
+                DrawRect(rect, ContentStyle.DarkGray);
                 rect.x += 3;
                 LabelField(rect, To);
                 rect.x += 20;
                 LabelField(rect, SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
                 var buttonRect = new Rect(rect.width - 25, rect.y + 5, 30, 18);
-                var transitions = editor.GetStateTransitions(SerializedTransition.FromState.objectReferenceValue);
+                var transitions =
+                    _transitionsByFromStates[_fromStates.IndexOf(SerializedTransition.FromState.objectReferenceValue)]
+                        .Select(t => t.SerializedTransition).ToList();
                 var transitionsIndex = transitions.Count - 1;
                 var serializedTransitionIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
                 if (GUIButton(buttonRect, ToolbarMinus))
-                {
-                    editor.RemoveTransition(SerializedTransition);
-                    return true;
-                }
-
+                    //editor.RemoveTransition(SerializedTransition);
+                    /*
+                        private void RemoveTransition(SerializedTransition serializedTransition)
+                        {
+                            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
+                            var count = stateTransitions.Count;
+                            var deleteIndex = serializedTransition.Index;
+                            if (index == 0 && count > 1)
+                                transitions.MoveArrayElement(stateTransitions[1].SerializedTransition.Index, deleteIndex++);
+                            transitions.DeleteArrayElementAtIndex(deleteIndex);
+                            ApplyModifications(DeletedTransition(serializedTransition.FromState.objectReferenceValue.name,
+                                serializedTransition.ToState.objectReferenceValue.name));
+                            if (count > 1) toggledIndex = stateIndex;
+                        }
+                        */ return true;
                 buttonRect.x -= 35;
                 if (serializedTransitionIndex < transitionsIndex)
                 {
@@ -401,234 +638,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             }
         }
 
-        private void ToggledState()
-        {
-            hasToggledState = toggledIndex > -1 && hasFromStates;
-            if (hasToggledState) toggledState = fromStates[toggledIndex];
-        }
-
-        private void ToggledIndex()
-        {
-            toggledIndex = hasToggledState ? fromStates.IndexOf(toggledState) : -1;
-        }
-
-        private void DisplayStateEditor(UnityObject state)
-        {
-            if (!hasCachedStateEditor)
-            {
-                cachedStateEditor = CreateEditor(state, typeof(StateEditor));
-                hasCachedStateEditor = !hasCachedStateEditor;
-            }
-            else
-            {
-                CreateCachedEditor(state, typeof(StateEditor), ref cachedStateEditor);
-            }
-
-            displayStateEditor = true;
-        }
-
-        private void ReorderState(int index, bool up)
-        {
-            ToggledState();
-            if (!up) index++;
-            var fromStateTransitions = transitionsByFromStates[index];
-            var transitionIndex = fromStateTransitions[0].SerializedTransition.Index;
-            var targetIndex = transitionsByFromStates[index - 1][0].SerializedTransition.Index;
-            transitions.MoveArrayElement(transitionIndex, targetIndex);
-            ApplyModifications(MovedFromState(fromStates[index].name, up));
-            ToggledIndex();
-        }
-
-        private void AddTransition(SerializedTransition source)
-        {
-            bool hasExistingTransition;
-            SerializedTransition transition;
-            var fromIndex = fromStates.IndexOf(source.FromState.objectReferenceValue);
-            var toIndex = transitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
-                transitionHelper.SerializedTransition.ToState.objectReferenceValue ==
-                source.ToState.objectReferenceValue);
-            if (fromIndex < 0) hasExistingTransition = false;
-            else hasExistingTransition = toIndex >= 0;
-            if (hasExistingTransition)
-            {
-                transition = transitionsByFromStates[fromIndex][toIndex].SerializedTransition;
-            }
-            else
-            {
-                var count = transitions.arraySize;
-                transitions.InsertArrayElementAtIndex(count);
-                transition = new SerializedTransition(transitions.GetArrayElementAtIndex(count));
-                transition.ClearProperties();
-                transition.FromState.objectReferenceValue = source.FromState.objectReferenceValue;
-                transition.ToState.objectReferenceValue = source.ToState.objectReferenceValue;
-            }
-
-            for (int i = 0, j = transition.Conditions.arraySize; i < source.Conditions.arraySize; i++, j++)
-            {
-                transition.Conditions.InsertArrayElementAtIndex(j);
-                var cond = transition.Conditions.GetArrayElementAtIndex(j);
-                var srcCond = source.Conditions.GetArrayElementAtIndex(i);
-                cond.FindPropertyRelative(ExpectedResult).enumValueIndex =
-                    srcCond.FindPropertyRelative(ExpectedResult).enumValueIndex;
-                cond.FindPropertyRelative(Operator).enumValueIndex =
-                    srcCond.FindPropertyRelative(Operator).enumValueIndex;
-                cond.FindPropertyRelative(Condition).objectReferenceValue =
-                    srcCond.FindPropertyRelative(Condition).objectReferenceValue;
-            }
-
-            ApplyModifications(AddedTransition(transition.FromState.name, transition.ToState.name));
-            toggledIndex = fromIndex >= 0 ? fromIndex : fromStates.Count - 1;
-        }
-
-        private void ReorderTransition(SerializedTransition serializedTransition, bool up)
-        {
-            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
-            int currentIndex;
-            int targetIndex;
-            if (up)
-            {
-                currentIndex = serializedTransition.Index;
-                targetIndex = stateTransitions[index - 1].SerializedTransition.Index;
-            }
-            else
-            {
-                currentIndex = stateTransitions[index + 1].SerializedTransition.Index;
-                targetIndex = serializedTransition.Index;
-            }
-
-            transitions.MoveArrayElement(currentIndex, targetIndex);
-            ApplyModifications(MovedTransition(serializedTransition.ToState.objectReferenceValue.name, up));
-            toggledIndex = stateIndex;
-        }
-
-        private void RemoveTransition(SerializedTransition serializedTransition)
-        {
-            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
-            var count = stateTransitions.Count;
-            var deleteIndex = serializedTransition.Index;
-            if (index == 0 && count > 1)
-                transitions.MoveArrayElement(stateTransitions[1].SerializedTransition.Index, deleteIndex++);
-            transitions.DeleteArrayElementAtIndex(deleteIndex);
-            ApplyModifications(DeletedTransition(serializedTransition.FromState.objectReferenceValue.name,
-                serializedTransition.ToState.objectReferenceValue.name));
-            if (count > 1) toggledIndex = stateIndex;
-        }
-
-        private void ApplyModifications(string msg)
-        {
-            RecordObject(serializedObject.targetObject, msg);
-            serializedObject.ApplyModifiedProperties();
-            Reset();
-        }
-
-        private int StateIndex(SerializedTransition serializedTransition, out List<TransitionDisplay> stateTransitions,
-            out int index)
-        {
-            var stateIndex = fromStates.IndexOf(serializedTransition.FromState.objectReferenceValue);
-            stateTransitions = transitionsByFromStates[stateIndex];
-            index = stateTransitions.FindIndex(t => t.SerializedTransition.Index == serializedTransition.Index);
-            return stateIndex;
-        }
-
-        private List<SerializedTransition> GetStateTransitions(UnityObject state)
-        {
-            return transitionsByFromStates[fromStates.IndexOf(state)].Select(t => t.SerializedTransition).ToList();
-        }
-
-        private static void OnEarlyOut()
-        {
-            EditorGUILayout.EndHorizontal();
-            EarlyOut();
-        }
-
-        private static void EarlyOut()
-        {
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private static void OnPropertyField(Rect rect, SerializedProperty prop)
-        {
-            PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
-                prop.FindPropertyRelative(Operator), none);
-        }
-
-        private static void OnAddCallBack(ReorderableList list)
-        {
-            var count = list.count;
-            list.serializedProperty.InsertArrayElementAtIndex(count);
-            var prop = list.serializedProperty.GetArrayElementAtIndex(count);
-            prop.FindPropertyRelative(Condition).objectReferenceValue = null;
-            prop.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
-            prop.FindPropertyRelative(Operator).enumValueIndex = 0;
-        }
-
-        internal static void OnListChanged(ref ReorderableList list)
-        {
-            list.onChangedCallback += l => l.serializedProperty.serializedObject.ApplyModifiedProperties();
-            list.drawElementBackgroundCallback += (rect, index, isActive, isFocused) =>
-            {
-                if (isFocused) DrawRect(rect, Focused);
-                DrawRect(rect, index % 2 != 0 ? ZebraDark : ZebraLight);
-            };
-        }
-
-        private static bool GUIButton(Rect position, string icon)
-        {
-            return Button(position, IconContent(icon));
-        }
-
-        private static Rect Rect(Rect position, ReorderableList list, out float listHeight, out float singleLineHeight)
-        {
-            listHeight = list.GetHeight();
-            singleLineHeight = EditorGUIUtility.singleLineHeight;
-            return position;
-        }
-
-        private static ReorderableList.ElementCallbackDelegate ListDrawElementCallback(bool addTransitionHelper,
-            bool transitionDisplay, ReorderableList list)
-        {
-            return (rect, index, isActive, isFocused) =>
-            {
-                var prop = list.serializedProperty.GetArrayElementAtIndex(index);
-                rect = new Rect(rect.x, rect.y + 2.5f, rect.width, singleLineHeight);
-                var condition = prop.FindPropertyRelative(Condition);
-                if (condition.objectReferenceValue != null)
-                {
-                    var label = condition.objectReferenceValue.name;
-                    Label(rect, If);
-                    if (addTransitionHelper)
-                    {
-                        Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), label, boldLabel);
-                        PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), condition, none);
-                    }
-
-                    if (transitionDisplay)
-                    {
-                        var r = rect;
-                        r.x += 20;
-                        r.width = 35;
-                        PropertyField(r, condition, none);
-                        r.x += 40;
-                        r.width = rect.width - 120;
-                        Label(r, label, boldLabel);
-                    }
-                }
-                else
-                {
-                    PropertyField(new Rect(rect.x, rect.y, 150, rect.height), condition, none);
-                }
-
-                LabelField(new Rect(rect.x + rect.width - 80, rect.y, 20, rect.height), Is);
-                PropertyField(new Rect(rect.x + rect.width - 60, rect.y, 60, rect.height),
-                    prop.FindPropertyRelative(ExpectedResult), none);
-                if (addTransitionHelper) OnPropertyField(rect, prop);
-                if (transitionDisplay && index < list.count - 1) OnPropertyField(rect, prop);
-            };
-        }
-
-        internal static class ContentStyle
+        private static class ContentStyle
         {
             private static bool _initialised;
             private static RectOffset _padding;
@@ -669,43 +679,6 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                     margin = _margin,
                     normal = _guiStyleStateNormal
                 };
-            }
-        }
-
-        private struct SerializedTransition
-        {
-            internal SerializedProperty Transition { get; }
-            internal SerializedProperty FromState { get; private set; }
-            internal SerializedProperty ToState { get; private set; }
-            internal SerializedProperty Conditions { get; private set; }
-            internal int Index { get; }
-
-            internal SerializedTransition(SerializedProperty transition) : this()
-            {
-                Transition = transition;
-                Initialize();
-                Index = -1;
-            }
-
-            internal SerializedTransition(SerializedProperty transition, int index) : this()
-            {
-                Transition = transition.GetArrayElementAtIndex(index);
-                Initialize();
-                Index = index;
-            }
-
-            private void Initialize()
-            {
-                FromState = Transition.FindPropertyRelative(FromStateProperty);
-                ToState = Transition.FindPropertyRelative(ToStateProperty);
-                Conditions = Transition.FindPropertyRelative(ConditionsProperty);
-            }
-
-            internal void ClearProperties()
-            {
-                FromState.objectReferenceValue = null;
-                ToState.objectReferenceValue = null;
-                Conditions.ClearArray();
             }
         }
     }

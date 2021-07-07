@@ -5,21 +5,18 @@ namespace VFEngine.Tools.StateMachine
 {
     internal class State : IState
     {
-        internal StateSO OriginSO;
-        internal StateMachine StateMachine;
-        internal StateTransition[] Transitions;
         private readonly StateAction[] actions;
+        internal readonly StateSO OriginSO;
+        internal readonly StateMachine StateMachine;
+        internal StateTransition[] Transitions;
+        
 
-        internal State(StateSO originSO, StateMachine stateMachine, StateTransition[] transitions, StateAction[] actionsInternal)
+        public State(StateSO stateSO, StateMachine stateMachine, StateAction[] stateActions)
         {
-            OriginSO = originSO;
+            OriginSO = stateSO;
             StateMachine = stateMachine;
-            Transitions = transitions;
-            actions = actionsInternal;
-        }
-
-        internal State()
-        {
+            Transitions = new StateTransition[0];
+            actions = stateActions;
         }
 
         void IState.Enter()
@@ -29,15 +26,13 @@ namespace VFEngine.Tools.StateMachine
 
         internal void Update()
         {
-            foreach (var action in actions)
-            {
-                action.Update();
-            }
+            foreach (var action in actions) action.Update();
         }
 
         void IState.Exit()
         {
             foreach (var transition in Transitions as IEnumerable<IState>) transition.Exit();
+            foreach (var action in actions) ((IState) action).Exit();
         }
 
         internal bool TryGetTransition(out State state)

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VFEngine.Tools.StateMachine.Menu;
-using static VFEngine.Tools.StateMachine.ScriptableObjects.Menu.EditorText;
+using VFEngine.Tools.StateMachine.ScriptableObjects.Menu;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects
 {
     using static TransitionTableSO.TransitionItem.Operator;
     using static TransitionTableSO.TransitionItem.Result;
-    //using static StateMachineText;
+    using static EditorText;
 
     [CreateAssetMenu(fileName = NewTransitionTable, menuName = TransitionTableMenuName)]
     public class TransitionTableSO : ScriptableObject

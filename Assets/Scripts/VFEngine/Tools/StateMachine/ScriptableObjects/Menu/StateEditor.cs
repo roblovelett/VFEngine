@@ -18,46 +18,45 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
     internal class StateEditor : EditorUnity
     {
         private ReorderableList list;
+        private SerializedProperty actions;
 
         // ReSharper disable UnusedParameter.Local
         private void OnEnable()
         {
             undoRedoPerformed += DoUndo;
-            SerializedProperty reorderableListSerializedProperty;
-            var actions = serializedObject.FindProperty(ActionsProperty);
+            actions = serializedObject.FindProperty(ActionsProperty);
             list = new ReorderableList(serializedObject, actions, true, true, true, true);
             list.elementHeight *= 1.5f;
             list.drawHeaderCallback += rect => Label(rect, Actions);
             list.onAddCallback += l =>
             {
-                var reorderableListItemsAmount = l.count;
-                l.serializedProperty.InsertArrayElementAtIndex(reorderableListItemsAmount);
-                reorderableListSerializedProperty =
-                    l.serializedProperty.GetArrayElementAtIndex(reorderableListItemsAmount);
-                reorderableListSerializedProperty.objectReferenceValue = null;
+                var count = l.count;
+                l.serializedProperty.InsertArrayElementAtIndex(count);
+                var prop = l.serializedProperty.GetArrayElementAtIndex(count);
+                prop.objectReferenceValue = null;
             };
             list.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                var reorderableListRect = rect;
-                reorderableListRect.height = singleLineHeight;
-                reorderableListRect.y += 5;
-                reorderableListRect.x += 5;
-                reorderableListSerializedProperty = list.serializedProperty.GetArrayElementAtIndex(index);
-                if (reorderableListSerializedProperty.objectReferenceValue != null)
+                var r = rect;
+                r.height = singleLineHeight;
+                r.y += 5;
+                r.x += 5;
+                var prop = list.serializedProperty.GetArrayElementAtIndex(index);
+                if (prop.objectReferenceValue != null)
                 {
-                    var reorderableListLabel = reorderableListSerializedProperty.objectReferenceValue.name;
-                    reorderableListRect.width = 35;
-                    PropertyField(reorderableListRect, reorderableListSerializedProperty, none);
-                    reorderableListRect.width = rect.width - 50;
-                    reorderableListRect.x += 42;
-                    Label(reorderableListRect, reorderableListLabel, boldLabel);
+                    var label = prop.objectReferenceValue.name;
+                    r.width = 35;
+                    PropertyField(r, prop, none);
+                    r.width = rect.width - 50;
+                    r.x += 42;
+                    Label(r, label, boldLabel);
                 }
                 else
                 {
-                    PropertyField(reorderableListRect, reorderableListSerializedProperty, none);
+                    PropertyField(r, prop, none);
                 }
             };
-            OnListChanged(ref list);
+            OnChangedCallback(ref list);
         }
 
         private void OnDisable()
