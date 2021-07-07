@@ -45,8 +45,10 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
         private static List<UnityObject> _fromStates;
         private static List<List<TransitionDisplay>> _transitionsByFromStates;
 
-        private void Awake()
+        private void OnEnable()
         {
+            #region Initialization
+
             _toggledIndex = -1;
             hasCachedStateEditor = false;
             hasFromStates = false;
@@ -55,11 +57,10 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             addedSerializedTransition = new SerializedTransition(addedTransition.FindProperty(Item));
             addedList = new ReorderableList(addedTransition, addedSerializedTransition.Conditions);
             addedToggle = false;
-            OnHelperInitialize(ref addedList, true, false);
-        }
+            InitializeTransition(ref addedList, false);
 
-        private void OnEnable()
-        {
+            #endregion
+
             undoRedoPerformed += Reset;
             Reset();
         }
@@ -110,12 +111,6 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             ToggledIndex();
         }
 
-        private void ToggledState()
-        {
-            hasToggledState = _toggledIndex > -1 && hasFromStates;
-            if (hasToggledState) toggledState = _fromStates[_toggledIndex];
-        }
-
         private void ToggledIndex()
         {
             _toggledIndex = hasToggledState ? _fromStates.IndexOf(toggledState) : -1;
@@ -146,6 +141,12 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             _transitions.MoveArrayElement(transitionIndex, targetIndex);
             ApplyModifications(MovedFromState(_fromStates[index].name, up));
             ToggledIndex();
+        }
+
+        private void ToggledState()
+        {
+            hasToggledState = _toggledIndex > -1 && hasFromStates;
+            if (hasToggledState) toggledState = _fromStates[_toggledIndex];
         }
 
         private void ReorderTransition(SerializedTransition serializedTransition, bool up)
@@ -198,42 +199,27 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             PropertyField(pos, prop, none);
         }
 
-        private static void OnPropertyField(Rect rect, SerializedProperty prop)
-        {
-            PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
-                prop.FindPropertyRelative(Operator), none);
-        }
-
-        private static void OnHelperInitialize(ref ReorderableList list, bool addTransitionHelper,
-            bool transitionDisplay)
+        private static void InitializeTransition(ref ReorderableList list, bool transitionDisplay)
         {
             list.elementHeight *= 2.3f;
             list.headerHeight = 1f;
             list.onAddCallback += l =>
             {
-                var count = l.count;
-                l.serializedProperty.InsertArrayElementAtIndex(count);
-                var prop = l.serializedProperty.GetArrayElementAtIndex(count);
+                OnAddCallBack(ref l, out var prop);
                 prop.FindPropertyRelative(Condition).objectReferenceValue = null;
                 prop.FindPropertyRelative(ExpectedResult).enumValueIndex = 0;
                 prop.FindPropertyRelative(Operator).enumValueIndex = 0;
             };
-            var helperList = list;
+            var cachedList = list;
             list.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                var prop = helperList.serializedProperty.GetArrayElementAtIndex(index);
+                var prop = cachedList.serializedProperty.GetArrayElementAtIndex(index);
                 rect = new Rect(rect.x, rect.y + 2.5f, rect.width, singleLineHeight);
                 var condition = prop.FindPropertyRelative(Condition);
                 if (condition.objectReferenceValue != null)
                 {
                     var label = condition.objectReferenceValue.name;
                     Label(rect, If);
-                    if (addTransitionHelper)
-                    {
-                        Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), label, boldLabel);
-                        PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), condition, none);
-                    }
-
                     if (transitionDisplay)
                     {
                         var r = rect;
@@ -244,6 +230,11 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                         r.width = rect.width - 120;
                         Label(r, label, boldLabel);
                     }
+                    else
+                    {
+                        Label(new Rect(rect.x + 20, rect.y, rect.width, rect.height), label, boldLabel);
+                        PropertyField(new Rect(rect.x + rect.width - 180, rect.y, 20, rect.height), condition, none);
+                    }
                 }
                 else
                 {
@@ -253,8 +244,9 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 LabelField(new Rect(rect.x + rect.width - 80, rect.y, 20, rect.height), Is);
                 PropertyField(new Rect(rect.x + rect.width - 60, rect.y, 60, rect.height),
                     prop.FindPropertyRelative(ExpectedResult), none);
-                if (addTransitionHelper) OnPropertyField(rect, prop);
-                if (transitionDisplay && index < helperList.count - 1) OnPropertyField(rect, prop);
+                if (transitionDisplay && index < cachedList.count - 1 || !transitionDisplay)
+                    PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
+                        prop.FindPropertyRelative(Operator), none);
             };
             OnChangedCallback(ref list);
         }
@@ -342,7 +334,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                                 return;
                             }
 
-                            // Display Helper
+                            #region Display Transition
+
                             var displayedStateRect = stateRect;
                             var listHeight = transition.List.GetHeight();
                             displayedStateRect.height = singleLineHeight + 10 + listHeight;
@@ -366,7 +359,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                                 transitions.FindIndex(t => t.Index == transition.SerializedTransition.Index);
                             if (Button(buttonRect, IconContent(ToolbarMinus)))
                             {
-                                // Remove Transition
+                                #region Remove Transition
+
                                 var serializedTransition = transition.SerializedTransition;
                                 OnModifyTransition(serializedTransition, out var stateIndex, out var stateTransitions,
                                     out var index);
@@ -382,6 +376,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                                 if (count > 1) _toggledIndex = stateIndex;
                                 stateChanged = true;
                                 continue;
+
+                                #endregion
                             }
 
                             buttonRect.x -= 35;
@@ -423,6 +419,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                             displayedStateRect.height = listHeight;
                             transition.List.DoList(displayedStateRect);
                             Separator();
+
+                            #endregion
                         }
 
                         if (EndChangeCheck()) serializedObject.ApplyModifiedProperties();
@@ -441,8 +439,6 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 var position = rect;
                 position.x += 8;
                 position.width -= 16;
-                var addedRect = position;
-                var addedListHeight = addedList.GetHeight();
                 switch (addedToggle)
                 {
                     case false:
@@ -459,6 +455,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                     }
                     case true:
                     {
+                        var addedRect = position;
+                        var addedListHeight = addedList.GetHeight();
                         position.height = addedListHeight + singleLineHeight * 4;
                         DrawRect(position, ContentStyle.LightGray);
                         GetRect(position.width, position.height);
@@ -623,7 +621,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 SerializedTransition = serializedTransition;
                 List = new ReorderableList(SerializedTransition.Transition.serializedObject,
                     SerializedTransition.Conditions, true, false, true, true);
-                OnHelperInitialize(ref List, false, true);
+                InitializeTransition(ref List, true);
             }
         }
     }

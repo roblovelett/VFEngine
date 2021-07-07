@@ -18,5 +18,12 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 DrawRect(rect, index % 2 != 0 ? ZebraDark : ZebraLight);
             };
         }
+
+        internal static void OnAddCallBack(ref ReorderableList list, out SerializedProperty prop)
+        {
+            var count = list.count;
+            list.serializedProperty.InsertArrayElementAtIndex(count);
+            prop = list.serializedProperty.GetArrayElementAtIndex(count);
+        }
     }
 }

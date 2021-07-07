@@ -30,10 +30,8 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             list.drawHeaderCallback += rect => Label(rect, Actions);
             list.onAddCallback += l =>
             {
-                var count = l.count;
-                l.serializedProperty.InsertArrayElementAtIndex(count);
-                var prop = l.serializedProperty.GetArrayElementAtIndex(count);
-                prop.objectReferenceValue = null;
+                OnAddCallBack(ref l, out var prop);
+                prop.FindPropertyRelative(Condition).objectReferenceValue = null;
             };
             list.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
