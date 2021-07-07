@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
@@ -13,10 +12,8 @@ using UnityObject = UnityEngine.Object;
 // ReSharper disable UnusedParameter.Local
 namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
-    using static EditorSkin;
-    using static FontStyle;
-    using static TextAnchor;
     using static MessageType;
+    using static List;
     using static EditorGUIUtility;
     using static EditorGUI;
     using static EditorStyles;
@@ -26,7 +23,6 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
     using static EditorGUILayout;
     using static GUILayoutUtility;
     using static EditorText;
-    using static GC;
     using static GUI;
     using static GUIContent;
     using static TransitionTableSO;
@@ -34,29 +30,36 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
     [CustomEditor(typeof(TransitionTableSO))]
     internal class TransitionTableEditor : EditorUnity
     {
-        private int toggledIndex;
         private bool displayStateEditor;
         private bool hasCachedStateEditor;
         private bool hasFromStates;
         private bool hasToggledState;
+        private bool addedToggle;
         private UnityObject toggledState;
         private EditorUnity cachedStateEditor;
-        private SerializedProperty transitions;
-        private AddTransitionHelper addTransition;
+        private SerializedTransition addedSerializedTransition;
+        private SerializedObject addedTransition;
+        private ReorderableList addedList;
+        private static int _toggledIndex;
+        private static SerializedProperty _transitions;
         private static List<UnityObject> _fromStates;
         private static List<List<TransitionDisplay>> _transitionsByFromStates;
 
         private void Awake()
         {
-            toggledIndex = -1;
+            _toggledIndex = -1;
             hasCachedStateEditor = false;
             hasFromStates = false;
             hasToggledState = false;
+            addedTransition = new SerializedObject(CreateInstance<TransitionItemSO>());
+            addedSerializedTransition = new SerializedTransition(addedTransition.FindProperty(Item));
+            addedList = new ReorderableList(addedTransition, addedSerializedTransition.Conditions);
+            addedToggle = false;
+            OnHelperInitialize(ref addedList, true, false);
         }
 
         private void OnEnable()
         {
-            addTransition = new AddTransitionHelper(this);
             undoRedoPerformed += Reset;
             Reset();
         }
@@ -64,19 +67,18 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
         private void OnDisable()
         {
             undoRedoPerformed -= Reset;
-            addTransition?.Dispose();
         }
 
         private void Reset()
         {
             serializedObject.Update();
             ToggledState();
-            transitions = serializedObject.FindProperty(TransitionsProperty);
+            _transitions = serializedObject.FindProperty(TransitionsProperty);
             var groupedTransitions = new Dictionary<UnityObject, List<TransitionDisplay>>();
-            var count = transitions.arraySize;
+            var count = _transitions.arraySize;
             for (var i = 0; i < count; i++)
             {
-                var serializedTransition = new SerializedTransition(transitions, i);
+                var serializedTransition = new SerializedTransition(_transitions, i);
                 var fromStateError = serializedTransition.FromState.objectReferenceValue == null;
                 var toStateError = serializedTransition.ToState.objectReferenceValue != null;
                 var hasError = fromStateError || toStateError;
@@ -86,7 +88,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                         ? FromStateError(serializedObject.targetObject.name)
                         : TargetStateError(serializedObject.targetObject.name);
                     LogError(error);
-                    transitions.DeleteArrayElementAtIndex(i);
+                    _transitions.DeleteArrayElementAtIndex(i);
                     ApplyModifications(InvalidTransitionDeleted);
                     return;
                 }
@@ -110,13 +112,13 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 
         private void ToggledState()
         {
-            hasToggledState = toggledIndex > -1 && hasFromStates;
-            if (hasToggledState) toggledState = _fromStates[toggledIndex];
+            hasToggledState = _toggledIndex > -1 && hasFromStates;
+            if (hasToggledState) toggledState = _fromStates[_toggledIndex];
         }
 
         private void ToggledIndex()
         {
-            toggledIndex = hasToggledState ? _fromStates.IndexOf(toggledState) : -1;
+            _toggledIndex = hasToggledState ? _fromStates.IndexOf(toggledState) : -1;
         }
 
         private void DisplayStateEditor(UnityObject state)
@@ -141,14 +143,14 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             var fromStateTransitions = _transitionsByFromStates[index];
             var transitionIndex = fromStateTransitions[0].SerializedTransition.Index;
             var targetIndex = _transitionsByFromStates[index - 1][0].SerializedTransition.Index;
-            transitions.MoveArrayElement(transitionIndex, targetIndex);
+            _transitions.MoveArrayElement(transitionIndex, targetIndex);
             ApplyModifications(MovedFromState(_fromStates[index].name, up));
             ToggledIndex();
         }
 
         private void ReorderTransition(SerializedTransition serializedTransition, bool up)
         {
-            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
+            OnModifyTransition(serializedTransition, out var stateIndex, out var stateTransitions, out var index);
             int currentIndex;
             int targetIndex;
             if (up)
@@ -162,9 +164,9 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                 targetIndex = serializedTransition.Index;
             }
 
-            transitions.MoveArrayElement(currentIndex, targetIndex);
+            _transitions.MoveArrayElement(currentIndex, targetIndex);
             ApplyModifications(MovedTransition(serializedTransition.ToState.objectReferenceValue.name, up));
-            toggledIndex = stateIndex;
+            _toggledIndex = stateIndex;
         }
 
         private void ApplyModifications(string msg)
@@ -185,6 +187,21 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             EditorGUILayout.EndFoldoutHeaderGroup();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+        }
+
+        private static void StatePropField(Rect pos, string label, SerializedProperty prop)
+        {
+            pos.height = singleLineHeight;
+            LabelField(pos, label);
+            pos.x += 40;
+            pos.width /= 4;
+            PropertyField(pos, prop, none);
+        }
+
+        private static void OnPropertyField(Rect rect, SerializedProperty prop)
+        {
+            PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
+                prop.FindPropertyRelative(Operator), none);
         }
 
         private static void OnHelperInitialize(ref ReorderableList list, bool addTransitionHelper,
@@ -242,38 +259,14 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             OnChangedCallback(ref list);
         }
 
-        private static void OnPropertyField(Rect rect, SerializedProperty prop)
-        {
-            PropertyField(new Rect(rect.x + 20, rect.y + singleLineHeight + 5, 60, rect.height),
-                prop.FindPropertyRelative(Operator), none);
-        }
-
-        private static int StateIndex(SerializedTransition serializedTransition,
+        private static void OnModifyTransition(SerializedTransition serializedTransition, out int stateIndex,
             out List<TransitionDisplay> stateTransitions, out int index)
         {
-            var stateIndex = _fromStates.IndexOf(serializedTransition.FromState.objectReferenceValue);
+            stateIndex = _fromStates.IndexOf(serializedTransition.FromState.objectReferenceValue);
             stateTransitions = _transitionsByFromStates[stateIndex];
             index = stateTransitions.FindIndex(t => t.SerializedTransition.Index == serializedTransition.Index);
-            return stateIndex;
         }
 
-        private static bool GUIButton(Rect position, string icon)
-        {
-            return Button(position, IconContent(icon));
-        }
-
-//=============================================================================================================================
-        internal static void OnChangedCallback(ref ReorderableList list)
-        {
-            list.onChangedCallback += l => l.serializedProperty.serializedObject.ApplyModifiedProperties();
-            list.drawElementBackgroundCallback += (rect, index, isActive, isFocused) =>
-            {
-                if (isFocused) DrawRect(rect, ContentStyle.Focused);
-                DrawRect(rect, index % 2 != 0 ? ContentStyle.ZebraDark : ContentStyle.ZebraLight);
-            };
-        }
-
-//=============================================================================================================================
         public override void OnInspectorGUI()
         {
             if (!displayStateEditor)
@@ -296,15 +289,15 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                         headerRect.x += 5;
                         var toggleRect = headerRect;
                         toggleRect.width -= 140;
-                        toggledIndex = BeginFoldoutHeaderGroup(toggleRect, toggledIndex == i, label,
+                        _toggledIndex = BeginFoldoutHeaderGroup(toggleRect, _toggledIndex == i, label,
                                 ContentStyle.StateListStyle) ? i :
-                            toggledIndex == i ? -1 : toggledIndex;
+                            _toggledIndex == i ? -1 : _toggledIndex;
                         Separator();
                         EditorGUILayout.EndVertical();
                         var buttonRect = new Rect(headerRect.width - 25, headerRect.y, 35, 20);
                         if (i < _fromStates.Count - 1)
                         {
-                            if (GUIButton(buttonRect, ScrollDown))
+                            if (Button(buttonRect, IconContent(ScrollDown)))
                             {
                                 ReorderState(i, false);
                                 OnEarlyOut();
@@ -316,7 +309,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 
                         if (i > 0)
                         {
-                            if (GUIButton(buttonRect, ScrollUp))
+                            if (Button(buttonRect, IconContent(ScrollUp)))
                             {
                                 ReorderState(i, true);
                                 OnEarlyOut();
@@ -326,7 +319,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                             buttonRect.x -= 40;
                         }
 
-                        if (GUIButton(buttonRect, SceneViewTools))
+                        if (Button(buttonRect, IconContent(SceneViewTools)))
                         {
                             DisplayStateEditor(fromStateTransitions[0].SerializedTransition.FromState
                                 .objectReferenceValue);
@@ -335,19 +328,100 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                         }
                     }
                     EditorGUILayout.EndHorizontal();
-                    if (toggledIndex == i)
+                    if (_toggledIndex == i)
                     {
                         BeginChangeCheck();
                         stateRect.y += singleLineHeight * 2;
+                        var stateChanged = false;
                         foreach (var transition in fromStateTransitions)
                         {
-                            if (transition.Display(ref stateRect))
+                            if (stateChanged)
                             {
                                 EndChangeCheck();
                                 EarlyOut();
                                 return;
                             }
 
+                            // Display Helper
+                            var displayedStateRect = stateRect;
+                            var listHeight = transition.List.GetHeight();
+                            displayedStateRect.height = singleLineHeight + 10 + listHeight;
+                            GetRect(displayedStateRect.width, displayedStateRect.height);
+                            stateRect.y += displayedStateRect.height + 5;
+                            displayedStateRect.x += 5;
+                            displayedStateRect.width -= 10;
+                            displayedStateRect.height -= listHeight;
+                            DrawRect(displayedStateRect, ContentStyle.DarkGray);
+                            displayedStateRect.x += 3;
+                            LabelField(displayedStateRect, To);
+                            displayedStateRect.x += 20;
+                            LabelField(displayedStateRect,
+                                transition.SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
+                            var buttonRect = new Rect(displayedStateRect.width - 25, displayedStateRect.y + 5, 30, 18);
+                            var fromState = transition.SerializedTransition.FromState.objectReferenceValue;
+                            var transitions = _transitionsByFromStates[_fromStates.IndexOf(fromState)]
+                                .Select(t => t.SerializedTransition).ToList();
+                            var transitionsIndex = transitions.Count - 1;
+                            var serializedTransitionIndex =
+                                transitions.FindIndex(t => t.Index == transition.SerializedTransition.Index);
+                            if (Button(buttonRect, IconContent(ToolbarMinus)))
+                            {
+                                // Remove Transition
+                                var serializedTransition = transition.SerializedTransition;
+                                OnModifyTransition(serializedTransition, out var stateIndex, out var stateTransitions,
+                                    out var index);
+                                var count = stateTransitions.Count;
+                                var deleteIndex = transition.SerializedTransition.Index;
+                                if (index == 0 && count > 1)
+                                    _transitions.MoveArrayElement(stateTransitions[1].SerializedTransition.Index,
+                                        deleteIndex++);
+                                _transitions.DeleteArrayElementAtIndex(deleteIndex);
+                                ApplyModifications(DeletedTransition(
+                                    serializedTransition.FromState.objectReferenceValue.name,
+                                    serializedTransition.ToState.objectReferenceValue.name));
+                                if (count > 1) _toggledIndex = stateIndex;
+                                stateChanged = true;
+                                continue;
+                            }
+
+                            buttonRect.x -= 35;
+                            if (serializedTransitionIndex < transitionsIndex)
+                            {
+                                if (Button(buttonRect, IconContent(ScrollDown)))
+                                {
+                                    transition.Editor.ReorderTransition(transition.SerializedTransition, false);
+                                    stateChanged = true;
+                                    continue;
+                                }
+
+                                buttonRect.x -= 35;
+                            }
+
+                            if (serializedTransitionIndex > 0)
+                            {
+                                if (Button(buttonRect, IconContent(ScrollUp)))
+                                {
+                                    transition.Editor.ReorderTransition(transition.SerializedTransition, true);
+                                    stateChanged = true;
+                                    continue;
+                                }
+
+                                buttonRect.x -= 35;
+                            }
+
+                            if (Button(buttonRect, IconContent(SceneViewTools)))
+                            {
+                                transition.Editor.DisplayStateEditor(transition.SerializedTransition.ToState
+                                    .objectReferenceValue);
+                                stateChanged = true;
+                                continue;
+                            }
+
+                            displayedStateRect.x = stateRect.x + 5;
+                            displayedStateRect.y += displayedStateRect.height;
+                            displayedStateRect.width = stateRect.width - 10;
+                            displayedStateRect.height = listHeight;
+                            transition.List.DoList(displayedStateRect);
                             Separator();
                         }
 
@@ -361,8 +435,121 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 
                 var rect = EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.Space(rect.width - 55);
-                addTransition.Display(rect);
+
+                #region Add Transition Button
+
+                var position = rect;
+                position.x += 8;
+                position.width -= 16;
+                var addedRect = position;
+                var addedListHeight = addedList.GetHeight();
+                switch (addedToggle)
+                {
+                    case false:
+                    {
+                        position.height = singleLineHeight;
+                        GetRect(position.width, position.height);
+                        if (Button(position, AddTransitionButton))
+                        {
+                            addedToggle = true;
+                            addedSerializedTransition.ClearProperties();
+                        }
+
+                        break;
+                    }
+                    case true:
+                    {
+                        position.height = addedListHeight + singleLineHeight * 4;
+                        DrawRect(position, ContentStyle.LightGray);
+                        GetRect(position.width, position.height);
+                        position.y += 10;
+                        position.x += 20;
+                        StatePropField(position, From, addedSerializedTransition.FromState);
+                        position.x = addedRect.width / 2 + 20;
+                        StatePropField(position, To, addedSerializedTransition.ToState);
+                        position.y += 30;
+                        position.x = addedRect.x + 5;
+                        position.height = addedListHeight;
+                        position.width -= 10;
+                        addedList.DoList(position);
+                        position.y += position.height + 5;
+                        position.height = singleLineHeight;
+                        position.width = addedRect.width / 2 - 20;
+                        if (Button(position, AddTransitionButton))
+                        {
+                            if (addedSerializedTransition.FromState.objectReferenceValue == null)
+                            {
+                                LogException(new ArgumentNullException(FromStateProperty));
+                            }
+                            else if (addedSerializedTransition.ToState.objectReferenceValue == null)
+                            {
+                                LogException(new ArgumentNullException(ToStateProperty));
+                            }
+                            else if (addedSerializedTransition.FromState.objectReferenceValue ==
+                                     addedSerializedTransition.ToState.objectReferenceValue)
+                            {
+                                LogException(new InvalidOperationException(SameStateError));
+                            }
+                            else
+                            {
+                                bool hasExistingTransition;
+                                SerializedTransition serializedTransition;
+                                var fromIndex =
+                                    _fromStates.IndexOf(addedSerializedTransition.FromState.objectReferenceValue);
+                                var toIndex = _transitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
+                                    transitionHelper.SerializedTransition.ToState.objectReferenceValue ==
+                                    addedSerializedTransition.ToState.objectReferenceValue);
+                                if (fromIndex < 0) hasExistingTransition = false;
+                                else hasExistingTransition = toIndex >= 0;
+                                if (hasExistingTransition)
+                                {
+                                    serializedTransition = _transitionsByFromStates[fromIndex][toIndex]
+                                        .SerializedTransition;
+                                }
+                                else
+                                {
+                                    var count = _transitions.arraySize;
+                                    _transitions.InsertArrayElementAtIndex(count);
+                                    serializedTransition =
+                                        new SerializedTransition(_transitions.GetArrayElementAtIndex(count));
+                                    serializedTransition.ClearProperties();
+                                    serializedTransition.FromState.objectReferenceValue =
+                                        addedSerializedTransition.FromState.objectReferenceValue;
+                                    serializedTransition.ToState.objectReferenceValue =
+                                        addedSerializedTransition.ToState.objectReferenceValue;
+                                }
+
+                                for (int i = 0, j = serializedTransition.Conditions.arraySize;
+                                    i < addedSerializedTransition.Conditions.arraySize;
+                                    i++, j++)
+                                {
+                                    serializedTransition.Conditions.InsertArrayElementAtIndex(j);
+                                    var cond = serializedTransition.Conditions.GetArrayElementAtIndex(j);
+                                    var srcCond = addedSerializedTransition.Conditions.GetArrayElementAtIndex(i);
+                                    cond.FindPropertyRelative(ExpectedResult).enumValueIndex =
+                                        srcCond.FindPropertyRelative(ExpectedResult).enumValueIndex;
+                                    cond.FindPropertyRelative(Operator).enumValueIndex =
+                                        srcCond.FindPropertyRelative(Operator).enumValueIndex;
+                                    cond.FindPropertyRelative(Condition).objectReferenceValue =
+                                        srcCond.FindPropertyRelative(Condition).objectReferenceValue;
+                                }
+
+                                ApplyModifications(AddedTransition(serializedTransition.FromState.name,
+                                    serializedTransition.ToState.name));
+                                _toggledIndex = fromIndex >= 0 ? fromIndex : _fromStates.Count - 1;
+                                addedToggle = false;
+                            }
+                        }
+
+                        position.x += addedRect.width / 2;
+                        if (Button(position, Cancel)) addedToggle = false;
+                        break;
+                    }
+                }
+
                 EditorGUILayout.EndHorizontal();
+
+                #endregion
             }
             else
             {
@@ -419,266 +606,24 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
             }
         }
 
-        private class AddTransitionHelper : IDisposable
+        private class TransitionItemSO : ScriptableObject
         {
-            private SerializedTransition SerializedTransition { get; }
-            private readonly SerializedObject transition;
-            private readonly ReorderableList list;
-            private bool toggle;
-
-            internal AddTransitionHelper(TransitionTableEditor editorInternal)
-            {
-                SerializedTransition = new SerializedTransition(transition.FindProperty(Item));
-                transition = new SerializedObject(CreateInstance<TransitionItemSO>());
-                list = new ReorderableList(transition, SerializedTransition.Conditions);
-                OnHelperInitialize(ref list, true, false);
-            }
-
-            internal void Display(Rect position)
-            {
-                var rect = position;
-                var listHeight = list.GetHeight();
-                position.x += 8;
-                position.width -= 16;
-                if (!toggle)
-                {
-                    position.height = singleLineHeight;
-                    GetRect(position.width, position.height);
-                    if (!Button(position, AddTransitionButton)) return;
-                    toggle = true;
-                    SerializedTransition.ClearProperties();
-                    return;
-                }
-
-                position.height = listHeight + singleLineHeight * 4;
-                DrawRect(position, ContentStyle.LightGray);
-                GetRect(position.width, position.height);
-                position.y += 10;
-                position.x += 20;
-                StatePropField(position, From, SerializedTransition.FromState);
-                position.x = rect.width / 2 + 20;
-                StatePropField(position, To, SerializedTransition.ToState);
-                position.y += 30;
-                position.x = rect.x + 5;
-                position.height = listHeight;
-                position.width -= 10;
-                list.DoList(position);
-                position.y += position.height + 5;
-                position.height = singleLineHeight;
-                position.width = rect.width / 2 - 20;
-                if (Button(position, AddTransitionButton))
-                {
-                    if (SerializedTransition.FromState.objectReferenceValue == null)
-                        LogException(new ArgumentNullException(FromStateProperty));
-                    else if (SerializedTransition.ToState.objectReferenceValue == null)
-                        LogException(new ArgumentNullException(ToStateProperty));
-                    else if (SerializedTransition.FromState.objectReferenceValue ==
-                             SerializedTransition.ToState.objectReferenceValue)
-                        LogException(new InvalidOperationException(SameStateError));
-                    else
-                        //editor.AddTransition(SerializedTransition);
-                        /*
-                            private void AddTransition(SerializedTransition source)
-                            {
-                                bool hasExistingTransition;
-                                SerializedTransition transition;
-                                var fromIndex = _fromStates.IndexOf(source.FromState.objectReferenceValue);
-                                var toIndex = _transitionsByFromStates[fromIndex].FindIndex(transitionHelper =>
-                                    transitionHelper.SerializedTransition.ToState.objectReferenceValue ==
-                                    source.ToState.objectReferenceValue);
-                                if (fromIndex < 0) hasExistingTransition = false;
-                                else hasExistingTransition = toIndex >= 0;
-                                if (hasExistingTransition)
-                                {
-                                    transition = _transitionsByFromStates[fromIndex][toIndex].SerializedTransition;
-                                }
-                                else
-                                {
-                                    var count = transitions.arraySize;
-                                    transitions.InsertArrayElementAtIndex(count);
-                                    transition = new SerializedTransition(transitions.GetArrayElementAtIndex(count));
-                                    transition.ClearProperties();
-                                    transition.FromState.objectReferenceValue = source.FromState.objectReferenceValue;
-                                    transition.ToState.objectReferenceValue = source.ToState.objectReferenceValue;
-                                }
-    
-                                for (int i = 0, j = transition.Conditions.arraySize; i < source.Conditions.arraySize; i++, j++)
-                                {
-                                    transition.Conditions.InsertArrayElementAtIndex(j);
-                                    var cond = transition.Conditions.GetArrayElementAtIndex(j);
-                                    var srcCond = source.Conditions.GetArrayElementAtIndex(i);
-                                    cond.FindPropertyRelative(ExpectedResult).enumValueIndex =
-                                        srcCond.FindPropertyRelative(ExpectedResult).enumValueIndex;
-                                    cond.FindPropertyRelative(Operator).enumValueIndex =
-                                        srcCond.FindPropertyRelative(Operator).enumValueIndex;
-                                    cond.FindPropertyRelative(Condition).objectReferenceValue =
-                                        srcCond.FindPropertyRelative(Condition).objectReferenceValue;
-                                }
-    
-                                ApplyModifications(AddedTransition(transition.FromState.name, transition.ToState.name));
-                                toggledIndex = fromIndex >= 0 ? fromIndex : _fromStates.Count - 1;
-                            }
-                            */ toggle = false;
-                }
-
-                position.x += rect.width / 2;
-                if (Button(position, Cancel)) toggle = false;
-            }
-
-            private static void StatePropField(Rect pos, string label, SerializedProperty prop)
-            {
-                pos.height = singleLineHeight;
-                LabelField(pos, label);
-                pos.x += 40;
-                pos.width /= 4;
-                PropertyField(pos, prop, none);
-            }
-
-            public void Dispose()
-            {
-                DestroyImmediate(transition.targetObject);
-                transition.Dispose();
-                SuppressFinalize(this);
-            }
-
-            private class TransitionItemSO : ScriptableObject
-            {
-                [SerializeField] internal TransitionItem item = default(TransitionItem);
-            }
+            [SerializeField] internal TransitionItem item = default(TransitionItem);
         }
 
         private class TransitionDisplay
         {
             internal SerializedTransition SerializedTransition { get; }
-            private readonly ReorderableList list;
-            private readonly TransitionTableEditor editor;
+            internal readonly ReorderableList List;
+            internal readonly TransitionTableEditor Editor;
 
-            [SuppressMessage("ReSharper", "UnusedParameter.Local")]
             internal TransitionDisplay(SerializedTransition serializedTransition, TransitionTableEditor editorInternal)
             {
-                editor = editorInternal;
+                Editor = editorInternal;
                 SerializedTransition = serializedTransition;
-                list = new ReorderableList(SerializedTransition.Transition.serializedObject,
+                List = new ReorderableList(SerializedTransition.Transition.serializedObject,
                     SerializedTransition.Conditions, true, false, true, true);
-                OnHelperInitialize(ref list, false, true);
-            }
-
-            internal bool Display(ref Rect position)
-            {
-                var rect = position;
-                var listHeight = list.GetHeight();
-                rect.height = singleLineHeight + 10 + listHeight;
-                GetRect(rect.width, rect.height);
-                position.y += rect.height + 5;
-                rect.x += 5;
-                rect.width -= 10;
-                rect.height -= listHeight;
-                DrawRect(rect, ContentStyle.DarkGray);
-                rect.x += 3;
-                LabelField(rect, To);
-                rect.x += 20;
-                LabelField(rect, SerializedTransition.ToState.objectReferenceValue.name, boldLabel);
-                var buttonRect = new Rect(rect.width - 25, rect.y + 5, 30, 18);
-                var transitions =
-                    _transitionsByFromStates[_fromStates.IndexOf(SerializedTransition.FromState.objectReferenceValue)]
-                        .Select(t => t.SerializedTransition).ToList();
-                var transitionsIndex = transitions.Count - 1;
-                var serializedTransitionIndex = transitions.FindIndex(t => t.Index == SerializedTransition.Index);
-                if (GUIButton(buttonRect, ToolbarMinus))
-                    //editor.RemoveTransition(SerializedTransition);
-                    /*
-                        private void RemoveTransition(SerializedTransition serializedTransition)
-                        {
-                            var stateIndex = StateIndex(serializedTransition, out var stateTransitions, out var index);
-                            var count = stateTransitions.Count;
-                            var deleteIndex = serializedTransition.Index;
-                            if (index == 0 && count > 1)
-                                transitions.MoveArrayElement(stateTransitions[1].SerializedTransition.Index, deleteIndex++);
-                            transitions.DeleteArrayElementAtIndex(deleteIndex);
-                            ApplyModifications(DeletedTransition(serializedTransition.FromState.objectReferenceValue.name,
-                                serializedTransition.ToState.objectReferenceValue.name));
-                            if (count > 1) toggledIndex = stateIndex;
-                        }
-                        */ return true;
-                buttonRect.x -= 35;
-                if (serializedTransitionIndex < transitionsIndex)
-                {
-                    if (GUIButton(buttonRect, ScrollDown))
-                    {
-                        editor.ReorderTransition(SerializedTransition, false);
-                        return true;
-                    }
-
-                    buttonRect.x -= 35;
-                }
-
-                if (serializedTransitionIndex > 0)
-                {
-                    if (GUIButton(buttonRect, ScrollUp))
-                    {
-                        editor.ReorderTransition(SerializedTransition, true);
-                        return true;
-                    }
-
-                    buttonRect.x -= 35;
-                }
-
-                if (GUIButton(buttonRect, SceneViewTools))
-                {
-                    editor.DisplayStateEditor(SerializedTransition.ToState.objectReferenceValue);
-                    return true;
-                }
-
-                rect.x = position.x + 5;
-                rect.y += rect.height;
-                rect.width = position.width - 10;
-                rect.height = listHeight;
-                list.DoList(rect);
-                return false;
-            }
-        }
-
-        private static class ContentStyle
-        {
-            private static bool _initialised;
-            private static RectOffset _padding;
-            private static RectOffset _leftPadding;
-            private static RectOffset _margin;
-            private static GUIStyleState _guiStyleStateNormal;
-            internal static Color DarkGray { get; private set; }
-            internal static Color LightGray { get; private set; }
-            internal static Color Focused { get; private set; }
-            internal static Color ZebraDark { get; private set; }
-            internal static Color ZebraLight { get; private set; }
-            internal static GUIStyle StateListStyle { get; private set; }
-            internal static GUIStyle WithPaddingAndMarginsStyle { get; private set; }
-
-            [InitializeOnLoadMethod]
-            internal static void Initialize()
-            {
-                if (_initialised) return;
-                _initialised = !_initialised;
-                DarkGray = isProSkin ? new Color(0.283f, 0.283f, 0.283f) : new Color(0.7f, 0.7f, 0.7f);
-                LightGray = isProSkin ? new Color(0.33f, 0.33f, 0.33f) : new Color(0.8f, 0.8f, 0.8f);
-                ZebraDark = new Color(0.4f, 0.4f, 0.4f, 0.1f);
-                ZebraLight = new Color(0.8f, 0.8f, 0.8f, 0.1f);
-                Focused = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                _padding = new RectOffset(5, 5, 5, 5);
-                _leftPadding = new RectOffset(10, 0, 0, 0);
-                _margin = new RectOffset(8, 8, 8, 8);
-                WithPaddingAndMarginsStyle = new GUIStyle {padding = _padding, margin = _margin};
-                _guiStyleStateNormal = GetBuiltinSkin(Inspector).label.normal;
-                _guiStyleStateNormal.textColor =
-                    isProSkin ? new Color(.85f, .85f, .85f) : new Color(0.337f, 0.337f, 0.337f);
-                StateListStyle = new GUIStyle
-                {
-                    alignment = MiddleLeft,
-                    padding = _leftPadding,
-                    fontStyle = Bold,
-                    fontSize = 12,
-                    margin = _margin,
-                    normal = _guiStyleStateNormal
-                };
+                OnHelperInitialize(ref List, false, true);
             }
         }
     }

@@ -95,7 +95,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
         internal static readonly string ScriptIconContent = $"{Cs} Script Icon";
         internal static readonly string ActionTemplatePath = $"{TemplatesPath}{StatePath}{Action}{Txt}";
         internal static readonly string ConditionTemplatePath = $"{TemplatesPath}{StatePath}{Condition}{Txt}";
-        
+
         internal static readonly string InitOnlyAttributeMessage =
             $"Changes{ToLc}this parameter during Play mode won't be reflected{OnLc}existing {StateMachine}s";
 
@@ -141,17 +141,17 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
         {
             return $"label-{(isProSkin ? "pro" : "personal")}";
         }
-        
+
         internal static string TransitionTableName(string name)
         {
             return $"{TransitionTableProperty}{name}";
         }
-        
+
         internal static string TransitionError(string name, string fromStateName)
         {
             return $"{TransitionTableProperty}{name}{FromState}{fromStateName}";
         }
-        
+
         internal static string StateError(string name)
         {
             return $"{TransitionTable}{Nbsp}{name}{IsEmpty}";

@@ -1,8 +1,10 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
 {
+    using static AttributeTargets;
     using static MessageType;
     using static EditorGUI;
     using static EditorGUIUtility;
@@ -39,5 +41,10 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
                           standardVerticalSpacing * 4;
             return height;
         }
+    }
+
+    [AttributeUsage(Field)]
+    internal class InitOnlyAttribute : PropertyAttribute
+    {
     }
 }

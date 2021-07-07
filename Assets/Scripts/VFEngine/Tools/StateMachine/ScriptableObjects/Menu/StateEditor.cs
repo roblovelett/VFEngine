@@ -12,7 +12,7 @@ namespace VFEngine.Tools.StateMachine.ScriptableObjects.Menu
     using static EditorText;
     using static GUI;
     using static GUIContent;
-    using static TransitionTableEditor;
+    using static List;
 
     [CustomEditor(typeof(StateSO))]
     internal class StateEditor : EditorUnity
