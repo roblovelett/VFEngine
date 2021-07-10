@@ -1,79 +1,113 @@
-﻿// ReSharper disable MergeIntoPattern
+﻿using System.Collections.Generic;
+
+// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 namespace VFEngine.Tools.StateMachineSO
 {
-    public class StateTransition : IState
+    internal class StateTransition : IState
     {
+        private readonly int resultGroupsAmount;
+        private readonly bool[] results;
         private readonly State targetState;
         private readonly StateCondition[] conditions;
-        private readonly int[] resultGroups;
-        private readonly bool[] results;
 
-        internal StateTransition()
+        internal enum Input
         {
+            Enter,
+            Exit,
+            Get,
+            ClearConditionsCache
         }
 
-        public StateTransition(State targetState, StateCondition[] conditions, int[] resultGroups = null)
+        internal StateTransition(State targetState, StateCondition[] conditions,
+            IReadOnlyCollection<int> resultGroups = null)
         {
             this.targetState = targetState;
             this.conditions = conditions;
-            this.resultGroups = resultGroups != null && resultGroups.Length > 0 ? resultGroups : new int[1];
-            results = new bool[this.resultGroups.Length];
+            resultGroupsAmount = resultGroups?.Count ?? 1;
+            results = new bool[resultGroupsAmount];
         }
 
-        internal bool TryGetTransition(out State state)
+        void IState.Awake(StateMachine stateMachine)
         {
-            state = ShouldTransition() ? targetState : null;
-            return state != null;
-        }
-
-        /*public void Enter()
-        {
-            for (int i = 0; i < _conditions.Length; i++)
-                _conditions[i]._condition.Enter();
-        }
-
-        public void Exit()
-        {
-            for (int i = 0; i < _conditions.Length; i++)
-                _conditions[i]._condition.Exit();
-        }*/
-
-        // ReSharper disable Unity.PerformanceAnalysis
-        private bool ShouldTransition()
-        {
-#if UNITY_EDITOR
-            targetState.StateMachine.debugger.TransitionEvaluationBegin(targetState.OriginSO.name);
-#endif
-            var count = resultGroups.Length;
-            for (int i = 0, idx = 0; i < count && idx < conditions.Length; i++)
-            for (var j = 0; j < resultGroups[i]; j++, idx++)
-                results[i] = j == 0 ? conditions[idx].IsMet() : results[i] && conditions[idx].IsMet();
-            var ret = false;
-            for (var i = 0; i < count && !ret; i++) ret = results[i];
-#if UNITY_EDITOR
-            targetState.StateMachine.debugger.TransitionEvaluationEnd(ret, targetState.Actions);
-#endif
-            return ret;
-        }
-
-        internal void ClearConditionsCache()
-        {
-            for (var i = 0; i < conditions.Length; i++) conditions[i].Condition.ClearStatementCache();
         }
 
         void IState.Enter()
         {
-            //throw new System.NotImplementedException();
+            Transition(conditions, Input.Enter);
         }
 
         void IState.Update()
         {
-            //throw new System.NotImplementedException();
         }
 
         void IState.Exit()
         {
-            //throw new System.NotImplementedException();
+            Transition(conditions, Input.Exit);
+        }
+
+        private static void Transition(IEnumerable<StateCondition> stateConditions, Input input)
+        {
+            foreach (var transition in stateConditions)
+                switch (input)
+                {
+                    case Input.ClearConditionsCache:
+                        transition.Condition.ClearCache();
+                        break;
+                    case Input.Enter:
+                        ((IState) transition.Condition).Enter();
+                        break;
+                    case Input.Exit:
+                        ((IState) transition.Condition).Exit();
+                        break;
+                }
+        }
+
+        internal void ClearConditionsCache()
+        {
+            Transition(conditions, Input.ClearConditionsCache);
+        }
+
+        internal bool Get(out State state)
+        {
+            #region Can Transition
+
+#if UNITY_EDITOR
+            targetState.StateMachine.debugger.TransitionEvaluationBegin(targetState.OriginSO.name);
+#endif
+            var idx = 0;
+            var onFirstResult = true;
+            foreach (var _ in conditions)
+            {
+                if (onFirstResult)
+                {
+                    results[idx] = conditions[idx].IsMet();
+                    onFirstResult = false;
+                }
+
+                results[idx] = results[idx] && conditions[idx].IsMet();
+                idx++;
+                if (idx < resultGroupsAmount || idx < conditions.Length) continue;
+                idx = 0;
+                break;
+            }
+
+            var canTransition = false;
+            foreach (var _ in results)
+            {
+                canTransition = results[idx];
+                idx++;
+                if (idx >= resultGroupsAmount && !canTransition) break;
+            }
+
+#if UNITY_EDITOR
+            targetState.StateMachine.debugger.TransitionEvaluationEnd(canTransition, targetState.Actions);
+#endif
+
+            #endregion
+
+            state = canTransition ? targetState : null;
+            return state != null;
         }
     }
 }

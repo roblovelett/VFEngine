@@ -3,39 +3,31 @@ using UnityEngine;
 
 namespace VFEngine.Tools.StateMachineSO.ScriptableObjects
 {
-	[CreateAssetMenu(fileName = "New State", menuName = "State Machine SO/State", order = 0)]
-	public class StateSO : ScriptableObject
-	{
-		[SerializeField] private StateActionSO[] _actions = null;
+    [CreateAssetMenu(fileName = "New State", menuName = "State Machine SO/State", order = 0)]
+    internal class StateSO : ScriptableObject
+    {
+        [SerializeField] private StateActionSO[] actions;
 
-		/// <summary>
-		/// Will create a new state or return an existing one inside <paramref name="createdInstances"/>.
-		/// </summary>
-		internal State GetState(VFEngine.Tools.StateMachineSO.StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
-		{
-			if (createdInstances.TryGetValue(this, out var obj))
-				return (State)obj;
+        internal State GetState(StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
+        {
+            if (createdInstances.TryGetValue(this, out var @object)) return @object as State;
+            var state = new State();
+            createdInstances.Add(this, state);
+            state.OriginSO = this;
+            state.StateMachine = stateMachine;
+            state.Transitions = new StateTransition[0];
 
-			var state = new State();
-			createdInstances.Add(this, state);
+            #region State Actions
 
-			state.OriginSO = this;
-			state.StateMachine = stateMachine;
-			state.Transitions = new StateTransition[0];
-			state.Actions = GetActions(_actions, stateMachine, createdInstances);
+            var actionsAmount = actions.Length;
+            var stateActions = new StateAction[actionsAmount];
+            for (var idx = 0; idx < actionsAmount; idx++)
+                stateActions[idx] = actions[idx].Get(stateMachine, createdInstances);
+            state.Actions = stateActions;
 
-			return state;
-		}
+            #endregion
 
-		private static StateAction[] GetActions(StateActionSO[] scriptableActions,
-			VFEngine.Tools.StateMachineSO.StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
-		{
-			int count = scriptableActions.Length;
-			var actions = new StateAction[count];
-			for (int i = 0; i < count; i++)
-				actions[i] = scriptableActions[i].GetAction(stateMachine, createdInstances);
-
-			return actions;
-		}
-	}
+            return state;
+        }
+    }
 }

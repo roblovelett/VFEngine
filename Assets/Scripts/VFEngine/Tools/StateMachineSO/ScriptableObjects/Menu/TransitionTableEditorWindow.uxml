@@ -9,6 +9,7 @@
 
 		<engine:VisualElement class="table-list-container">
 			<engine:Label class="table-list-title" text="Transition Tables" />
+			<engine:HelpBox class="table-list-help-box" messageType="Info" />
 			<engine:ListView class="table-list" />
 		</engine:VisualElement>
 		

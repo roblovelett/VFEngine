@@ -1,83 +1,65 @@
-﻿
-using VFEngine.Tools.StateMachineSO.ScriptableObjects;
+﻿using VFEngine.Tools.StateMachineSO.ScriptableObjects;
 
 namespace VFEngine.Tools.StateMachineSO
 {
-	/// <summary>
-	/// Class that represents a conditional statement.
-	/// </summary>
-	public abstract class Condition : IState
-	{
-		private bool _isCached = false;
-		private bool _cachedStatement = default;
-		internal StateConditionSO _originSO;
+    public abstract class Condition : IState
+    {
+        private bool cached;
+        private bool statement;
+        protected internal StateConditionSO OriginSO { get; internal set; }
+        protected abstract bool Statement();
 
-		/// <summary>
-		/// Use this property to access shared data from the <see cref="StateConditionSO"/> that corresponds to this <see cref="Condition"/>
-		/// </summary>
-		protected StateConditionSO OriginSO => _originSO;
+        internal bool Get()
+        {
+            if (cached) return statement;
+            cached = true;
+            statement = Statement();
+            return statement;
+        }
 
-		/// <summary>
-		/// Specify the statement to evaluate.
-		/// </summary>
-		/// <returns></returns>
-		protected abstract bool Statement();
+        internal void ClearCache()
+        {
+            cached = false;
+        }
 
-		/// <summary>
-		/// Wrap the <see cref="Statement"/> so it can be cached.
-		/// </summary>
-		internal bool GetStatement()
-		{
-			if (!_isCached)
-			{
-				_isCached = true;
-				_cachedStatement = Statement();
-			}
+        void IState.Awake(StateMachine stateMachine)
+        {
+        }
 
-			return _cachedStatement;
-		}
+        void IState.Enter()
+        {
+        }
 
-		internal void ClearStatementCache()
-		{
-			_isCached = false;
-		}
+        void IState.Update()
+        {
+        }
 
-		/// <summary>
-		/// Awake is called when creating a new instance. Use this method to cache the components needed for the condition.
-		/// </summary>
-		/// <param name="stateMachine">The <see cref="StateMachine"/> this instance belongs to.</param>
-		public virtual void Awake(StateMachine stateMachine) { }
+        void IState.Exit()
+        {
+        }
+    }
 
-		public virtual void Enter() { }
-		void IState.Update() { }
-		public virtual void Exit() { }
-	}
+    internal readonly struct StateCondition
+    {
+        private readonly StateMachine stateMachine;
+        private readonly bool trueResult;
+        internal readonly Condition Condition;
 
-	/// <summary>
-	/// Struct containing a Condition and its expected result.
-	/// </summary>
-	public readonly struct StateCondition
-	{
-		internal readonly StateMachine StateMachine;
-		internal readonly Condition Condition;
-		internal readonly bool _expectedResult;
+        internal StateCondition(StateMachine stateMachine, Condition condition, bool trueResult)
+        {
+            this.stateMachine = stateMachine;
+            this.trueResult = trueResult;
+            Condition = condition;
+        }
 
-		public StateCondition(StateMachine stateMachine, Condition condition, bool expectedResult)
-		{
-			StateMachine = stateMachine;
-			Condition = condition;
-			_expectedResult = expectedResult;
-		}
-
-		public bool IsMet()
-		{
-			bool statement = Condition.GetStatement();
-			bool isMet = statement == _expectedResult;
-
+        internal bool IsMet()
+        {
+            var statement = Condition.Get();
+            var isMet = statement == trueResult;
 #if UNITY_EDITOR
-			StateMachine.debugger.TransitionConditionResult(Condition._originSO.name, statement, isMet);
+            stateMachine.debugger.TransitionConditionResult(Condition.OriginSO.name, statement, isMet);
 #endif
-			return isMet;
-		}
-	}
+            return isMet;
+        }
+    }
 }

@@ -5,5 +5,6 @@
 		void Enter();
 		void Update();
 		void Exit();
+		void Awake(StateMachine stateMachine);
 	}
 }

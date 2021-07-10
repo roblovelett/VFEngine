@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-
 using UnityObject = UnityEngine.Object;
 
 namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
@@ -41,8 +40,8 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
         {
             var visualTree = LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
             var styleSheet = LoadAssetAtPath<StyleSheet>(USSPath);
-            rootVisualElement.Add(visualTree.CloneTree());
             var labelClass = $"label-{(isProSkin ? "pro" : "personal")}";
+            rootVisualElement.Add(visualTree.CloneTree());
             rootVisualElement.Query<Label>().Build().ForEach(label => label.AddToClassList(labelClass));
             rootVisualElement.styleSheets.Add(styleSheet);
             minSize = new Vector2(480, 360);
@@ -54,9 +53,9 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
             playModeStateChanged -= OnPlayModeStateChanged;
         }
 
-        private void OnPlayModeStateChanged(PlayModeStateChange obj)
+        private void OnPlayModeStateChanged(PlayModeStateChange @object)
         {
-            if (obj == EnteredPlayMode) doRefresh = true;
+            if (@object == EnteredPlayMode) doRefresh = true;
         }
 
         private void OnFocus()
@@ -73,27 +72,33 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
         private void Update()
         {
             if (!doRefresh) return;
-            CreateListView();
-            doRefresh = false;
-        }
 
-        private void CreateListView()
-        {
-            var assets = FindAssets(out var objects);
+            #region List View
+
+            #region Assets
+
+            var guids = FindAssets($"t:{nameof(TransitionTableSO)}");
+            var guidsAmount = guids.Length;
+            var assets = new TransitionTableSO[guidsAmount];
+            var objects = new UnityObject[guidsAmount];
+            for (var idx = 0; idx < guidsAmount; idx++)
+            {
+                assets[idx] = LoadAssetAtPath<TransitionTableSO>(GUIDToAssetPath(guids[idx]));
+                objects[idx] = assets[idx];
+            }
+
+            #endregion
+
             var listView = rootVisualElement.Q<ListView>(className: "table-list");
+            var helpBox = rootVisualElement.Q<HelpBox>(className: "table-list-help-box");
             if (assets.Length <= 0)
             {
-                Debug.Log("no transition tables created.");
-                /*
-                listView.bindItem = (element, _) =>
-                {
-                    ((HelpBox) element).messageType = Info;
-                    ((HelpBox) element).text = "No Transition Table Assets exist.";
-                };
-                */
+                helpBox.messageType = Info;
+                helpBox.text = "No State Transition Table assets exist.";
                 return;
             }
 
+            helpBox.RemoveFromHierarchy();
             listView.itemsSource = assets;
             listView.itemHeight = 16;
             var labelClass = $"label-{(isProSkin ? "pro" : "personal")}";
@@ -103,12 +108,20 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
                 label.AddToClassList(labelClass);
                 return label;
             };
-            listView.bindItem = (element, i) => ((Label) element).text = assets[i].name;
+            listView.bindItem = (element, idx) =>
+            {
+                var @object = assets[idx] as UnityObject;
+                ((Label) element).text = @object.name;
+            };
             listView.selectionType = SelectionType.Single;
             listView.onSelectionChange -= OnListSelectionChanged;
             listView.onSelectionChange += OnListSelectionChanged;
             if (transitionTableEditor && transitionTableEditor.target)
                 listView.selectedIndex = IndexOf(objects, transitionTableEditor.target);
+
+            #endregion
+
+            doRefresh = false;
         }
 
         private void OnListSelectionChanged(IEnumerable<object> list)
@@ -116,9 +129,8 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
             var editor = rootVisualElement.Q<IMGUIContainer>(className: "table-editor");
             editor.onGUIHandler = null;
             var listArray = list.ToArray();
-            if (listArray.Length == 0) return;
+            if (listArray.Length == 0 || listArray[0] == null) return;
             var transitionTable = listArray[0] as TransitionTableSO;
-            if (transitionTable == null) return;
             if (transitionTableEditor == null)
                 transitionTableEditor = CreateEditor(transitionTable, typeof(TransitionTableEditor));
             else if (transitionTableEditor.target != transitionTable)
@@ -134,9 +146,9 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
                 var listView = rootVisualElement.Q<ListView>(className: "table-list");
                 if (listView.selectedItem as UnityObject != transitionTableEditor.target)
                 {
-                    var i = listView.itemsSource.IndexOf(transitionTableEditor.target);
-                    listView.selectedIndex = i;
-                    if (i < 0)
+                    var idx = listView.itemsSource.IndexOf(transitionTableEditor.target);
+                    listView.selectedIndex = idx;
+                    if (idx < 0)
                     {
                         editor.onGUIHandler = null;
                         return;
@@ -145,19 +157,6 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
 
                 transitionTableEditor.OnInspectorGUI();
             };
-        }
-
-        private static TransitionTableSO[] FindAssets(out UnityObject[] objects)
-        {
-            var guids = AssetDatabase.FindAssets($"t:{nameof(TransitionTableSO)}");
-            var assets = new TransitionTableSO[guids.Length];
-            objects = new UnityObject[guids.Length];
-            for (var i = 0; i < guids.Length; i++)
-            {
-                assets[i] = LoadAssetAtPath<TransitionTableSO>(GUIDToAssetPath(guids[i]));
-                objects[i] = assets[i];
-            }
-            return assets;
         }
     }
 }

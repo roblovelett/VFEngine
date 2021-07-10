@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachineSO.ScriptableObjects;
 
@@ -9,7 +7,7 @@ namespace VFEngine.Tools.StateMachineSO
 {
     using static AssemblyReloadEvents;
 
-    public class StateMachine : MonoBehaviour
+    internal class StateMachine : MonoBehaviour
     {
         [Tooltip("Set the initial state of this StateMachine")] [SerializeField]
         private TransitionTableSO transitionTableSO = default(TransitionTableSO);
@@ -17,7 +15,7 @@ namespace VFEngine.Tools.StateMachineSO
 #if UNITY_EDITOR
         [Space] [SerializeField] internal StateMachineDebugger debugger = default(StateMachineDebugger);
 #endif
-        private readonly Dictionary<Type, Component> cachedComponents = new Dictionary<Type, Component>();
+        //private readonly Dictionary<Type, Component> cachedComponents = new Dictionary<Type, Component>();
         internal State CurrentState;
 
         private void Awake()
@@ -51,7 +49,7 @@ namespace VFEngine.Tools.StateMachineSO
             (CurrentState as IState).Enter();
         }
 
-        private new bool TryGetComponent<T>(out T component) where T : Component
+        /*private new bool TryGetComponent<T>(out T component) where T : Component
         {
             var type = typeof(T);
             if (!cachedComponents.TryGetValue(type, out var value))
@@ -62,8 +60,7 @@ namespace VFEngine.Tools.StateMachineSO
 
             component = (T) value;
             return true;
-        }
-
+        }*/
         /*public T GetOrAddComponent<T>() where T : Component
         {
             if (TryGetComponent<T>(out var component)) return component;
@@ -80,15 +77,18 @@ namespace VFEngine.Tools.StateMachineSO
 
         private void Update()
         {
-            if (CurrentState.TryGetTransition(out var transitionState)) Transition(transitionState);
-            (CurrentState as IState).Update();
-        }
+            if (CurrentState.GetTransition(out var transitionState))
+            {
+                #region Update Transition
 
-        private void Transition(State transitionState)
-        {
-            (CurrentState as IState).Exit();
-            CurrentState = transitionState;
-            (CurrentState as IState).Enter();
+                (CurrentState as IState).Exit();
+                CurrentState = transitionState;
+                (CurrentState as IState).Enter();
+
+                #endregion
+            }
+
+            (CurrentState as IState).Update();
         }
     }
 }

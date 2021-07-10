@@ -3,27 +3,26 @@ using UnityEngine;
 
 namespace VFEngine.Tools.StateMachineSO.ScriptableObjects
 {
-	public abstract class StateActionSO : ScriptableObject
-	{
-		/// <summary>
-		/// Will create a new custom <see cref="StateAction"/> or return an existing one inside <paramref name="createdInstances"/>
-		/// </summary>
-		internal StateAction GetAction(VFEngine.Tools.StateMachineSO.StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
-		{
-			if (createdInstances.TryGetValue(this, out var obj))
-				return (StateAction)obj;
+    public abstract class StateActionSO : ScriptableObject
+    {
+        internal StateAction Get(StateMachine stateMachine, Dictionary<ScriptableObject, object> createdInstances)
+        {
+            if (createdInstances.TryGetValue(this, out var @object)) return @object as StateAction;
+            var action = CreateAction();
+            createdInstances.Add(this, action);
+            action.OriginSO = this;
+            ((IState) action).Awake(stateMachine);
+            return action;
+        }
 
-			var action = CreateAction();
-			createdInstances.Add(this, action);
-			action._originSO = this;
-			action.Awake(stateMachine);
-			return action;
-		}
-		protected abstract StateAction CreateAction();
-	}
+        protected abstract StateAction CreateAction();
+    }
 
-	public abstract class StateActionSO<T> : StateActionSO where T : StateAction, new()
-	{
-		protected override StateAction CreateAction() => new T();
-	}
+    internal abstract class StateActionSO<T> : StateActionSO where T : StateAction, new()
+    {
+        protected override StateAction CreateAction()
+        {
+            return new T();
+        }
+    }
 }

@@ -5,94 +5,109 @@ using UnityEngine;
 
 namespace VFEngine.Tools.StateMachineSO.ScriptableObjects
 {
-	[CreateAssetMenu(fileName = "New Transition Table", menuName = "State Machine SO/State Transition Table", order = 4)]
-	public class TransitionTableSO : ScriptableObject
-	{
-		[SerializeField] private TransitionItem[] _transitions = default;
+    using static TransitionTableSO.Operator;
+    using static TransitionTableSO.Result;
 
-		/// <summary>
-		/// Will get the initial state and instantiate all subsequent states, transitions, actions and conditions.
-		/// </summary>
-		internal State GetInitialState(VFEngine.Tools.StateMachineSO.StateMachine stateMachine)
-		{
-			var states = new List<State>();
-			var transitions = new List<StateTransition>();
-			var createdInstances = new Dictionary<ScriptableObject, object>();
+    [CreateAssetMenu(fileName = "New Transition Table", menuName = "State Machine SO/State Transition Table",
+        order = 4)]
+    internal class TransitionTableSO : ScriptableObject
+    {
+        [SerializeField] private TransitionItem[] transitions = default(TransitionItem[]);
+        
 
-			var fromStates = _transitions.GroupBy(transition => transition.FromState);
+        internal State GetInitialState(StateMachine stateMachine)
+        {
+            var states = new List<State>();
+            var stateTransitions = new List<StateTransition>();
+            var createdInstances = new Dictionary<ScriptableObject, object>();
+            var fromStates = transitions.GroupBy(transition => transition.FromState);
+            foreach (var fromState in fromStates)
+            {
+                if (fromState.Key == null)
+                    throw new ArgumentNullException(nameof(fromState.Key), $"TransitionTable: {name}");
+                var state = fromState.Key.GetState(stateMachine, createdInstances);
+                states.Add(state);
+                stateTransitions.Clear();
+                foreach (var transition in fromState)
+                {
+                    if (transition.ToState == null)
+                        throw new ArgumentNullException(nameof(transition.ToState),
+                            $"TransitionTable: {name}, From State: {fromState.Key.name}");
+                    var toState = transition.ToState.GetState(stateMachine, createdInstances);
 
-			foreach (var fromState in fromStates)
-			{
-				if (fromState.Key == null)
-					throw new ArgumentNullException(nameof(fromState.Key), $"TransitionTable: {name}");
+                    #region Process Condition Usage
 
-				var state = fromState.Key.GetState(stateMachine, createdInstances);
-				states.Add(state);
+                    var conditions = new StateCondition[transition.Conditions.Length];
+                    for (var idx = 0; idx < transition.Conditions.Length; idx++)
+                        conditions[idx] = transition.Conditions[idx].Condition.Get(stateMachine,
+                            transition.Conditions[idx].ExpectedResult == True, createdInstances);
+                    var resultGroupsList = new List<int>();
+                    for (var idx = 0; idx < transition.Conditions.Length; idx++)
+                    {
+                        var resultGroupsAmount = resultGroupsList.Count;
+                        resultGroupsList.Add(1);
+                        while (idx < transition.Conditions.Length - 1 && transition.Conditions[idx].Operator == And)
+                        {
+                            idx++;
+                            resultGroupsList[resultGroupsAmount]++;
+                        }
+                    }
 
-				transitions.Clear();
-				foreach (var transitionItem in fromState)
-				{
-					if (transitionItem.ToState == null)
-						throw new ArgumentNullException(nameof(transitionItem.ToState), $"TransitionTable: {name}, From State: {fromState.Key.name}");
+                    var resultGroups = resultGroupsList.ToArray();
 
-					var toState = transitionItem.ToState.GetState(stateMachine, createdInstances);
-					ProcessConditionUsages(stateMachine, transitionItem.Conditions, createdInstances, out var conditions, out var resultGroups);
-					transitions.Add(new StateTransition(toState, conditions, resultGroups));
-				}
+                    #endregion
 
-				state.Transitions = transitions.ToArray();
-			}
+                    stateTransitions.Add(new StateTransition(toState, conditions, resultGroups));
+                }
 
-			return states.Count > 0 ? states[0]
-				: throw new InvalidOperationException($"TransitionTable {name} is empty.");
-		}
+                state.Transitions = stateTransitions.ToArray();
+            }
 
-		private static void ProcessConditionUsages(
-			VFEngine.Tools.StateMachineSO.StateMachine stateMachine,
-			ConditionUsage[] conditionUsages,
-			Dictionary<ScriptableObject, object> createdInstances,
-			out StateCondition[] conditions,
-			out int[] resultGroups)
-		{
-			int count = conditionUsages.Length;
-			conditions = new StateCondition[count];
-			for (int i = 0; i < count; i++)
-				conditions[i] = conditionUsages[i].Condition.GetCondition(
-					stateMachine, conditionUsages[i].ExpectedResult == Result.True, createdInstances);
+            return states.Count > 0
+                ? states[0]
+                : throw new InvalidOperationException($"TransitionTable {name} is empty.");
+        }
 
+        [Serializable]
+        internal struct TransitionItem
+        {
+            internal StateSO FromState;
+            internal StateSO ToState;
+            internal ConditionUsage[] Conditions;
 
-			List<int> resultGroupsList = new List<int>();
-			for (int i = 0; i < count; i++)
-			{
-				int idx = resultGroupsList.Count;
-				resultGroupsList.Add(1);
-				while (i < count - 1 && conditionUsages[i].Operator == Operator.And)
-				{
-					i++;
-					resultGroupsList[idx]++;
-				}
-			}
+            private TransitionItem(StateSO fromState, StateSO toState, ConditionUsage[] conditions)
+            {
+                FromState = fromState;
+                ToState = toState;
+                Conditions = conditions;
+            }
+        }
 
-			resultGroups = resultGroupsList.ToArray();
-		}
+        [Serializable]
+        internal struct ConditionUsage
+        {
+            internal Result ExpectedResult;
+            internal Operator Operator;
+            internal StateConditionSO Condition;
 
-		[Serializable]
-		public struct TransitionItem
-		{
-			public StateSO FromState;
-			public StateSO ToState;
-			public ConditionUsage[] Conditions;
-		}
+            private ConditionUsage(Result expectedResult, Operator @operator, StateConditionSO condition)
+            {
+                ExpectedResult = expectedResult;
+                Operator = @operator;
+                Condition = condition;
+            }
+        }
 
-		[Serializable]
-		public struct ConditionUsage
-		{
-			public Result ExpectedResult;
-			public StateConditionSO Condition;
-			public Operator Operator;
-		}
+        internal enum Result
+        {
+            True,
+            False
+        }
 
-		public enum Result { True, False }
-		public enum Operator { And, Or }
-	}
+        internal enum Operator
+        {
+            And,
+            Or
+        }
+    }
 }

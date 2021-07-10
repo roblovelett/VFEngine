@@ -167,9 +167,9 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects.Menu
 		}
 
 		// SO to serialize a TransitionItem
-		internal class TransitionItemSO : ScriptableObject
+		private class TransitionItemSO : ScriptableObject
 		{
-			public TransitionTableSO.TransitionItem Item = default;
+			internal TransitionTableSO.TransitionItem Item = default(TransitionTableSO.TransitionItem);
 		}
 	}
 }
