@@ -13,7 +13,6 @@ namespace VFEngine.Tools.StateMachineSO.ScriptableObjects
     internal class TransitionTableSO : ScriptableObject
     {
         [SerializeField] private TransitionItem[] transitions = default(TransitionItem[]);
-        
 
         internal State GetInitialState(StateMachine stateMachine)
         {

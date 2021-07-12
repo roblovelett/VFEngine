@@ -1,10 +1,17 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachineSO.ScriptableObjects;
 
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 namespace VFEngine.Tools.StateMachineSO
 {
+    using static MessageType;
+    using static AttributeTargets;
+    using static EditorGUI;
+    using static GUI;
+    using static EditorGUIUtility;
+    using static EditorApplication;
     using static AssemblyReloadEvents;
 
     internal class StateMachine : MonoBehaviour
@@ -89,6 +96,44 @@ namespace VFEngine.Tools.StateMachineSO
             }
 
             (CurrentState as IState).Update();
+        }
+
+        [AttributeUsage(Field)]
+        private class InitOnlyAttribute : PropertyAttribute
+        {
+        }
+
+        [CustomPropertyDrawer(typeof(InitOnlyAttribute))]
+        private class InitOnlyAttributeDrawer : PropertyDrawer
+        {
+            private const string Text =
+                "Changes to this parameter during Play mode won't be reflected on existing StateMachines";
+
+            private static readonly GUIStyle Style = new GUIStyle(skin.GetStyle("helpbox"))
+            {
+                padding = new RectOffset(5, 5, 5, 5)
+            };
+
+            public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+            {
+                if (isPlaying)
+                {
+                    position.height = Style.CalcHeight(new GUIContent(Text), currentViewWidth);
+                    HelpBox(position, Text, Info);
+                    position.y += position.height + standardVerticalSpacing;
+                    position.height = EditorGUI.GetPropertyHeight(property, label);
+                }
+
+                PropertyField(position, property, label);
+            }
+
+            public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+            {
+                var height = EditorGUI.GetPropertyHeight(property, label);
+                if (isPlaying)
+                    height += Style.CalcHeight(new GUIContent(Text), currentViewWidth) + standardVerticalSpacing * 4;
+                return height;
+            }
         }
     }
 }
