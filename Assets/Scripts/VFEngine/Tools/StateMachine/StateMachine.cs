@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VFEngine.Tools.StateMachine.ScriptableObjects;
+using static UnityEngine.ScriptableObject;
 
 namespace VFEngine.Tools.StateMachine
 {
@@ -10,48 +11,66 @@ namespace VFEngine.Tools.StateMachine
     {
         [SerializeField] private StateMachineSettingsSO stateMachineSettings = default(StateMachineSettingsSO);
         [SerializeField] private StateMachineSO stateMachine = default(StateMachineSO);
-        
-        #if UNITY_EDITOR
-        [SerializeField] private StateMachineDebugSettingsSO debugSettings = default(StateMachineDebugSettingsSO);
-        [SerializeField] private StateMachineDebugSO debug = default(StateMachineDebugSO);
-        #endif
-
+#if UNITY_EDITOR
+        [SerializeField] private StateMachineDebug debug = default(StateMachineDebug);
+#endif
         private readonly Dictionary<Type, Component> cachedComponents;
         private State currentState;
+
         private void OnEnable()
         {
-            if (stateMachineSettings == null)
-            {
-                stateMachineSettings = ScriptableObject.CreateInstance<StateMachineSettingsSO>();
-            }
-
-            if (stateMachine == null)
-            {
-                stateMachine = ScriptableObject.CreateInstance<StateMachineSO>();
-            }
-            
-            if (debugSettings == null)
-            {
-                debugSettings = ScriptableObject.CreateInstance<StateMachineDebugSettingsSO>();
-            }
-
-            if (debug == null)
-            {
-                debug = ScriptableObject.CreateInstance<StateMachineDebugSO>();
-            }
-
-            AssemblyReloadEvents.afterAssemblyReload += AfterAssemblyReload;
+#if UNITY_EDITOR
+            Initialize(true, true);
+#endif
         }
 
-        private void AfterAssemblyReload()
+        private void Awake()
         {
-            currentState = stateMachine.GetInitialState(this);
-            debug.Awale(this);
+            Initialize(false, false);
+        }
+
+        private void Start()
+        {
         }
 
         private void OnDisable()
         {
-            AssemblyReloadEvents.afterAssemblyReload -= ;
+#if UNITY_EDITOR
+            Initialize(true, false);
+#endif
+        }
+        
+        
+        private void Initialize(bool unityEditor, bool onEnabled)
+        {
+            if (unityEditor)
+            {
+                if (onEnabled)
+                {
+                    AssemblyReloadEvents.afterAssemblyReload += InitializeAfterAssemblyReload;
+                }
+                else
+                {
+                    AssemblyReloadEvents.afterAssemblyReload -= InitializeAfterAssemblyReload;
+                }
+
+                return;
+            }
+            
+            if (stateMachineSettings == null) stateMachineSettings = CreateInstance<StateMachineSettingsSO>();
+            if (stateMachine == null) stateMachine = CreateInstance<StateMachineSO>();
+            CurrentState();
+        }
+        
+        private void InitializeAfterAssemblyReload()
+        {
+            CurrentState();
+            debug.Awake(this);
+        }
+
+        private void CurrentState()
+        {
+            currentState = stateMachine.GetInitialState(this);
         }
     }
 }
