@@ -458,11 +458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionTableSO: {fileID: 0}
-  debugger:
-    debugTransitions: 0
-    appendConditionsInfo: 0
-    appendActionsInfo: 0
-    currentState: 
+  debugger: {stateMachine: {fileID: 0}, targetState: , debugTransitions: 0, appendConditionsInfo: 0,
+    appendActionsInfo: 0, currentState: }
 --- !u!4 &2792254701813983940
 Transform:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace VFEngine.Tools.TestStateMachine
+namespace VFEngine.Tools.StateMachine
 {
     public class Sandbox : MonoBehaviour
     {

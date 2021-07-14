@@ -1,4 +1,4 @@
-﻿namespace VFEngine.Tools.TestStateMachine
+﻿namespace VFEngine.Tools.StateMachine
 {
     public interface IState
     {
